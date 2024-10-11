@@ -1,0 +1,23 @@
+lvmd:
+  managed: false
+  deviceClasses:
+    - name: thin
+      volume-group: topolvm_vg
+      type: thin
+      default: true
+      thin-pool:
+        name: topolvm_thin
+        overprovision-ratio: 15.0
+node:
+  lvmdEmbedded: true
+controller:
+  replicaCount: 1
+storageClasses:
+  - name: topolvm-provisioner-thin
+    storageClass:
+      fsType: xfs
+      isDefaultClass: true
+      volumeBindingMode: WaitForFirstConsumer
+      allowVolumeExpansion: true
+      additionalParameters:
+        "topolvm.io/device-class": "thin"

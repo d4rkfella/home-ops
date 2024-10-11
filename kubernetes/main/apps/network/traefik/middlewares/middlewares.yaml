@@ -1,0 +1,224 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-ratelimit
+spec:
+  rateLimit:
+    average: 600
+    burst: 400
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: basic-secure-headers
+spec:
+  headers:
+    frameDeny: true
+    accessControlAllowMethods:
+      - GET
+      - OPTIONS
+      - HEAD
+      - PUT
+    accessControlMaxAge: 100
+    browserXssFilter: true
+    contentTypeNosniff: true
+    customRequestHeaders:
+      X-Forwarded-Proto: https
+    customResponseHeaders:
+      server: ''
+    stsIncludeSubdomains: true
+    forceSTSHeader: true
+    referrerPolicy: same-origin
+    stsSeconds: 63072000
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: compress
+spec:
+  compress:
+    defaultEncoding: gzip
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: chain-basic
+spec:
+  chain:
+    middlewares:
+      - name: basic-ratelimit
+      - name: basic-secure-headers
+      - name: compress
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: realip
+spec:
+  plugin:
+    traefik-real-ip:
+      excludednets:
+        - 173.245.48.0/20
+        - 103.21.244.0/22
+        - 103.22.200.0/22
+        - 103.31.4.0/22
+        - 141.101.64.0/18
+        - 108.162.192.0/18
+        - 190.93.240.0/20
+        - 188.114.96.0/20
+        - 197.234.240.0/22
+        - 198.41.128.0/17
+        - 162.158.0.0/15
+        - 104.16.0.0/13
+        - 104.24.0.0/14
+        - 172.64.0.0/13
+        - 131.0.72.0/22
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: local
+spec:
+  ipAllowList:
+    sourceRange:
+      - 192.168.91.0/24
+      - 172.16.0.0/16
+      - 172.17.0.0/16
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bazarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: bazarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: radarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: radarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: sonarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: sonarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: readarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: readarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: lidarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: lidarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: prowlarr
+spec:
+  plugin:
+    traefik-themepark:
+      app: prowlarr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vuetorrent
+spec:
+  plugin:
+    traefik-themepark:
+      app: vuetorrent
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: sabnzbd
+spec:
+  plugin:
+    traefik-themepark:
+      app: sabnzbd
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: jellyseerr
+spec:
+  plugin:
+    traefik-themepark:
+      app: jellyseerr
+      baseUrl: https://theme-park.darkfellanetwork.com
+      theme: mind
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: bouncer
+spec:
+  plugin:
+    crowdsec-bouncer-traefik-plugin:
+      clientTrustedIPs:
+        - 172.16.0.0/16
+        - 172.17.0.0/16
+        - 192.168.91.0/24
+      crowdsecAppsecEnabled: false
+      crowdsecLapiHost: crowdsec-service.crowdsec.svc.cluster.local:8080
+      crowdsecLapiScheme: https
+      crowdsecLapiTLSCertificateAuthorityFile: /etc/traefik/crowdsec-certs/ca.crt
+      crowdsecLapiTLSCertificateBouncerFile: /etc/traefik/crowdsec-certs/tls.crt
+      crowdsecLapiTLSCertificateBouncerKeyFile: /etc/traefik/crowdsec-certs/tls.key
+      crowdsecMode: stream
+      enabled: true
+      forwardedHeadersCustomName: CF-Connecting-IP
+      forwardedHeadersTrustedIPs:
+        - 173.245.48.0/20
+        - 103.21.244.0/22
+        - 103.22.200.0/22
+        - 103.31.4.0/22
+        - 141.101.64.0/18
+        - 108.162.192.0/18
+        - 190.93.240.0/20
+        - 188.114.96.0/20
+        - 197.234.240.0/22
+        - 198.41.128.0/17
+        - 162.158.0.0/15
+        - 104.16.0.0/13
+        - 104.24.0.0/14
+        - 172.64.0.0/13
+        - 131.0.72.0/22
+      logLevel: INFO

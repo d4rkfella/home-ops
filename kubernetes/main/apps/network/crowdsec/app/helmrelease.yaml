@@ -1,0 +1,96 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crowdsec
+spec:
+  interval: 30m
+  dependsOn:
+    - name: cloudnative-pg-cluster
+    - name: external-secrets-stores
+    - name: reflector
+  chart:
+    spec:
+      chart: crowdsec
+      version: 0.x
+      sourceRef:
+        kind: HelmRepository
+        name: crowdsec
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    container_runtime: containerd
+    tls:
+      enabled: true
+      caBundle: true
+      certManager:
+        enabled: true
+    agent:
+      wait_for_lapi:
+        image:
+          tag: "1.36"
+      acquisition:
+        - namespace: traefik
+          podName: traefik-*
+          program: traefik
+        - namespace: jellyseerr
+          podName: jellyseerr-*
+          program: jellyseerr
+        - namespace: authentik
+          podName: authentik-*
+          program: authentik
+        - namespace: vaultwarden
+          podName: vaultwarden-*
+          program: VAULTWARDEN
+      env:
+        - name: PARSERS
+          value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
+        - name: COLLECTIONS
+          value: "LePresidente/jellyseerr crowdsecurity/traefik firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      persistentVolume:
+        config:
+          enabled: true
+    lapi:
+      env:
+        # For an internal test, disable the Online API
+        - name: DISABLE_ONLINE_API
+          value: "true"
+        - name: ENROLL_KEY
+          valueFrom:
+            secretKeyRef:
+              name: &secret crowdsec-external-secret
+              key: ENROLL_KEY
+        - name: ENROLL_INSTANCE_NAME
+          value: "cluster"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: DB_PASSWORD
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+    config:
+      config.yaml.local: |
+        db_config:
+          type:     postgresql
+          user:     crowdsec
+          password: $${DB_PASSWORD}
+          db_name:  crowdsec
+          host:     crowdsec-cnpg-main-rw.crowdsec
+          port:     5432
+          sslmode:  require

@@ -1,0 +1,320 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: traefik
+spec:
+  interval: 24h
+  url: https://helm.traefik.io/traefik
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/heads/master/traefik/values.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: traefik-external
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: traefik
+      version: 32.x
+      sourceRef:
+        kind: HelmRepository
+        name: traefik
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+      strategy: rollback
+  valuesFrom:
+    - targetPath: certResolvers.letsencrypt.email
+      kind: Secret
+      name: &secret traefik-external-secret
+      valuesKey: CLOUDFLARE_EMAIL
+  values:
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+    deployment:
+      ingressClass:
+        enabled: true
+        isDefaultClass: false
+        name: "internal"
+      enabled: true
+      kind: Deployment
+      replicas: 2
+      revisionHistoryLimit: 5
+      terminationGracePeriodSeconds: 60
+      minReadySeconds: 0
+      healthchecksPort: 9000
+      healthchecksScheme: HTTP
+      additionalVolumes:
+        - name: plugins
+      initContainers:
+        - name: volume-permissions
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - touch /data/acme.json; chmod -v 600 /data/acme.json
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+      shareProcessNamespace: false
+      dnsPolicy: ""
+      dnsConfig: {}
+    ingressRoute:
+      dashboard:
+        enabled: true
+        annotations: {}
+        labels: {}
+        matchRule: "Host(`traefik-internal.${PUBLIC_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+        services:
+          - name: api@internal
+            kind: TraefikService
+        entryPoints:
+          - websecure
+        tls:
+          certResolver: letsencrypt
+      healthcheck:
+        enabled: true
+        matchRule: PathPrefix(`/ping`)
+        services:
+          - name: ping@internal
+            kind: TraefikService
+        entryPoints:
+          - traefik
+        middlewares: []
+        tls: {}
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 0
+        maxSurge: 1
+    providers:
+      kubernetesCRD:
+        enabled: true
+        allowCrossNamespace: true
+        allowExternalNameServices: false
+        allowEmptyServices: true
+        ingressClass: "external"
+        namespaces: []
+        nativeLBByDefault: false
+    volumes:
+      - name: crowdsec-bouncer-tls
+        mountPath: /etc/traefik/crowdsec-certs
+        type: secret
+    additionalVolumeMounts:
+      - name: plugins
+        mountPath: /plugins-storage
+    logs:
+      general:
+        level: DEBUG
+      access:
+        enabled: true
+    metrics:
+      addInternals: false
+      prometheus:
+        entryPoint: metrics
+        addEntryPointsLabels: null
+        addRoutersLabels: null
+        addServicesLabels: null
+        buckets: ""
+        manualRouting: false
+        service:
+          enabled: true
+          labels: {}
+          annotations: {}
+        disableAPICheck: false
+        serviceMonitor:
+          enabled: true
+          metricRelabelings:
+            - sourceLabels:
+                - __name__
+              separator: ;
+              regex: ^fluentd_output_status_buffer_(oldest|newest)_.+
+              replacement: $1
+              action: drop
+          relabelings:
+            - sourceLabels:
+                - __meta_kubernetes_pod_node_name
+              separator: ;
+              regex: ^(.*)$
+              targetLabel: nodename
+              replacement: $1
+              action: replace
+          jobLabel: traefik
+          interval: 30s
+          honorLabels: true
+          scrapeTimeout: ""
+          honorTimestamps: false
+          enableHttp2: false
+          followRedirects: false
+          additionalLabels: {}
+          namespace: ""
+          namespaceSelector: {}
+        prometheusRule:
+          enabled: true
+          rules:
+            - alert: TraefikDown
+              expr: up{job="traefik"} == 0
+              for: 5m
+              labels:
+                context: traefik
+                severity: warning
+              annotations:
+                summary: Traefik Down
+                description: "{{ $labels.pod }} on {{ $labels.nodename }} is down"
+          additionalLabels: {}
+          namespace: ""
+    globalArguments:
+      - --global.checknewversion
+      - --global.sendanonymoususage
+    additionalArguments:
+      - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
+      - --experimental.plugins.traefik-themepark.version=v1.4.0
+      - --entryPoints.web.http.redirections.entryPoint.to=websecure
+      - --entryPoints.web.http.redirections.entryPoint.scheme=https
+    env:
+      - name: CF_DNS_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: CLOUDFLARE_API_TOKEN
+    ports:
+      web:
+        port: 80
+        targetPort: 80
+        protocol: TCP
+        forwardedHeaders:
+          trustedIPs:
+            - 173.245.48.0/20
+            - 103.21.244.0/22
+            - 103.22.200.0/22
+            - 103.31.4.0/22
+            - 141.101.64.0/18
+            - 108.162.192.0/18
+            - 190.93.240.0/20
+            - 188.114.96.0/20
+            - 197.234.240.0/22
+            - 198.41.128.0/17
+            - 162.158.0.0/15
+            - 104.16.0.0/13
+            - 104.24.0.0/14
+            - 172.64.0.0/13
+            - 131.0.72.0/22
+          insecure: false
+        proxyProtocol:
+          trustedIPs: []
+          insecure: false
+        transport:
+          respondingTimeouts:
+            readTimeout: null
+            writeTimeout: null
+            idleTimeout: null
+          lifeCycle:
+            requestAcceptGraceTimeout: null
+            graceTimeOut: null
+          keepAliveMaxRequests: null
+          keepAliveMaxTime: null
+      websecure:
+        asDefault: true
+        port: 443
+        targetPort: 443
+        protocol: TCP
+        appProtocol: null
+        allowACMEByPass: false
+        http3:
+          enabled: false
+          advertisedPort: null
+        forwardedHeaders:
+          trustedIPs:
+            - 173.245.48.0/20
+            - 103.21.244.0/22
+            - 103.22.200.0/22
+            - 103.31.4.0/22
+            - 141.101.64.0/18
+            - 108.162.192.0/18
+            - 190.93.240.0/20
+            - 188.114.96.0/20
+            - 197.234.240.0/22
+            - 198.41.128.0/17
+            - 162.158.0.0/15
+            - 104.16.0.0/13
+            - 104.24.0.0/14
+            - 172.64.0.0/13
+            - 131.0.72.0/22
+          insecure: false
+        proxyProtocol:
+          trustedIPs: []
+          insecure: false
+        transport:
+          respondingTimeouts:
+            readTimeout: null
+            writeTimeout: null
+            idleTimeout: null
+          lifeCycle:
+            requestAcceptGraceTimeout: null
+            graceTimeOut: null
+          keepAliveMaxRequests: null
+          keepAliveMaxTime: null
+        tls:
+          enabled: true
+          certResolver: letsencrypt
+      metrics:
+        port: 9100
+        expose:
+          default: false
+        exposedPort: 9100
+        protocol: TCP
+    tlsOptions:
+      default:
+        sniStrict: true
+        minVersion: VersionTLS13
+        curvePreferences:
+          - CurveP521
+          - CurveP384
+          - X25519
+    service:
+      enabled: true
+      single: true
+      type: LoadBalancer
+      annotations:
+        lbipam.cilium.io/ips: 192.168.91.95
+      spec:
+        allocateLoadBalancerNodePorts: false
+    autoscaling:
+      enabled: false
+    persistence:
+      enabled: true
+      name: data
+      storageClass: topolvm-provisioner-thin
+      path: /data
+    certResolvers:
+      letsencrypt:
+        keyType: EC384
+        dnsChallenge:
+          provider: cloudflare
+          delayBeforeCheck: 120
+          resolvers:
+            - 1.1.1.1:53
+            - 1.0.0.1:53
+        storage: /data/acme.json
+    hostNetwork: false
+    rbac:
+      enabled: true
+      namespaced: false

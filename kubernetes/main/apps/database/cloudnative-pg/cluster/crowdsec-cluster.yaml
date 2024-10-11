@@ -1,0 +1,57 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: crowdsec-cnpg-main
+  namespace: crowdsec
+  annotations:
+    cnpg.io/hibernation: 'off'
+  labels:
+    cnpg.io/reload: 'on'
+spec:
+  bootstrap:
+    initdb:
+      dataChecksums: true
+      owner: crowdsec
+      database: crowdsec
+      secret:
+        name: crowdsec-config
+  enablePDB: true
+  enableSuperuserAccess: true
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.3
+  instances: 2
+  logLevel: info
+  monitoring:
+    enablePodMonitor: true
+  primaryUpdateMethod: switchover
+  primaryUpdateStrategy: unsupervised
+  replicationSlots:
+    highAvailability:
+      enabled: true
+      slotPrefix: _cnpg_
+    synchronizeReplicas:
+      enabled: true
+    updateInterval: 30
+  resources:
+    limits:
+      cpu: '4'
+      memory: 8Gi
+    requests:
+      cpu: 200m
+      memory: 400Mi
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+    resizeInUseVolumes: true
+  walStorage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+    resizeInUseVolumes: true

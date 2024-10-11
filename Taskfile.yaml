@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+vars:
+  KUBERNETES_DIR: '{{.ROOT_DIR}}/kubernetes'
+  CLUSTER: '{{.CLUSTER | default "main"}}'
+
+env:
+  KUBECONFIG: '{{.KUBERNETES_DIR}}/{{.CLUSTER}}/kubeconfig'
+  TALOSCONFIG: '{{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig'
+  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
+
+includes:
+  bootstrap: .taskfiles/bootstrap
+  kubernetes: .taskfiles/kubernetes
+  talos: .taskfiles/talos
+  volsync: .taskfiles/volsync
+
+tasks:
+
+  default: task --list

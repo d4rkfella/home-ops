@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: authentik-cnpg
+spec:
+  superuserSecret:
+    name: &secret cloudnative-pg-secret
+  monitoring:
+    enablePodMonitor: true
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore: &barmanObjectStore
+      data:
+        compression: gzip
+        encryption: AES256
+        jobs: 2
+      destinationPath: s3://${S3PREFIX}-authentik/authentik/cnpg
+      endpointURL: ${S3URL}
+      s3Credentials:
+        accessKeyId:
+          key: accessKeyId
+          name: *secret
+        secretAccessKey:
+          key: secretAccessKey
+          name: *secret
+      serverName: &currentCluster v1
+      wal:
+        compression: gzip
+        encryption: AES256
+        maxParallel: 8
+  bootstrap:
+    recovery:
+      source: &previousCluster backup-1
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
+  enablePDB: true
+  enableSuperuserAccess: true
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.3
+  instances: 2
+  primaryUpdateStrategy: unsupervised
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 2Gi
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    resizeInUseVolumes: true
+  walStorage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    resizeInUseVolumes: true
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  postgresql:
+    parameters:
+      max_connections: "400"
+      shared_buffers: 256MB

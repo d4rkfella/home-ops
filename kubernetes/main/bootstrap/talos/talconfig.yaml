@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/refs/heads/master/pkg/config/schemas/talconfig.json
+clusterName: main
+talosVersion: v1.8.1
+kubernetesVersion: v1.31.1
+endpoint: https://192.168.91.21:6443
+allowSchedulingOnControlPlanes: true
+additionalMachineCertSans:
+  - 192.168.91.21
+clusterPodNets:
+  - 172.16.0.0/16
+clusterSvcNets:
+  - 172.17.0.0/16
+patches:
+  - "@./patches/all.yaml"
+nodes:
+  - hostname: k8s-control-1
+    ipAddress: 192.168.91.20
+    controlPlane: true
+    nameservers:
+      - 192.168.91.11
+    installDiskSelector:
+      size: <= 50GB
+    #machineSpec:
+      #secureboot: true
+      #useUKI: true
+    networkInterfaces:
+      - interface: eth0
+        addresses:
+          - 192.168.91.20/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.91.1
+        vip:
+          ip: 192.168.91.21
+controlPlane:
+  patches:
+    - "@./patches/all.yaml"
+    - "@./patches/controlplane.yaml"
+    #- "@./patches/disk_encryption.yaml"
+    - "@./patches/dm_modules.yaml"
+    - "@./patches/disable_cni.yaml"
+  schematic:
+    customization:
+      extraKernelArgs:
+        - net.ifnames=0
+        - security=apparmor
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/iscsi-tools
+          - siderolabs/qemu-guest-agent
+worker:
+  patches:
+    - "@./patches/worker.yaml"
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/iscsi-tools
+          - siderolabs/qemu-guest-agent

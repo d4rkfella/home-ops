@@ -1,0 +1,124 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: flux-manifests
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: oci://ghcr.io/fluxcd/flux-manifests
+  ref:
+    semver: ">= v2.0.0, < v3.0.0"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gotk-pvc
+  namespace: flux-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./
+  prune: true
+  wait: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-manifests
+  patches:
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --concurrent=10
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --requeue-dependency=5s
+      target:
+        kind: Deployment
+        name: "(kustomize-controller|helm-controller|source-controller)"
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  resources:
+                    limits:
+                      cpu: 2000m
+                      memory: 2Gi
+      target:
+        kind: Deployment
+        name: "(kustomize-controller|helm-controller|source-controller)"
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --concurrent=20
+        - op: replace
+          path: /spec/template/spec/volumes/0
+          value:
+            name: temp
+            emptyDir:
+              medium: Memory
+      target:
+        kind: Deployment
+        name: kustomize-controller
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-max-size=10
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-ttl=60m
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-purge-interval=5m
+      target:
+        kind: Deployment
+        name: source-controller
+    - patch: |
+        - op: add
+          path: '/spec/template/spec/volumes/-'
+          value:
+            name: persistent-data
+            persistentVolumeClaim:
+              claimName: gotk-pvc
+        - op: replace
+          path: '/spec/template/spec/containers/0/volumeMounts/0'
+          value:
+            name: persistent-data
+            mountPath: /data
+      target:
+        kind: Deployment
+        name: source-controller
+    - patch: |
+        # Enable OOM watch feature
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --feature-gates=OOMWatch=true
+        # Threshold at which to trigger a graceful shutdown (optional, default 95%)
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --oom-watch-memory-threshold=95
+        # Interval at which to check memory usage (optional, default 500ms)
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --oom-watch-interval=500ms
+      target:
+        kind: Deployment
+        name: helm-controller

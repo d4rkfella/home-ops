@@ -8,7 +8,7 @@ vars:
 
 env:
   KUBECONFIG: '{{.KUBERNETES_DIR}}/{{.CLUSTER}}/kubeconfig'
-  TALOSCONFIG: '{{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig'
+  TALOSCONFIG: '{{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig'
   SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
 
 includes:

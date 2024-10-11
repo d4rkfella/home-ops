@@ -48,7 +48,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: topolvm-provisioner-thin
               resources:
                 requests:
                   storage: 1Gi
@@ -69,13 +69,6 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
-      ingress:
-        enabled: true
-        annotations:
-          external-dns.alpha.kubernetes.io/target: internal.devbu.io
-        ingressClassName: internal
-        hosts: ["prometheus.devbu.io"]
-        pathType: Prefix
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector
@@ -100,7 +93,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: topolvm-provisioner-thin
               resources:
                 requests:
                   storage: 75Gi

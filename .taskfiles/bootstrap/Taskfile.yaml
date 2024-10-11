@@ -31,7 +31,7 @@ tasks:
       vars: ['CLUSTER']
     preconditions:
       - talosctl config info &>/dev/null
-      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig
   apply-config:
     internal: true
     cmd: |
@@ -43,21 +43,21 @@ tasks:
     requires:
       vars: ['CLUSTER', 'HOSTNAME']
     preconditions:
-      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig
       - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/assets/{{.HOSTNAME}}.secret.sops.yaml
 
   etcd:
     internal: true
     cmd: until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
     preconditions:
-      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig
       - talosctl config info &>/dev/null
 
   conf:
     internal: true
     cmd: talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name {{.CLUSTER}} {{.KUBERNETES_DIR}}/{{.CLUSTER}}
     preconditions:
-      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig
       - talosctl config info &>/dev/null
 
   apps:
@@ -68,7 +68,7 @@ tasks:
       - helmfile --quiet --file {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
       - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
     preconditions:
-      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/talos/clusterconfig/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/talosconfig
       - test -f {{.KUBERNETES_DIR}}/{{.CLUSTER}}/bootstrap/helmfile.yaml
       - talosctl config info &>/dev/null
 

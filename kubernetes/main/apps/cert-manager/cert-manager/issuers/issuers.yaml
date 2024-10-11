@@ -10,10 +10,9 @@ spec:
       name: zerossl-prod
     externalAccountBinding:
       keyID:
-        valueFrom:
-          secretKeyRef:
-            name: &secret zerossl-credentials
-            key: EAB_KID
+        secretKeyRef:
+          name: &secret zerossl-credentials
+          key: EAB_KID
       keySecretRef:
         name: *secret
         key: EAB_HMAC_KEY

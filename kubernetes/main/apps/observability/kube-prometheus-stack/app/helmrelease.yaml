@@ -29,7 +29,7 @@ spec:
     - name: prometheus-operator-crds
       namespace: observability
     - name: topolvm
-      namespace: topolvm-system
+      namespace: kube-system
   values:
     crds:
       enabled: false

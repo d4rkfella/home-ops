@@ -1,7 +1,7 @@
 image:
   repository: darkfella/lvm-disk-watcher
   pullPolicy: IfNotPresent
-  tag: v0.12.0
+  tag: v0.13.0
 configmap:
   disk-config:
     enabled: true

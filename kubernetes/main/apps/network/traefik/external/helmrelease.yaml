@@ -111,8 +111,17 @@ spec:
         allowCrossNamespace: true
         allowExternalNameServices: false
         allowEmptyServices: true
-        ingressClass: "external"
+        ingressClass: external
         namespaces: []
+        nativeLBByDefault: false
+      kubernetesIngress:
+        enabled: true
+        allowExternalNameServices: false
+        allowEmptyServices: true
+        ingressClass: external
+        namespaces: []
+        publishedService:
+          enabled: false
         nativeLBByDefault: false
     volumes:
       - name: crowdsec-bouncer-tls

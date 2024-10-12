@@ -114,6 +114,15 @@ spec:
         ingressClass: "external"
         namespaces: []
         nativeLBByDefault: false
+      kubernetesIngress:
+        enabled: true
+        allowExternalNameServices: false
+        allowEmptyServices: true
+        ingressClass: internal
+        namespaces: []
+        publishedService:
+          enabled: false
+        nativeLBByDefault: false
     volumes:
       - name: crowdsec-bouncer-tls
         mountPath: /etc/traefik/crowdsec-certs

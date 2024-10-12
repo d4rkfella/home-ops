@@ -11,7 +11,7 @@ spec:
     externalAccountBinding:
       keyID: ${EAB_KEY_ID}
       keySecretRef:
-        name: *secret
+        name: &secret zerossl-credentials
         key: EAB_HMAC_KEY
     solvers:
       - dns01:

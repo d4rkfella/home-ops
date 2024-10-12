@@ -91,6 +91,6 @@ spec:
           user:     crowdsec
           password: $${DB_PASSWORD}
           db_name:  crowdsec
-          host:     crowdsec-cnpg-main-rw.crowdsec
+          host:     crowdsec-cnpg-rw.crowdsec
           port:     5432
           sslmode:  require

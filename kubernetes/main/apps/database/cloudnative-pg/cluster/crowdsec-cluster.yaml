@@ -9,8 +9,21 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:16.4-19
   primaryUpdateStrategy: unsupervised
   storage:
-    size: 20Gi
-    storageClass: topolvm-provisioner-thin
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    resizeInUseVolumes: true
+  walStorage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+    resizeInUseVolumes: true
   superuserSecret:
     name: &secret cloudnative-pg-secret
   enableSuperuserAccess: true

@@ -6,10 +6,6 @@ metadata:
   name: crowdsec
 spec:
   interval: 30m
-  dependsOn:
-    - name: cloudnative-pg-cluster
-    - name: external-secrets-stores
-    - name: reflector
   chart:
     spec:
       chart: crowdsec

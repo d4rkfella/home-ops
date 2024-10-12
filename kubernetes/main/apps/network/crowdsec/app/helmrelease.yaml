@@ -79,7 +79,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: *secret
-              key: DB_PASSWORD
+              key: CROWDSEC_POSTGRES_PASS
       metrics:
         enabled: true
         serviceMonitor:

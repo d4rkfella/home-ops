@@ -35,10 +35,12 @@ spec:
     inProgress: false
     reusePVC: true
   resources:
-    requests:
-      cpu: 500m
     limits:
+      cpu: '4'
       memory: 4Gi
+    requests:
+      cpu: 200m
+      memory: 400Mi
   monitoring:
     enablePodMonitor: true
   backup:

@@ -12,14 +12,13 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
-    - name: cilium-config
-    - name: crowdsec
+    - name: cloudnative-pg-cluster
   path: ./kubernetes/main/apps/network/traefik/external
   prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: false
+  wait: true
   interval: 30m
   retryInterval: 1m
   timeout: 5m

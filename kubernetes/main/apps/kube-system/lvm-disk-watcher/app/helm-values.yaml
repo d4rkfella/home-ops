@@ -1,11 +1,10 @@
 image:
   repository: darkfella/lvm-disk-watcher
   pullPolicy: IfNotPresent
-  tag: v0.4.0
+  tag: v0.5.0
 configmap:
   disk-config:
     enabled: true
     data:
       disk-config: |
-        k8s-0: /dev/sdb
-
+        k8s-0: /dev/sdb /dev/sdc

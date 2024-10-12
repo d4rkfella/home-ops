@@ -41,3 +41,8 @@ spec:
       memory: 4Gi
   monitoring:
     enablePodMonitor: true
+  bootstrap:
+    initdb:
+      dataChecksums: true
+      database: crowdsec
+      owner: crowdsec

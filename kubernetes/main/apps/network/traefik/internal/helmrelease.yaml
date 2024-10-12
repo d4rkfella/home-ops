@@ -294,7 +294,7 @@ spec:
       single: true
       type: LoadBalancer
       annotations:
-        lbipam.cilium.io/ips: 192.168.91.95
+        lbipam.cilium.io/ips: 192.168.91.96
       spec:
         allocateLoadBalancerNodePorts: false
     autoscaling:

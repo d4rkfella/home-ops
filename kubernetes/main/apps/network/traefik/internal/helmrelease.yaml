@@ -37,7 +37,7 @@ spec:
     - targetPath: certResolvers.letsencrypt.email
       kind: Secret
       name: &secret traefik-external-secret
-      valuesKey: CLOUDFLARE_EMAIL
+      valuesKey: CF_API_EMAIL
   values:
     securityContext:
       seccompProfile:
@@ -194,7 +194,7 @@ spec:
         valueFrom:
           secretKeyRef:
             name: *secret
-            key: CLOUDFLARE_API_TOKEN
+            key: CF_API_TOKEN
     ports:
       web:
         port: 80

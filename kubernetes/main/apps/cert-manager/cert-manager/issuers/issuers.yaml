@@ -9,10 +9,7 @@ spec:
     privateKeySecretRef:
       name: zerossl-prod
     externalAccountBinding:
-      keyID:
-        secretKeyRef:
-          name: &secret zerossl-credentials
-          key: EAB_KID
+      keyID: ${EAB_KEY_ID}
       keySecretRef:
         name: *secret
         key: EAB_HMAC_KEY

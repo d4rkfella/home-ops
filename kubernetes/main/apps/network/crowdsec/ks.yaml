@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
     - name: cloudnative-pg-cluster
-  path: ./kubernetes/main/apps/network/traefik/external
+  path: ./kubernetes/main/apps/network/crowdsec/app
   prune: false
   sourceRef:
     kind: GitRepository

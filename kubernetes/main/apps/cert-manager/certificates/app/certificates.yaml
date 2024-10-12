@@ -3,13 +3,13 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: devbu-io
+  name: darkfellanet
 spec:
-  secretName: devbu-io-tls
+  secretName: darkfellanet-tls
   issuerRef:
-    name: letsencrypt-production
+    name: zerossl-prod
     kind: ClusterIssuer
-  commonName: devbu.io
+  commonName: ${PUBLIC_DOMAIN}
   dnsNames:
-    - devbu.io
-    - "*.devbu.io"
+    - ${PUBLIC_DOMAIN}
+    - "*.${PUBLIC_DOMAIN}"

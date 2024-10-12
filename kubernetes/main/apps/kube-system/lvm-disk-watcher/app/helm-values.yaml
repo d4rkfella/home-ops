@@ -8,3 +8,6 @@ configmap:
     data:
       disk-config: |
         k8s-0: /dev/sdb /dev/sdc /dev/sdd /dev/sde
+securityContext:
+  container:
+    readOnlyRootFilesystem: false

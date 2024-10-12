@@ -13,11 +13,11 @@ node:
 controller:
   replicaCount: 1
 storageClasses:
-      - name: topolvm-provisioner-thin
-        storageClass:
-          fsType: xfs
-          isDefaultClass: true
-          volumeBindingMode: WaitForFirstConsumer
-          allowVolumeExpansion: true
-          additionalParameters:
-            "topolvm.io/device-class": "thin"
+  - name: topolvm-provisioner-thin
+    storageClass:
+      fsType: xfs
+      isDefaultClass: true
+      volumeBindingMode: WaitForFirstConsumer
+      allowVolumeExpansion: true
+      additionalParameters:
+        "topolvm.io/device-class": "thin"

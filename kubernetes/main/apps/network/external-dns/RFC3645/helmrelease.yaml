@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app external-dns-rfc2136
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: *app
+    provider:
+      name: rfc2136
+    extraArgs:
+      - --events
+      - --ignore-ingress-tls-spec
+      - --ingress-class=internal
+      - --provider=rfc2136
+      - --rfc2136-gss-tsig
+      - --rfc2136-host=dc01.${PUBLIC_DOMAIN}
+      - --rfc2136-port=53
+      - --rfc2136-zone=${PUBLIC_DOMAIN}
+      - --rfc2136-kerberos-username=externaldns_service@${PUBLIC_DOMAIN}
+      - --rfc2136-kerberos-password=${KERBEROS_PASSWORD}
+      - --rfc2136-kerberos-realm=${AD_REALM}
+    policy: sync
+    sources: ["crd", "ingress"]
+    txtOwnerId: default
+    txtPrefix: k8s.
+    domainFilters: ["${PUBLIC_DOMAIN}"]
+    serviceMonitor:
+      enabled: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *secret

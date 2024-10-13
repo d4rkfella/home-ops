@@ -38,9 +38,9 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.devbu.io
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
         ingressClassName: internal
-        hosts: ["alertmanager.devbu.io"]
+        hosts: ["alertmanager.${PUBLIC_DOMAIN}"]
         pathType: Prefix
       alertmanagerSpec:
         useExistingSecret: true

@@ -63,6 +63,7 @@ spec:
       extraInitContainers:
         - name: initdb
           image: "ghcr.io/onedr0p/postgres-init:16"
+          imagePullPolicy: IfNotPresent
           envFrom:
             - secretKeyRef:
                 name: crowdsec-external-secret

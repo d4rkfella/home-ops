@@ -28,6 +28,8 @@ spec:
   values:
     tlsStore:
         default:
+          certificates:
+            - secretName: darkfellanet-tls
           defaultCertificate:
             secretName: darkfellanet-tls
     securityContext:
@@ -252,10 +254,6 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
-          domains:
-            - main: ${PUBLIC_DOMAIN}
-              sans:
-                - "*.${PUBLIC_DOMAIN}"
       metrics:
         port: 9100
         expose:
@@ -264,7 +262,7 @@ spec:
         protocol: TCP
     tlsOptions:
       default:
-        sniStrict: false
+        sniStrict: true
         minVersion: VersionTLS13
         curvePreferences:
           - CurveP521

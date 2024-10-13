@@ -282,16 +282,6 @@ spec:
       name: data
       storageClass: topolvm-provisioner-thin
       path: /data
-    certResolvers:
-      letsencrypt:
-        keyType: EC384
-        dnsChallenge:
-          provider: cloudflare
-          delayBeforeCheck: 120
-          resolvers:
-            - 1.1.1.1:53
-            - 1.0.0.1:53
-        storage: /data/acme.json
     hostNetwork: false
     rbac:
       enabled: true

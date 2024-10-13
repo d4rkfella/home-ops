@@ -173,12 +173,6 @@ spec:
       - --experimental.plugins.traefik-real-ip.version=v1.0.6
       - --entryPoints.web.http.redirections.entryPoint.to=websecure
       - --entryPoints.web.http.redirections.entryPoint.scheme=https
-    env:
-      - name: CF_DNS_API_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: CF_API_TOKEN
     ports:
       web:
         port: 80

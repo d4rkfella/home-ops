@@ -275,11 +275,6 @@ spec:
         allocateLoadBalancerNodePorts: false
     autoscaling:
       enabled: false
-    persistence:
-      enabled: true
-      name: data
-      storageClass: topolvm-provisioner-thin
-      path: /data
     hostNetwork: false
     rbac:
       enabled: true

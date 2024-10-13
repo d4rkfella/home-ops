@@ -39,7 +39,7 @@ spec:
       - --rfc2136-kerberos-password=${KERBEROS_PASSWORD}
       - --rfc2136-kerberos-realm=${AD_REALM}
     policy: sync
-    sources: ["ingress"]
+    sources: ["ingress", "service"]
     txtOwnerId: default
     txtPrefix: k8s.
     domainFilters: ["${PUBLIC_DOMAIN}"]

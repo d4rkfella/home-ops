@@ -61,10 +61,10 @@ spec:
       s3Credentials:
         accessKeyId:
           name: *secret
-          key: ACCESS_KEY_ID
+          key: CF_ACCESS_KEY_ID
         secretAccessKey:
           name: *secret
-          key: SECRET_ACCESS_KEY
+          key: CF_SECRET_ACCESS_KEY
   # Note: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   # Note: externalClusters is needed when recovering from an existing cnpg cluster

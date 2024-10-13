@@ -13,7 +13,7 @@ cgroup:
 cluster:
   id: 1
   name: main
-devices: eth+
+devices: eth0
 enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true

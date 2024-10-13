@@ -5,7 +5,7 @@ metadata:
   name: webhook-receiver
   annotations:
     kubernetes.io/ingress.class: external
-    external-dns.alpha.kubernetes.io/target: ${PUBLIC_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
 spec:
   entryPoints:
     - websecure

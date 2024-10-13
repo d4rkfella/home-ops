@@ -28,8 +28,8 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
       namespace: observability
-    - name: openebs
-      namespace: openebs-system
+    - name: topolvm
+      namespace: kube-system
   values:
     crds:
       enabled: false

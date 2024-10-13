@@ -252,6 +252,10 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
+          domains:
+            - main: ${PUBLIC_DOMAIN}
+              sans:
+                - "*.${PUBLIC_DOMAIN}"
       metrics:
         port: 9100
         expose:

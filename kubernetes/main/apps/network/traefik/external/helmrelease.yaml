@@ -38,7 +38,7 @@ spec:
     deployment:
       ingressClass:
         enabled: true
-        isDefaultClass: "false"
+        isDefaultClass: false
         name: external
       enabled: true
       kind: Deployment

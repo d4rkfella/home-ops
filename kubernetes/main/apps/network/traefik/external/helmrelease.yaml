@@ -116,15 +116,12 @@ spec:
       - name: crowdsec-bouncer-tls
         mountPath: /etc/traefik/crowdsec-certs
         type: secret
-      - name: ssl-certs
-        secret:
-          secretName: darkfellanet-tls
+      - name: darkfellanet-tls
+        mountPath: /ssl
+        type: secret
     additionalVolumeMounts:
       - name: plugins
         mountPath: /plugins-storage
-      - name: ssl-certs
-        mountPath: /ssl
-        readOnly: true
     logs:
       general:
         level: DEBUG

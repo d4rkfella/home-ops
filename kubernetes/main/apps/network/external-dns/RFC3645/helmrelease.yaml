@@ -31,7 +31,7 @@ spec:
     extraArgs:
       - --events
       - --ignore-ingress-tls-spec
-      - --ingress-class=internal
+      - --ingress-class=internal,external
       - --rfc2136-gss-tsig
       - --rfc2136-host=dc01.${PUBLIC_DOMAIN}
       - --rfc2136-port=53

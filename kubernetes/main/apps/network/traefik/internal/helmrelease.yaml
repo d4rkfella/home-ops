@@ -264,7 +264,7 @@ spec:
       single: true
       type: LoadBalancer
       annotations:
-        lbipam.cilium.io/ips: 192.168.91.96
+        lbipam.cilium.io/ips: 192.168.91.97
         external-dns.alpha.kubernetes.io/hostname: internal.${PUBLIC_DOMAIN}
       spec:
         allocateLoadBalancerNodePorts: false

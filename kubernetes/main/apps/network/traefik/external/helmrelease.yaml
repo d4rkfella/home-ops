@@ -34,8 +34,7 @@ spec:
     tlsStore:
         default:
           defaultCertificate:
-            certFile: ssl/cert.crt
-            keyFile: ssl/cert.key
+            secretName: darkfellanet-tls
     securityContext:
       seccompProfile:
         type: RuntimeDefault

@@ -120,9 +120,6 @@ spec:
       - name: crowdsec-bouncer-tls
         mountPath: /etc/traefik/crowdsec-certs
         type: secret
-      - name: darkfellanet-tls
-        mountPath: /ssl
-        type: secret
     additionalVolumeMounts:
       - name: plugins
         mountPath: /plugins-storage
@@ -296,7 +293,7 @@ spec:
         protocol: TCP
     tlsOptions:
       default:
-        sniStrict: false
+        sniStrict: true
         minVersion: VersionTLS13
         curvePreferences:
           - CurveP521

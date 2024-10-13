@@ -252,8 +252,6 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
-          certificates:
-            stores: ["default"]
       metrics:
         port: 9100
         expose:
@@ -262,7 +260,7 @@ spec:
         protocol: TCP
     tlsOptions:
       default:
-        sniStrict: true
+        sniStrict: false
         minVersion: VersionTLS13
         curvePreferences:
           - CurveP521

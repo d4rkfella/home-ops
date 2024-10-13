@@ -32,7 +32,6 @@ spec:
       - --events
       - --ignore-ingress-tls-spec
       - --ingress-class=internal
-      - --provider=rfc2136
       - --rfc2136-gss-tsig
       - --rfc2136-host=dc01.${PUBLIC_DOMAIN}
       - --rfc2136-port=53

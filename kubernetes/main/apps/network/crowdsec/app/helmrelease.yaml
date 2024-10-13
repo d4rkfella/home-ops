@@ -60,6 +60,14 @@ spec:
         config:
           enabled: true
     lapi:
+      extraInitContainers:
+         init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom:
+              - secretRef:
+                  name: crowdsec-external-secret
       env:
         # For an internal test, disable the Online API
         - name: DISABLE_ONLINE_API

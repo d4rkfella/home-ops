@@ -22,7 +22,7 @@ data:
     default_realm = ${AD_REALM}
 
     [realms]
-    YOUR-REALM.COM = {
+    ${AD_REALM} = {
       kdc = dc01.${PUBLIC_DOMAIN}
       admin_server = dc01.${PUBLIC_DOMAIN}
     }

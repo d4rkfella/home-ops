@@ -28,8 +28,8 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
       namespace: observability
-    - name: topolvm
-      namespace: kube-system
+    - name: openebs
+      namespace: openebs-system
   values:
     crds:
       enabled: false
@@ -69,6 +69,13 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+        ingressClassName: internal
+        hosts: ["prometheus.${PUBLIC_DOMAIN}"]
+        pathType: Prefix
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector

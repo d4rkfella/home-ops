@@ -32,7 +32,7 @@ spec:
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
-      GF_SERVER_ROOT_URL: https://grafana.devbu.io
+      GF_SERVER_ROOT_URL: https://grafana.${PUBLIC_DOMAIN}
     grafana.ini:
       analytics:
         check_for_updates: false
@@ -89,26 +89,6 @@ spec:
               path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
-        apc-ups:
-          # renovate: depName="APC UPS (SNMP)"
-          gnetId: 12340
-          revision: 1
-          datasource: Prometheus
-        ceph-cluster:
-          # renovate: depName="Ceph Cluster"
-          gnetId: 2842
-          revision: 18
-          datasource: Prometheus
-        ceph-osd:
-          # renovate: depName="Ceph - OSD (Single)"
-          gnetId: 5336
-          revision: 9
-          datasource: Prometheus
-        ceph-pools:
-          # renovate: depName="Ceph - Pools"
-          gnetId: 5342
-          revision: 9
-          datasource: Prometheus
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/cert-manager.json
           datasource: Prometheus
@@ -258,9 +238,9 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: internal.devbu.io
+        external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
       ingressClassName: internal
-      hosts: ["grafana.devbu.io"]
+      hosts: ["grafana.${PUBLIC_DOMAIN}"]
     persistence:
       enabled: false
     testFramework:

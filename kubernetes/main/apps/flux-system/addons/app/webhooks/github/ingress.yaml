@@ -11,7 +11,7 @@ spec:
     - host: flux-webhook.${PUBLIC_DOMAIN}
       http:
         paths:
-          - path: /hook/
+          - path: /
             pathType: Prefix
             backend:
               service:

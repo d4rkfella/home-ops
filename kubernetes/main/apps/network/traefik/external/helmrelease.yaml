@@ -31,6 +31,15 @@ spec:
       name: &secret traefik-external-secret
       valuesKey: CF_API_EMAIL
   values:
+    tlsStore:
+      stores:
+        default:
+          defaultGeneratedCert:
+            resolver: letsencrypt
+            domain:
+              main: ${PUBLIC_DOMAIN}
+              sans:
+                - "*.${PUBLIC_DOMAIN}"
     securityContext:
       seccompProfile:
         type: RuntimeDefault
@@ -79,8 +88,6 @@ spec:
             kind: TraefikService
         entryPoints:
           - websecure
-        tls:
-          certResolver: letsencrypt
       healthcheck:
         enabled: true
         matchRule: PathPrefix(`/ping`)

@@ -31,6 +31,12 @@ spec:
       name: &secret traefik-external-secret
       valuesKey: CF_API_EMAIL
   values:
+    tls:
+      stores:
+        default:
+          defaultCertificate:
+            certFile: ssl/cert.crt
+            keyFile: ssl/cert.key
     securityContext:
       seccompProfile:
         type: RuntimeDefault

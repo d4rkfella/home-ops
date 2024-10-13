@@ -62,9 +62,7 @@ spec:
     lapi:
       extraInitContainers:
         - name: initdb
-          image:
-            epository: ghcr.io/onedr0p/postgres-init
-            tag: 16
+          image: "ghcr.io/onedr0p/postgres-init:16"
           envFrom:
             - secretRef:
                 name: crowdsec-external-secret

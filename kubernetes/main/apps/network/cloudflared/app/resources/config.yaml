@@ -4,7 +4,7 @@ originRequest:
 
 ingress:
   - hostname: ${PUBLIC_DOMAIN}
-    service: https://traefik-external.network.svc.cluster.local:443
+    service: http://traefik-external.network.svc.cluster.local:80
   - hostname: "*.${PUBLIC_DOMAIN}"
-    service: https://traefik-external.network.svc.cluster.local:443
+    service: http://traefik-external.network.svc.cluster.local:80
   - service: http_status:404

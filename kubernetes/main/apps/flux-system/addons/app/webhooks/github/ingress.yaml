@@ -1,22 +1,20 @@
 ---
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: webhook-receiver
   annotations:
-    kubernetes.io/ingress.class: external
     external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
 spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`flux-webhook.${PUBLIC_DOMAIN}`) && PathPrefix(`/hook/`)
-      kind: Rule
-      services:
-        - name: webhook-receiver
-          port: 80
-      middlewares:
-        - name: bouncer
-          namespace: networking
-        - name: realip
-          namespace: networking
+  ingressClassName: external
+  rules:
+    - host: flux-webhook.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /hook/
+            pathType: Prefix
+            backend:
+              service:
+                name: webhook-receiver
+                port:
+                  number: 80

@@ -72,8 +72,6 @@ spec:
     ingressRoute:
       dashboard:
         enabled: true
-        annotations:
-          kubernetes.io/ingress.class: external
         labels: {}
         matchRule: "Host(`traefik-external.${PUBLIC_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
         services:

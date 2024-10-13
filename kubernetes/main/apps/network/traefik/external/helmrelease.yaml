@@ -294,7 +294,7 @@ spec:
         protocol: TCP
     tlsOptions:
       default:
-        sniStrict: true
+        sniStrict: false
         minVersion: VersionTLS13
         curvePreferences:
           - CurveP521

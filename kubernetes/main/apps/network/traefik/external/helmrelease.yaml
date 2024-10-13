@@ -4,8 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: traefik-external
-  labels:
-    substitution.flux.home.arpa/enabled: "true"
 spec:
   interval: 30m
   chart:

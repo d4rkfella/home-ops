@@ -38,8 +38,8 @@ spec:
     deployment:
       ingressClass:
         enabled: true
-        isDefaultClass: false
-        name: "external"
+        isDefaultClass: "false"
+        name: external
       enabled: true
       kind: Deployment
       replicas: 2

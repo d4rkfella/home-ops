@@ -83,7 +83,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: *secret
-              key: CROWDSEC_POSTGRES_PASS
+              key: INIT_POSTGRES_PASS
       metrics:
         enabled: true
         serviceMonitor:

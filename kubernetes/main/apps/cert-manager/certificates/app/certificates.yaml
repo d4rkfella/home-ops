@@ -12,6 +12,4 @@ spec:
   commonName: ${PUBLIC_DOMAIN}
   dnsNames:
     - ${PUBLIC_DOMAIN}
-    - "external.${PUBLIC_DOMAIN}"
-    - "flux-webhook.${PUBLIC_DOMAIN}"
-    - "status.${PUBLIC_DOMAIN}"
+    - "*.${PUBLIC_DOMAIN}"

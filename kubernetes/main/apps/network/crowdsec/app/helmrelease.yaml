@@ -65,7 +65,7 @@ spec:
           image: "ghcr.io/onedr0p/postgres-init:16"
           imagePullPolicy: IfNotPresent
           envFrom:
-            - secretKeyRef:
+            - secretRef:
                 name: crowdsec-external-secret
       env:
         # For an internal test, disable the Online API

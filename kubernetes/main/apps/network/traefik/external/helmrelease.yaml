@@ -74,7 +74,7 @@ spec:
         enabled: true
         annotations: {}
         labels: {}
-        matchRule: "Host(`traefik-external.${BASE_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+        matchRule: "Host(`traefik-external.${PUBLIC_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
         services:
           - name: api@internal
             kind: TraefikService

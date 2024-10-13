@@ -279,9 +279,11 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
-          certificates:
-            - certFile: /ssl/tls.crt
-              keyFile: /ssl/tls.key
+          certResolver: letsencrypt
+          domains:
+            - main: ${PUBLIC_DOMAIN}
+              sans:
+                - "*.${PUBLIC_DOMAIN}"
       metrics:
         port: 9100
         expose:

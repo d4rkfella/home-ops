@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/heads/master/charts/external-dns/values.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -47,3 +47,12 @@ spec:
     domainFilters: ["${PUBLIC_DOMAIN}"]
     serviceMonitor:
       enabled: true
+    extraVolumes:
+      - configMap:
+          defaultMode: 420
+          name: krb5.conf
+        name: kerberos-config-volume
+    extraVolumeMounts:
+      - mountPath: /etc/krb5.conf
+        name: kerberos-config-volume
+        subPath: krb5.conf

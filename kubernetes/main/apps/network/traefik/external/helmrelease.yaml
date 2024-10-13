@@ -250,8 +250,6 @@ spec:
             graceTimeOut: null
           keepAliveMaxRequests: null
           keepAliveMaxTime: null
-        tls:
-          enabled: true
       metrics:
         port: 9100
         expose:

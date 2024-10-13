@@ -31,15 +31,6 @@ spec:
       name: &secret traefik-external-secret
       valuesKey: CF_API_EMAIL
   values:
-    tlsStore:
-      stores:
-        default:
-          defaultGeneratedCert:
-            resolver: letsencrypt
-            domain:
-              main: ${PUBLIC_DOMAIN}
-              sans:
-                - "*.${PUBLIC_DOMAIN}"
     securityContext:
       seccompProfile:
         type: RuntimeDefault
@@ -125,9 +116,15 @@ spec:
       - name: crowdsec-bouncer-tls
         mountPath: /etc/traefik/crowdsec-certs
         type: secret
+      - name: ssl-certs
+        secret:
+          secretName: darkfellanet-tls
     additionalVolumeMounts:
       - name: plugins
         mountPath: /plugins-storage
+      - name: ssl-certs
+        mountPath: /ssl
+        readOnly: true
     logs:
       general:
         level: DEBUG
@@ -285,7 +282,9 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
-          certResolver: letsencrypt
+          certificates:
+            - certFile: /ssl/tls.crt
+              keyFile: /ssl/tls.key
       metrics:
         port: 9100
         expose:

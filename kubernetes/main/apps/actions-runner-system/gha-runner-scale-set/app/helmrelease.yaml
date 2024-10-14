@@ -43,9 +43,9 @@ spec:
     runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/Darkfella91/home-ops
     minRunners: 1
-    maxRunners: 3
+    maxRunners: 4
     containerMode:
-      type: dind
+      type: kubernetes
     template:
       spec:
         containers:

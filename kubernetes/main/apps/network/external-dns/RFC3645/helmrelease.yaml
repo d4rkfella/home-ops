@@ -42,7 +42,7 @@ spec:
     policy: sync
     sources: ["ingress"]
     txtOwnerId: default
-    txtPrefix: k8s.internal
+    txtPrefix: k8s.inter
     domainFilters: ["${PUBLIC_DOMAIN}"]
     serviceMonitor:
       enabled: true

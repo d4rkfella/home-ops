@@ -50,7 +50,7 @@ spec:
     policy: sync
     sources: ["crd", "ingress"]
     txtOwnerId: default
-    txtPrefix: k8s.external.
+    txtPrefix: k8s.exte
     domainFilters: ["${PUBLIC_DOMAIN}"]
     serviceMonitor:
       enabled: true

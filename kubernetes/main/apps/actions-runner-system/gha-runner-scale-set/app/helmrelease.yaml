@@ -45,7 +45,7 @@ spec:
     minRunners: 1
     maxRunners: 6
     containerMode:
-      type: dind
+      type: kubernetes
     template:
       spec:
         containers:

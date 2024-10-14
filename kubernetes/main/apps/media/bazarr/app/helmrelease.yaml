@@ -71,7 +71,7 @@ spec:
             env:
               GITSYNC_REPO: https://github.com/KBlixt/subcleaner
               GITSYNC_REF: master
-              GITSYNC_PERIOD: 23h
+              GITSYNC_PERIOD: 24h
               GITSYNC_ROOT: /add-ons
             resources:
               requests:

@@ -19,7 +19,6 @@ spec:
               mountPath: /config
           securityContext:
             privileged: true
-          resources: {}
       volumes:
         - name: config
           persistentVolumeClaim:

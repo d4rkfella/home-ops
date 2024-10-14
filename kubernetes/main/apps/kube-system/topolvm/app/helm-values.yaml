@@ -17,7 +17,7 @@ storageClasses:
     storageClass:
       fsType: xfs
       isDefaultClass: true
-      volumeBindingMode: WaitForFirstConsumer
+      volumeBindingMode: Immediate
       allowVolumeExpansion: true
       additionalParameters:
         "topolvm.io/device-class": "thin"

@@ -16,7 +16,7 @@ storageClasses:
   - name: topolvm-provisioner-thin
     storageClass:
       fsType: xfs
-      isDefaultClass: true
+      isDefaultClass: false
       volumeBindingMode: Immediate
       allowVolumeExpansion: true
       additionalParameters:

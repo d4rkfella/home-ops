@@ -43,7 +43,7 @@ spec:
     runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/Darkfella91/home-ops
     minRunners: 1
-    maxRunners: 2
+    maxRunners: 3
     containerMode:
       type: dind
     template:

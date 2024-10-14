@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app external-dns-rfc2136
+  name: &app external-dns-bind
 spec:
   interval: 30m
   chart:
@@ -40,9 +40,9 @@ spec:
       - --rfc2136-kerberos-realm=${AD_REALM}
       - --rfc2136-tsig-axfr
     policy: sync
-    sources: ["ingress"]
+    sources: ["ingress", "service"]
     txtOwnerId: default
-    txtPrefix: k8s.inter
+    txtPrefix: k8s.
     domainFilters: ["${PUBLIC_DOMAIN}"]
     serviceMonitor:
       enabled: true

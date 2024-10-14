@@ -8,7 +8,7 @@ spec:
   trigger:
     manual: restore-once
   restic:
-    repository: ${APP}-volsync-secret
+    repository: ${APP}-volsync-r2-secret
     destinationPVC: ${CLAIM}
     copyMethod: Direct
     storageClassName: topolvm-provisioner-thin

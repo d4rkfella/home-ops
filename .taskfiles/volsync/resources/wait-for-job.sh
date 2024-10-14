@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 JOB=$1
-NAMESPACE="${2:-default}"
+NAMESPACE="${2:-media}"
 
 [[ -z "${JOB}" ]] && echo "Job name not specified" && exit 1
 while true; do

@@ -11,7 +11,7 @@ spec:
     repository: ${APP}-volsync-secret
     destinationPVC: ${CLAIM}
     copyMethod: Direct
-    storageClassName: ceph-block
+    storageClassName: topolvm-provisioner-thin
     # storageClassName: ceph-filesystem
     # accessModes: ["ReadWriteMany"]
     # IMPORTANT NOTE:

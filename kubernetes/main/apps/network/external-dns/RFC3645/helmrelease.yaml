@@ -30,7 +30,7 @@ spec:
       name: rfc2136
     extraArgs:
       - --crd-source-apiversion=traefik.io/v1alpha1
-      - --crd-source-kind=ingressroutes
+      - --crd-source-kind=IngressRoute
       - --events
       - --ignore-ingress-tls-spec
       - --rfc2136-gss-tsig

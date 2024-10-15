@@ -29,6 +29,8 @@ spec:
     provider:
       name: rfc2136
     extraArgs:
+      - --crd-source-apiversion=traefik.io/v1alpha1
+      - --crd-source-kind=IngressRoute
       - --events
       - --ignore-ingress-tls-spec
       - --rfc2136-gss-tsig
@@ -40,7 +42,7 @@ spec:
       - --rfc2136-kerberos-realm=${AD_REALM}
       - --rfc2136-tsig-axfr
     policy: sync
-    sources: ["ingress", "service"]
+    sources: ["ingress", "service", "crd"]
     txtOwnerId: default
     txtPrefix: k8s.
     domainFilters: ["${PUBLIC_DOMAIN}"]

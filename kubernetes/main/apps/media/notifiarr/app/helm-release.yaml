@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: notifiarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: notifiarr
+      version: 6.2.6
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  valuesFrom:
+    - targetPath: credentials.s3.url
+      kind: Secret
+      name: &secret volsync-backup-credentials
+      valuesKey: CF_S3_ENDPOINT
+    - targetPath: credentials.s3.encrKey
+      kind: Secret
+      name: *secret
+      valuesKey: ENCRYPTION_KEY
+    - targetPath: credentials.s3.accessKey
+      kind: Secret
+      name: *secret
+      valuesKey: CF_ACCESS_KEY_ID
+    - targetPath: credentials.s3.secretKey
+      kind: Secret
+      name: *secret
+      valuesKey: CF_SECRET_ACCESS_KEY
+  values:
+    securityContext:
+      container:
+        readOnlyRootFilesystem: true
+    credentials:
+      s3:
+        type: s3
+        bucket: backups
+    workload:
+      main:
+        podSpec:
+          hostname: notifiarr-88d262b0-e305-4bce-ad1f-bb1c09049231
+          containers:
+            main:
+              env:
+                DN_API_KEY:
+                  secretKeyRef:
+                    name: notifiarr-secret
+                    key: NOTIFIARR_API_KEY
+                    expandObjectName: false
+    persistence:
+      config:
+        size: 5Gi
+        volsync:
+          - name: config
+            type: restic
+            credentials: s3
+            dest:
+              cacheCapacity: 5Gi
+              enabled: true
+            src:
+              enabled: true
+              cacheCapacity: 5Gi

@@ -8,3 +8,12 @@ resources:
   - ./externalsecret.yaml
   # Flux-Kustomizations
   - ./bazarr/ks.yaml
+  - ./flaresolverr/ks.yaml
+  - ./jellyseerr/ks.yaml
+  - ./qbittorrent/ks.yaml
+  - ./qbitmanage/ks.yaml
+  - ./radarr/ks.yaml
+  - ./sonarr/ks.yaml
+  - ./sabnzbd/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./notifiarr/ks.yaml

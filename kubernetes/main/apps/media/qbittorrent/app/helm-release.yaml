@@ -38,7 +38,7 @@ spec:
   chart:
     spec:
       chart: qbittorrent
-      version: 21.1.11
+      version: 22.1.2
       sourceRef:
         kind: HelmRepository
         name: truecharts

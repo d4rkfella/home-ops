@@ -114,9 +114,7 @@ spec:
         globalMounts:
           - path: /config/cache
       config:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 10Gi
+        existingClaim: bazarr
         globalMounts:
           - path: /config
       log:

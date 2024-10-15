@@ -62,9 +62,11 @@ spec:
               volumeSnapshotClassName: *storage
       data:
         enabled: true
-        storageClassName: data-nfs
-        mountPath: /data/media
+        type: nfs
+        path: /mnt/exos20/data
         subPath: media
+        mountPath: /data/media
+        server: nas.{PUBLIC_DOMAIN}
       backup:
         enabled: true
         storageClassName: data-nfs

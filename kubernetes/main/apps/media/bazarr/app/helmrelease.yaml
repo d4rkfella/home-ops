@@ -88,3 +88,4 @@ spec:
         integrations:
           traefik:
             enabled: false
+            enableFixedMiddlewares: false

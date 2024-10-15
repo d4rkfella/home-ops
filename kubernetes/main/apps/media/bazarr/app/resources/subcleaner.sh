@@ -5,7 +5,7 @@ python3 /add-ons/subcleaner/subcleaner.py "$1" -s
 
 case $1 in
     *movies*) section="1";;
-    *tv shows*) section="2";;
+    *shows*) section="2";;
 esac
 
 if [[ -n "$section" ]]; then
@@ -14,5 +14,5 @@ if [[ -n "$section" ]]; then
         --data-urlencode "path=$(dirname "$1")" \
         --data-urlencode "X-Plex-Token=${PLEX_TOKEN}" \
         --no-progress-meter \
-            "https://plex.darkfellanetwork.com:32400/library/sections/${section}/refresh"
+            "https://plex.${PUBLIC_DOMAIN}:32400/library/sections/${section}/refresh"
 fi

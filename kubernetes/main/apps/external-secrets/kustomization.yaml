@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-  - ./role-binding.yaml
   # Flux-Kustomizations
   - ./external-secrets/ks.yaml

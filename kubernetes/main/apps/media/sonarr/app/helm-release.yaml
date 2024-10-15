@@ -24,6 +24,23 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  valuesFrom:
+    - targetPath: credentials.s3.url
+      kind: Secret
+      name: &secret volsync-backup-credentials
+      valuesKey: CF_S3_ENDPOINT
+    - targetPath: credentials.s3.encrKey
+      kind: Secret
+      name: *secret
+      valuesKey: ENCRYPTION_KEY
+    - targetPath: credentials.s3.accessKey
+      kind: Secret
+      name: *secret
+      valuesKey: CF_ACCESS_KEY_ID
+    - targetPath: credentials.s3.secretKey
+      kind: Secret
+      name: *secret
+      valuesKey: CF_SECRET_ACCESS_KEY
   values:
     securityContext:
       container:
@@ -58,4 +75,4 @@ spec:
         path: *nfs_path
         server: *nfs_host
         mountPath: /config/backup
-        subPath: backups/radarr
+        subPath: backups/sonarr

@@ -71,7 +71,11 @@ spec:
             kind: TraefikService
         entryPoints:
           - traefik
-        middlewares: []
+        middlewares:
+          - name: realip
+          - name: chain-basic
+          - name: crowdsec
+          - name: compress
         tls: {}
     updateStrategy:
       type: RollingUpdate

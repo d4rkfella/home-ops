@@ -8,4 +8,4 @@ resources:
   - ./externalsecret.yaml
   - ./nfs-storage.yaml
   # Flux-Kustomizations
-  #- ./bazarr/ks.yaml
+  - ./bazarr/ks.yaml

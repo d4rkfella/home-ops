@@ -74,9 +74,6 @@ spec:
     securityContext:
       container:
         readOnlyRootFilesystem: true
-    metrics:
-      main:
-        enabled: true
     ingress:
       main:
         enabled: true

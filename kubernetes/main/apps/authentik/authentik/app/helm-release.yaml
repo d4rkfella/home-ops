@@ -32,6 +32,16 @@ spec:
         - secretRef:
             name: authentik-global-vars-secret
     server:
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          kubernetes.io/ingress.class: external
+        hosts:
+          - authentik.${PUBLIC_DOMAIN}
+        paths:
+          - /
+        pathType: Prefix
       initContainers:
         - name: init-db
           image: "ghcr.io/onedr0p/postgres-init:16"

@@ -207,7 +207,9 @@ spec:
           enabled: true
         middlewares:
           - network-realip@kubernetescrd
-          - network-crowdsec@kubernetescrd
+          - network-bouncer@kubernetescrd
+          - network-chain-basic@kubernetescrd
+          - network-compress@kubernetescrd
       metrics:
         port: 9100
         expose:

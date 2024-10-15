@@ -7,7 +7,7 @@ configmap:
     enabled: true
     data:
       disk-config: |
-        k8s-0: /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf /dev/sdg
+        k8s-0: /dev/sdb
 securityContext:
   container:
     readOnlyRootFilesystem: false

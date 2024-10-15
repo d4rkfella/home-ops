@@ -10,7 +10,7 @@ spec:
   restic:
     repository: ${APP}-volsync-secret
     destinationPVC: ${CLAIM}
-    copyMethod: Snapshot
+    copyMethod: Direct
     storageClassName: topolvm-provisioner-thin
     # storageClassName: ceph-filesystem
     # accessModes: ["ReadWriteMany"]

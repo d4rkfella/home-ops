@@ -66,14 +66,14 @@ spec:
         path: /mnt/exos20/data
         subPath: media
         mountPath: /data/media
-        server: nas.{PUBLIC_DOMAIN}
+        server: nas.${PUBLIC_DOMAIN}
       backup:
         enabled: true
         type: nfs
         path: /mnt/exos20/data
         subPath: backups
         mountPath: /config/backup
-        server: nas.{PUBLIC_DOMAIN}
+        server: nas.${PUBLIC_DOMAIN}
     securityContext:
       container:
         readOnlyRootFilesystem: true

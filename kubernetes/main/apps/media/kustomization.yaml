@@ -5,6 +5,6 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-  - ./externalsecret.yaml
+  #- ./externalsecret.yaml
   # Flux-Kustomizations
-  - ./bazarr/ks.yaml
+  #- ./bazarr/ks.yaml

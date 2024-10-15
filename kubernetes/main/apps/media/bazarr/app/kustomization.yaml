@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ../../../../templates/gatus/guarded
-  - ../../../../templates/volsync
+  - ../../../../templates/volsync/r2.yaml
 configMapGenerator:
   - name: bazarr-scripts
     files:

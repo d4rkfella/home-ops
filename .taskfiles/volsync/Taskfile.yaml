@@ -129,7 +129,7 @@ tasks:
       - { task: .restore, vars: *vars }
       - { task: .resume, vars: *vars }
     vars:
-      NS: '{{.NS | default "default"}}'
+      NS: '{{.NS | default "media"}}'
       PREVIOUS: '{{.PREVIOUS | default 2}}'
       CONTROLLER:
         sh: '{{.VOLSYNC_RESOURCES_DIR}}/which-controller.sh {{.APP}} {{.NS}}'

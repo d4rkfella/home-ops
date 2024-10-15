@@ -5,7 +5,7 @@ python3 /add-ons/subcleaner/subcleaner.py "$1" -s
 
 case $1 in
     *movies*) section="1";;
-    *shows*) section="2";;
+    *tv shows*) section="2";;
 esac
 
 if [[ -n "$section" ]]; then

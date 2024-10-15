@@ -55,14 +55,7 @@ spec:
       dnsConfig: {}
     ingressRoute:
       dashboard:
-        enabled: true
-        labels: {}
-        matchRule: "Host(`traefik-external.${PUBLIC_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-        services:
-          - name: api@internal
-            kind: TraefikService
-        entryPoints:
-          - websecure
+        enabled: false
       healthcheck:
         enabled: true
         matchRule: PathPrefix(`/ping`)
@@ -71,11 +64,6 @@ spec:
             kind: TraefikService
         entryPoints:
           - traefik
-        middlewares:
-          - name: realip
-          - name: chain-basic
-          - name: crowdsec
-          - name: compress
         tls: {}
     updateStrategy:
       type: RollingUpdate
@@ -217,6 +205,11 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
+        middlewares:
+          - network-realip@kubernetescrd
+          - network-crowdsec@kubernetescrd
+          - network-chain-basic@kubernetescrd
+          - network-compress@kubernetescrd
       metrics:
         port: 9100
         expose:

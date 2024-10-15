@@ -6,6 +6,6 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   - ./externalsecret.yaml
-  - ./nfs-storage.yaml
+  #- ./nfs-storage.yaml
   # Flux-Kustomizations
   - ./bazarr/ks.yaml

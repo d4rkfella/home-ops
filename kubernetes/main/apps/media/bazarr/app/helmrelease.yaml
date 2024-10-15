@@ -69,10 +69,11 @@ spec:
         server: nas.{PUBLIC_DOMAIN}
       backup:
         enabled: true
-        storageClassName: data-nfs
-        mountPath: /config/backup
+        type: nfs
+        path: /mnt/exos20/data
         subPath: backups
-        readOnly: false
+        mountPath: /config/backup
+        server: nas.{PUBLIC_DOMAIN}
     securityContext:
       container:
         readOnlyRootFilesystem: true

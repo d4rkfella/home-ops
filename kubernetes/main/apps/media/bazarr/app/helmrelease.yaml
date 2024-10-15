@@ -40,6 +40,9 @@ spec:
       name: *secret
       valuesKey: CF_SECRET_ACCESS_KEY
   values:
+    global:
+      traefik:
+        fixedMiddlewares: {}
     credentials:
       s3:
         type: s3

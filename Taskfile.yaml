@@ -12,9 +12,7 @@ env:
   SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
 
 includes:
-  bootstrap: .taskfiles/bootstrap
-  kubernetes: .taskfiles/kubernetes
-  talos: .taskfiles/talos
+  #bootstrap: .taskfiles/bootstrap
   volsync: .taskfiles/volsync
 
 tasks:

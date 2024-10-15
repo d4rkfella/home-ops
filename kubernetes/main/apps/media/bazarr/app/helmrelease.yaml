@@ -125,7 +125,7 @@ spec:
         path: /mnt/exos20/data
         globalMounts:
           - path: /media
-            subPath: /media
+            subPath: media
       scripts:
         type: configMap
         name: bazarr-scripts

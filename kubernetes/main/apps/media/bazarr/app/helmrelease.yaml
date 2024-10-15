@@ -114,7 +114,12 @@ spec:
         globalMounts:
           - path: /config/cache
       config:
-        existingClaim: bazarr
+        nameOverride: ${APP}
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 10Gi
+        globalMounts:
+          - path: /config
       log:
         type: emptyDir
         globalMounts:

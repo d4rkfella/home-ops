@@ -2,21 +2,21 @@
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:
-  name: ${JOB}
+  name: ${JOB}-dst
   namespace: ${NS}
 spec:
   trigger:
     manual: restore-once
   restic:
-    repository: ${APP}-volsync-r2-secret
+    repository: ${APP}-volsync-secret
     destinationPVC: ${CLAIM}
-    copyMethod: Direct
+    copyMethod: Snapshot
     storageClassName: topolvm-provisioner-thin
     # storageClassName: ceph-filesystem
     # accessModes: ["ReadWriteMany"]
     # IMPORTANT NOTE:
     #   Set to the last X number of snapshots to restore from
-    previous: ${PREVIOUS}
+    #previous: ${PREVIOUS}
     # OR;
     # IMPORTANT NOTE:
     #   On bootstrap set `restoreAsOf` to the time the old cluster was destroyed.

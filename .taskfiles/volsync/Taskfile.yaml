@@ -125,7 +125,7 @@ tasks:
       PREVIOUS: Previous number of snapshots to restore (default: 2)
     cmds:
       - { task: .suspend, vars: *vars }
-      - { task: .wipe, vars: *vars }
+      #- { task: .wipe, vars: *vars }
       - { task: .restore, vars: *vars }
       - { task: .resume, vars: *vars }
     vars:
@@ -134,11 +134,11 @@ tasks:
       CONTROLLER:
         sh: '{{.VOLSYNC_RESOURCES_DIR}}/which-controller.sh {{.APP}} {{.NS}}'
       CLAIM:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.sourcePVC}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-r2 --output=jsonpath="{.spec.sourcePVC}"
       PUID:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-r2 --output=jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
       PGID:
-        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}} --output=jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
+        sh: kubectl --namespace {{.NS}} get replicationsources/{{.APP}}-r2 --output=jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
     env: *vars
     requires:
       vars: ['CLUSTER', 'APP']

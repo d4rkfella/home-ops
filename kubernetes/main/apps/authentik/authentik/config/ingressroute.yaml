@@ -5,6 +5,7 @@ metadata:
   name: authentik-server
   annotations:
     kubernetes.io/ingress.class: external
+    external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
 spec:
   entryPoints:
     - websecure

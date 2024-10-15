@@ -114,7 +114,6 @@ spec:
         globalMounts:
           - path: /config/cache
       config:
-        nameOverride: ${APP}
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         size: 10Gi

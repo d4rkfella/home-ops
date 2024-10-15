@@ -227,7 +227,6 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: authentik
-  namespace: authentik
 spec:
   forwardAuth:
     address: http://ak-outpost-proxy-outpost.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/traefik
@@ -245,4 +244,3 @@ spec:
       - X-authentik-meta-app
       - X-authentik-meta-version
       - authorization
-

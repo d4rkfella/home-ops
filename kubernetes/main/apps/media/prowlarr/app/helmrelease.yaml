@@ -52,6 +52,7 @@ spec:
     persistence:
       size: 10Gi
       config:
+        enabled: true
         volsync:
           - name: config
             type: restic

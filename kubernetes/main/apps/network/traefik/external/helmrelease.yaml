@@ -154,7 +154,8 @@ spec:
         proxyProtocol:
           trustedIPs: []
           insecure: false
-        redirectTo: websecure
+        redirectTo:
+          - websecure
         transport:
           respondingTimeouts:
             readTimeout: null

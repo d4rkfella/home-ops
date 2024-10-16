@@ -119,7 +119,7 @@ spec:
       - --global.sendanonymoususage
     additionalArguments:
       - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.4-beta1
+      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.4
       - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
       - --experimental.plugins.traefik-themepark.version=v1.4.0
       - --experimental.plugins.traefik-real-ip.modulename=github.com/jramsgz/traefik-real-ip

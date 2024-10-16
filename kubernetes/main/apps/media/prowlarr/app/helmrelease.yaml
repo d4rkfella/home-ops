@@ -78,6 +78,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: internal
+          traefik.ingress.kubernetes.io/router.middlewares: network-prowlarr@kubernetescrd
         hosts:
           - host: &host prowlarr.${PUBLIC_DOMAIN}
             paths:

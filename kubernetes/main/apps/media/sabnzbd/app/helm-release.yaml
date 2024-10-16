@@ -93,6 +93,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: internal
+          traefik.ingress.kubernetes.io/router.middlewares: network-sabnzbd@kubernetescrd
         hosts:
           - host: *host
             paths:

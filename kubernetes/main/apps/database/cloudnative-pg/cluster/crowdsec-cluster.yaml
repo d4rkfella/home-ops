@@ -14,7 +14,7 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 10Gi
     resizeInUseVolumes: true
   walStorage:
     pvcTemplate:
@@ -22,7 +22,7 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 2Gi
     resizeInUseVolumes: true
   superuserSecret:
     name: &secret cloudnative-pg-secret
@@ -35,10 +35,10 @@ spec:
     reusePVC: true
   resources:
     limits:
-      cpu: '4'
+      cpu: '2'
       memory: 4Gi
     requests:
-      cpu: 200m
+      cpu: 500m
       memory: 400Mi
   monitoring:
     enablePodMonitor: true

@@ -20,10 +20,10 @@ spec:
       endpointURL: ${S3URL}
       s3Credentials:
         accessKeyId:
-          key: accessKeyId
+          key: CF_ACCESS_KEY_ID
           name: *secret
         secretAccessKey:
-          key: secretAccessKey
+          key: CF_SECRET_ACCESS_KEY
           name: *secret
       serverName: &currentCluster v1
       wal:
@@ -44,17 +44,19 @@ spec:
   instances: 2
   primaryUpdateStrategy: unsupervised
   resources:
+    limits:
+      cpu: '2'
+      memory: 4Gi
     requests:
       cpu: 500m
-    limits:
-      memory: 2Gi
+      memory: 400Mi
   storage:
     pvcTemplate:
       accessModes:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 50Gi
+          storage: 10Gi
     resizeInUseVolumes: true
   walStorage:
     pvcTemplate:
@@ -62,7 +64,7 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 50Gi
+          storage: 2Gi
     resizeInUseVolumes: true
   nodeMaintenanceWindow:
     inProgress: false

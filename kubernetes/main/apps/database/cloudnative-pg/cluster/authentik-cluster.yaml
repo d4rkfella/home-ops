@@ -15,7 +15,7 @@ spec:
       data:
         compression: gzip
         encryption: AES256
-      destinationPath: s3://${S3PREFIX}-authentik/authentik/cnpg
+      destinationPath: s3://backups/authentik/cnpg
       endpointURL: ${S3URL}
       s3Credentials:
         accessKeyId:
@@ -47,7 +47,7 @@ spec:
       cpu: '2'
       memory: 4Gi
     requests:
-      cpu: 200m
+      cpu: 500m
       memory: 400Mi
   storage:
     pvcTemplate:

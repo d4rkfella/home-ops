@@ -70,7 +70,7 @@ spec:
         type: nfs
         path: *nfs_path
         server: *nfs_host
-        mountPath: /config/backup
+        mountPath: /config/Backups
         subPath: backups/radarr
     securityContext:
       container:

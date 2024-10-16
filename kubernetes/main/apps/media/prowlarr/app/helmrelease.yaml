@@ -69,3 +69,6 @@ spec:
         server: nas.${PUBLIC_DOMAIN}
         mountPath: /config/backup
         subPath: backups/prowlarr
+    metrics:
+      main:
+        enabled: false

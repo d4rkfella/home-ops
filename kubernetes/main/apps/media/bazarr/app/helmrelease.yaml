@@ -62,7 +62,7 @@ spec:
         type: nfs
         path: &nfs_path /mnt/exos20/data
         server: &nfs_host nas.${PUBLIC_DOMAIN}
-        mountPath: /media
+        mountPath: /data/media
         subPath: media
       backup:
         enabled: true
@@ -85,4 +85,3 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
-

@@ -96,7 +96,7 @@ spec:
         existingSecretKey: SMTP_VAULTWARDEN_PASS
       authMechanism: Login
     ingress:
-      enabled: false
+      enabled: true
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         kubernetes.io/ingress.class: external

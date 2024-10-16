@@ -27,10 +27,12 @@ spec:
       X-Forwarded-Proto: https
     customResponseHeaders:
       server: ''
+      x-powered-by: ''
     stsIncludeSubdomains: true
     forceSTSHeader: true
     referrerPolicy: same-origin
     stsSeconds: 63072000
+    stsPreload: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -38,7 +40,13 @@ metadata:
   name: compress
 spec:
   compress:
-    defaultEncoding: gzip
+    includedContentTypes:
+      - application/json
+      - text/html
+      - text/plain
+      - text/css
+      - application/javascript
+    defaultEncoding: br
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

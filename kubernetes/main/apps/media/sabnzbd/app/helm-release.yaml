@@ -42,6 +42,13 @@ spec:
       name: *secret
       valuesKey: CF_SECRET_ACCESS_KEY
   values:
+    workload:
+      main:
+        podSpec:
+          containers:
+            main:
+              env:
+                SABNZBD__HOST_WHITELIST_ENTRIES: &host sabnzbd.${PUBLIC_DOMAIN}
     securityContext:
       container:
         readOnlyRootFilesystem: true
@@ -87,7 +94,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: internal
         hosts:
-          - host: &host sabnzbd.${PUBLIC_DOMAIN}
+          - host: *host
             paths:
               - path: /
                 pathType: Prefix
@@ -97,4 +104,3 @@ spec:
         integrations:
           traefik:
             enabled: false
-

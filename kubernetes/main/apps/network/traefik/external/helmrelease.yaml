@@ -155,7 +155,7 @@ spec:
           trustedIPs: []
           insecure: false
         redirectTo:
-          - websecure
+          - name: websecure
         transport:
           respondingTimeouts:
             readTimeout: null

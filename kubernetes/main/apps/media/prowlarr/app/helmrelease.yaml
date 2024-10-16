@@ -67,7 +67,7 @@ spec:
         type: nfs
         path: /mnt/exos20/data
         server: nas.${PUBLIC_DOMAIN}
-        mountPath: /config/backup
+        mountPath: /config/Backups
         subPath: backups/prowlarr
     metrics:
       main:

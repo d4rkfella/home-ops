@@ -7,8 +7,11 @@ metadata:
     external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
     kubernetes.io/ingress.class: external
 spec:
+  tls:
+    - hosts:
+        - &host flux-webhook.${PUBLIC_DOMAIN}
   rules:
-    - host: flux-webhook.${PUBLIC_DOMAIN}
+    - host: *host
       http:
         paths:
           - path: /hook/

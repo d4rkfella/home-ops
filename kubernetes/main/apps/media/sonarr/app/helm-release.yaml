@@ -81,7 +81,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: internal
-          traefik.ingress.kubernetes.io/router.middlewares: network-sonarr@kubernetescrd
+          traefik.ingress.kubernetes.io/router.middlewares: network-sonarr@kubernetescrd,network-authentik@kubernetescrd
         hosts:
           - host: &host sonarr.${PUBLIC_DOMAIN}
             paths:

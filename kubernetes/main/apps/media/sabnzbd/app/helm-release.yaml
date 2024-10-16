@@ -60,7 +60,7 @@ spec:
               cacheCapacity: 5Gi
               enabled: false
             src:
-              enabled: false
+              enabled: true
               cacheCapacity: 5Gi
       scripts:
         size: 100Mi

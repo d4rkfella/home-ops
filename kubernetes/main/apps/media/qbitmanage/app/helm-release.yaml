@@ -63,7 +63,7 @@ spec:
             credentials: s3
             dest:
               cacheCapacity: 5Gi
-              enabled: true
+              enabled: false
             src:
               enabled: true
               cacheCapacity: 5Gi

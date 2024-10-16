@@ -61,7 +61,7 @@ spec:
               cacheCapacity: 5Gi
             dest:
               cacheCapacity: 5Gi
-              enabled: true
+              enabled: false
       media:
         enabled: true
         type: nfs

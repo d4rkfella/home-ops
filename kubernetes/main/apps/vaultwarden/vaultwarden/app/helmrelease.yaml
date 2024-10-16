@@ -98,6 +98,7 @@ spec:
     ingress:
       enabled: true
       class: {}
+      nginxIngressAnnotations: false
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         kubernetes.io/ingress.class: external

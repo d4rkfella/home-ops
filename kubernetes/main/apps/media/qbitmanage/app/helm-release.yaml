@@ -48,6 +48,12 @@ spec:
         type: s3
         bucket: backups
     persistence:
+      torrents-backup:
+        enabled: true
+        type: pvc
+        existingClaim: qbittorrent-config
+        mountPath: /qbittorrent/qBittorrent/BT_backup
+        subPath: qBittorrent/BT_backup
       torrents:
         enabled: true
         type: nfs

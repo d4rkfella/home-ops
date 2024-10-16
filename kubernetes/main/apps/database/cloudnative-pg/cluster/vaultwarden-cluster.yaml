@@ -16,7 +16,7 @@ spec:
         compression: gzip
         encryption: AES256
         jobs: 2
-      destinationPath: s3://${S3PREFIX}-vaultwarden/vaultwarden/cnpg
+      destinationPath: s3://backups/vaultwarden/cnpg
       endpointURL: ${S3URL}
       s3Credentials:
         accessKeyId:

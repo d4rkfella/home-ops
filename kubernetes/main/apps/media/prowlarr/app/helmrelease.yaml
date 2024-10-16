@@ -50,9 +50,8 @@ spec:
         type: s3
         bucket: backups
     persistence:
-      size: 10Gi
       config:
-        enabled: true
+        size: 5Gi
         volsync:
           - name: config
             type: restic

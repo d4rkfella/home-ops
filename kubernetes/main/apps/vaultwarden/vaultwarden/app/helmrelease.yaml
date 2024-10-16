@@ -68,7 +68,7 @@ spec:
       existingSecret: &secret vaultwarden-secret
       existingSecretKey: VAULTWARDEN_DATABASE_URI
     eventsDayRetain: 14
-    domain: vaultwarden.${PUBLIC_DOMAIN}
+    domain: https://vaultwarden.${PUBLIC_DOMAIN}
     sendsAllowed: true
     trashAutoDeleteDays: 14
     signupsAllowed: true

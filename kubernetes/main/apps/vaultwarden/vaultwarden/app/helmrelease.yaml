@@ -97,7 +97,7 @@ spec:
       authMechanism: Login
     ingress:
       enabled: true
-      class: external
+      class: traefik-external
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         kubernetes.io/ingress.class: external

@@ -124,8 +124,6 @@ spec:
       - --experimental.plugins.traefik-themepark.version=v1.4.0
       - --experimental.plugins.traefik-real-ip.modulename=github.com/jramsgz/traefik-real-ip
       - --experimental.plugins.traefik-real-ip.version=v1.0.6
-      - --entryPoints.web.http.redirections.entryPoint.to=websecure
-      - --entryPoints.web.http.redirections.entryPoint.scheme=https
     ports:
       web:
         expose:

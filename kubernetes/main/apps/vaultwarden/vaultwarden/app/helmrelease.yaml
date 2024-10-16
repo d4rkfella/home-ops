@@ -84,7 +84,7 @@ spec:
       existingSecretKey: VAULTWARDEN_ADMIN_TOKEN
       value: {}
     timeZone: Europe/Sofia
-    smtp:t
+    smtp:
       existingSecret: *secret
       host: smtp-relay.brevo.com
       security: starttls

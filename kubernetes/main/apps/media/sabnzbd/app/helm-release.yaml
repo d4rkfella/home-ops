@@ -80,3 +80,21 @@ spec:
         server: *nfs_host
         mountPath: /config/backup
         subPath: backups/sabnzbd
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          kubernetes.io/ingress.class: internal
+        hosts:
+          - host: &host sabnzbd.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+        integrations:
+          traefik:
+            enabled: false
+

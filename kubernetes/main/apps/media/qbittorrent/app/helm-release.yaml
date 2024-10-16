@@ -132,3 +132,20 @@ spec:
           LOG_LEVEL: "debug"
           DNS_KEEP_NAMESERVER: "off"
           DOT: "on"
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          kubernetes.io/ingress.class: internal
+        hosts:
+          - host: &host qbittorrent.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+        integrations:
+          traefik:
+            enabled: false

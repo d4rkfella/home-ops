@@ -28,7 +28,7 @@ spec:
     image:
       registry: docker.io
       repository: vaultwarden/server
-      tag: 1.32.1-alpine
+      tag: 1.32.2-alpine
       pullPolicy: IfNotPresent
     commonAnnotations:
       reloader.stakater.com/auto: "true"

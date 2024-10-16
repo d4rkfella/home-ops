@@ -44,7 +44,7 @@ spec:
   values:
     securityContext:
       container:
-        readOnlyRootFilesystem: true
+        readOnlyRootFilesystem: false
     credentials:
       s3:
         type: s3

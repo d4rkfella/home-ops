@@ -66,7 +66,7 @@ spec:
     database:
       type: postgresql
       existingSecret: &secret vaultwarden-secret
-      existingSecretKey: VAULTWARDEB_DATABASE_URI
+      existingSecretKey: VAULTWARDEN_DATABASE_URI
     eventsDayRetain: 14
     domain: vaultwarden.${PUBLIC_DOMAIN}
     sendsAllowed: true

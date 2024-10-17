@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sabnzbd
+  name: qbittorrent
 spec:
   interval: 30m
   chart:
@@ -27,43 +27,47 @@ spec:
       namespace: volsync-system
   values:
     controllers:
-      sabnzbd:
+      qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/sabnzbd
-              tag: 4.3.3@sha256:6614d759bbaa6884926c6aa75018339bd35cd1add0ff92c907087327dd470477
+              repository: ghcr.io/onedr0p/qbittorrent
+              tag: 4.6.7@sha256:5391f94b321d563c3b44136a5e799b7e4e4888926c1c31d3081a1cf3e74a9aec
             env:
               TZ: Europe/Sofia
-              SABNZBD__PORT: &port 80
-              SABNZBD__HOST_WHITELIST_ENTRIES: >-
-                sabnzbd,
-                sabnzbd.default,
-                sabnzbd.default.svc,
-                sabnzbd.default.svc.cluster,
-                sabnzbd.default.svc.cluster.local,
-                sab.${PUBLIC_DOMAIN}
+              QBITTORRENT__PORT: &port 80
+              QBITTORRENT__BT_PORT: &bittorrentPort 50413
+              QBT_Preferences__WebUI__AlternativeUIEnabled: false
+              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
+                10.42.0.0/16, 192.168.42.0/24
+              QBT_Preferences__WebUI__LocalHostAuth: false
               CROSS_SEED_HOST: cross-seed.default.svc.cluster.local
               CROSS_SEED_PORT: 80
-              CROSS_SEED_SLEEP_INTERVAL: 30
+              CROSS_SEED_SLEEP_INTERVAL: 0
             envFrom:
               - secretRef:
-                  name: sabnzbd-secret
+                  name: qbittorrent-secret
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /api?mode=version
+                    path: /api/v2/app/version
                     port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
               readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -85,10 +89,14 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: sabnzbd
+        controller: qbittorrent
         ports:
           http:
             port: *port
+          bittorrent:
+            enabled: true
+            port: *bittorrentPort
+            protocol: TCP
     ingress:
       app:
         annotations:
@@ -105,24 +113,20 @@ spec:
       config:
         enabled: true
         type: persistentVolumeClaim
-        size: 2Gi
+        size: 5Gi
         accessMode: ReadWriteOnce
-      logs:
-        type: emptyDir
         globalMounts:
-          - path: /config/logs
-      tmp:
-        type: emptyDir
+          - path: /config
       scripts:
         type: configMap
-        name: sabnzbd-scripts
+        name: qbittorrent-scripts
         defaultMode: 0775
         globalMounts:
           - readOnly: true
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
-        path: /mnt/exos20/data
+        path: /exos20/data
         globalMounts:
-          - path: /data/usenet
-            subPath: usenet
+          - path: /data/media/torrents
+            subPath: torrents

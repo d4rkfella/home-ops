@@ -42,7 +42,7 @@ spec:
               QBT_Preferences__WebUI__AlternativeUIEnabled: false
               QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
               QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                172.16.0.0/16, 192.168.91.0/24
+                172.16.0.0/16, 172.17.0.0/16, 192.168.91.0/24
               QBT_Preferences__WebUI__LocalHostAuth: false
               CROSS_SEED_HOST: cross-seed.default.svc.cluster.local
               CROSS_SEED_PORT: 80

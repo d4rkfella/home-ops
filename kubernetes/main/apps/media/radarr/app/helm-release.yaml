@@ -81,7 +81,6 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: internal
-          traefik.ingress.kubernetes.io/router.middlewares: network-radarr@kubernetescrd,network-authentik@kubernetescrd
         hosts:
           - host: &host radarr.${PUBLIC_DOMAIN}
             paths:

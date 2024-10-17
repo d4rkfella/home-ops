@@ -55,7 +55,7 @@ spec:
               readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"], add: ["NET_BIND_SERVICE"] }
             resources:
               requests:

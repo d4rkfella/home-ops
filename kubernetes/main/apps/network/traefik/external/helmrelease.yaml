@@ -36,6 +36,8 @@ spec:
       seccompProfile:
         type: RuntimeDefault
     deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
       ingressClass:
         enabled: true
         isDefaultClass: false

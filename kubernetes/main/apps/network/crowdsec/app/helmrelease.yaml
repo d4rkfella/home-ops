@@ -85,6 +85,11 @@ spec:
             secretKeyRef:
               name: *secret
               key: INIT_POSTGRES_PASS
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: INIT_POSTGRES_USER
       metrics:
         enabled: true
         serviceMonitor:
@@ -93,7 +98,7 @@ spec:
       config.yaml.local: |
         db_config:
           type:     postgresql
-          user:     crowdsec
+          user:     $${DB_USER}
           password: $${DB_PASSWORD}
           db_name:  crowdsec
           host:     postgres17-rw.database

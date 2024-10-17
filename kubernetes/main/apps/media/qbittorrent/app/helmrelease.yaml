@@ -126,7 +126,7 @@ spec:
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
-        path: /exos20/data
+        path: /mnt/exos20/data
         globalMounts:
           - path: /data/media/torrents
             subPath: torrents

@@ -130,19 +130,18 @@ tasks:
       - { task: .resume, vars: *env }
     env: *env
     requires:
-      vars: ["cluster", "app", "claim"]
+      vars: ["cluster", "app"]
     vars:
       ns: '{{.ns | default "default"}}'
       previous: '{{.previous | default 2}}'
-      claim: '{{.claim}}'
       controller:
         sh: "{{.VOLSYNC_SCRIPTS_DIR}}/which-controller.sh {{.app}} {{.ns}}"
       claim:
-        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.claim}} -o jsonpath="{.spec.sourcePVC}"
+        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.app}} -o jsonpath="{.spec.sourcePVC}"
       puid:
-        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.claim}} -o jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
+        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.app}} -o jsonpath="{.spec.restic.moverSecurityContext.runAsUser}"
       pgid:
-        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.claim}} -o jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
+        sh: kubectl --context {{.cluster}} -n {{.ns}} get replicationsources/{{.app}} -o jsonpath="{.spec.restic.moverSecurityContext.runAsGroup}"
     preconditions:
       - test -f {{.VOLSYNC_SCRIPTS_DIR}}/which-controller.sh
       - test -f {{.VOLSYNC_SCRIPTS_DIR}}/wait-for-job.sh

@@ -28,9 +28,9 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: bazarr-test
+  name: bazarr-test-config
 spec:
-  sourcePVC: bazarr-config
+  sourcePVC: bazarr-test-config
   trigger:
     schedule: "0 7 * * *"
   restic:

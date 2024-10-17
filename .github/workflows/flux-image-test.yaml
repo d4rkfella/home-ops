@@ -86,6 +86,7 @@ jobs:
 
       - name: Gather Images in Default Branch
         uses: docker://ghcr.io/allenporter/flux-local:v6.0.0
+        timeout-minutes: 10
         with:
           args: >-
             get cluster

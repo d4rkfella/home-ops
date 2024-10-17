@@ -38,7 +38,7 @@ spec:
         imagePullPolicy: IfNotPresent
         envFrom:
           - secretRef:
-              name: vaultwarden-initdb-secret
+              name: vaultwarden-secret
     podSecurityContext:
     securityContext:
       allowPrivilegeEscalation: false

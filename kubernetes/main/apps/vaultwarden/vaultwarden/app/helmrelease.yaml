@@ -89,7 +89,7 @@ spec:
       host: smtp-relay.brevo.com
       security: starttls
       port: 587
-      from: noreply@${BASE_DOMAIN}
+      from: "noreply@${BASE_DOMAIN}"
       fromName: DarkfellaNET
       username:
         existingSecretKey: SMTP_USERNAME

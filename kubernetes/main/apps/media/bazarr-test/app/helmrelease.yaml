@@ -126,7 +126,7 @@ spec:
           - path: /config/log
       media:
         type: nfs
-        server: nas.{PUBLIC_DOMAIN}
+        server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         globalMounts:
           - path: /data/media

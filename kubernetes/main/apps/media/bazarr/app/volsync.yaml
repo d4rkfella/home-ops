@@ -3,7 +3,7 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: &secret bazarr-test-volsync-secret
+  name: &secret bazarr-volsync-secret
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -28,15 +28,15 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: bazarr-test
+  name: bazarr
 spec:
-  sourcePVC: bazarr-test-config
+  sourcePVC: bazarr-config
   trigger:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 7
-    repository: bazarr-test-volsync-secret
+    repository: *secret
     cacheCapacity: 2Gi
     moverSecurityContext:
       runAsUser: 568

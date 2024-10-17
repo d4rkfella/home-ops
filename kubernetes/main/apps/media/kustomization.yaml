@@ -6,7 +6,6 @@ resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
   # Flux-Kustomizations
-  - ./bazarr/ks.yaml
   - ./flaresolverr/ks.yaml
   - ./jellyseerr/ks.yaml
   - ./qbittorrent/ks.yaml
@@ -20,4 +19,4 @@ resources:
   - ./theme-park/ks.yaml
   - ./unpackerr/ks.yaml
   - ./autobrr/ks.yaml
-  - ./bazarr-test/ks.yaml
+  - ./bazarr/ks.yaml

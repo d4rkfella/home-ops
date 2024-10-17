@@ -66,7 +66,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
-                name: crowdsec-external-secret
+                name: crowdsec-secret
       env:
         # For an internal test, disable the Online API
         - name: DISABLE_ONLINE_API
@@ -74,7 +74,7 @@ spec:
         - name: ENROLL_KEY
           valueFrom:
             secretKeyRef:
-              name: &secret crowdsec-external-secret
+              name: &secret crowdsec-secret
               key: ENROLL_KEY
         - name: ENROLL_INSTANCE_NAME
           value: "cluster"
@@ -94,6 +94,6 @@ spec:
           user:     crowdsec
           password: $${DB_PASSWORD}
           db_name:  crowdsec
-          host:     crowdsec-cnpg-rw.database
+          host:     postgres17-rw.database
           port:     5432
           sslmode:  require

@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./authentik-cluster.yaml
   - ./vaultwarden-cluster.yaml
-  - ./crowdsec-cluster.yaml
   - ./scheduledbackup.yaml
   - ./prometheusrule.yaml
   - ./cluster17.yaml

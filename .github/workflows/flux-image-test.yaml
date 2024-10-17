@@ -105,7 +105,6 @@ jobs:
             --enable-images
             --output yaml
             --output-file pull.yaml
-            --log-level debug
 
       - name: Filter Default Branch Results
         shell: bash

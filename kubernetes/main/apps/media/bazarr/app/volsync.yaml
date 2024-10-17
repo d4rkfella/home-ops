@@ -36,7 +36,7 @@ spec:
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 7
-    repository: *secret
+    repository: bazarr-volsync-secret
     cacheCapacity: 2Gi
     moverSecurityContext:
       runAsUser: 568

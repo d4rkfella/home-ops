@@ -12,7 +12,6 @@ on:
 
 permissions:
   issues: write
-  contents: write  # Ensure the workflow can read the repository
 
 jobs:
   label-sync:

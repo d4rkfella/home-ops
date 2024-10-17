@@ -37,16 +37,13 @@ spec:
               tag: 5.0.0@sha256:1cc1878d06fafe6a1a1294f1547203634e729e3386324b7a63c8fde68554d705
             env:
               TZ: Europe/Sofia
-              QBITTORRENT__PORT: &port 80
-              QBITTORRENT__BT_PORT: &bittorrentPort 50413
-              QBT_Preferences__WebUI__AlternativeUIEnabled: false
-              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
-              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                172.16.0.0/16, 172.17.0.0/16, 192.168.91.0/24
-              QBT_Preferences__WebUI__LocalHostAuth: false
+              QBT_WEBUI_PORT: &port 80
+              QBT_TORRENTING_PORT: &torrentPort 50413
+              CROSS_SEED_ENABLED: false
               CROSS_SEED_HOST: cross-seed.default.svc.cluster.local
               CROSS_SEED_PORT: 80
               CROSS_SEED_SLEEP_INTERVAL: 0
+              PUSHOVER_ENABLED: true
             envFrom:
               - secretRef:
                   name: qbittorrent-secret
@@ -87,6 +84,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
+      terminationGracePeriodSeconds: 300
     service:
       app:
         controller: qbittorrent
@@ -95,13 +93,13 @@ spec:
             port: *port
           bittorrent:
             enabled: true
-            port: *bittorrentPort
+            port: *torrentPort
             protocol: TCP
     ingress:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          kubernetes.io/ingress.class: internal
+        className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
             paths:
@@ -115,8 +113,6 @@ spec:
         type: persistentVolumeClaim
         size: 5Gi
         accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -128,5 +124,5 @@ spec:
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/media/torrents
+          - path: /data/torrents
             subPath: torrents

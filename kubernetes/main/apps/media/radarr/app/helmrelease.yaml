@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: bazarr
+  name: radarr
 spec:
   interval: 30m
   chart:
@@ -25,60 +25,57 @@ spec:
   dependsOn:
     - name: topolvm
       namespace: kube-system
-    - name: volsync
-      namespace: volsync-system
   values:
     controllers:
-      bazarr:
+      radarr:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: radarr-secret
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/bazarr
-              tag: 1.4.4@sha256:738abd74a569b91b6fd2fb009b78d11028a0b7bbcb4ea98510afacee8d797c15
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.12.0.9255@sha256:87c788eb150218172c951e8f37ec60dbc5a3033c909f1467c3bbee88e5a51f3b
             env:
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: &port 80
+              RADARR__UPDATE__BRANCH: develop
               TZ: Europe/Sofia
-            envFrom:
-              - secretRef:
-                  name: bazarr-secret
+            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
-                    port: &port 6767
+                    path: /ping
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 10m
+                cpu: 100m
               limits:
-                memory: 1Gi
-          subcleaner:
-            image:
-              repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.3.0@sha256:5813a7da0ccd58f6dfb9d5e48480e2877355e6bb3d7d81c8908eb1adc3a23b6e
-            env:
-              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
-              GITSYNC_REF: master
-              GITSYNC_PERIOD: 24h
-              GITSYNC_ROOT: /add-ons
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
-            securityContext: *securityContext
+                memory: 4Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -90,7 +87,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        controller: bazarr
+        controller: radarr
         ports:
           http:
             port: *port
@@ -107,35 +104,26 @@ spec:
                   identifier: app
                   port: http
     persistence:
-      add-ons:
-        type: emptyDir
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cache
       config:
         enabled: true
         type: persistentVolumeClaim
-        size: 5Gi
+        size: 15Gi
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /config
-      log:
-        type: emptyDir
+      scripts:
+        type: configMap
+        name: radarr-configmap
+        defaultMode: 0775
         globalMounts:
-          - path: /config/log
+          - path: /scripts/pushover-notify.sh
+            subPath: pushover-notify.sh
+            readOnly: true
+      tmp:
+        type: emptyDir
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/media
-            subPath: media
-      scripts:
-        type: configMap
-        name: bazarr-scripts
-        defaultMode: 0775
-        globalMounts:
-          - readOnly: true
-      tmp:
-        type: emptyDir
+          - path: /data

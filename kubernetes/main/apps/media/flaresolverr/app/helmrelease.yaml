@@ -78,6 +78,11 @@ spec:
             port: *port
     persistence:
       config:
-        type: emptyDir
+        enabled: true
+        type: persistentVolumeClaim
+        size: 2Gi
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /config
       tmp:
         type: emptyDir

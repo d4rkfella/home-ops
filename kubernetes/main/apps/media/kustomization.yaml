@@ -8,16 +8,12 @@ resources:
   # Flux-Kustomizations
   - ./flaresolverr/ks.yaml
   - ./overseerr/ks.yaml
-  - ./qbitmanage/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
   - ./prowlarr/ks.yaml
-  - ./notifiarr/ks.yaml
   - ./cross-seed/ks.yaml
-  - ./theme-park/ks.yaml
   - ./unpackerr/ks.yaml
   - ./autobrr/ks.yaml
   - ./bazarr/ks.yaml
-  - ./externalsecret.yaml
   - ./sabnzbd/ks.yaml
   - ./qbittorrent/ks.yaml

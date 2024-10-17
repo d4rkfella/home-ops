@@ -24,6 +24,11 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  valuesFrom:
+    - targetPath: smtp.from
+      kind: Secret
+      name: vaultwarden-secret
+      valuesKey: SMTP_SENDER
   values:
     image:
       registry: docker.io
@@ -89,7 +94,6 @@ spec:
       host: smtp-relay.brevo.com
       security: starttls
       port: 587
-      from: "noreply@${BASE_DOMAIN}"
       fromName: DarkfellaNET
       username:
         existingSecretKey: SMTP_USERNAME

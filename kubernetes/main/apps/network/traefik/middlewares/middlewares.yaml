@@ -168,7 +168,7 @@ spec:
   plugin:
     traefik-themepark:
       app: overseerr
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1

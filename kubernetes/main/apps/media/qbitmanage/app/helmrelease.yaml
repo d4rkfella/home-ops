@@ -30,6 +30,12 @@ spec:
       qbitmanage:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          copy-secret:
+            image:
+              repository: busybox
+              tag: 1.37.0@sha256:22f27168517de1f58dae0ad51eacf1527e7e7ccc47512d3946f56bdbe913f564
+            command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
         containers:
           app:
             image:
@@ -65,9 +71,8 @@ spec:
       secret-file:
         type: secret
         name: qbitmanage-secret
-        defaultMode: 0770
         globalMounts:
-          - path: /config/config.yml
+          - path: /secrets/config.yml
             subPath: config.yml
       qbittorrent-config:
         existingClaim: qbittorrent-config

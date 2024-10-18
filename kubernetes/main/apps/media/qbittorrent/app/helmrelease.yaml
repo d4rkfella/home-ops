@@ -51,7 +51,7 @@ spec:
             securityContext:
               runAsUser: 0
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID", "MKNOD", "NET_RAW"] }
               seccompProfile: { type: RuntimeDefault }
             resources:

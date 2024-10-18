@@ -174,3 +174,9 @@ spec:
           qbittorrent:
             vpn:
               - path: /gluetun
+      gluetun-tmp:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            vpn:
+              - path: /tmp

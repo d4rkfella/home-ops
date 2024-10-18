@@ -10,7 +10,7 @@ spec:
     spec:
       chart: traefik
       version: 32.1.1
-      sourceRef:
+      sourceRef:t
         kind: HelmRepository
         name: traefik
         namespace: flux-system
@@ -26,14 +26,22 @@ spec:
       retries: 3
       strategy: rollback
   values:
+    tlsStore:
+        default:
+          certificates:
+            - secretName: darkfellanet-tls
+          defaultCertificate:
+            secretName: darkfellanet-tls
     securityContext:
       seccompProfile:
         type: RuntimeDefault
     deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
       ingressClass:
         enabled: true
         isDefaultClass: true
-        name: "internal"
+        name: internal
       enabled: true
       kind: Deployment
       replicas: 2
@@ -48,6 +56,8 @@ spec:
       dnsPolicy: ""
       dnsConfig: {}
     ingressRoute:
+      dashboard:
+        enabled: false
       healthcheck:
         enabled: true
         matchRule: PathPrefix(`/ping`)
@@ -56,7 +66,6 @@ spec:
             kind: TraefikService
         entryPoints:
           - traefik
-        middlewares: []
         tls: {}
     updateStrategy:
       type: RollingUpdate
@@ -81,10 +90,6 @@ spec:
         publishedService:
           enabled: false
         nativeLBByDefault: false
-    volumes:
-      - name: crowdsec-bouncer-tls
-        mountPath: /etc/traefik/crowdsec-certs
-        type: secret
     additionalVolumeMounts:
       - name: plugins
         mountPath: /plugins-storage
@@ -109,38 +114,24 @@ spec:
         disableAPICheck: false
     globalArguments:
       - --global.checknewversion
-      - --global.sendanonymoususage
     additionalArguments:
       - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
       - --experimental.plugins.traefik-themepark.version=v1.4.0
-      - --entryPoints.web.http.redirections.entryPoint.to=websecure
-      - --entryPoints.web.http.redirections.entryPoint.scheme=https
     ports:
       web:
+        expose:
+          default: false
         port: 80
         targetPort: 80
         protocol: TCP
         forwardedHeaders:
-          trustedIPs:
-            - 173.245.48.0/20
-            - 103.21.244.0/22
-            - 103.22.200.0/22
-            - 103.31.4.0/22
-            - 141.101.64.0/18
-            - 108.162.192.0/18
-            - 190.93.240.0/20
-            - 188.114.96.0/20
-            - 197.234.240.0/22
-            - 198.41.128.0/17
-            - 162.158.0.0/15
-            - 104.16.0.0/13
-            - 104.24.0.0/14
-            - 172.64.0.0/13
-            - 131.0.72.0/22
+          trustedIPs: []
           insecure: false
         proxyProtocol:
           trustedIPs: []
           insecure: false
+        redirectTo:
+          port: websecure
         transport:
           respondingTimeouts:
             readTimeout: null
@@ -162,22 +153,7 @@ spec:
           enabled: false
           advertisedPort: null
         forwardedHeaders:
-          trustedIPs:
-            - 173.245.48.0/20
-            - 103.21.244.0/22
-            - 103.22.200.0/22
-            - 103.31.4.0/22
-            - 141.101.64.0/18
-            - 108.162.192.0/18
-            - 190.93.240.0/20
-            - 188.114.96.0/20
-            - 197.234.240.0/22
-            - 198.41.128.0/17
-            - 162.158.0.0/15
-            - 104.16.0.0/13
-            - 104.24.0.0/14
-            - 172.64.0.0/13
-            - 131.0.72.0/22
+          trustedIPs: []
           insecure: false
         proxyProtocol:
           trustedIPs: []
@@ -194,6 +170,9 @@ spec:
           keepAliveMaxTime: null
         tls:
           enabled: true
+        middlewares:
+          - network-chain-basic@kubernetescrd
+          - network-compress@kubernetescrd
       metrics:
         port: 9100
         expose:

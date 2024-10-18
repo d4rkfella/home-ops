@@ -52,7 +52,7 @@ spec:
               runAsUser: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
             resources:
               requests:
                 cpu: 100m

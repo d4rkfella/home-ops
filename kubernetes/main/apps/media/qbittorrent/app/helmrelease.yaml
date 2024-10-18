@@ -92,6 +92,8 @@ spec:
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }

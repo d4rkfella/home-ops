@@ -83,8 +83,5 @@ spec:
                   identifier: app
                   port: http
     persistence:
-      config:
-        type: emptyDir
       tmp:
         type: emptyDir
-

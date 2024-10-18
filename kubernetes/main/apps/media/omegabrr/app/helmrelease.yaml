@@ -33,7 +33,7 @@ spec:
               repository: ghcr.io/autobrr/omegabrr
               tag: v1.14.0@sha256:6f65c7967609746662815933ecc8168c8c25a3b82d909f49833fcce2b47ee052
             env:
-              TZ: America/New_York
+              TZ: Europe/Sofia
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

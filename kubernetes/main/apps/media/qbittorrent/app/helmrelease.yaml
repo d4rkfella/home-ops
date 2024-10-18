@@ -48,6 +48,7 @@ spec:
               - secretRef:
                   name: gluetun-secret
             securityContext:
+              runAsUser: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
@@ -92,8 +93,13 @@ spec:
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext:
-              runAsNonRoot: false
-              runAsUser: 0
+              runAsNonRoot: true
+              runAsUser: 568
+              runAsGroup: 568
+              fsGroup: 568
+              fsGroupChangePolicy: OnRootMismatch
+              supplementalGroups: [10000]
+              seccompProfile: { type: RuntimeDefault }
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -104,14 +110,6 @@ spec:
               limits:
                 memory: 4Gi
     defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
-        seccompProfile: { type: RuntimeDefault }
       terminationGracePeriodSeconds: 300
     service:
       app:

@@ -180,9 +180,3 @@ spec:
           qbittorrent:
             vpn:
               - path: /tmp
-      gluetun-etc:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            vpn:
-              - path: /etc

@@ -140,16 +140,24 @@ spec:
         type: persistentVolumeClaim
         size: 5Gi
         accessMode: ReadWriteOnce
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /config
       scripts:
         type: configMap
         name: qbittorrent-scripts
         defaultMode: 0775
-        globalMounts:
-          - readOnly: true
+        advancedMounts:
+          qbittorrent:
+            app:
+              - readOnly: true
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data/torrents
-            subPath: torrents
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /data/torrents
+                subPath: torrents

@@ -49,7 +49,8 @@ spec:
               - secretRef:
                   name: gluetun-secret
             securityContext:
-              runAsUser: 0
+              runAsUser: 1000
+              runAsGroup: 1000
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID", "MKNOD", "NET_RAW"] }

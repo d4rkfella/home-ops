@@ -34,7 +34,7 @@ spec:
           copy-secret:
             image:
               repository: busybox
-              tag: 1.37.0@sha256:22f27168517de1f58dae0ad51eacf1527e7e7ccc47512d3946f56bdbe913f564
+              tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
             command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
             securityContext:
               allowPrivilegeEscalation: false

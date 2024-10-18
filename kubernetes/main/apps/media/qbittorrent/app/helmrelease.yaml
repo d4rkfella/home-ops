@@ -52,7 +52,7 @@ spec:
               runAsUser: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID", "MKNOD", "NET_RAW"] }
               seccompProfile: { type: RuntimeDefault }
             resources:
               requests:

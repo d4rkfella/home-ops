@@ -48,16 +48,6 @@ spec:
       dnsPolicy: ""
       dnsConfig: {}
     ingressRoute:
-      dashboard:
-        enabled: true
-        annotations: {}
-        labels: {}
-        matchRule: "Host(`traefik-internal.${PUBLIC_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
-        services:
-          - name: api@internal
-            kind: TraefikService
-        entryPoints:
-          - websecure
       healthcheck:
         enabled: true
         matchRule: PathPrefix(`/ping`)

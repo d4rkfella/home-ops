@@ -71,19 +71,26 @@ spec:
       secret-file:
         type: secret
         name: qbitmanage-secret
-        globalMounts:
-          - path: /secrets/config.yml
-            subPath: config.yml
+        advancedMounts:
+          qbitmanage:
+            copy-secret:
+              - path: /secrets/config.yml
+                subPath: config.yml
+                readOnly: true
       qbittorrent-config:
         existingClaim: qbittorrent-config
-        globalMounts:
-          - path: /qBittorrent/BT_backup
-            subPath: qBittorrent/BT_backup
-            readOnly: true
+        advancedMounts:
+          qbitmanage:
+            app:
+              - path: /qBittorrent/BT_backup
+                subPath: qBittorrent/BT_backup
+                readOnly: true
       torrents:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data/torrents
-            subPath: torrents
+        advancedMounts:
+          qbitmanage:
+            app:
+              - path: /data/torrents
+                subPath: torrents

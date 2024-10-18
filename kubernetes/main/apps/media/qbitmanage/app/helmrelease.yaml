@@ -27,7 +27,7 @@ spec:
       namespace: media
   values:
     controllers:
-      cross-seed:
+      qbitmanage:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -60,8 +60,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     persistence:
-      config:
-        type: emptyDir
       secret-file:
         type: secret
         name: qbitmanage-secret

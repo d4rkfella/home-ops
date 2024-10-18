@@ -102,7 +102,7 @@ spec:
   plugin:
     traefik-themepark:
       app: bazarr
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
@@ -113,7 +113,7 @@ spec:
   plugin:
     traefik-themepark:
       app: radarr
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
@@ -124,29 +124,7 @@ spec:
   plugin:
     traefik-themepark:
       app: sonarr
-      baseUrl: https://theme-park.darkfellanetwork.com
-      theme: mind
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: readarr
-spec:
-  plugin:
-    traefik-themepark:
-      app: readarr
-      baseUrl: https://theme-park.darkfellanetwork.com
-      theme: mind
----
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: lidarr
-spec:
-  plugin:
-    traefik-themepark:
-      app: lidarr
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
@@ -157,8 +135,8 @@ spec:
   plugin:
     traefik-themepark:
       app: prowlarr
-      baseUrl: https://theme-park.darkfellanetwork.com
-      theme: Maroon
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
+      theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -168,7 +146,7 @@ spec:
   plugin:
     traefik-themepark:
       app: vuetorrent
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
@@ -179,7 +157,7 @@ spec:
   plugin:
     traefik-themepark:
       app: sabnzbd
-      baseUrl: https://theme-park.darkfellanetwork.com
+      baseUrl: https://theme-park-internal.${PUBLIC_DOMAIN}
       theme: mind
 ---
 apiVersion: traefik.io/v1alpha1

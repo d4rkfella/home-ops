@@ -36,6 +36,10 @@ spec:
               repository: busybox
               tag: 1.37.0@sha256:22f27168517de1f58dae0ad51eacf1527e7e7ccc47512d3946f56bdbe913f564
             command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:

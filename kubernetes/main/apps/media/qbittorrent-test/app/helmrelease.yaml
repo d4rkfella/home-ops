@@ -1,0 +1,45 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbittorrent-test
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: qbittorrent
+      version: 22.1.2
+      sourceRef:
+        kind: HelmRepository
+        name: truecharts
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    addons:
+      vpn:
+        type: gluetun
+        killSwitch: true
+        excludedNetworks_IPv4:
+          - "192.168.91.0/24"
+        excludedNetworks_IPv6: []
+        env:
+          VPN_SERVICE_PROVIDER: "protonvpn"
+          VPN_TYPE: "wireguard"
+          PORT_FORWARD_ONLY: "on"
+          SERVER_CITIES: "Zurich"
+          WIREGUARD_PRIVATE_KEY: test
+          VPN_PORT_FORWARDING: "on"
+          VPN_PORT_FORWARDING_LISTENING_PORT: "6881"
+          FIREWALL_DEBUG: "on"
+          LOG_LEVEL: "debug"
+          DNS_KEEP_NAMESERVER: "off"
+          DOT: "on"

@@ -49,12 +49,9 @@ spec:
               - secretRef:
                   name: gluetun-secret
             securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
-              fsGroup: 1000
-              fsGroupChangePolicy: OnRootMismatch
+              runAsUser: 0
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID", "MKNOD", "NET_RAW"] }
               seccompProfile: { type: RuntimeDefault }
             resources:

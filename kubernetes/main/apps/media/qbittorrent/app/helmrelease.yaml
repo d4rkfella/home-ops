@@ -103,9 +103,6 @@ spec:
               runAsNonRoot: true
               runAsUser: 568
               runAsGroup: 568
-              fsGroup: 568
-              fsGroupChangePolicy: OnRootMismatch
-              supplementalGroups: [10000]
               seccompProfile: { type: RuntimeDefault }
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -117,7 +114,11 @@ spec:
               limits:
                 memory: 4Gi
     defaultPodOptions:
-      terminationGracePeriodSeconds: 300
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+    terminationGracePeriodSeconds: 300
     service:
       app:
         controller: qbittorrent

@@ -168,3 +168,9 @@ spec:
             app:
               - path: /data/torrents
                 subPath: torrents
+      gluetun:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            vpn:
+              - path: /gluetun

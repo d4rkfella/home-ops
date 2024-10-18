@@ -42,27 +42,11 @@ spec:
               VPN_PORT_FORWARDING: on
               VPN_PORT_FORWARDING_LISTENING_PORT: 50413
               WIREGUARD_ADDRESSES: 10.2.0.2/32
+              FIREWALL_INPUT_PORTS: 80
+              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
             envFrom:
               - secretRef:
                   name: gluetun-secret
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: *port
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
-                  timeoutSeconds: 10
-                  failureThreshold: 6
-              readiness: *probes
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -70,7 +54,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 2Gi
+                memory: 512Mi
+              limits:
+                squat.ai/tun: 1
           app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent

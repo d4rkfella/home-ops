@@ -49,7 +49,7 @@ spec:
                   name: gluetun-secret
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
             resources:
               requests:

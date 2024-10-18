@@ -65,7 +65,7 @@ spec:
       secret-file:
         type: secret
         name: qbitmanage-secret
-        defaultMode: 0777
+        defaultMode: 0770
         globalMounts:
           - path: /config/config.yml
             subPath: config.yml

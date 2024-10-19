@@ -167,8 +167,8 @@ spec:
         advancedMounts:
           qbittorrent:
             app:
-              - path: /data/torrents
-                subPath: torrents
+              - path: /data/downloads/torrents
+                subPath: downloads/torrents
       gluetun:
         type: emptyDir
         advancedMounts:

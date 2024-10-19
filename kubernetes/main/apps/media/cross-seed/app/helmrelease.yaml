@@ -88,5 +88,5 @@ spec:
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/torrents
-            subPath: torrents
+          - path: /data/downloads
+            subPath: downloads

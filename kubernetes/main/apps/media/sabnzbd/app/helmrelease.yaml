@@ -125,5 +125,5 @@ spec:
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/usenet
-            subPath: usenet
+          - path: /data/downloads/usenet
+            subPath: downloads/usenet

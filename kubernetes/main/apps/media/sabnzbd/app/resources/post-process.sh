@@ -104,9 +104,6 @@ main() {
         exit 1
     fi
 
-    # Update permissions on the release directory
-    chmod -R 750 "${RELEASE_DIR}"
-
     # Send pushover notification
     if [[ "${PUSHOVER_ENABLED}" == "true" ]]; then
         send_pushover_notification

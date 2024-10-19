@@ -96,5 +96,5 @@ spec:
         advancedMounts:
           qbitmanage:
             app:
-              - path: /data/torrents
-                subPath: torrents
+              - path: /data/downloads/torrents
+                subPath: downloads/torrents

@@ -85,7 +85,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /
+                    path: /api/v2/app/version
                     port: *port
                   initialDelaySeconds: 30
                   periodSeconds: 30
@@ -94,11 +94,7 @@ spec:
               readiness: *probes
               startup:
                 enabled: true
-                custom: true
                 spec:
-                  httpGet:
-                    path: /
-                    port: *port
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext:

@@ -8,8 +8,6 @@ spec:
   interval: 30m
   chart:
     spec:
-      verify:
-        provider: cosign
       chart: gha-runner-scale-set
       version: 0.9.3
       sourceRef:

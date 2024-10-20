@@ -8,7 +8,7 @@ metadata:
     kubernetes.io/ingress.class: external
 spec:
   rules:
-    - host: *host
+    - host: flux-webhook.${PUBLIC_DOMAIN}
       http:
         paths:
           - path: /hook/

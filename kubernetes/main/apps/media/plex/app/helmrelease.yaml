@@ -38,6 +38,7 @@ spec:
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.${PUBLIC_DOMAIN}:443,http://192.168.91.98:32400
+              PLEX_CLAIM: claim-Rypm1Dxk8wzSz6ap1t_S
             probes:
               liveness: &probes
                 enabled: true

@@ -37,9 +37,9 @@ spec:
               UN_WEBSERVER_METRICS: true
               UN_WEBSERVER_LOG_FILE: /logs/webserver.log
               UN_ACTIVITY: true
-              UN_SONARR_0_URL: http://sonarr.default.svc.cluster.local:8989
+              UN_SONARR_0_URL: http://sonarr.default.svc.cluster.local
               UN_SONARR_0_PATHS_0: /data/downloads/torrents/complete/tv
-              UN_RADARR_0_URL: http://radarr.default.svc.cluster.local:7878
+              UN_RADARR_0_URL: http://radarr.default.svc.cluster.local
               UN_RADARR_0_PATHS_0: /data/downloads/torrents/complete/movies
             envFrom:
               - secretRef:

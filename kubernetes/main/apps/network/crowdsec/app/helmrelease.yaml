@@ -24,8 +24,6 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    podAnnotations:
-      reloader.stakater.com/auto: "true"
     container_runtime: containerd
     tls:
       enabled: true
@@ -62,6 +60,8 @@ spec:
         config:
           enabled: true
     lapi:
+      deployAnnotations:
+        reloader.stakater.com/auto: "true"
       extraInitContainers:
         - name: initdb
           image: "ghcr.io/onedr0p/postgres-init:16"

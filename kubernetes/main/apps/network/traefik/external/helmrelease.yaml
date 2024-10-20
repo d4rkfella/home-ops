@@ -199,20 +199,21 @@ spec:
           insecure: false
         transport:
           respondingTimeouts:
-            readTimeout: null
-            writeTimeout: null
-            idleTimeout: null
+            readTimeout: 120
+            writeTimeout: 120
+            idleTimeout: 120
           lifeCycle:
-            requestAcceptGraceTimeout: null
-            graceTimeOut: null
-          keepAliveMaxRequests: null
-          keepAliveMaxTime: null
+            requestAcceptGraceTimeout: 60
+            graceTimeOut: 120
+          keepAliveMaxRequests: 10000
+          keepAliveMaxTime: 120
         tls:
           enabled: true
         middlewares:
+          - network-limit@kubernetescrd
+          - network-chain-basic@kubernetescrd
           - network-realip@kubernetescrd
           - network-bouncer@kubernetescrd
-          - network-chain-basic@kubernetescrd
           - network-compress@kubernetescrd
       metrics:
         port: 9100

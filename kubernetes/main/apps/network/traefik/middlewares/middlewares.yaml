@@ -1,3 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: limit
+spec:
+  buffering:
+    maxRequestBodyBytes: 100000000
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

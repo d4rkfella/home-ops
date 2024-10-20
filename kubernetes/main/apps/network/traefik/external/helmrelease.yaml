@@ -118,7 +118,6 @@ spec:
         disableAPICheck: false
     globalArguments:
       - --global.checknewversion
-      - --global.sendanonymoususage
     additionalArguments:
       - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
       - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.4
@@ -209,6 +208,7 @@ spec:
           keepAliveMaxTime: 120
         tls:
           enabled: true
+          option: default
         middlewares:
           - network-limit@kubernetescrd
           - network-chain-basic@kubernetescrd

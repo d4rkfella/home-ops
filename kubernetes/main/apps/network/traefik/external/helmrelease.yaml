@@ -200,7 +200,7 @@ spec:
           respondingTimeouts:
             readTimeout: 120
             writeTimeout: 120
-            idleTimeout: 120
+            idleTimeout: 180
           lifeCycle:
             requestAcceptGraceTimeout: 60
             graceTimeOut: 120

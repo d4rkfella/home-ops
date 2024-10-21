@@ -26,6 +26,13 @@ spec:
       retries: 3
       strategy: rollback
   values:
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "50Mi"
+      limits:
+        cpu: "300m"
+        memory: "150Mi"
     tlsStore:
         default:
           certificates:
@@ -44,7 +51,7 @@ spec:
         name: external
       enabled: true
       kind: Deployment
-      replicas: 2
+      replicas: null
       revisionHistoryLimit: 5
       terminationGracePeriodSeconds: 60
       minReadySeconds: 0
@@ -239,7 +246,15 @@ spec:
       spec:
         allocateLoadBalancerNodePorts: false
     autoscaling:
-      enabled: false
+      enabled: true
+      maxReplicas: 2
+      metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 80
     hostNetwork: false
     rbac:
       enabled: true

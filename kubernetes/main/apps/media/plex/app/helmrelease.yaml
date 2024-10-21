@@ -83,6 +83,7 @@ spec:
         ports:
           http:
             port: 32400
+            nodePort: none
     ingress:
       app:
         annotations:

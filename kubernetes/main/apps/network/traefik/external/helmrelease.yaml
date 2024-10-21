@@ -81,13 +81,7 @@ spec:
         maxSurge: 1
     providers:
       kubernetesCRD:
-        enabled: true
-        allowCrossNamespace: true
-        allowExternalNameServices: false
-        allowEmptyServices: true
-        ingressClass: external
-        namespaces: []
-        nativeLBByDefault: false
+        enabled: false
       kubernetesIngress:
         enabled: true
         allowExternalNameServices: false

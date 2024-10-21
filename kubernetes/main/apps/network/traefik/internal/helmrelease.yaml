@@ -120,44 +120,12 @@ spec:
     ports:
       web:
         expose:
-          default: true
-        port: 80
-        targetPort: 80
-        protocol: TCP
-        forwardedHeaders:
-          trustedIPs: []
-          insecure: false
-        proxyProtocol:
-          trustedIPs: []
-          insecure: false
-        redirectTo:
-          port: websecure
-        transport:
-          respondingTimeouts:
-            readTimeout: null
-            writeTimeout: null
-            idleTimeout: null
-          lifeCycle:
-            requestAcceptGraceTimeout: null
-            graceTimeOut: null
-          keepAliveMaxRequests: null
-          keepAliveMaxTime: null
+          default: false
       websecure:
         asDefault: true
         port: 443
         targetPort: 443
         protocol: TCP
-        appProtocol: null
-        allowACMEByPass: false
-        http3:
-          enabled: false
-          advertisedPort: null
-        forwardedHeaders:
-          trustedIPs: []
-          insecure: false
-        proxyProtocol:
-          trustedIPs: []
-          insecure: false
         transport:
           respondingTimeouts:
             readTimeout: null

@@ -15,8 +15,8 @@ metadata:
   name: basic-ratelimit
 spec:
   rateLimit:
-    average: 600
-    burst: 400
+    average: 100
+    burst: 50
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

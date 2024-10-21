@@ -210,7 +210,7 @@ spec:
           enabled: true
           option: default
         middlewares:
-          - network-limit@kubernetescrd
+          #- network-limit@kubernetescrd
           - network-chain-basic@kubernetescrd
           - network-realip@kubernetescrd
           - network-bouncer@kubernetescrd

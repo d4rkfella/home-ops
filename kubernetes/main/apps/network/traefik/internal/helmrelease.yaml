@@ -120,7 +120,7 @@ spec:
     ports:
       web:
         expose:
-          default: false
+          default: true
         port: 80
         targetPort: 80
         protocol: TCP

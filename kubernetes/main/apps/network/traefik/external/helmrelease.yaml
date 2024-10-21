@@ -95,7 +95,7 @@ spec:
         ingressClass: external
         namespaces: []
         publishedService:
-          enabled: true
+          enabled: false
         nativeLBByDefault: false
     volumes:
       - name: crowdsec-bouncer-tls

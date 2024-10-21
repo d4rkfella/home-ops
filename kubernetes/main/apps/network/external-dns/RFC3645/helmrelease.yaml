@@ -40,7 +40,7 @@ spec:
       - --rfc2136-kerberos-realm=${AD_REALM}
       - --rfc2136-tsig-axfr
     policy: sync
-    sources: ["ingress"]
+    sources: ["ingress", "service"]
     txtOwnerId: default
     txtPrefix: k8s.
     domainFilters: ["${PUBLIC_DOMAIN}"]

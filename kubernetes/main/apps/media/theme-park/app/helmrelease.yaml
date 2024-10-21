@@ -30,8 +30,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/theme-park
-              tag: 1.18@sha256:210d8f5d9466df493503184fb076bbf1fb9fbc2b42e273cd4516ac3fd1df7ba2
+              repository: ghcr.io/darkfella91/theme-park
+              tag: 1.19.1@sha256:7c7cce58b76479f505535bb3dc26c41df495e4d37e83a2bf153cd2deb330c49b
             env:
               TZ: Europe/Sofia
               PUID: 1000

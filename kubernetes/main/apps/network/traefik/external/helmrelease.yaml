@@ -81,7 +81,7 @@ spec:
         maxSurge: 1
     providers:
       kubernetesCRD:
-        enabled: false
+        enabled: true
       kubernetesIngress:
         enabled: true
         allowExternalNameServices: false

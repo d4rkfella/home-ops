@@ -49,14 +49,7 @@ kind: Middleware
 metadata:
   name: compress
 spec:
-  compress:
-    includedContentTypes:
-      - application/json
-      - text/html
-      - text/plain
-      - text/css
-      - application/javascript
-    defaultEncoding: br
+  compress: {}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

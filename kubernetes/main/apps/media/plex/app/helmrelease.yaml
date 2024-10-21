@@ -78,12 +78,12 @@ spec:
       app:
         controller: plex
         type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
         annotations:
           lbipam.cilium.io/ips: 192.168.91.98
         ports:
           http:
             port: 32400
-            nodePort: none
     ingress:
       app:
         annotations:

@@ -55,18 +55,6 @@ spec:
       shareProcessNamespace: false
       dnsPolicy: ""
       dnsConfig: {}
-    ingressRoute:
-      dashboard:
-        enabled: false
-      healthcheck:
-        enabled: true
-        matchRule: PathPrefix(`/ping`)
-        services:
-          - name: ping@internal
-            kind: TraefikService
-        entryPoints:
-          - traefik
-        tls: {}
     updateStrategy:
       type: RollingUpdate
       rollingUpdate:

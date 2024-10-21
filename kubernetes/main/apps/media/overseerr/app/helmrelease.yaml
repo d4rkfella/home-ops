@@ -82,7 +82,6 @@ spec:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-          external-dns.alpha.kubernetes.io/hostname: requests.${PUBLIC_DOMAIN}
           kubernetes.io/ingress.class: external
           traefik.ingress.kubernetes.io/router.middlewares: network-overseerr@kubernetescrd
         hosts:

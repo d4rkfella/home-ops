@@ -198,8 +198,8 @@ spec:
           insecure: false
         transport:
           respondingTimeouts:
-            readTimeout: 120
-            writeTimeout: 120
+            #readTimeout: 120
+            #writeTimeout: 120
             idleTimeout: 180
           lifeCycle:
             requestAcceptGraceTimeout: 60

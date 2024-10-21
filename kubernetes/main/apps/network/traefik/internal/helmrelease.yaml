@@ -172,7 +172,6 @@ spec:
           enabled: true
         middlewares:
           - network-chain-basic@kubernetescrd
-          - network-compress@kubernetescrd
       metrics:
         port: 9100
         expose:

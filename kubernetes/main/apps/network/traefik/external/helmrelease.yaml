@@ -221,7 +221,6 @@ spec:
           - network-chain-basic@kubernetescrd
           - network-realip@kubernetescrd
           - network-bouncer@kubernetescrd
-          - network-compress@kubernetescrd
       metrics:
         port: 9100
         expose:

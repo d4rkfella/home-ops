@@ -29,10 +29,10 @@ spec:
     resources:
       requests:
         cpu: "100m"
-        memory: "50Mi"
+        memory: "128Mi"
       limits:
-        cpu: "300m"
-        memory: "150Mi"
+        cpu: "500m"
+        memory: "512Mi"
     tlsStore:
         default:
           certificates:

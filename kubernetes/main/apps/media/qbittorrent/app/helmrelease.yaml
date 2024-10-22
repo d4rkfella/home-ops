@@ -48,8 +48,8 @@ spec:
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
               SERVER_CITIES: Zurich
               DNS_KEEP_NAMESERVER: on
-              PUID: 1000
-              PGID: 1000
+              PUID: 568
+              PGID: 568
             envFrom:
               - secretRef:
                   name: gluetun-secret
@@ -118,6 +118,11 @@ spec:
                 cpu: 100m
               limits:
                 memory: 6Gi
+    defaultPodOptions:
+      securityContext:
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
     terminationGracePeriodSeconds: 300
     service:
       app:

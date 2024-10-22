@@ -183,3 +183,10 @@ spec:
           qbittorrent:
             vpn:
               - path: /gluetun
+      gluetun-passwd:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            vpn:
+              - path: /etc/passwd

@@ -121,7 +121,7 @@ spec:
     traefik-themepark:
       app: bazarr
       baseUrl: https://theme-park.${PUBLIC_DOMAIN}
-      theme: mind
+      theme: aquamarine
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

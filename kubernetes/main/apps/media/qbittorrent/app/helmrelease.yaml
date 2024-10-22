@@ -175,3 +175,10 @@ spec:
             app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
+      gluetun-tmp:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            vpn:
+              - path: /tmp/gluetun

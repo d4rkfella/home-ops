@@ -15,4 +15,5 @@ resources:
   - ./reflector/ks.yaml
   - ./topolvm/ks.yaml
   - ./generic-device-plugin.yaml
-  - ./runtime-nvidia.yaml
+  - ./nvidia-device-plugin/ks.yaml
+

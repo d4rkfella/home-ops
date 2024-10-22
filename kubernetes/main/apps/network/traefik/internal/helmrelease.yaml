@@ -104,7 +104,7 @@ spec:
       - --global.checknewversion
     additionalArguments:
       - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
-      - --experimental.plugins.traefik-themepark.version=v1.4.0
+      - --experimental.plugins.traefik-themepark.version=v1.4.1
     ports:
       web:
         expose:

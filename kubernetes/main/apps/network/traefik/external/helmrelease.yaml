@@ -122,7 +122,7 @@ spec:
       - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
       - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.3
       - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
-      - --experimental.plugins.traefik-themepark.version=v1.4.0
+      - --experimental.plugins.traefik-themepark.version=v1.4.1
       - --experimental.plugins.traefik-real-ip.modulename=github.com/jramsgz/traefik-real-ip
       - --experimental.plugins.traefik-real-ip.version=v1.0.6
     ports:

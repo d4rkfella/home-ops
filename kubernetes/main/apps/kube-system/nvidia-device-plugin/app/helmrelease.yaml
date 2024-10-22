@@ -27,7 +27,7 @@ spec:
     gfd:
       enabled: true
     nfd:
-      enableNodeFeatureApi: false
+      enableNodeFeatureApi: true
       worker:
         config:
           sources:

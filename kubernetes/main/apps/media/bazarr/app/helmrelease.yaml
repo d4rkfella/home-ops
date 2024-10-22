@@ -24,16 +24,19 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: topolvm
-      namespace: kube-system
-    - name: volsync
-      namespace: volsync-system
   values:
     controllers:
       bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16
+            envFrom: &envFrom
+              - secretRef:
+                  name: bazarr-secret
         containers:
           app:
             image:
@@ -41,9 +44,7 @@ spec:
               tag: 1.4.5@sha256:c0bf91443c32f3978777b4ddd2732908f51b157bbe00cd3259b23f7716bb4af7
             env:
               TZ: Europe/Sofia
-            envFrom:
-              - secretRef:
-                  name: bazarr-secret
+            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true
@@ -112,21 +113,8 @@ spec:
     persistence:
       add-ons:
         type: emptyDir
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cache
       config:
-        enabled: true
-        type: persistentVolumeClaim
-        size: 5Gi
-        accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
-      log:
         type: emptyDir
-        globalMounts:
-          - path: /config/log
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}

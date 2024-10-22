@@ -1,18 +1,15 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app external-dns-cloudflare
+  name: &app nvdp-config
   namespace: flux-system
 spec:
-  targetNamespace: network
+  targetNamespace: kube-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-  path: ./kubernetes/main/apps/network/external-dns/cloudflare
+  path: ./kubernetes/main/apps/kube-system/nvidia-device-plugin/config
   prune: false
   sourceRef:
     kind: GitRepository
@@ -21,20 +18,19 @@ spec:
   interval: 30m
   timeout: 5m
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app external-dns-rfc2136
+  name: &app nvdp
   namespace: flux-system
 spec:
-  targetNamespace: network
+  dependsOn:
+    - name: nvdp-config
+  targetNamespace: kube-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets-stores
-  path: ./kubernetes/main/apps/network/external-dns/RFC3645
+  path: ./kubernetes/main/apps/kube-system/nvidia-device-plugin/app
   prune: false
   sourceRef:
     kind: GitRepository

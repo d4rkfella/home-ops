@@ -49,7 +49,7 @@ spec:
               SERVER_CITIES: Zurich
               PUID: 568
               PGID: 568
-              DNS_ADDRESS: 172.17.0.10
+              DNS_KEEP_NAMESERVER: on
             envFrom:
               - secretRef:
                   name: gluetun-secret

@@ -57,7 +57,7 @@ spec:
               runAsUser: 0
               runAsGroup: 0
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
               seccompProfile: { type: RuntimeDefault }
             resources:
@@ -176,3 +176,10 @@ spec:
           qbittorrent:
             vpn:
               - path: /tmp/gluetun
+      gluetun:
+        enabled: true
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            vpn:
+              - path: /gluetun

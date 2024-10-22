@@ -24,3 +24,7 @@ spec:
       retries: 3
   values:
     runtimeClassName: nvidia
+    gfd:
+      enabled: true
+    nfd:
+      enableNodeFeatureApi: true

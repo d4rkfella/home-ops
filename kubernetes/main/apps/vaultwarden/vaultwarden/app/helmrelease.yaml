@@ -33,7 +33,7 @@ spec:
     image:
       registry: docker.io
       repository: vaultwarden/server
-      tag: 1.32.2-alpine
+      tag: 1.32.2-alpine@sha256:7d69bfbf51b74a93e951f9949e7ce772e22ef0161afca8f1403d7144b2bc868d
       pullPolicy: IfNotPresent
     commonAnnotations:
       reloader.stakater.com/auto: "true"

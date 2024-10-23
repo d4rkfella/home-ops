@@ -8,7 +8,7 @@ metadata:
 data:
   config.yaml: |
     endpoints:
-      - name: gatus-cnpg
+      - name: postgres17
         group: infrastructure
         url: tcp://postgres17-rw.database.svc.cluster.local:5432
         interval: 1m

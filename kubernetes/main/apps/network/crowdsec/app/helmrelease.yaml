@@ -33,7 +33,7 @@ spec:
     agent:
       wait_for_lapi:
         image:
-          tag: "1.36"
+          tag: "1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83"
       acquisition:
         - namespace: traefik
           podName: traefik-*

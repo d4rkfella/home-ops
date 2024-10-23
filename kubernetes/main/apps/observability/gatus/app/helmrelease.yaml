@@ -31,7 +31,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 16
+              tag: 16.3@sha256:9c136223fb4e05b0ca24e2350c2dc45843110d0e1d09615c52c9a037628c09fa
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret

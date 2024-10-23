@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./dns-config.yaml
   - ./flux-verify.yaml
+  - ./hostpath-readonly.yaml

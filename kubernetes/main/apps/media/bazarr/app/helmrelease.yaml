@@ -30,6 +30,15 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         initContainers:
+          copy-secret:
+            image:
+              repository: busybox
+              tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
+            command: ['sh', '-c', 'cp /secrets/config.yaml /config/config/config.yaml']
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
           init-db:
             image:
               repository: ghcr.io/onedr0p/postgres-init
@@ -120,7 +129,7 @@ spec:
         name: bazarr-config
         globalMounts:
           - readOnly: true
-            path: /config/config/config.yaml
+            path: /secrets/config.yaml
             subPath: config.yaml
       media:
         type: nfs

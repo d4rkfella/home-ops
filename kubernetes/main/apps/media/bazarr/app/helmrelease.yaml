@@ -35,7 +35,7 @@ spec:
               repository: busybox
               tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
             command: ['sh', '-c', 'mkdir -p /config/config && cp /secrets/config.yaml /config/config/config.yaml']
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -43,6 +43,7 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16
+            securityContext: *securityContext
             envFrom: &envFrom
               - secretRef:
                   name: bazarr-secret
@@ -67,10 +68,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m

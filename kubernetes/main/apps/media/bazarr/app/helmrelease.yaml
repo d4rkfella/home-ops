@@ -115,12 +115,13 @@ spec:
         type: emptyDir
       config:
         type: emptyDir
-      config.yaml:
+      secret-file:
         type: secret
         name: bazarr-config
         globalMounts:
           - readOnly: true
-            path: /config/config
+            path: /config/config/config.yaml
+            subPath: config.yaml
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}

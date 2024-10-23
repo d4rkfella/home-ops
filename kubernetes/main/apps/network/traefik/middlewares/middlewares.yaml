@@ -100,6 +100,7 @@ spec:
         - 104.24.0.0/14
         - 172.64.0.0/13
         - 131.0.72.0/22
+        - 172.16.0.0/16
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
@@ -121,7 +122,7 @@ spec:
     traefik-themepark:
       app: bazarr
       baseUrl: https://theme-park.${PUBLIC_DOMAIN}
-      theme: aquamarine
+      theme: mind
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

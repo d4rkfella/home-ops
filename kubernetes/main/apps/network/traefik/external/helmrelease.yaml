@@ -67,13 +67,6 @@ spec:
         enabled: false
       healthcheck:
         enabled: false
-        matchRule: PathPrefix(`/ping`)
-        services:
-          - name: ping@internal
-            kind: TraefikService
-        entryPoints:
-          - traefik
-        tls: {}
     updateStrategy:
       type: RollingUpdate
       rollingUpdate:

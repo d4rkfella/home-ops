@@ -4,7 +4,7 @@ metadata:
     name: authentik-outpost
 spec:
     rules:
-        - host: authentik.${PUBLIC_DOMAIN}
+        - host: auth.${PUBLIC_DOMAIN}
           http:
               paths:
                   - path: /outpost.goauthentik.io

@@ -36,7 +36,7 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-        className: external
+        ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}
         paths:

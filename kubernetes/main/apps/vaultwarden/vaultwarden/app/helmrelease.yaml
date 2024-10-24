@@ -103,7 +103,7 @@ spec:
     ingress:
       enabled: true
       class: external
-      nginxIngressAnnotations: false
+      nginxIngressAnnotations: true
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
       hostname: vaultwarden.${PUBLIC_DOMAIN}

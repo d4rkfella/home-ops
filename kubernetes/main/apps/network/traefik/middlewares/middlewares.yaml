@@ -87,6 +87,7 @@ metadata:
 spec:
   chain:
     middlewares:
+      - name: buffering
       - name: ratelimit
       - name: secure-headers
       - name: compress

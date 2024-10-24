@@ -35,10 +35,10 @@ spec:
         image:
           tag: "1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83"
       acquisition:
-        - namespace: traefik
-          podName: traefik-*
-          program: traefik
-        - namespace: jellyseerr
+        - namespace: network
+          podName: nginx-external-controller-*
+          program: nginx
+        - namespace: media
           podName: jellyseerr-*
           program: jellyseerr
         - namespace: authentik
@@ -51,7 +51,7 @@ spec:
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
         - name: COLLECTIONS
-          value: "LePresidente/jellyseerr crowdsecurity/traefik firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+          value: "LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
       metrics:
         enabled: true
         serviceMonitor:

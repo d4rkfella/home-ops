@@ -154,7 +154,7 @@ spec:
             requestAcceptGraceTimeout: 60
             graceTimeOut: 120
           keepAliveMaxRequests: 10000
-          keepAliveMaxTime: 120
+          keepAliveMaxTime: 180
         tls:
           enabled: true
           option: default

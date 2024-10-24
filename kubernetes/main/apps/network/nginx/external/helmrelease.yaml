@@ -43,8 +43,8 @@ spec:
             - name: API_KEY
               valueFrom:
                 secretKeyRef:
-                  - name: nginx-external-secret
-                    key: BOUNCER_API_KEY
+                  name: nginx-external-secret
+                  key: BOUNCER_API_KEY
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
           command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]

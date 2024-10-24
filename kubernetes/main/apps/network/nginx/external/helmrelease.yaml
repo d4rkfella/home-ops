@@ -106,7 +106,7 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/darkfellanet-tls
-      terminationGracePeriodSeconds: 120
+      terminationGracePeriodSeconds: 110
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname

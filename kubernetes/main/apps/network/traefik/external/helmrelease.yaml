@@ -159,7 +159,7 @@ spec:
           enabled: true
           option: default
         middlewares:
-          - network-chain-basic@kubernetescrd
+          - network-chain-external@kubernetescrd
       metrics:
         port: 9100
         expose:

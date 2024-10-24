@@ -127,7 +127,7 @@ spec:
         tls:
           enabled: true
         middlewares:
-          - network-chain-basic@kubernetescrd
+          - network-chain-internal@kubernetescrd
       metrics:
         port: 9100
         expose:

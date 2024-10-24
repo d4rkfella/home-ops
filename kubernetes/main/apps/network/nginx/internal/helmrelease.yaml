@@ -29,7 +29,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: internal.${PUBLIC_DOMAIN}
-          lbipam.cilium.io/ips: 192.168.91.95
+          lbipam.cilium.io/ips: 192.168.91.97
       ingressClassResource:
         name: internal
         default: true

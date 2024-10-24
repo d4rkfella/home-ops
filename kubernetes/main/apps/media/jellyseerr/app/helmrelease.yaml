@@ -82,7 +82,7 @@ spec:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-        className: internal
+        className: external
         hosts:
           - host: requests.${PUBLIC_DOMAIN}
             paths:

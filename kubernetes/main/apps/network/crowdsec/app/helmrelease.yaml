@@ -25,11 +25,6 @@ spec:
       retries: 3
   values:
     container_runtime: containerd
-    tls:
-      enabled: false
-      caBundle: true
-      certManager:
-        enabled: true
     agent:
       wait_for_lapi:
         image:

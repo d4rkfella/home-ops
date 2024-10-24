@@ -3,7 +3,7 @@
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: &secret overseerr-volsync-secret
+  name: &secret jellyseerr-volsync-secret
 spec:
   secretStoreRef:
     kind: ClusterSecretStore
@@ -14,7 +14,7 @@ spec:
     template:
       engineVersion: v2
       data:
-        RESTIC_REPOSITORY: '{{ .RESTIC_REPOSITORY }}/overseerr/volsync'
+        RESTIC_REPOSITORY: '{{ .RESTIC_REPOSITORY }}/jellyseerr/volsync'
         RESTIC_PASSWORD: '{{ .ENCRYPTION_KEY }}'
         AWS_ACCESS_KEY_ID: '{{ .CF_ACCESS_KEY_ID }}'
         AWS_SECRET_ACCESS_KEY: '{{ .CF_SECRET_ACCESS_KEY }}'
@@ -28,15 +28,15 @@ spec:
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
-  name: overseerr
+  name: jellyseerr
 spec:
-  sourcePVC: overseerr-config
+  sourcePVC: jellyseerr-config
   trigger:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 7
-    repository: overseerr-volsync-secret
+    repository: jellyseerr-volsync-secret
     cacheCapacity: 2Gi
     moverSecurityContext:
       runAsUser: 568

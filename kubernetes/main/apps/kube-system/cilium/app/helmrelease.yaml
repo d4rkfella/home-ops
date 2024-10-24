@@ -54,7 +54,7 @@ spec:
           enabled: true
           annotations:
             external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-            kubernetes.io/ingress.class: internal
+          className: internal
           hosts: ["hubble.${PUBLIC_DOMAIN}"]
     operator:
       prometheus:

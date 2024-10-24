@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helm-release.yaml
+  - ./ingress.yaml
   - ../../../../templates/gatus/external

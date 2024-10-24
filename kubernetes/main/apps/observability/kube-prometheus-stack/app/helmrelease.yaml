@@ -39,9 +39,6 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          kubernetes.io/ingress.class: internal
-          traefik.ingress.kubernetes.io/router.middlewares: network-authentik@kubernetescrd
-
         hosts: ["alertmanager.${PUBLIC_DOMAIN}"]
         pathType: Prefix
       alertmanagerSpec:
@@ -75,9 +72,6 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          kubernetes.io/ingress.class: internal
-          traefik.ingress.kubernetes.io/router.middlewares: network-authentik@kubernetescrd
-
         hosts: ["prometheus.${PUBLIC_DOMAIN}"]
         pathType: Prefix
       prometheusSpec:

@@ -147,8 +147,8 @@ spec:
           insecure: false
         transport:
           respondingTimeouts:
-            readTimeout: 30
-            writeTimeout: 30
+            readTimeout: 60
+            writeTimeout: 60
             idleTimeout: 120
           lifeCycle:
             requestAcceptGraceTimeout: 60

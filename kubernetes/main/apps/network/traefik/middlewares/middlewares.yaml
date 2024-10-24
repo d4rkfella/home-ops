@@ -5,8 +5,8 @@ metadata:
 spec:
   buffering:
     maxRequestBodyBytes: 1000000000
-    memRequestBodyBytes: 1000000
-    memResponseBodyBytes: 30000000
+    memRequestBodyBytes: 1048576
+    memResponseBodyBytes: 16384
     maxResponseBodyBytes: 1000000000
 ---
 apiVersion: traefik.io/v1alpha1

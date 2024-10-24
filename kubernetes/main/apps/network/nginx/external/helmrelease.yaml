@@ -30,6 +30,31 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
+      extraVolumes:
+        - name: crowdsec-bouncer-plugin
+          emptyDir: {}
+      extraInitContainers:
+        - name: init-clone-crowdsec-bouncer
+          image: crowdsecurity/lua-bouncer-plugin
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: API_URL
+              value: "http://crowdsec-service.network.svc.cluster.local:8080"
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  - name: nginx-external-secret
+                    key: BOUNCER_API_KEY
+            - name: BOUNCER_CONFIG
+              value: "/crowdsec/crowdsec-bouncer.conf"
+          command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
+          volumeMounts:
+          - name: crowdsec-bouncer-plugin
+            mountPath: /lua_plugins
+      extraVolumeMounts:
+        - name: crowdsec-bouncer-plugin
+          mountPath: /etc/nginx/lua/plugins/crowdsec
+          subPath: crowdsec
       replicaCount: 2
       service:
         annotations:
@@ -47,6 +72,8 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
+        plugins: "crowdsec"
+        lua-shared-dicts: "crowdsec_cache: 50m"
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
         client-body-buffer-size: 100M
         client-body-timeout: 120

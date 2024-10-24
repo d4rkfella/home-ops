@@ -159,10 +159,7 @@ spec:
           enabled: true
           option: default
         middlewares:
-          - network-limit@kubernetescrd
           - network-chain-basic@kubernetescrd
-          - network-realip@kubernetescrd
-          - network-bouncer@kubernetescrd
       metrics:
         port: 9100
         expose:

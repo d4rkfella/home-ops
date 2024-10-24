@@ -75,6 +75,8 @@ spec:
     middlewares:
       - name: basic-ratelimit
       - name: basic-secure-headers
+      - name: realip
+      - name: bouncer
       - name: compress
 ---
 apiVersion: traefik.io/v1alpha1
@@ -100,7 +102,6 @@ spec:
         - 104.24.0.0/14
         - 172.64.0.0/13
         - 131.0.72.0/22
-        - 172.16.0.0/16
 ---
 apiVersion: traefik.io/v1alpha1
 kind: Middleware

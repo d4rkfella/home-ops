@@ -153,7 +153,7 @@ spec:
           lifeCycle:
             requestAcceptGraceTimeout: 60
             graceTimeOut: 120
-          keepAliveMaxRequests: 1000
+          keepAliveMaxRequests: 10000
           keepAliveMaxTime: 180
         tls:
           enabled: true

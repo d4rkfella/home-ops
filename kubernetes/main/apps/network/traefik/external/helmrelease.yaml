@@ -1,195 +1,98 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/traefik/traefik-helm-chart/refs/heads/master/traefik/values.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: traefik-external
+  name: nginx-external
 spec:
   interval: 30m
   chart:
     spec:
-      chart: traefik
-      version: 32.1.1
+      chart: ingress-nginx
+      version: 4.11.3
       sourceRef:
         kind: HelmRepository
-        name: traefik
+        name: ingress-nginx
         namespace: flux-system
-  maxHistory: 3
   install:
-    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
     remediation:
-      retries: 3
       strategy: rollback
+      retries: 3
+  #valuesFrom:
+    #- targetPath: controller.maxmindLicenseKey
+      #kind: Secret
+      #name: nginx-external-maxmind-secret
+      #valuesKey: MAXMIND_LICENSE_KEY
   values:
-    resources:
-      requests:
-        cpu: "100m"
-        memory: "128Mi"
-      limits:
-        cpu: "500m"
-        memory: "1024Mi"
-    tlsStore:
-        default:
-          certificates:
-            - secretName: darkfellanet-tls
-          defaultCertificate:
-            secretName: darkfellanet-tls
-    securityContext:
-      seccompProfile:
-        type: RuntimeDefault
-    deployment:
-      annotations:
-        reloader.stakater.com/auto: "true"
-      ingressClass:
-        enabled: true
-        isDefaultClass: false
+    fullnameOverride: nginx-external
+    controller:
+      replicaCount: 2
+      service:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: external.${PUBLIC_DOMAIN}
+          lbipam.cilium.io/ips: 192.168.91.95
+      ingressClassResource:
         name: external
-      enabled: true
-      kind: Deployment
-      replicas: null
-      revisionHistoryLimit: 5
-      terminationGracePeriodSeconds: 60
-      minReadySeconds: 0
-      healthchecksPort: 9000
-      healthchecksScheme: HTTP
-      additionalVolumes:
-        - name: plugins
-      shareProcessNamespace: false
-      dnsPolicy: ""
-      dnsConfig: {}
-    ingressRoute:
-      dashboard:
-        enabled: false
-      healthcheck:
-        enabled: false
-    updateStrategy:
-      type: RollingUpdate
-      rollingUpdate:
-        maxUnavailable: 0
-        maxSurge: 1
-    providers:
-      kubernetesCRD:
-        enabled: true
-        ingressClass: external
-      kubernetesIngress:
-        enabled: true
-        allowExternalNameServices: false
-        allowEmptyServices: true
-        ingressClass: external
-        publishedService:
-          enabled: false
-    volumes:
-      - name: crowdsec-bouncer-tls
-        mountPath: /etc/traefik/crowdsec-certs
-        type: secret
-    additionalVolumeMounts:
-      - name: plugins
-        mountPath: /plugins-storage
-    logs:
-      general:
-        level: INFO
-      access:
-        enabled: true
-    metrics:
-      addInternals: false
-      prometheus:
-        entryPoint: metrics
-        addEntryPointsLabels: null
-        addRoutersLabels: null
-        addServicesLabels: null
-        buckets: ""
-        manualRouting: false
-        service:
-          enabled: true
-          labels: {}
-          annotations: {}
-        disableAPICheck: false
-    globalArguments:
-      - --global.checknewversion
-    additionalArguments:
-      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.modulename=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
-      - --experimental.plugins.crowdsec-bouncer-traefik-plugin.version=v1.3.3
-      - --experimental.plugins.traefik-themepark.modulename=github.com/packruler/traefik-themepark
-      - --experimental.plugins.traefik-themepark.version=v1.4.1
-      - --experimental.plugins.traefik-real-ip.modulename=github.com/jramsgz/traefik-real-ip
-      - --experimental.plugins.traefik-real-ip.version=v1.0.6
-    ports:
-      web:
-        expose:
-          default: false
-      websecure:
-        asDefault: true
-        port: 443
-        targetPort: 443
-        protocol: TCP
-        forwardedHeaders:
-          trustedIPs:
-            - 173.245.48.0/20
-            - 103.21.244.0/22
-            - 103.22.200.0/22
-            - 103.31.4.0/22
-            - 141.101.64.0/18
-            - 108.162.192.0/18
-            - 190.93.240.0/20
-            - 188.114.96.0/20
-            - 197.234.240.0/22
-            - 198.41.128.0/17
-            - 162.158.0.0/15
-            - 104.16.0.0/13
-            - 104.24.0.0/14
-            - 172.64.0.0/13
-            - 131.0.72.0/22
-          insecure: false
-        transport:
-          respondingTimeouts:
-            readTimeout: 20
-            writeTimeout: 20
-            idleTimeout: 120
-          lifeCycle:
-            requestAcceptGraceTimeout: 60
-            graceTimeOut: 120
-          keepAliveMaxRequests: 10000
-          keepAliveMaxTime: 180
-        tls:
-          enabled: true
-          option: default
-        middlewares:
-          - network-chain-external@kubernetescrd
+        default: false
+        controllerValue: k8s.io/external
+      admissionWebhooks:
+        objectSelector:
+          matchExpressions:
+            - key: ingress-class
+              operator: In
+              values: ["external"]
+      allowSnippetAnnotations: true
+      config:
+        block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
+        client-body-buffer-size: 100M
+        client-body-timeout: 120
+        client-header-timeout: 120
+        enable-brotli: "true"
+        enable-ocsp: "true"
+        enable-real-ip: "true"
+        force-ssl-redirect: "true"
+        hide-headers: Server,X-Powered-By
+        hsts-max-age: 31449600
+        keep-alive-requests: 10000
+        keep-alive: 120
+        log-format-escape-json: "true"
+        log-format-upstream: >
+          {"time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr", "x_forwarded_for": "$proxy_add_x_forwarded_for",
+          "request_id": "$req_id", "remote_user": "$remote_user", "bytes_sent": $bytes_sent, "request_time": $request_time,
+          "status": $status, "vhost": "$host", "request_proto": "$server_protocol", "path": "$uri", "request_query": "$args",
+          "request_length": $request_length, "duration": $request_time, "method": "$request_method", "http_referrer": "$http_referer",
+          "http_user_agent": "$http_user_agent", "country_code": "$geoip2_city_country_code", "country_name": "$geoip2_city_country_name"}
+        proxy-body-size: 0
+        proxy-buffer-size: 16k
+        ssl-protocols: TLSv1.3
+        use-geoip2: false
+        use-forwarded-headers: "true"
       metrics:
-        port: 9100
-        expose:
-          default: false
-        exposedPort: 9100
-        protocol: TCP
-    tlsOptions:
-      default:
-        sniStrict: true
-        minVersion: VersionTLS13
-        curvePreferences:
-          - CurveP521
-          - CurveP384
-          - X25519
-    service:
-      enabled: true
-      single: true
-      type: LoadBalancer
-      annotations:
-        lbipam.cilium.io/ips: 192.168.91.95
-        external-dns.alpha.kubernetes.io/hostname: external.${PUBLIC_DOMAIN}
-      spec:
-        allocateLoadBalancerNodePorts: false
-    autoscaling:
-      enabled: true
-      maxReplicas: 2
-      metrics:
-      - type: Resource
-        resource:
-          name: cpu
-          target:
-            type: Utilization
-            averageUtilization: 80
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespaceSelector:
+            any: true
+      extraArgs:
+        default-ssl-certificate: network/darkfellanet-tls
+      terminationGracePeriodSeconds: 120
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/instance: nginx-external
+              app.kubernetes.io/component: controller
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          memory: 500Mi
+    defaultBackend:
+      enabled: false

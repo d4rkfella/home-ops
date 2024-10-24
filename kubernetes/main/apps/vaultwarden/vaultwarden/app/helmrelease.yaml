@@ -102,11 +102,10 @@ spec:
       authMechanism: Login
     ingress:
       enabled: true
-      class: {}
+      class: external
       nginxIngressAnnotations: false
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-        kubernetes.io/ingress.class: external
       hostname: vaultwarden.${PUBLIC_DOMAIN}
       path: /
       pathType: Prefix

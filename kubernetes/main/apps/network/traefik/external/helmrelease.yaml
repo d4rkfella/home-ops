@@ -144,13 +144,12 @@ spec:
             - 104.24.0.0/14
             - 172.64.0.0/13
             - 131.0.72.0/22
-            - 172.16.0.0/16
           insecure: false
         transport:
           respondingTimeouts:
-            readTimeout: 120
-            writeTimeout: null
-            idleTimeout: 180
+            readTimeout: 30
+            writeTimeout: 30
+            idleTimeout: 120
           lifeCycle:
             requestAcceptGraceTimeout: 60
             graceTimeOut: 120

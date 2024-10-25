@@ -147,6 +147,10 @@ spec:
               Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
           nginx.ingress.kubernetes.io/auth-snippet: |
               proxy_set_header X-Forwarded-Host $http_host;
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+              proxy_set_header Accept-Encoding "";
+              sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/vuetorrent/mind.css"></body>';
+              sub_filter_once on;
         className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

@@ -5,7 +5,7 @@ metadata:
 spec:
     ingressClassName: external
     rules:
-        - host: auth.${PUBLIC_DOMAIN}
+        - host: authentik.${PUBLIC_DOMAIN}
           http:
               paths:
                   - path: /outpost.goauthentik.io

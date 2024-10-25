@@ -7,6 +7,7 @@ security:
     client-secret: $${OIDC_CLIENT_SECRET}
     redirect-url: https://status.${PUBLIC_DOMAIN}/authorization-code/callback
     scopes: [openid]
+    allowed-subjects: [3fdbb2d8-14af-45ec-8f5b-fe3793716438]
 web:
   port: $${WEB_PORT}
 storage:

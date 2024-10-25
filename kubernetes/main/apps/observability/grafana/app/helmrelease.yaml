@@ -52,17 +52,13 @@ spec:
           auth_url: "https://authentik.${PUBLIC_DOMAIN}/application/o/authorize/"
           token_url: "https://authentik.${PUBLIC_DOMAIN}/application/o/token/"
           api_url: "https://authentik.${PUBLIC_DOMAIN}/application/o/userinfo/"
-          # Optionally map user groups to Grafana roles
           role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
       analytics:
         check_for_updates: false
         check_for_plugin_updates: false
         reporting_enabled: false
       auth.anonymous:
-        enabled: true
-        org_id: 1
-        org_name: Main Org.
-        org_role: Viewer
+        enabled: false
       news:
         news_feed_enabled: false
     datasources:

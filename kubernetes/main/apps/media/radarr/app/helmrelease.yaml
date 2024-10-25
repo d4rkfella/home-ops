@@ -109,9 +109,7 @@ spec:
               proxy_set_header X-Forwarded-Host $http_host;
           nginx.ingress.kubernetes.io/configuration-snippet: |
               proxy_set_header Accept-Encoding "";
-              sub_filter
-              '</body>'
-              '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>;
+              sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>';
               sub_filter_once on;
         className: internal
         hosts:

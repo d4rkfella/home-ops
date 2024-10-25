@@ -53,9 +53,16 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: media
+        - name: cert
+          secret:
+            secretName: darkfellanet-tls
+            optional: false
       volumeMounts:
         - name: media
           mountPath: /media
+        - name: cert
+          mountPath: /certs
+          readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

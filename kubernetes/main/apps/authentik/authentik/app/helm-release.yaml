@@ -31,6 +31,15 @@ spec:
       envFrom:
         - secretRef:
             name: authentik-global-vars-secret
+      volumes:
+        - name: cert
+          secret:
+            secretName: darkfellanet-tls
+            optional: false
+      volumeMounts:
+        - name: cert
+          mountPath: /certs
+          readOnly: true
     server:
       ingress:
         enabled: true
@@ -53,16 +62,9 @@ spec:
         - name: media
           persistentVolumeClaim:
             claimName: media
-        - name: cert
-          secret:
-            secretName: darkfellanet-tls
-            optional: false
       volumeMounts:
         - name: media
           mountPath: /media
-        - name: cert
-          mountPath: /certs
-          readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
     name: authentik-outpost
 spec:
+    ingressClassName: external
     rules:
         - host: auth.${PUBLIC_DOMAIN}
           http:

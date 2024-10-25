@@ -58,6 +58,8 @@ spec:
         reporting_enabled: false
       auth.anonymous:
         enabled: false
+      auth.basic:
+        enabled: false
       news:
         news_feed_enabled: false
     datasources:

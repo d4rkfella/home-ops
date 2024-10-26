@@ -32,7 +32,7 @@ spec:
       additionalAcquisition:
         - source: appsec
           appsec_config: crowdsecurity/appsec-default
-          listen_addr: 127.0.0.1
+          listen_addr: 0.0.0.0
           listen_port: 7422
           name: AppSec
           labels:

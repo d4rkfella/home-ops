@@ -55,6 +55,13 @@ spec:
         config:
           enabled: true
     lapi:
+      extraVolumes:
+        - name: pushover-config
+          secret:
+            name: crowdsec-notifications-config
+      extraVolumeMounts:
+        - name: pushover-config
+          mountPath: /etc/crowdsec/notifications/http.yaml
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       extraInitContainers:

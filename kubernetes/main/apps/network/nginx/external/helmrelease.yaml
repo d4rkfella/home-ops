@@ -80,7 +80,7 @@ spec:
           SecRuleEngine On
           SecRequestBodyAccess On
           SecAuditLogType Serial
-          SecAuditLog /dev/stdout
+          SecAuditLog /var/log/nginx/modsec.log
           SecAuditLogParts ABIJDEFHZ
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 50m"

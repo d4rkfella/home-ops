@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/fallenbagel/jellyseerr
-              tag: develop@sha256:ab4f233907fddcb7153ccecf66f116d5ffc8d3308dc8357d0bd230ccd74cf516
+              tag: develop@sha256:f550e1f7fdf8c493f556d69e2d9ce304421628819d298838483311693b6e1703
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"

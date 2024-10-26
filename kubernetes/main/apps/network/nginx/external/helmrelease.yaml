@@ -79,10 +79,9 @@ spec:
         modsecurity-snippet: |-
           SecRuleEngine On
           SecRequestBodyAccess On
-          SecAuditLogType Concurrent
           SecAuditLog /var/log/modsec_audit.log
-          SecAuditLogStorageDir /var/log/audit/
           SecAuditLogParts ABIJDEFHZ
+          SecAuditEngine RelevantOnly
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 50m"
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go

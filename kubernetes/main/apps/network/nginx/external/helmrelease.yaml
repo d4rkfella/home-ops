@@ -79,8 +79,9 @@ spec:
         modsecurity-snippet: |-
           SecRuleEngine On
           SecRequestBodyAccess On
-          SecAuditLogType Serial
-          SecAuditLog /var/log/nginx/modsec.log
+          SecAuditLogType Concurrent
+          SecAuditLog /var/log/modsec_audit.log
+          SecAuditLogStorageDir /var/log/audit/
           SecAuditLogParts ABIJDEFHZ
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 50m"

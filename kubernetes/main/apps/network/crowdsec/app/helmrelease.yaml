@@ -63,6 +63,9 @@ spec:
         - name: pushover-config
           mountPath: /etc/crowdsec_data/notifications/http.yaml
           subPath: http.yaml
+        - name: profiles
+          mountPath: /etc/crowdsec_data/profiles.yaml
+          subPath: profiles.yaml
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       extraInitContainers:

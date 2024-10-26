@@ -46,7 +46,7 @@ spec:
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
         - name: COLLECTIONS
-          value: "LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+          value: "crowdsecurity/modsecurity LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
       metrics:
         enabled: true
         serviceMonitor:

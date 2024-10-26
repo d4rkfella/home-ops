@@ -36,6 +36,7 @@ spec:
         - name: crowdsec-bouncer-config
           secret:
             secretName: crowdsec-bouncer-config
+            defaultMode: 0400
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin
@@ -51,9 +52,11 @@ spec:
         - name: crowdsec-bouncer-plugin
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
+          readOnly: true
         - name: crowdsec-bouncer-config
           mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
           subPath: crowdsec-bouncer.conf
+          readOnly: true
       replicaCount: 2
       service:
         annotations:

@@ -43,16 +43,17 @@ spec:
           command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
           env:
             - name: BOUNCER_CONFIG
-              value: "/crowdsec-config/crowdsec-bouncer.conf"
+              value: "/crowdsec/crowdsec-bouncer.conf"
           volumeMounts:
           - name: crowdsec-bouncer-plugin
             mountPath: /lua_plugins
-          - name: crowdsec-bouncer-config
-            mountPath: /crowdsec-config
       extraVolumeMounts:
         - name: crowdsec-bouncer-plugin
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
+        - name: crowdsec-bouncer-config
+          mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
+          subPath: crowdsec-bouncer.conf
       replicaCount: 2
       service:
         annotations:

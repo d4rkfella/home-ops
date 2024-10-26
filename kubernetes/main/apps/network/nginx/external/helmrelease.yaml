@@ -64,7 +64,7 @@ spec:
         - name: cert-dir
           mountPath: /etc/ingress-controller/ssl
         - name: tmp
-          mountPath: /tmp
+          mountPath: /tmp/nginx
       replicaCount: 2
       service:
         annotations:

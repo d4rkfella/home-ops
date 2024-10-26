@@ -57,8 +57,7 @@ spec:
     lapi:
       extraVolumes:
         - name: pushover-config
-          secret:
-            name: crowdsec-notifications-config
+          secretName: crowdsec-notifications-config
       extraVolumeMounts:
         - name: pushover-config
           mountPath: /etc/crowdsec/notifications/http.yaml

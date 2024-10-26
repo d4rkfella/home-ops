@@ -61,7 +61,7 @@ spec:
             secretName: crowdsec-notifications-config
       extraVolumeMounts:
         - name: pushover-config
-          mountPath: /etc/crowdsec/notifications/http.yaml
+          mountPath: /etc/crowdsec_data/notifications/http.yaml
           subPath: http.yaml
       deployAnnotations:
         reloader.stakater.com/auto: "true"

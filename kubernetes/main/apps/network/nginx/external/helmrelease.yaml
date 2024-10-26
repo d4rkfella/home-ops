@@ -37,6 +37,8 @@ spec:
           emptyDir: {}
         - name: cert-dir
           emptyDir: {}
+        - name: tmp
+          emptyDir: {}
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin
@@ -61,6 +63,8 @@ spec:
           subPath: crowdsec
         - name: cert-dir
           mountPath: /etc/ingress-controller/ssl
+        - name: tmp
+          mountPath: /tmp
       replicaCount: 2
       service:
         annotations:

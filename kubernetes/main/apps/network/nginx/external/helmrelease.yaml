@@ -30,16 +30,8 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      image:
-        readOnlyRootFilesystem: true
       extraVolumes:
         - name: crowdsec-bouncer-plugin
-          emptyDir: {}
-        - name: cert-dir
-          emptyDir: {}
-        - name: tmp
-          emptyDir: {}
-        - name: telemetry
           emptyDir: {}
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
@@ -63,12 +55,6 @@ spec:
         - name: crowdsec-bouncer-plugin
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
-        - name: cert-dir
-          mountPath: /etc/ingress-controller/ssl
-        - name: telemetry
-          mountPath: /etc/ingress-controller/telemetry
-        - name: tmp
-          mountPath: /tmp/nginx
       replicaCount: 2
       service:
         annotations:

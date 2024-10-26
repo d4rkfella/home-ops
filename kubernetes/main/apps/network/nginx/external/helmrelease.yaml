@@ -33,22 +33,13 @@ spec:
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}
+        - name: crowdsec-bouncer-config
+          secret:
+            secretName: crowdsec-bouncer-config
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin
           imagePullPolicy: IfNotPresent
-          env:
-            - name: MODE
-              value: "stream"
-            - name: API_URL
-              value: "http://crowdsec-service.network.svc.cluster.local:8080"
-            - name: API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: nginx-external-secret
-                  key: BOUNCER_API_KEY
-            - name: BOUNCER_CONFIG
-              value: "/crowdsec/crowdsec-bouncer.conf"
           command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
           volumeMounts:
           - name: crowdsec-bouncer-plugin
@@ -57,6 +48,9 @@ spec:
         - name: crowdsec-bouncer-plugin
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
+        - name: crowdsec-bouncer-config
+          mountPath: /etc/nginx/lua/plugins/crowdsec
+          subPath: crowdsec-bouncer.conf
       replicaCount: 2
       service:
         annotations:

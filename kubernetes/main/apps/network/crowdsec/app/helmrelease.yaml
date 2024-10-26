@@ -29,6 +29,13 @@ spec:
       wait_for_lapi:
         image:
           tag: "1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83"
+      additionalAcquisition:
+        - source: appsec
+          appsec_config: crowdsecurity/appsec-default
+          listen_addr: 127.0.0.1:7422
+          name: AppSec
+          labels:
+            type: appsec
       acquisition:
         - namespace: network
           podName: nginx-external-controller-*
@@ -46,7 +53,7 @@ spec:
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
         - name: COLLECTIONS
-          value: "LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+          value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
       metrics:
         enabled: true
         serviceMonitor:

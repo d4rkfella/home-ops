@@ -38,6 +38,8 @@ spec:
           image: crowdsecurity/lua-bouncer-plugin
           imagePullPolicy: IfNotPresent
           env:
+            - name: MODE
+              value: "stream"
             - name: API_URL
               value: "http://crowdsec-service.network.svc.cluster.local:8080"
             - name: API_KEY

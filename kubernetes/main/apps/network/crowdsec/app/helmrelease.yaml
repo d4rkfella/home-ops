@@ -61,6 +61,7 @@ spec:
       extraVolumeMounts:
         - name: pushover-config
           mountPath: /etc/crowdsec/notifications/http.yaml
+          subPath: http.yaml
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       extraInitContainers:

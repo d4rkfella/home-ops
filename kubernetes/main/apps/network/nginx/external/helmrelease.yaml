@@ -30,7 +30,8 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      readOnlyRootFilesystem: true
+      image:
+        readOnlyRootFilesystem: true
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}

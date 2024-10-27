@@ -88,8 +88,10 @@ spec:
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-
-          SecRule REQUEST_HEADERS:X-Forwarded-For "@ipMatch 192.168.91.0/24" "id:1001,phase:1,pass,nolog,ctl:requestBodyAccess=off"
-          SecAction "id:900000,phase:1,pass,t:none,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=0"
+          SecRule REMOTE_ADDR "@ipMatch 192.168.91.0/24" "id:1001,phase:1,pass,nolog"
+          SecRule REQUEST_HEADERS:X-Forwarded-For "@ipMatch 192.168.91.0/24" "id:1002,phase:1,pass,nolog"
+          SecRule REQUEST_HEADERS:X-Forwarded-For "@ipMatch 192.168.91.0/24" "id:1003,phase:2,pass,nolog"
+          SecAction "id:900000, phase:1, pass, t:none, setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=0"
           SecRuleEngine On
           SecRequestBodyAccess On
           SecAuditLog /var/log/modsec_audit.log

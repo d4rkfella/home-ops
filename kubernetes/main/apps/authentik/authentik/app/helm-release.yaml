@@ -45,17 +45,6 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-          nginx.ingress.kubernetes.io/server-snippet: |
-            set $modsecurity_enabled 1;  # Default: enabled
-
-            # Check if the X-Forwarded-For header contains an internal IP
-            if ($http_x_forwarded_for ~ "^(192\.168\.91\..*)") {
-                set $modsecurity_enabled 0;  # Disable ModSecurity for local subnet
-            }
-
-            if ($modsecurity_enabled = 0) {
-                modsecurity off;
-            }
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

@@ -88,6 +88,7 @@ spec:
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-
+          SecRule REQUEST_HEADERS:X-Forwarded-For "@ipMatch 192.168.91.0/24" "id:1001,phase:1,pass,nolog"
           SecRuleEngine On
           SecRequestBodyAccess On
           SecAuditLog /var/log/modsec_audit.log

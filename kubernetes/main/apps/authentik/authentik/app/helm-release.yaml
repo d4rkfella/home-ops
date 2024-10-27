@@ -51,7 +51,7 @@ spec:
                 t:none, \
                 chain"
             SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" \
-                "id:1001,phase:1,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=5
+                "id:1001,phase:1,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=5"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

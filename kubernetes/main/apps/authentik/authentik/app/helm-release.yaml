@@ -47,10 +47,22 @@ spec:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@beginsWith /api/" \
-                "id:1000,phase:1,pass,nolog,ctl:ruleRemoveById=911100"
+                "id:1000,\
+                phase:1,\
+                pass,\
+                nolog,\
+                ctl:ruleRemoveById=911100"
 
+            # Rule to check the request method and set anomaly score
             SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" \
-                "id:1001,phase:1,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=5,pass,nolog"
+                "id:1001,\
+                phase:1,\
+                pass,\
+                t:none,\
+                msg:'Method not allowed',\
+                logdata:'%{REQUEST_METHOD}',\
+                severity:'CRITICAL',\
+                setvar:'tx.anomaly_score_pl1=+%{tx.critical_anomaly_score}'"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

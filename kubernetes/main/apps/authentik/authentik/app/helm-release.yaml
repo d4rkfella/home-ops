@@ -45,6 +45,22 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/server-snippet: |
+            set $modsecurity_enabled 1;  # Default: enabled
+
+            # Disable ModSecurity for the specific subnet
+            if ($remote_addr ~ "^192\.168\.91\..*") {
+                set $modsecurity_enabled 0;  # Disable ModSecurity
+            }
+
+            # Apply ModSecurity based on the flag
+            modsecurity on;  # Enable ModSecurity
+            modsecurity_rules_file /etc/nginx/modsecurity/modsecurity.conf;  # Adjust to your rules file
+
+            # Disable ModSecurity if the flag is set to 0
+            if ($modsecurity_enabled = 0) {
+                modsecurity off;
+            }
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

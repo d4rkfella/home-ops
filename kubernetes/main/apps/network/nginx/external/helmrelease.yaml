@@ -37,9 +37,6 @@ spec:
           secret:
             secretName: crowdsec-bouncer-config
             defaultMode: 292
-        - name: authentik-crs-setup
-          configMap:
-            name: authentik-crs-config
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin:v1.0.5@sha256:90f5c611bebbbe89b8aef3218dad1df3bd9fbe51554024384b56026c69c55925
@@ -71,9 +68,6 @@ spec:
           mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
           subPath: crowdsec-bouncer.conf
           readOnly: true
-        - name: authentik-crs-setup
-          mountPath: /etc/nginx/owasp-modsecurity-crs/authentik-crs-setup.conf
-          subPath: authentik-crs-setup.conf
       replicaCount: 2
       service:
         annotations:

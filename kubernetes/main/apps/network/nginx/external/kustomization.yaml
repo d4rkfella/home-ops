@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: authentik-crs-config
-    files:
-      - authentik-crs-setup.conf=./resources/authentik-crs-config.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

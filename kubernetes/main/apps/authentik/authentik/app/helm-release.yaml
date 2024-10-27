@@ -48,8 +48,7 @@ spec:
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@beginsWith /api/" \
                 "id:1000,phase:1,pass,nolog,ctl:ruleRemoveById=911100"
-
-            SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" \
+            SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS PATCH" \
                 "log,deny,id:1001,status:403,msg:\'Method not allowed\'\"
         ingressClassName: external
         hosts:

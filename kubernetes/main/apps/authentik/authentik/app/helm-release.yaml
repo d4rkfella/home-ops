@@ -46,8 +46,8 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
-            SecRule REQUEST_URI "@beginsWith /api/" "id:1008,phase:1,pass,nolog,msg:'API path accessed'"
-            SecRule REQUEST_METHOD "^(GET|HEAD|POST|OPTIONS|PUT|DELETE)$" "id:1009,phase:1,pass,nolog,msg:'Allowed method on /api/'"
+            SecRule REQUEST_URI "@beginsWith /api/" "id:1006,phase:1,pass,nolog,ctl:ruleRemoveById=911100"
+            SecRule REQUEST_METHOD "^(GET|HEAD|POST|OPTIONS|PUT|DELETE)$" "id:1007,phase:1,pass,nolog"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

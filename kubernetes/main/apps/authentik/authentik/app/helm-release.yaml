@@ -47,7 +47,8 @@ spec:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@beginsWith /api/" "id:1000,phase:1,pass,nolog,ctl:ruleRemoveById=911100,chain"
-            SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" "id:1001,phase:1,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=5,deny,status:403"
+              SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" "id:1001,phase:1,setvar:TX:BLOCKING_INBOUND_ANOMALY_SCORE=5"
+              SecRule TX:BLOCKING_INBOUND_ANOMALY_SCORE "@ge 5" "id:1002,phase:1,deny,status:403"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

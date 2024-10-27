@@ -59,7 +59,6 @@ spec:
                 phase:1,\
                 pass,\
                 t:none,\
-                msg:'Method not allowed',\
                 logdata:'%{REQUEST_METHOD}',\
                 severity:'CRITICAL',\
                 setvar:'tx.anomaly_score_pl1=+%{tx.critical_anomaly_score}'"

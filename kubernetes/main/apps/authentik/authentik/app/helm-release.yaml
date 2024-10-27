@@ -46,7 +46,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
-            SecAction "id:900200, phase:1, pass"
+            SecAction "id:900200, phase:1, pass, t:none"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

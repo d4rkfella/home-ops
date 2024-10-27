@@ -51,7 +51,7 @@ spec:
                 - ALL
             runAsUser: 10001
             runAsGroup: 10001
-            runAsnoprivileged: false
+            privileged: false
             allowPrivilegeEscalation: false
             runAsNonRoot: true
             seccompProfile:

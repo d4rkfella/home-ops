@@ -8,7 +8,7 @@ resources:
 configMapGenerator:
   - name: authentik-crs-config
     files:
-      - authentik-crs-config.yaml=./resources/authentik-crs-config.yaml
+      - authentik-crs-setup.conf=./resources/authentik-crs-config.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

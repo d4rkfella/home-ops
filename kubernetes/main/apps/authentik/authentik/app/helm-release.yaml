@@ -45,6 +45,8 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/modsecurity-snippet: |
+            Include /etc/nginx/owasp-modsecurity-crs/authentik-crs-setup.conf;
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

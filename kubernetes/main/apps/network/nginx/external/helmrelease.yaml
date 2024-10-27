@@ -85,6 +85,16 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
+        server-snippet: |
+          set $modsecurity_enabled 1;  # Default: enabled
+
+          if ($remote_addr ~ "^192\.168\.91\..*") {
+              set $modsecurity_enabled 0;  # Disable ModSecurity for local subnet
+          }
+
+          if ($modsecurity_enabled = 0) {
+              modsecurity off;
+          }
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-

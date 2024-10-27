@@ -45,6 +45,17 @@ spec:
           env:
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsUser: 10001
+            runAsGroup: 10001
+            runAsnoprivileged: false
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
           volumeMounts:
           - name: crowdsec-bouncer-plugin
             mountPath: /lua_plugins

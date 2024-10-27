@@ -47,7 +47,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@beginsWith /api/" "id:1006,phase:1,pass,nolog,ctl:ruleRemoveById=911100"
-            SecRule REQUEST_METHOD "!@within GET HEAD POST OPTIONS PUT DELETE" "id:1002,phase:1,deny,status:403"
+            SecRule REQUEST_METHOD "!@within GET HEAD POST OPTIONS PUT DELETE PATCH" "id:1002,phase:1,deny,status:403"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

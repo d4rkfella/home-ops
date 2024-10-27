@@ -50,7 +50,7 @@ spec:
                 "id:1000,phase:1,pass,nolog,ctl:ruleRemoveById=911100"
 
             SecRule REQUEST_METHOD "!@within GET POST PUT DELETE OPTIONS" \
-                "id:1001,phase:1,deny,status:403"
+                "log,deny,id:107,status:403,msg:\'Method not allowed\'\"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

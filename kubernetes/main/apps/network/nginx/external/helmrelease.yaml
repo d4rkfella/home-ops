@@ -36,7 +36,7 @@ spec:
         - name: crowdsec-bouncer-config
           secret:
             secretName: crowdsec-bouncer-config
-            defaultMode: 444
+            defaultMode: 292
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin:v1.0.5@sha256:90f5c611bebbbe89b8aef3218dad1df3bd9fbe51554024384b56026c69c55925

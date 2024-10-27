@@ -59,8 +59,8 @@ spec:
                 phase:1,\
                 pass,\
                 t:none,\
-                severity:'CRITICAL',\
-                setvar:'tx.anomaly_score_pl1=+%{tx.critical_anomaly_score}'"
+                setvar:'tx.anomaly_score_pl1=+5',\
+                severity:'CRITICAL'"
         ingressClassName: external
         hosts:
           - authentik.${PUBLIC_DOMAIN}

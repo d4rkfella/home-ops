@@ -69,12 +69,27 @@ spec:
           mountPath: /media
     worker:
       volumes:
-        - name: blueprints
-          persistentVolumeClaim:
-            claimName: blueprints
+        - name: flows
+          configMap:
+            name: flows
+        - name: policies
+          configMap:
+            name: policies
+        - name: prompts
+          configMap:
+            name: prompts
+        - name: stages
+          configMap:
+            name: stages
       volumeMounts:
-        - name: blueprints
-          mountPath: /blueprints/custom
+        - name: flows
+          mountPath: /blueprints/custom/flows
+        - name: prompts
+          mountPath: /blueprints/custom/prompts
+        - name: policies
+          mountPath: /blueprints/custom/policies
+        - name: stages
+          mountPath: /blueprints/custom/stages
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -87,16 +102,3 @@ spec:
   resources:
     requests:
       storage: 2Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: blueprints
-  namespace: authentik
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 2Gi
-

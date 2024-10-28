@@ -1,0 +1,659 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flows
+data:
+  default-authentication.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Authentication
+    context:
+      name: Welcome to authentik!
+      title: Welcome to authentik!
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Identification Stage - Default
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Authenticator Validator Stage - Default
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Login Stage - Default
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-authentication-flow
+      attrs:
+        authentication: require_unauthenticated
+        denied_action: continue
+        designation: authentication
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        target: !KeyOf flow
+        stage: !Find [authentik_stages_identification.identificationstage, [name, default-identification-stage]]
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        target: !KeyOf flow
+        stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, default-authenticator-validator-stage]]
+      attrs:
+        order: 200
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        target: !KeyOf flow
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+      attrs:
+        order: 900
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-enrollment.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Enrollment
+    context:
+      name: Welcome to authentik!
+      title: Welcome to authentik!
+      require_invitation: true
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context require_invitation
+      attrs:
+        identifiers:
+          name: Invitation Stage - Allow Without Invitation
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context require_invitation
+      attrs:
+        identifiers:
+          name: Prompt Stage - Invitation Token
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context require_invitation
+      attrs:
+        identifiers:
+          name: Invitation Stage - Deny Without Invitation
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Prompt Stage - Enrollment
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Write Stage - With Add To Group and Inactive on Creation
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Email Stage - Confirmation With User Activation
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Login Stage - Default
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context require_invitation
+      attrs:
+        identifiers:
+          name: Expression Policy - Validate Invitation in Effect
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-enrollment-flow
+      attrs:
+        authentication: require_unauthenticated
+        denied_action: continue
+        designation: enrollment
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      state: !If [!Context require_invitation, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_invitation.invitationstage, [name, allow-without-invitation-invitation-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      id: default-enrollment-invitation-token-prompt-stage-binding
+      state: !If [!Context require_invitation, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, invitation-token-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 200
+        re_evaluate_policies: true
+
+    - model: authentik_flows.flowstagebinding
+      id: default-enrollment-invitation-deny-without-invitation-stage-binding
+      state: !If [!Context require_invitation, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_invitation.invitationstage, [name, deny-without-invitation-invitation-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 300
+        re_evaluate_policies: true
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, enrollment-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 400
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-with-add-to-group-and-inactive-on-creation-user-write-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 500
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_email.emailstage, [name, confirmation-with-user-activation-email-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 600
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 700
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_policies.policybinding
+      conditions:
+      - !Context require_invitation
+      identifiers:
+        policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
+        target: !KeyOf default-enrollment-invitation-token-prompt-stage-binding
+      attrs:
+        order: 0
+        enabled: true
+        negate: true
+        timeout: 30
+
+    - model: authentik_policies.policybinding
+      conditions:
+      - !Context require_invitation
+      identifiers:
+        policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
+        target: !KeyOf default-enrollment-invitation-deny-without-invitation-stage-binding
+      attrs:
+        order: 0
+        enabled: true
+        negate: true
+        timeout: 30
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-invalidation.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Invalidation
+    context:
+      name: Logout
+      title: Logout
+      require_confirmation: true
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context require_confirmation
+      attrs:
+        identifiers:
+          name: Prompt Stage - Logout
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Logout Stage - Default
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-invalidation-flow
+      attrs:
+        authentication: require_authenticated
+        denied_action: continue
+        designation: invalidation
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      state: !If [!Context require_confirmation, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, logout-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, default-logout-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 900
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-password-change.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Password Change
+    context:
+      name: Change password
+      title: Change password
+      validate_current_password: true
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context validate_current_password
+      attrs:
+        identifiers:
+          name: Prompt Stage - Current Password
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Prompt Stage - Password and Password Repeat
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Write Stage - Default
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-password-change-flow
+      attrs:
+        authentication: require_authenticated
+        denied_action: continue
+        designation: stage_configuration
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      state: !If [!Context validate_current_password, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, current-password-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, password-and-password-repeat-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 200
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 900
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-recovery-authenticator-setup.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Recovery Authenticator Setup
+    context:
+      token_count: 1
+      name: Configure Recovery Authenticator
+      title: Configure Recovery Authenticator
+      validate_current_password: true
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context validate_current_password
+      attrs:
+        identifiers:
+          name: Prompt Stage - Current Password
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-recovery-authenticator-setup-flow
+      attrs:
+        authentication: require_authenticated
+        denied_action: continue
+        designation: stage_configuration
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_stages_authenticator_static.authenticatorstaticstage
+      id: default-recovery-authenticator-setup-stage
+      identifiers:
+        name: default-recovery-authenticator-setup-stage
+      attrs:
+        token_count: !Context token_count
+        configure_flow: !KeyOf flow
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      state: !If [!Context validate_current_password, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, current-password-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !KeyOf default-recovery-authenticator-setup-stage
+        target: !KeyOf flow
+      attrs:
+        order: 200
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-recovery.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default Recovery
+    context:
+      name: Welcome to authentik!
+      title: Welcome to authentik!
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Identification Stage - Recovery
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Prompt Stage - Password and Password Repeat
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Email Stage - Default Recovery
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Write Stage - Default
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Login Stage - Default
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-recovery-flow
+      attrs:
+        authentication: require_unauthenticated
+        denied_action: continue
+        designation: recovery
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_identification.identificationstage, [name, recovery-identification-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_email.emailstage, [name, default-recovery-email-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 200
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, password-and-password-repeat-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 300
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 400
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 900
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-totp-authenticator-setup.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default TOTP Authenticator Setup
+    context:
+      digits: 6
+      name: Configure TOTP Authenticator
+      title: Configure TOTP Authenticator
+      validate_current_password: true
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      conditions:
+      - !Context validate_current_password
+      attrs:
+        identifiers:
+          name: Prompt Stage - Current Password
+        required: true
+
+    # - model: authentik_blueprints.metaapplyblueprint
+    #   attrs:
+    #     identifiers:
+    #       name: Flow - Default Recovery Authenticator Setup
+    #     required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-totp-authenticator-setup-flow
+      attrs:
+        authentication: require_authenticated
+        denied_action: continue
+        designation: stage_configuration
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_stages_authenticator_totp.authenticatortotpstage
+      id: default-totp-authenticator-setup-stage
+      identifiers:
+        name: default-totp-authenticator-setup-stage
+      attrs:
+        digits: !Context digits
+        configure_flow: !KeyOf flow
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      state: !If [!Context validate_current_password, present, absent]
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, current-password-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !KeyOf default-totp-authenticator-setup-stage
+        target: !KeyOf flow
+      attrs:
+        order: 200
+
+    # - model: authentik_flows.flowstagebinding
+    #   identifiers:
+    #     stage: !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-recovery-authenticator-setup-stage]]
+    #     target: !KeyOf flow
+    #   attrs:
+    #     order: 300
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-user-settings.yaml: |
+    version: 1
+    metadata:
+      name: Flow - Default User Settings
+    context:
+      name: User settings
+      title: User settings
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Prompt Stage - User Settings
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Expression Policy - Validate email Context Attribute Is Different Than Currently Set
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: Email Stage - Default Confirmation
+        required: true
+
+    - model: authentik_blueprints.metaapplyblueprint
+      attrs:
+        identifiers:
+          name: User Write Stage - Default
+        required: true
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flow
+      id: flow
+      identifiers:
+        slug: default-user-settings-flow
+      attrs:
+        authentication: require_authenticated
+        denied_action: continue
+        designation: stage_configuration
+        name: !Context name
+        title: !Context title
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_prompt.promptstage, [name, user-settings-prompt-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 100
+
+    - model: authentik_flows.flowstagebinding
+      id: default-user-settings-defaul-confirmation-email-stage-binding
+      identifiers:
+        stage: !Find [authentik_stages_email.emailstage, [name, default-confirmation-email-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 200
+        re_evaluate_policies: true
+
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 900
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_policies.policybinding
+      identifiers:
+        policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-email-context-attribute-is-different-than-currently-set-expression-policy]]
+        target: !KeyOf default-user-settings-defaul-confirmation-email-stage-binding
+      attrs:
+        order: 0
+        enabled: true
+        negate: false
+        timeout: 30
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

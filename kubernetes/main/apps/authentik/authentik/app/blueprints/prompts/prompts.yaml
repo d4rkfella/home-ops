@@ -20,6 +20,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: _logout-confirmation-dummy-prompt
       identifiers:
+        name: _logout-confirmation-dummy-prompt
         field_key: _logout_confirmation_dummy
       attrs:
         order: !Context order
@@ -48,6 +49,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: attributes-settings-locale-prompt
       identifiers:
+        name: attributes-settings-locale-prompt
         field_key: attributes.settings.locale
         label: Locale
       attrs:
@@ -109,6 +111,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: email-prompt
       identifiers:
+        name: email-prompt
         field_key: email
         label: Email
       attrs:
@@ -142,6 +145,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: first-name-prompt
       identifiers:
+        name: first-name-prompt
         field_key: first_name
         label: First name
       attrs:
@@ -158,6 +162,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: last-name-prompt
       identifiers:
+        name: last-name-prompt
         field_key: last_name
         label: Last name
       attrs:
@@ -191,6 +196,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: password-prompt
       identifiers:
+        name: password-prompt
         field_key: password
         label: Password
       attrs:
@@ -203,6 +209,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: password-repeat-prompt
       identifiers:
+        name: password-repeat-prompt
         field_key: password_repeat
         label: Password (repeat)
       attrs:
@@ -232,6 +239,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: token-for-invitations-prompt
       identifiers:
+        name: token-for-invitations-prompt
         field_key: token
       attrs:
         order: !Context order
@@ -260,6 +268,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: username-with-duplicate-check-prompt
       identifiers:
+          name: username-with-duplicate-check-prompt
           field_key: username
           label: Username
           type: username
@@ -287,6 +296,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: username-without-duplicate-check-prompt
       identifiers:
+          name: username-without-duplicate-check-prompt
           field_key: username
           label: Username
           type: text

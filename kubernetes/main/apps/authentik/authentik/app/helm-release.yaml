@@ -84,9 +84,9 @@ spec:
         - name: expression
           configMap:
             name: expression
-        - name: password
+        - name: password-policy
           configMap:
-            name: password
+            name: password-policy
         - name: prompts
           configMap:
             name: prompts
@@ -128,7 +128,7 @@ spec:
           mountPath: /blueprints/custom/policies/event_matcher
         - name: expression
           mountPath: /blueprints/custom/policies/expression
-        - name: password
+        - name: password-policy
           mountPath: /blueprints/custom/policies/password
         - name: prompts
           mountPath: /blueprints/custom/prompts

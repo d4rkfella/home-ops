@@ -36,7 +36,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-authentication-flow
+        slug: 4bfe9942-e4b8-4096-99e8-4ac273d51737
       attrs:
         authentication: require_unauthenticated
         denied_action: continue
@@ -140,7 +140,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-enrollment-flow
+        slug: 957acd39-babe-4993-8d94-2ac44283c589
       attrs:
         authentication: require_unauthenticated
         denied_action: continue
@@ -260,7 +260,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-invalidation-flow
+        slug: 3334e93f-90b8-4935-88c4-a7ab8335efeb
       attrs:
         authentication: require_authenticated
         denied_action: continue
@@ -322,7 +322,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-password-change-flow
+        slug: 6ef43887-af21-4247-8bbf-d69e79e27e3c
       attrs:
         authentication: require_authenticated
         denied_action: continue
@@ -380,7 +380,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-recovery-authenticator-setup-flow
+        slug: 992fd499-f119-4eac-8f98-aca4d283ebeb
       attrs:
         authentication: require_authenticated
         denied_action: continue
@@ -458,7 +458,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-recovery-flow
+        slug: d594c13b-7b50-426a-bc46-a4c94d56a8f9
       attrs:
         authentication: require_unauthenticated
         denied_action: continue
@@ -535,7 +535,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-totp-authenticator-setup-flow
+        slug: 59f5668b-24fe-4cc4-a11b-a65bc5414b56
       attrs:
         authentication: require_authenticated
         denied_action: continue
@@ -614,7 +614,7 @@ data:
     - model: authentik_flows.flow
       id: flow
       identifiers:
-        slug: default-user-settings-flow
+        slug: 02d14ae0-6b63-41c7-89b5-5eb145475888
       attrs:
         authentication: require_authenticated
         denied_action: continue

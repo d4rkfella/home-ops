@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: authenticator_validator
+  name: authenticator-validator
 data:
   default.yaml: |
     version: 1

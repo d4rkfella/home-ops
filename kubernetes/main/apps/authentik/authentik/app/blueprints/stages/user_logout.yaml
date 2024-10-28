@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user_logout
+data:
+  default.yaml: |
+    version: 1
+    metadata:
+      name: User Logout Stage - Default
+    context: {}
+    entries:
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    - model: authentik_stages_user_logout.userlogoutstage
+      id: default-logout-stage
+      identifiers:
+        name: default-logout-stage
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+    #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

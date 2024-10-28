@@ -72,24 +72,84 @@ spec:
         - name: flows
           configMap:
             name: flows
-        - name: policies
+        - name: rules
           configMap:
-            name: policies
+            name: rules
+        - name: transports
+          configMap:
+            name: transports
+        - name: event_matcher
+          configMap:
+            name: event_matcher
+        - name: expression
+          configMap:
+            name: expression
+        - name: password
+          configMap:
+            name: password
         - name: prompts
           configMap:
             name: prompts
-        - name: stages
+        - name: authenticator_validator
           configMap:
-            name: stages
+            name: authenticator_validator
+        - name: email
+          configMap:
+            name: email
+        - name: identification
+          configMap:
+            name: identification
+        - name: invitation
+          configMap:
+            name: invitation
+        - name: password
+          configMap:
+            name: password
+        - name: prompt
+          configMap:
+            name: prompt
+        - name: user_login
+          configMap:
+            name: user_login
+        - name: user_logout
+          configMap:
+            name: user_logout
+        - name: user_write
+          configMap:
+            name: user_write
       volumeMounts:
         - name: flows
           mountPath: /blueprints/custom/flows
+        - name: rules
+          mountPath: /blueprints/custom/notifications/rules
+        - name: transports
+          mountPath: /blueprints/custom/notifications/transports
+        - name: event_matcher
+          mountPath: /blueprints/custom/policies/event_matcher
+        - name: expression
+          mountPath: /blueprints/custom/policies/expression
+        - name: password
+          mountPath: /blueprints/custom/policies/password
         - name: prompts
           mountPath: /blueprints/custom/prompts
-        - name: policies
-          mountPath: /blueprints/custom/policies
-        - name: stages
-          mountPath: /blueprints/custom/stages
+        - name: authenticator_validator
+          mountPath: /blueprints/custom/stages/authenticator_validator
+        - name: email
+          mountPath: /blueprints/custom/stages/email
+        - name: identification
+          mountPath: /blueprints/custom/stages/identification
+        - name: invitation
+          mountPath: /blueprints/custom/stages/invitation
+        - name: password
+          mountPath: /blueprints/custom/stages/password
+        - name: prompt
+          mountPath: /blueprints/custom/stages/prompt
+        - name: user_login
+          mountPath: /blueprints/custom/stages/user_login
+        - name: user_logout
+          mountPath: /blueprints/custom/stages/user_logout
+        - name: user_write
+          mountPath: /blueprints/custom/stages/user_write
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

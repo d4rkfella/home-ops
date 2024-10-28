@@ -117,6 +117,9 @@ spec:
         - name: user-write
           configMap:
             name: user-write
+        - name: groups
+          configMap:
+            name: groups
       volumeMounts:
         - name: flows
           mountPath: /blueprints/custom/flows
@@ -150,6 +153,8 @@ spec:
           mountPath: /blueprints/custom/stages/user_logout
         - name: user-write
           mountPath: /blueprints/custom/stages/user_write
+        - name: groups
+          mountPath: /blueprints/custom/groups
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

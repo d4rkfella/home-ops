@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user_login
+  name: user-login
 data:
   default.yaml: |
     version: 1

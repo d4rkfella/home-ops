@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: event_matcher
+  name: event-matcher
 data:
   default-configuration-error.yaml: |
     version: 1

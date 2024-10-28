@@ -78,9 +78,9 @@ spec:
         - name: transports
           configMap:
             name: transports
-        - name: event_matcher
+        - name: event-matcher
           configMap:
-            name: event_matcher
+            name: event-matcher
         - name: expression
           configMap:
             name: expression
@@ -90,9 +90,9 @@ spec:
         - name: prompts
           configMap:
             name: prompts
-        - name: authenticator_validator
+        - name: authenticator-validator
           configMap:
-            name: authenticator_validator
+            name: authenticator-validator
         - name: email
           configMap:
             name: email
@@ -108,15 +108,15 @@ spec:
         - name: prompt
           configMap:
             name: prompt
-        - name: user_login
+        - name: user-login
           configMap:
-            name: user_login
-        - name: user_logout
+            name: user-login
+        - name: user-logout
           configMap:
-            name: user_logout
-        - name: user_write
+            name: user-logout
+        - name: user-write
           configMap:
-            name: user_write
+            name: user-write
       volumeMounts:
         - name: flows
           mountPath: /blueprints/custom/flows
@@ -124,7 +124,7 @@ spec:
           mountPath: /blueprints/custom/notifications/rules
         - name: transports
           mountPath: /blueprints/custom/notifications/transports
-        - name: event_matcher
+        - name: event-matcher
           mountPath: /blueprints/custom/policies/event_matcher
         - name: expression
           mountPath: /blueprints/custom/policies/expression
@@ -132,7 +132,7 @@ spec:
           mountPath: /blueprints/custom/policies/password
         - name: prompts
           mountPath: /blueprints/custom/prompts
-        - name: authenticator_validator
+        - name: authenticator-validator
           mountPath: /blueprints/custom/stages/authenticator_validator
         - name: email
           mountPath: /blueprints/custom/stages/email
@@ -144,11 +144,11 @@ spec:
           mountPath: /blueprints/custom/stages/password
         - name: prompt
           mountPath: /blueprints/custom/stages/prompt
-        - name: user_login
+        - name: user-login
           mountPath: /blueprints/custom/stages/user_login
-        - name: user_logout
+        - name: user-logout
           mountPath: /blueprints/custom/stages/user_logout
-        - name: user_write
+        - name: user-write
           mountPath: /blueprints/custom/stages/user_write
 ---
 apiVersion: v1

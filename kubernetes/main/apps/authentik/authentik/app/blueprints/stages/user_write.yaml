@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user_write
+  name: user-write
 data:
   default.yaml: |
     version: 1

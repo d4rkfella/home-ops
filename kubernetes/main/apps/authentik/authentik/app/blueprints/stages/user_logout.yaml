@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: user_logout
+  name: user-logout
 data:
   default.yaml: |
     version: 1

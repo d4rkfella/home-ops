@@ -69,6 +69,8 @@ spec:
           mountPath: /media
     worker:
       volumes:
+        - name: default
+          emptyDir: {}
         - name: flows
           configMap:
             name: flows
@@ -155,6 +157,8 @@ spec:
           mountPath: /blueprints/stages/user_write
         - name: groups
           mountPath: /blueprints/groups
+        - name: default
+          mountPath: /blueprints/default
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

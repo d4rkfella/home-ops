@@ -122,39 +122,39 @@ spec:
             name: groups
       volumeMounts:
         - name: flows
-          mountPath: /blueprints/custom/flows
+          mountPath: /blueprints/default/flows
         - name: rules
-          mountPath: /blueprints/custom/notifications/rules
+          mountPath: /blueprints/default/notifications/rules
         - name: transports
-          mountPath: /blueprints/custom/notifications/transports
+          mountPath: /blueprints/default/notifications/transports
         - name: event-matcher
-          mountPath: /blueprints/custom/policies/event_matcher
+          mountPath: /blueprints/default/policies/event_matcher
         - name: expression
-          mountPath: /blueprints/custom/policies/expression
+          mountPath: /blueprints/default/policies/expression
         - name: password-policy
-          mountPath: /blueprints/custom/policies/password
+          mountPath: /blueprints/default/policies/password
         - name: prompts
-          mountPath: /blueprints/custom/prompts
+          mountPath: /blueprints/default/prompts
         - name: authenticator-validator
-          mountPath: /blueprints/custom/stages/authenticator_validator
+          mountPath: /blueprints/default/stages/authenticator_validator
         - name: email
-          mountPath: /blueprints/custom/stages/email
+          mountPath: /blueprints/default/stages/email
         - name: identification
-          mountPath: /blueprints/custom/stages/identification
+          mountPath: /blueprints/default/stages/identification
         - name: invitation
-          mountPath: /blueprints/custom/stages/invitation
+          mountPath: /blueprints/default/stages/invitation
         - name: password
-          mountPath: /blueprints/custom/stages/password
+          mountPath: /blueprints/default/stages/password
         - name: prompt
-          mountPath: /blueprints/custom/stages/prompt
+          mountPath: /blueprints/default/stages/prompt
         - name: user-login
-          mountPath: /blueprints/custom/stages/user_login
+          mountPath: /blueprints/default/stages/user_login
         - name: user-logout
-          mountPath: /blueprints/custom/stages/user_logout
+          mountPath: /blueprints/default/stages/user_logout
         - name: user-write
-          mountPath: /blueprints/custom/stages/user_write
+          mountPath: /blueprints/default/stages/user_write
         - name: groups
-          mountPath: /blueprints/custom/groups
+          mountPath: /blueprints/default/groups
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

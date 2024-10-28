@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: groupd
+  name: groups
 data:
   default-admins.yaml: |
     version: 1

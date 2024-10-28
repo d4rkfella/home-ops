@@ -80,6 +80,7 @@ data:
     - model: authentik_stages_prompt.prompt
       id: current-password-prompt
       identifiers:
+        name: current-password-prompt
         field_key: current_password
         label: Current Password
       attrs:

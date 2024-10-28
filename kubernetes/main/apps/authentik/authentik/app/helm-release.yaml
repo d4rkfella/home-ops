@@ -67,6 +67,14 @@ spec:
       volumeMounts:
         - name: media
           mountPath: /media
+    worker:
+      volumes:
+        - name: blueprints
+          persistentVolumeClaim:
+            claimName: blueprints
+      volumeMounts:
+        - name: blueprints
+          mountPath: /blueprints/custom
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -79,3 +87,16 @@ spec:
   resources:
     requests:
       storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: blueprints
+  namespace: authentik
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+

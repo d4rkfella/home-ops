@@ -657,3 +657,28 @@ data:
         negate: false
         timeout: 30
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+  default-explicit-consent.yaml: |
+    version: 1
+    metadata:
+      name: Default - Provider authorization flow (explicit consent)
+    entries:
+    - attrs:
+        designation: authorization
+        name: Authorize Application
+        title: Redirecting to %(app)s
+        authentication: require_authenticated
+      identifiers:
+        slug: fc1b3a2c-8086-4271-aa0d-d85772ccafe1
+      model: authentik_flows.flow
+      id: flow
+    - id: default-provider-authorization-consent
+      attrs:
+        mode: expiring
+      identifiers:
+        name: default-provider-authorization-consent
+      model: authentik_stages_consent.consentstage
+    - identifiers:
+        order: 0
+        stage: !KeyOf default-provider-authorization-consent
+        target: !KeyOf flow
+      model: authentik_flows.flowstagebinding

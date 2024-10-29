@@ -171,34 +171,42 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_policies_expression.expressionpolicy
-      id: validate-first_name-and-last_name-context-attributes-expression-policy
+      id: validate-first_name-and-last-name-context-attributes-expression-policy
       identifiers:
-        name: validate-first_name-and-last_name-context-attributes-expression-policy
+        name: validate-first_name-and-last-name-context-attributes-expression-policy
       attrs:
         expression:  |
           from re import compile
           from authentik.lib.config import CONFIG
 
-          # If request.user == AnonymousUser these will be taken from the DEFAULT
-          # tenant. If no default tenant is present it will fall back to the
-          # defaults set in this expression policy
           USER_ATTRIBUTE_NAME_REGEX = "better-blueprints/users/name-regex"
           USER_ATTRIBUTE_NAME_VALIDATION_ERROR_MESSAGE = "better-blueprints/users/name-validation-error-message"
 
-          regex = request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_NAME_REGEX,
-              CONFIG.get(
-                  "better_blueprints_default.users.name_regex", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__USERS__NAME_REGEX
+          # Check if the user is anonymous
+          if request.user.is_anonymous:
+              regex = CONFIG.get(
+                  "better_blueprints_default.users.name_regex",
                   "^[a-zA-Z]{2,20}$"
               )
-          )
-          err_msg = request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_NAME_VALIDATION_ERROR_MESSAGE,
-              CONFIG.get(
-                  "better_blueprints_default.users.name_validation_error_message", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__USERS__NAME_VALIDATION_ERROR_MESSAGE
+              err_msg = CONFIG.get(
+                  "better_blueprints_default.users.name_validation_error_message",
                   "Names must contain only alphabetic characters and be between 2 and 20 characters long"
               )
-          )
+          else:
+              regex = request.user.group_attributes(request.http_request).get(
+                  USER_ATTRIBUTE_NAME_REGEX,
+                  CONFIG.get(
+                      "better_blueprints_default.users.name_regex",
+                      "^[a-zA-Z]{2,20}$"
+                  )
+              )
+              err_msg = request.user.group_attributes(request.http_request).get(
+                  USER_ATTRIBUTE_NAME_VALIDATION_ERROR_MESSAGE,
+                  CONFIG.get(
+                      "better_blueprints_default.users.name_validation_error_message",
+                      "Names must contain only alphabetic characters and be between 2 and 20 characters long"
+                  )
+              )
 
           regex = compile(str(regex))
 
@@ -345,27 +353,35 @@ data:
         expression: |
           from authentik.lib.config import CONFIG
 
-          # If request.user == AnonymousUser these will be taken from the DEFAULT
-          # tenant. If no default tenant is present it will fall back to the
-          # defaults set in this expression policy
           USER_ATTRIBUTE_ADMIN_REQUIRE_SECURE_PASSWORD = "better-blueprints/admins/require-secure-password"
           USER_ATTRIBUTE_USER_REQUIRE_SECURE_PASSWORD = "better-blueprints/users/require-secure-password"
 
-          admin_policy_secure = request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_ADMIN_REQUIRE_SECURE_PASSWORD,
-              CONFIG.get(
-                  "better_blueprints_default.admins.require_secure_password", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__ADMINS__REQUIRE_SECURE_PASSWORD
+          # Check if the user is anonymous
+          if request.user.is_anonymous:
+              admin_policy_secure = CONFIG.get_bool(
+                  "better_blueprints_default.admins.require_secure_password",
                   True
               )
-          )
-
-          user_policy_secure = request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_USER_REQUIRE_SECURE_PASSWORD,
-              CONFIG.get(
-                  "better_blueprints_default.users.require_secure_password", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__USERS__REQUIRE_SECURE_PASSWORD
+              user_policy_secure = CONFIG.get_bool(
+                  "better_blueprints_default.users.require_secure_password",
                   False
               )
-          )
+          else:
+              admin_policy_secure = request.user.group_attributes(request.http_request).get(
+                  USER_ATTRIBUTE_ADMIN_REQUIRE_SECURE_PASSWORD,
+                  CONFIG.get_bool(
+                      "better_blueprints_default.admins.require_secure_password",
+                      True
+                  )
+              )
+
+              user_policy_secure = request.user.group_attributes(request.http_request).get(
+                  USER_ATTRIBUTE_USER_REQUIRE_SECURE_PASSWORD,
+                  CONFIG.get_bool(
+                      "better_blueprints_default.users.require_secure_password",
+                      False
+                  )
+              )
 
           if request.user.is_superuser:
               result = ak_call_policy(

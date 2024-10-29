@@ -44,6 +44,6 @@ data:
       attrs:
         domain: !Context fqdn
         branding_title: !Context branding_title
-        flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
-        flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
-        flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+        flow_authentication: !Find [authentik_flows.flow, [slug, 4bfe9942-e4b8-4096-99e8-4ac273d51737]]
+        flow_invalidation: !Find [authentik_flows.flow, [slug, 3334e93f-90b8-4935-88c4-a7ab8335efeb]]
+        flow_user_settings: !Find [authentik_flows.flow, [slug, 02d14ae0-6b63-41c7-89b5-5eb145475888]]

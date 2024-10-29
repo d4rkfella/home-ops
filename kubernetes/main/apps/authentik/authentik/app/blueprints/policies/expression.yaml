@@ -358,10 +358,6 @@ data:
 
           # Check if the user is anonymous
           if request.user.is_anonymous:
-              admin_policy_secure = CONFIG.get_bool(
-                  "better_blueprints_default.admins.require_secure_password",
-                  True
-              )
               user_policy_secure = CONFIG.get_bool(
                   "better_blueprints_default.users.require_secure_password",
                   False
@@ -370,7 +366,7 @@ data:
               admin_policy_secure = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_ADMIN_REQUIRE_SECURE_PASSWORD,
                   CONFIG.get_bool(
-                      "better_blueprints_default.admins.require_secure_password",
+                      "better_blueprints_default.admins.require_secure_password", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__ADMINS__REQUIRE_SECURE_PASSWORD
                       True
                   )
               )
@@ -378,7 +374,7 @@ data:
               user_policy_secure = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_USER_REQUIRE_SECURE_PASSWORD,
                   CONFIG.get_bool(
-                      "better_blueprints_default.users.require_secure_password",
+                      "better_blueprints_default.users.require_secure_password", # ENV: AUTHENTIK_BETTER_BLUEPRINTS_DEFAULT__USERS__REQUIRE_SECURE_PASSWORD
                       False
                   )
               )

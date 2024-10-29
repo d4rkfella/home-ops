@@ -358,7 +358,7 @@ data:
 
           # Check if the user is anonymous
           if request.user.is_anonymous:
-              admin_policy_secure = CONFIG.get_(
+              admin_policy_secure = CONFIG.get(
                   "better_blueprints_default.admins.require_secure_password",
                   True
               )

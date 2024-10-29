@@ -173,7 +173,7 @@ data:
     - model: authentik_policies_expression.expressionpolicy
       id: validate-first_name-and-last-name-context-attributes-expression-policy
       identifiers:
-        name: validate-first_name-and-last-name-context-attributes-expression-policy
+        name: validate-first_name-and-last_name-context-attributes-expression-policy
       attrs:
         expression:  |
           from re import compile

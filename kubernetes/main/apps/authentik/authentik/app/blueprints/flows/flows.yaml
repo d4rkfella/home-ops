@@ -567,12 +567,12 @@ data:
       attrs:
         order: 200
 
-    # - model: authentik_flows.flowstagebinding
-    #   identifiers:
-    #     stage: !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-recovery-authenticator-setup-stage]]
-    #     target: !KeyOf flow
-    #   attrs:
-    #     order: 300
+    - model: authentik_flows.flowstagebinding
+      identifiers:
+        stage: !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-recovery-authenticator-setup-stage]]
+        target: !KeyOf flow
+      attrs:
+        order: 300
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
   default-user-settings.yaml: |

@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: tenants
+  name: brands
 data:
   default.yaml: |
     version: 1
     metadata:
       name: Brand - Default
     context:
-        fqdn: authentik - default
-        branding_title: authentik
+        fqdn: ${PUBLIC_DOMAIN}
+        branding_title: DarkfellaNET
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_blueprints.metaapplyblueprint

@@ -122,9 +122,9 @@ spec:
         - name: groups
           configMap:
             name: groups
-        - name: tenants
+        - name: brands
           configMap:
-            name: tenants
+            name: brands
       volumeMounts:
         - name: flows
           mountPath: /blueprints/flows
@@ -162,8 +162,8 @@ spec:
           mountPath: /blueprints/groups
         - name: default
           mountPath: /blueprints/default
-        - name: tenants
-          mountPath: /blueprints/tenants
+        - name: brands
+          mountPath: /blueprints/brands
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

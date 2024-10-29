@@ -9,7 +9,7 @@ data:
       name: Tenant - Default
     context:
         fqdn: authentik - default
-        branding_title: DarkfellaNET
+        branding_title: authentik
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_blueprints.metaapplyblueprint
@@ -38,7 +38,7 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-    - model: authentik_tenants.tenant
+    - model: authentik_brands.brand
       identifiers:
         default: True
       attrs:

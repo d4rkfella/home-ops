@@ -184,27 +184,25 @@ data:
 
           # Check if the user is anonymous
           if request.user.is_anonymous:
-              # Use default regex and error message
-              regex = CONFIG.y(
+              regex = CONFIG.get(
                   "better_blueprints_default.users.name_regex",
                   "^[a-zA-Z]{2,20}$"
               )
-              err_msg = CONFIG.y(
+              err_msg = CONFIG.get(
                   "better_blueprints_default.users.name_validation_error_message",
                   "Names must contain only alphabetic characters and be between 2 and 20 characters long"
               )
           else:
-              # For authenticated users, get the regex and error message from group attributes
               regex = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_NAME_REGEX,
-                  CONFIG.y(
+                  CONFIG.get(
                       "better_blueprints_default.users.name_regex",
                       "^[a-zA-Z]{2,20}$"
                   )
               )
               err_msg = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_NAME_VALIDATION_ERROR_MESSAGE,
-                  CONFIG.y(
+                  CONFIG.get(
                       "better_blueprints_default.users.name_validation_error_message",
                       "Names must contain only alphabetic characters and be between 2 and 20 characters long"
                   )
@@ -360,18 +358,18 @@ data:
 
           # Check if the user is anonymous
           if request.user.is_anonymous:
-              admin_policy_secure = CONFIG.y_bool(
+              admin_policy_secure = CONFIG.get_(
                   "better_blueprints_default.admins.require_secure_password",
                   True
               )
-              user_policy_secure = CONFIG.y_bool(
+              user_policy_secure = CONFIG.get(
                   "better_blueprints_default.users.require_secure_password",
                   False
               )
           else:
               admin_policy_secure = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_ADMIN_REQUIRE_SECURE_PASSWORD,
-                  CONFIG.y_bool(
+                  CONFIG.get(
                       "better_blueprints_default.admins.require_secure_password",
                       True
                   )
@@ -379,7 +377,7 @@ data:
 
               user_policy_secure = request.user.group_attributes(request.http_request).get(
                   USER_ATTRIBUTE_USER_REQUIRE_SECURE_PASSWORD,
-                  CONFIG.y_bool(
+                  CONFIG.get(
                       "better_blueprints_default.users.require_secure_password",
                       False
                   )
@@ -511,21 +509,21 @@ data:
           is_allowed = True
 
           if not request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.y_bool("default_user_change_email", True)
+              USER_ATTRIBUTE_CHANGE_EMAIL, CONFIG.get("default_user_change_email", True)
           ):
               if prompt_data.get("email") != request.user.email:
                   ak_message("Not allowed to change email address.")
                   is_allowed = False
 
           if not request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_CHANGE_NAME, CONFIG.y_bool("default_user_change_name", True)
+              USER_ATTRIBUTE_CHANGE_NAME, CONFIG.get("default_user_change_name", True)
           ):
               if prompt_data.get("name") != request.user.name:
                   ak_message("Not allowed to change name.")
                   is_allowed = False
 
           if not request.user.group_attributes(request.http_request).get(
-              USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.y_bool("default_user_change_username", True)
+              USER_ATTRIBUTE_CHANGE_USERNAME, CONFIG.get("default_user_change_username", True)
           ):
               if prompt_data.get("username") != request.user.username:
                   ak_message("Not allowed to change username.")

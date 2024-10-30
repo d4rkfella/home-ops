@@ -248,6 +248,12 @@ spec:
             gluetun:
               - path: /tmp/gluetun
       config-qbitmanage:
+        type: emptyDir
+        advancedMounts:
+          torrenting:
+            qbitmanage:
+              - path: /config
+      config-secret:
         type: secret
         name: qbitmanage-secret
         advancedMounts:

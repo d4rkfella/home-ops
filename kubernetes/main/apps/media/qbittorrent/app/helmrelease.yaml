@@ -199,7 +199,7 @@ spec:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
-            qbittorrent:
+            app:
               - path: /config
       scripts:
         type: configMap
@@ -207,7 +207,7 @@ spec:
         defaultMode: 0775
         advancedMounts:
           torrenting:
-            qbittorrent:
+            app:
               - readOnly: true
       media:
         type: nfs
@@ -218,7 +218,7 @@ spec:
             qbitmanage:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
-            qbittorrent:
+            app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
       gluetun-tmp:

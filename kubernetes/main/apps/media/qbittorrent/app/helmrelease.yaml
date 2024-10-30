@@ -92,12 +92,13 @@ spec:
           dnsdist:
             image:
               repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.7
+              tag: 1.9.7@sha256:6ed810f4d5da4585ccfc2667a794a78319ff2960a43266fc6a160c063d04e1ef
             restartPolicy: Always
             securityContext:
               runAsNonRoot: false
               runAsUser: 0
               runAsGroup: 0
+              capabilities: { drop: ["ALL"] }
 
         containers:
           qbittorrent:

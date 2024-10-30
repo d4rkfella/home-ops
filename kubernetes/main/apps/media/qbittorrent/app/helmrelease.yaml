@@ -270,7 +270,6 @@ spec:
           torrenting:
             qbitmanage:
               - path: /config/config.yml
-                subPath: config.yml
                 readOnly: false
       config-cross-seed:
         type: emptyDir

@@ -263,9 +263,9 @@ spec:
             qbitmanage:
               - path: /config
       config-file-qbitmanage:
-        type: secret
-        name: qbitmanage-secret
-        defaultMode: 0777
+        type: configMap
+        name: qbitmanage-config
+        defaultMode: 0660
         advancedMounts:
           torrenting:
             qbitmanage:

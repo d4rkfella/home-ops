@@ -17,6 +17,9 @@ configMapGenerator:
   - name: qbittorrent-scripts
     files:
       - post-process.sh=./resources/post-process.sh
+  - name: qbitmanage-config
+    files:
+      - config.yml=./resources/qbitmanage-config.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

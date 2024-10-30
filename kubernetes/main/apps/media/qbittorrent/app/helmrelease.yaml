@@ -156,6 +156,7 @@ spec:
     service:
       app:
         controller: torrenting
+        primary: true
         ports:
           http:
             port: *port

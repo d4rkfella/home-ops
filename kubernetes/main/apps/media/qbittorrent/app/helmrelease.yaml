@@ -265,16 +265,18 @@ spec:
             qbitmanage:
               - path: /config/config.yml
                 subPath: config.yml
-                readOnly: true
+                readOnly: false
       config-cross-seed:
         type: emptyDir
       config-file-cross-seed:
         type: secret
         name: cross-seed-secret
-        globalMounts:
-          - path: /config/config.js
-            subPath: config.js
-            readOnly: true
+        advancedMounts:
+          torrenting:
+            cross-seed:
+              - path: /config/config.js
+                subPath: config.js
+                readOnly: true
       #config-qbitmanage:
         #type: emptyDir
         #advancedMounts:

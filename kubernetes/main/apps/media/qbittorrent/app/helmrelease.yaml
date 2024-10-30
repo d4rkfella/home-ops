@@ -154,7 +154,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     terminationGracePeriodSeconds: 300
     service:
-      qbittorrent:
+      app:
         controller: torrenting
         ports:
           http:
@@ -185,7 +185,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: qbittorrent
+                  identifier: app
                   port: http
     persistence:
       config:

@@ -42,6 +42,7 @@ spec:
             env:
               TZ: &TZ Europe/Sofia
               DOT: off
+              DNS_ADDRESS: "127.0.0.2"
               HEALTH_SERVER_ADDRESS: :9999
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
@@ -51,7 +52,6 @@ spec:
               FIREWALL_INPUT_PORTS: 80,9999
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
-              DNS_KEEP_NAMESERVER: on
             envFrom:
               - secretRef:
                   name: gluetun-secret

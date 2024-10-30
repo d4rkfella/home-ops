@@ -265,6 +265,7 @@ spec:
       config-file-qbitmanage:
         type: configMap
         name: qbitmanage-config
+        defaultMode: 0777
         advancedMounts:
           torrenting:
             qbitmanage:

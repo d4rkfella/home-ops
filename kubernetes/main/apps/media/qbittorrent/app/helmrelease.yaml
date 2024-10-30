@@ -134,9 +134,9 @@ spec:
               TZ: Europe/Sofia
             probes:
               liveness:
-                enabled: false
+                enabled: true
               readiness:
-                enabled: false
+                enabled: true
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

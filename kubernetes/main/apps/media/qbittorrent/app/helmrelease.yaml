@@ -87,8 +87,8 @@ spec:
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: 50413
               CROSS_SEED_ENABLED: true
-              CROSS_SEED_HOST: cross-seed.media.svc.cluster.local
-              CROSS_SEED_PORT: 80
+              CROSS_SEED_HOST: localhost
+              CROSS_SEED_PORT: 8080
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
             envFrom:
@@ -220,6 +220,10 @@ spec:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
+            cross-seed:
+              - path: /qbittorrent/qBittorrent/BT_backup
+                subPath: qBittorrent/BT_backup
+                readOnly: true
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -253,7 +257,7 @@ spec:
           torrenting:
             qbitmanage:
               - path: /config
-      config-secret:
+      config-file-qbitmanage:
         type: secret
         name: qbitmanage-secret
         advancedMounts:
@@ -262,6 +266,15 @@ spec:
               - path: /config/config.yml
                 subPath: config.yml
                 readOnly: true
+      config-cross-seed:
+        type: emptyDir
+      config-file-cross-seed:
+        type: secret
+        name: cross-seed-secret
+        globalMounts:
+          - path: /config/config.js
+            subPath: config.js
+            readOnly: true
       #config-qbitmanage:
         #type: emptyDir
         #advancedMounts:

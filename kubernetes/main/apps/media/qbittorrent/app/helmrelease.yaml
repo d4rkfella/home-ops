@@ -173,6 +173,8 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     terminationGracePeriodSeconds: 300
     service:

@@ -81,7 +81,7 @@ spec:
               runAsGroup: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
             resources:
               requests:
                 cpu: 100m
@@ -94,6 +94,10 @@ spec:
               repository: docker.io/powerdns/dnsdist-19
               tag: 1.9.7
             restartPolicy: Always
+            securityContext:
+              runAsNonRoot: false
+              runAsUser: 0
+              runAsGroup: 0
 
         containers:
           qbittorrent:

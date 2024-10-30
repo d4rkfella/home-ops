@@ -244,6 +244,9 @@ spec:
             qbittorrent:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
+            cross-seed:
+              - path: /data/downloads/torrents/complete
+                subPath: downloads/torrents/complete
       gluetun-tmp:
         enabled: true
         type: emptyDir

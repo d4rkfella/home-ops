@@ -137,6 +137,7 @@ spec:
             readOnly: true
       tmp:
         type: emptyDir
+        medium: Memory
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}

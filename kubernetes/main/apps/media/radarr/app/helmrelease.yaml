@@ -86,7 +86,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
@@ -130,13 +129,14 @@ spec:
       scripts:
         type: configMap
         name: radarr-configmap
-        defaultMode: 0775
+        defaultMode: 0550
         globalMounts:
           - path: /scripts/pushover-notify.sh
             subPath: pushover-notify.sh
             readOnly: true
       tmp:
         type: emptyDir
+        medium: Memory
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}

@@ -32,21 +32,11 @@ spec:
       torrenting:
         annotations:
           reloader.stakater.com/auto: "true"
-        #initContainers:
-          #copy-secret:
-            #image:
-              #repository: busybox
-              #tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
-            #command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
-            #securityContext:
-              #allowPrivilegeEscalation: false
-              #readOnlyRootFilesystem: true
-              #capabilities: { drop: ["ALL"] }
-        containers:
+        initContainers:
           gluetun:
             image:
-              repository: qmcgaw/gluetun
-              tag: v3.39@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
+              repository: ghcr.io/qdm12/gluetun
+              tag: v3.39.1@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
             env:
               TZ: &TZ Europe/Sofia
               VPN_TYPE: wireguard
@@ -60,7 +50,6 @@ spec:
               PUID: 568
               PGID: 568
               DNS_KEEP_NAMESERVER: on
-              #PUBLICIP_API: ip2location
             envFrom:
               - secretRef:
                   name: gluetun-secret
@@ -77,12 +66,48 @@ spec:
                 memory: 512Mi
               limits:
                 squat.ai/tun: 1
+        containers:
+          #gluetun:
+            #image:
+              #repository: qmcgaw/gluetun
+              #tag: v3.39@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
+            #env:
+              #TZ: &TZ Europe/Sofia
+              #VPN_TYPE: wireguard
+              #VPN_SERVICE_PROVIDER: protonvpn
+              #VPN_PORT_FORWARDING: on
+              #VPN_PORT_FORWARDING_LISTENING_PORT: 50413
+              #WIREGUARD_ADDRESSES: 10.2.0.2/32
+              #FIREWALL_INPUT_PORTS: 80
+              #FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
+              #SERVER_HOSTNAMES: node-ch-15.protonvpn.net
+              #PUID: 568
+              #PGID: 568
+              #DNS_KEEP_NAMESERVER: on
+              #PUBLICIP_API: ip2location
+            #envFrom:
+              #- secretRef:
+                  #name: gluetun-secret
+            #securityContext:
+              #runAsNonRoot: false
+              #runAsUser: 0
+              #runAsGroup: 0
+              #allowPrivilegeEscalation: false
+              #readOnlyRootFilesystem: false
+              #capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
+            #resources:
+              #requests:
+                #cpu: 100m
+                #memory: 512Mi
+              #limits:
+                #squat.ai/tun: 1
           qbittorrent:
             dependsOn: gluetun
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.1@sha256:7fc5af4f7f9c8e4998aaa18b5e2e634757c55f70c23b9bd46b40e09a4c7acda5
             env:
+              UMASK: "022"
               TZ: *TZ
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: 50413
@@ -253,15 +278,9 @@ spec:
             cross-seed:
               - path: /data/downloads/torrents/complete
                 subPath: downloads/torrents/complete
-      gluetun-tmp:
-        enabled: true
-        type: emptyDir
-        advancedMounts:
-          torrenting:
-            gluetun:
-              - path: /tmp/gluetun
       config-qbitmanage:
         type: emptyDir
+        medium: Memory
         advancedMounts:
           torrenting:
             qbitmanage:
@@ -278,6 +297,7 @@ spec:
                 readOnly: true
       config-cross-seed:
         type: emptyDir
+        medium: Memory
         advancedMounts:
           torrenting:
             cross-seed:
@@ -291,11 +311,4 @@ spec:
               - path: /config/config.js
                 subPath: config.js
                 readOnly: true
-      #config-qbitmanage:
-        #type: emptyDir
-        #advancedMounts:
-          #torrenting:
-            #qbitmanage:
-              #- path: /config
-            #copy-secret:
-              #- path: /config
+

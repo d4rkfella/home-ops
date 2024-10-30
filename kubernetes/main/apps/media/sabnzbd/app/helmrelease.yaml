@@ -85,7 +85,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
@@ -126,14 +125,16 @@ spec:
         accessMode: ReadWriteOnce
       logs:
         type: emptyDir
+        medium: Memory
         globalMounts:
           - path: /config/logs
       tmp:
         type: emptyDir
+        medium: Memory
       scripts:
         type: configMap
         name: sabnzbd-scripts
-        defaultMode: 0775
+        defaultMode: 0550
         globalMounts:
           - readOnly: true
       media:

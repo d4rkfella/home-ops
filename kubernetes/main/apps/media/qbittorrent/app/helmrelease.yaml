@@ -102,7 +102,6 @@ spec:
               #limits:
                 #squat.ai/tun: 1
           qbittorrent:
-            dependsOn: gluetun
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.1@sha256:7fc5af4f7f9c8e4998aaa18b5e2e634757c55f70c23b9bd46b40e09a4c7acda5

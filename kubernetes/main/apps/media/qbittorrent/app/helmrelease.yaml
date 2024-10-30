@@ -241,7 +241,7 @@ spec:
         type: emptyDir
         advancedMounts:
           torrenting:
-            vpn:
+            qbitmanage:
               - path: /config
             copy-secret:
               - path: /config

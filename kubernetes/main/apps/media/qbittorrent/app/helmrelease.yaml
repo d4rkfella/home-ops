@@ -29,9 +29,19 @@ spec:
       namespace: volsync-system
   values:
     controllers:
-      qbittorrent:
+      torrenting:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          copy-secret:
+            image:
+              repository: busybox
+              tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
+            command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           vpn:
             image:
@@ -60,14 +70,13 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
-              seccompProfile: { type: RuntimeDefault }
             resources:
               requests:
                 cpu: 100m
                 memory: 512Mi
               limits:
                 squat.ai/tun: 1
-          app:
+          qbittorrent:
             dependsOn: vpn
             image:
               repository: ghcr.io/onedr0p/qbittorrent
@@ -107,10 +116,6 @@ spec:
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext:
-              runAsNonRoot: true
-              runAsUser: 568
-              runAsGroup: 568
-              seccompProfile: { type: RuntimeDefault }
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -119,15 +124,37 @@ spec:
                 cpu: 100m
               limits:
                 memory: 6Gi
+          qbitmanage:
+            dependsOn: qbittorrent
+            image:
+              repository: ghcr.io/stuffanthings/qbit_manage
+              tag: v4.1.12@sha256:2bfbfa65650381609865fc46f50f025a65940f90579e1cf0c281f2a7742eead3
+            env:
+              TZ: Europe/Sofia
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1024Mi
     defaultPodOptions:
       securityContext:
-        fsGroup: 568
-        fsGroupChangePolicy: OnRootMismatch
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
         seccompProfile: { type: RuntimeDefault }
     terminationGracePeriodSeconds: 300
     service:
-      app:
-        controller: qbittorrent
+      qbittorrent:
+        controller: torrenting
         ports:
           http:
             port: *port
@@ -136,7 +163,7 @@ spec:
             port: *torrentPort
             protocol: TCP
     ingress:
-      app:
+      qbittorrent:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/auth-url: |-
@@ -157,7 +184,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: app
+                  identifier: qbittorrent
                   port: http
     persistence:
       config:
@@ -166,30 +193,54 @@ spec:
         size: 5Gi
         accessMode: ReadWriteOnce
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbitmanage:
+              - path: /qBittorrent/BT_backup
+                subPath: qBittorrent/BT_backup
+                readOnly: true
+            qbittorrent:
               - path: /config
       scripts:
         type: configMap
         name: qbittorrent-scripts
         defaultMode: 0775
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbittorrent:
               - readOnly: true
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbitmanage:
+              - path: /data/downloads/torrents
+                subPath: downloads/torrents
+            qbittorrent:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
       gluetun-tmp:
         enabled: true
         type: emptyDir
         advancedMounts:
-          qbittorrent:
+          torrenting:
             vpn:
               - path: /tmp/gluetun
+      secret-file:
+        type: secret
+        name: qbitmanage-secret
+        advancedMounts:
+          torrenting:
+            copy-secret:
+              - path: /secrets/config.yml
+                subPath: config.yml
+                readOnly: true
+      config-qbitmanage:
+        type: emptyDir
+        advancedMounts:
+          torrenting:
+            vpn:
+              - path: /config
+            copy-secret:
+              - path: /config

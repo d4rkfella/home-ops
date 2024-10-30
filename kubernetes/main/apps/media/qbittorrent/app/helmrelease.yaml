@@ -146,6 +146,10 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1024Mi
+            lifecycle:
+              postStart:
+                exec:
+                  command: ["/bin/sh", "-c", "cp /secret/config.yaml /config/config.yaml"]
           cross-seed:
             dependsOn: qbittorrent
             image:
@@ -229,7 +233,7 @@ spec:
       scripts:
         type: configMap
         name: qbittorrent-scripts
-        defaultMode: 0775
+        defaultMode: 0550
         advancedMounts:
           torrenting:
             qbittorrent:
@@ -265,11 +269,11 @@ spec:
       config-file-qbitmanage:
         type: configMap
         name: qbitmanage-config
-        defaultMode: 0777
+        defaultMode: 0440
         advancedMounts:
           torrenting:
             qbitmanage:
-              - path: /config/config.yml
+              - path: /secret/config.yml
                 subPath: config.yml
       config-cross-seed:
         type: emptyDir

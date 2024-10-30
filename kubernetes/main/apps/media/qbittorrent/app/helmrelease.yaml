@@ -32,23 +32,23 @@ spec:
       torrenting:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          copy-secret:
-            image:
-              repository: busybox
-              tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
-            command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+        #initContainers:
+          #copy-secret:
+            #image:
+              #repository: busybox
+              #tag: 1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83
+            #command: ['sh', '-c', 'cp /secrets/config.yml /config/config.yml']
+            #securityContext:
+              #allowPrivilegeEscalation: false
+              #readOnlyRootFilesystem: true
+              #capabilities: { drop: ["ALL"] }
         containers:
-          vpn:
+          gluetun:
             image:
               repository: qmcgaw/gluetun
               tag: v3.39@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
             env:
-              TZ: Europe/Sofia
+              TZ: &TZ Europe/Sofia
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: on
@@ -78,12 +78,12 @@ spec:
               limits:
                 squat.ai/tun: 1
           qbittorrent:
-            dependsOn: vpn
+            dependsOn: gluetun
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.1@sha256:7fc5af4f7f9c8e4998aaa18b5e2e634757c55f70c23b9bd46b40e09a4c7acda5
             env:
-              TZ: Europe/Sofia
+              TZ: *TZ
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: 50413
               CROSS_SEED_ENABLED: true
@@ -131,7 +131,7 @@ spec:
               repository: ghcr.io/stuffanthings/qbit_manage
               tag: v4.1.12@sha256:2bfbfa65650381609865fc46f50f025a65940f90579e1cf0c281f2a7742eead3
             env:
-              TZ: Europe/Sofia
+              TZ: *TZ
             probes:
               liveness:
                 enabled: true
@@ -146,6 +146,28 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1024Mi
+          cross-seed:
+            dependsOn: qbittorrent
+            image:
+              repository: ghcr.io/cross-seed/cross-seed
+              tag: 6.0.0-43@sha256:65387a63068b39867aa33e44718dafc62f9cdc56f398683476449b9736351df0
+            env:
+              TZ: *TZ
+            args: ["daemon"]
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -192,12 +214,12 @@ spec:
         accessMode: ReadWriteOnce
         advancedMounts:
           torrenting:
+            qbittorrent:
+              - path: /config
             qbitmanage:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
-            qbittorrent:
-              - path: /config
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -223,22 +245,22 @@ spec:
         type: emptyDir
         advancedMounts:
           torrenting:
-            vpn:
+            gluetun:
               - path: /tmp/gluetun
-      secret-file:
+      config-qbitmanage:
         type: secret
         name: qbitmanage-secret
         advancedMounts:
           torrenting:
-            copy-secret:
-              - path: /secrets/config.yml
+            qbitmanage:
+              - path: /config/config.yml
                 subPath: config.yml
                 readOnly: true
-      config-qbitmanage:
-        type: emptyDir
-        advancedMounts:
-          torrenting:
-            qbitmanage:
-              - path: /config
-            copy-secret:
-              - path: /config
+      #config-qbitmanage:
+        #type: emptyDir
+        #advancedMounts:
+          #torrenting:
+            #qbitmanage:
+              #- path: /config
+            #copy-secret:
+              #- path: /config

@@ -39,13 +39,15 @@ spec:
               tag: v3.39.1@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
             env:
               TZ: &TZ Europe/Sofia
+              DOT: off
+              HEALTH_SERVER_ADDRESS: :9999
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: on
               VPN_PORT_FORWARDING_LISTENING_PORT: 50413
               WIREGUARD_ADDRESSES: 10.2.0.2/32
               FIREWALL_INPUT_PORTS: 80
-              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
+              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               PUID: 568
               PGID: 568
@@ -53,6 +55,25 @@ spec:
             envFrom:
               - secretRef:
                   name: gluetun-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 9999
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 9999
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  failureThreshold: 5
+            restartPolicy: Always
             securityContext:
               runAsNonRoot: false
               runAsUser: 0

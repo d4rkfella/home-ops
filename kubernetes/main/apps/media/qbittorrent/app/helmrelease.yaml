@@ -77,7 +77,7 @@ spec:
                 memory: 512Mi
               limits:
                 squat.ai/tun: 1
-          qbittorrent:
+          app:
             dependsOn: vpn
             image:
               repository: ghcr.io/onedr0p/qbittorrent
@@ -126,7 +126,7 @@ spec:
               limits:
                 memory: 6Gi
           qbitmanage:
-            dependsOn: qbittorrent
+            dependsOn: app
             image:
               repository: ghcr.io/stuffanthings/qbit_manage
               tag: v4.1.12@sha256:2bfbfa65650381609865fc46f50f025a65940f90579e1cf0c281f2a7742eead3

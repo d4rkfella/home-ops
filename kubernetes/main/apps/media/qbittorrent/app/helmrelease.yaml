@@ -288,6 +288,8 @@ spec:
               - path: /config/config.js
                 subPath: config.js
                 readOnly: true
+      tmp:
+        type: emptyDir
       #config-qbitmanage:
         #type: emptyDir
         #advancedMounts:

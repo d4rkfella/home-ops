@@ -88,6 +88,12 @@ spec:
               limits:
                 squat.ai/tun: 1
 
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-19
+              tag: 1.9.7
+            restartPolicy: Always
+
         containers:
           qbittorrent:
             image:
@@ -201,11 +207,6 @@ spec:
               requests:
                 cpu: 10m
                 memory: 25Mi
-
-          dnsdist:
-            image:
-              repository: docker.io/powerdns/dnsdist-19
-              tag: 1.9.7
 
     defaultPodOptions:
       securityContext:

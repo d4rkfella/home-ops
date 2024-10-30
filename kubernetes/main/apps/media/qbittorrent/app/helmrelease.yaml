@@ -64,6 +64,7 @@ spec:
               - secretRef:
                   name: gluetun-secret
             securityContext:
+              runAsNonRoot: false
               runAsUser: 0
               runAsGroup: 0
               allowPrivilegeEscalation: false

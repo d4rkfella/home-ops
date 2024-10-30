@@ -265,11 +265,12 @@ spec:
       config-file-qbitmanage:
         type: secret
         name: qbitmanage-secret
-        defaultMode: 0660
+        defaultMode: 0777
         advancedMounts:
           torrenting:
             qbitmanage:
               - path: /config/config.yml
+                subPath: config.yml
                 readOnly: false
       config-cross-seed:
         type: emptyDir

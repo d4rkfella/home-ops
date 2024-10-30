@@ -49,8 +49,6 @@ spec:
               FIREWALL_INPUT_PORTS: 80
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
-              PUID: 568
-              PGID: 568
               DNS_KEEP_NAMESERVER: on
             envFrom:
               - secretRef:

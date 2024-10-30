@@ -130,6 +130,7 @@ spec:
             image:
               repository: ghcr.io/stuffanthings/qbit_manage
               tag: v4.1.12@sha256:2bfbfa65650381609865fc46f50f025a65940f90579e1cf0c281f2a7742eead3
+            command: ["sh", "-c", "cp /tmp/config.yml /config/config.yml/"]
             env:
               TZ: *TZ
             probes:
@@ -265,13 +266,13 @@ spec:
       config-file-qbitmanage:
         type: secret
         name: qbitmanage-secret
-        defaultMode: 0777
+        defaultMode: 0440
         advancedMounts:
           torrenting:
             qbitmanage:
-              - path: /config/config.yml
+              - path: /tmp/config.yml
                 subPath: config.yml
-                readOnly: false
+                readOnly: true
       config-cross-seed:
         type: emptyDir
         advancedMounts:

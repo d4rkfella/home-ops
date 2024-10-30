@@ -334,7 +334,7 @@ spec:
       addons:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
+          torrenting:
             qbittorrent:
               - path: /addons
                 readOnly: true
@@ -346,10 +346,8 @@ spec:
         name: qbittorrent-dnsdist
         defaultMode: 0400
         advancedMounts:
-          qbittorrent:
+          torrenting:
             dnsdist:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
-
-

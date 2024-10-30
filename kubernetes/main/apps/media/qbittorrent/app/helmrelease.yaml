@@ -27,11 +27,13 @@ spec:
   dependsOn:
     - name: volsync
       namespace: volsync-system
+
   values:
     controllers:
       torrenting:
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           gluetun:
             image:
@@ -85,41 +87,8 @@ spec:
                 memory: 512Mi
               limits:
                 squat.ai/tun: 1
+
         containers:
-          #gluetun:
-            #image:
-              #repository: qmcgaw/gluetun
-              #tag: v3.39@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
-            #env:
-              #TZ: &TZ Europe/Sofia
-              #VPN_TYPE: wireguard
-              #VPN_SERVICE_PROVIDER: protonvpn
-              #VPN_PORT_FORWARDING: on
-              #VPN_PORT_FORWARDING_LISTENING_PORT: 50413
-              #WIREGUARD_ADDRESSES: 10.2.0.2/32
-              #FIREWALL_INPUT_PORTS: 80
-              #FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
-              #SERVER_HOSTNAMES: node-ch-15.protonvpn.net
-              #PUID: 568
-              #PGID: 568
-              #DNS_KEEP_NAMESERVER: on
-              #PUBLICIP_API: ip2location
-            #envFrom:
-              #- secretRef:
-                  #name: gluetun-secret
-            #securityContext:
-              #runAsNonRoot: false
-              #runAsUser: 0
-              #runAsGroup: 0
-              #allowPrivilegeEscalation: false
-              #readOnlyRootFilesystem: false
-              #capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
-            #resources:
-              #requests:
-                #cpu: 100m
-                #memory: 512Mi
-              #limits:
-                #squat.ai/tun: 1
           qbittorrent:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
@@ -168,6 +137,7 @@ spec:
                 cpu: 100m
               limits:
                 memory: 6Gi
+
           qbitmanage:
             dependsOn: qbittorrent
             image:
@@ -193,6 +163,7 @@ spec:
               postStart:
                 exec:
                   command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
+
           cross-seed:
             dependsOn: qbittorrent
             image:
@@ -215,6 +186,28 @@ spec:
                 cpu: 10m
               limits:
                 memory: 512Mi
+
+          vuetorrent:
+            dependsOn: qbittorrent
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.3.0
+            args:
+              - --repo=https://github.com/WDaan/VueTorrent
+              - --ref=latest-release
+              - --period=86400s
+              - --root=/addons
+            resources:
+              requests:
+                cpu: 10m
+                memory: 25Mi
+
+          dnsdist:
+            image:
+              repository: docker.io/powerdns/dnsdist-19
+              tag: 1.9.7
+            restartPolicy: Always
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -224,6 +217,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     terminationGracePeriodSeconds: 300
+
     service:
       qbittorrent:
         controller: torrenting
@@ -231,6 +225,7 @@ spec:
         ports:
           http:
             port: *port
+
     ingress:
       qbittorrent:
         annotations:
@@ -255,6 +250,7 @@ spec:
                 service:
                   identifier: qbittorrent
                   port: http
+
     persistence:
       config:
         enabled: true
@@ -281,6 +277,7 @@ spec:
           torrenting:
             qbittorrent:
               - readOnly: true
+
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
@@ -296,6 +293,7 @@ spec:
             cross-seed:
               - path: /data/downloads/torrents/complete
                 subPath: downloads/torrents/complete
+
       config-qbitmanage:
         type: emptyDir
         medium: Memory
@@ -303,6 +301,7 @@ spec:
           torrenting:
             qbitmanage:
               - path: /config
+
       config-file-qbitmanage:
         type: configMap
         name: qbitmanage-config
@@ -313,6 +312,7 @@ spec:
               - path: /secret/config.yml
                 subPath: config.yml
                 readOnly: true
+
       config-cross-seed:
         type: emptyDir
         medium: Memory
@@ -320,6 +320,7 @@ spec:
           torrenting:
             cross-seed:
               - path: /config
+
       config-file-cross-seed:
         type: secret
         name: cross-seed-secret
@@ -329,4 +330,26 @@ spec:
               - path: /config/config.js
                 subPath: config.js
                 readOnly: true
+
+      addons:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            qbittorrent:
+              - path: /addons
+                readOnly: true
+            vuetorrent:
+              - path: /addons
+
+      dnsdist:
+        type: configMap
+        name: qbittorrent-dnsdist
+        defaultMode: 0400
+        advancedMounts:
+          qbittorrent:
+            dnsdist:
+              - path: /etc/dnsdist/dnsdist.conf
+                subPath: dnsdist.conf
+                readOnly: true
+
 

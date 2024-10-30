@@ -265,6 +265,7 @@ spec:
       config-file-qbitmanage:
         type: secret
         name: qbitmanage-secret
+        defaultMode: 0660
         advancedMounts:
           torrenting:
             qbitmanage:

@@ -60,7 +60,6 @@ spec:
               PUID: 568
               PGID: 568
               DNS_KEEP_NAMESERVER: on
-              PUBLICIP_API: ip2location
             envFrom:
               - secretRef:
                   name: gluetun-secret

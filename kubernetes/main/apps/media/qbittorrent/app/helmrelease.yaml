@@ -136,7 +136,7 @@ spec:
               liveness:
                 enabled: true
               readiness:
-                enabled: true
+                enabled: false
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

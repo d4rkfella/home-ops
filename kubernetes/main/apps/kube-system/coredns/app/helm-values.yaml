@@ -17,7 +17,7 @@ servers:
     port: 53
     plugins:
       - name: rewrite
-        parameters: rewrite outpost-internal.${PUBLIC_DOMAIN} ak-outpost-internal.authentik.svc.cluster.local
+        parameters: name outpost-internal.${PUBLIC_DOMAIN} ak-outpost-internal.authentik.svc.cluster.local
       - name: errors
       - name: health
         configBlock: |-

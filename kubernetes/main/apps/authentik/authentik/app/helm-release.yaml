@@ -31,15 +31,6 @@ spec:
       envFrom:
         - secretRef:
             name: authentik-global-vars-secret
-      volumes:
-        - name: cert
-          secret:
-            secretName: darkfellanet-tls
-            optional: false
-      volumeMounts:
-        - name: cert
-          mountPath: /certs
-          readOnly: true
     server:
       ingress:
         enabled: true
@@ -69,6 +60,10 @@ spec:
           mountPath: /media
     worker:
       volumes:
+        - name: cert
+          secret:
+            secretName: darkfellanet-tls
+            optional: false
         - name: default
           emptyDir: {}
         - name: flows
@@ -126,6 +121,9 @@ spec:
           configMap:
             name: brands
       volumeMounts:
+        - name: cert
+          mountPath: /certs
+          readOnly: true
         - name: flows
           mountPath: /blueprints/flows
         - name: rules

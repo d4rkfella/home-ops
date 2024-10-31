@@ -105,11 +105,12 @@ spec:
       class: external
       nginxIngressAnnotations: true
       additionalAnnotations:
+        nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         nginx.ingress.kubernetes.io/auth-url: |-
             https://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx
         nginx.ingress.kubernetes.io/auth-signin: |-
-            https://vaultwarden.example.com/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
+            https://vaultwarden.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
         nginx.ingress.kubernetes.io/auth-response-headers: |-
             Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
         nginx.ingress.kubernetes.io/auth-snippet: |

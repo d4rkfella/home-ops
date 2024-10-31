@@ -1,6 +1,8 @@
 ---
 fullnameOverride: coredns
-replicaCount: 1
+replicaCount: 2
+rollingUpdate:
+  maxSurge: 1
 k8sAppLabelOverride: kube-dns
 serviceAccount:
   create: true
@@ -27,7 +29,7 @@ servers:
       - name: kubernetes
         parameters: cluster.local in-addr.arpa ip6.arpa
         configBlock: |-
-          pods verified
+          pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: forward
         parameters: . /etc/resolv.conf
@@ -49,10 +51,3 @@ tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: Exists
     effect: NoSchedule
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: DoNotSchedule
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/instance: coredns

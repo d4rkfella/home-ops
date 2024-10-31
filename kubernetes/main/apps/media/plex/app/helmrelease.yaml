@@ -100,6 +100,7 @@ spec:
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@contains /video/:/transcode/universal/start.mpd" \
                 "id:1000001,phase:1,nolog,pass,ctl:ruleRemoveById=932235,ctl:ruleRemoveById=932370"
+            SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
           nginx.ingress.kubernetes.io/configuration-snippet: |
               proxy_set_header Accept-Encoding "";
               sub_filter '</head>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/plex/mind.css"></head>';

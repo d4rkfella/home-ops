@@ -98,10 +98,10 @@ spec:
             restartPolicy: Always
             securityContext:
               runAsNonRoot: false
-              runAsUser: 0
-              runAsGroup: 0
-              fsGroup: 0
-              #capabilities: { drop: ["ALL"] }
+              runAsUser: 10001
+              runAsGroup: 10001
+              fsGroup: 10001
+              capabilities: { drop: ["ALL"] }
 
         containers:
           qbittorrent:

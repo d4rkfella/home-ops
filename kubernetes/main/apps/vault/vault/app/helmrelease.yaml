@@ -291,7 +291,7 @@ spec:
         enabled: false
 
       ha:
-        enabled: false
+        enabled: true
         raft:
           enabled: true
           setNodeId: false

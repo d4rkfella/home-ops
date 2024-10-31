@@ -97,7 +97,7 @@ spec:
               tag: 1.9.7@sha256:6ed810f4d5da4585ccfc2667a794a78319ff2960a43266fc6a160c063d04e1ef
             restartPolicy: Always
             securityContext:
-              runAsNonRoot: false
+              runAsNonRoot: true
               runAsUser: 10001
               runAsGroup: 10001
               fsGroup: 10001

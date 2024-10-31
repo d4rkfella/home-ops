@@ -107,7 +107,7 @@ spec:
       additionalAnnotations:
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         nginx.ingress.kubernetes.io/auth-url: |-
-            http://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx
+            https://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx
         # If you're using domain-level auth, use the authentication URL instead of the application URL
         nginx.ingress.kubernetes.io/auth-signin: |-
             https://vaultwarden.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri

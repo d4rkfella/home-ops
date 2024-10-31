@@ -88,9 +88,6 @@ spec:
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
             resources:
-              requests:
-                cpu: 100m
-                memory: 512Mi
               limits:
                 squat.ai/tun: 1
 
@@ -103,7 +100,7 @@ spec:
               runAsNonRoot: false
               runAsUser: 0
               runAsGroup: 0
-              capabilities: { drop: ["ALL"] }
+              #capabilities: { drop: ["ALL"] }
 
         containers:
           qbittorrent:

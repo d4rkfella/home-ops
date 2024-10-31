@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: prowlarr
+  name: &app prowlarr
 spec:
   interval: 30m
   chart:
@@ -24,11 +24,13 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+
   values:
     controllers:
       prowlarr:
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           init-db:
             image:
@@ -37,6 +39,7 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: prowlarr-secret
+
         containers:
           app:
             image:
@@ -75,6 +78,7 @@ spec:
                 cpu: 100m
               limits:
                 memory: 1Gi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -83,12 +87,14 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
-        controller: prowlarr
+        controller: *app
         ports:
           http:
             port: *port
+
     ingress:
       app:
         annotations:
@@ -114,8 +120,12 @@ spec:
                 service:
                   identifier: app
                   port: http
+
     persistence:
       config:
         type: emptyDir
+        medium: Memory
+
       tmp:
         type: emptyDir
+        medium: Memory

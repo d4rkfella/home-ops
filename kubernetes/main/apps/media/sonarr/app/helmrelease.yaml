@@ -24,11 +24,13 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+
   values:
     controllers:
       sonarr:
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           init-db:
             image:
@@ -37,6 +39,7 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: sonarr-secret
+
         containers:
           app:
             image:
@@ -76,6 +79,7 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 4Gi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -85,12 +89,14 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: sonarr
         ports:
           http:
             port: *port
+
     ingress:
       app:
         annotations:
@@ -116,6 +122,7 @@ spec:
                 service:
                   identifier: app
                   port: http
+
     persistence:
       config:
         enabled: true
@@ -124,6 +131,7 @@ spec:
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /config
+
       scripts:
         type: configMap
         name: sonarr-configmap
@@ -138,6 +146,7 @@ spec:
       tmp:
         type: emptyDir
         medium: Memory
+
       media:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}

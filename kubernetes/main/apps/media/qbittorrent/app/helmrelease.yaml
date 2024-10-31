@@ -85,6 +85,7 @@ spec:
               runAsUser: 0
               runAsGroup: 0
               fsGroup: 1000
+              fsGroupChangePolicy: OnRootMismatch
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }

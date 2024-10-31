@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: authentik-server-cert
+  namespace: default
+spec:
+  secretName: authentik-server-tls
+  issuerRef:
+    name: vault-issuer
+  commonName: authentik-server.authentik.svc.cluster.local
+  dnsNames:
+  - authentik-server.authentik.svc.cluster.local

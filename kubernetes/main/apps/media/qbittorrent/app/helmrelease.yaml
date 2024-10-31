@@ -44,6 +44,7 @@ spec:
               TZ: &TZ Europe/Sofia
               FIREWALL_VPN_INPUT_PORTS: 56787
               DOT: "off"
+              PUBLICIP_API: ip2location
               VERSION_INFORMATION: "off"
               PUBLICIP_FILE: ""
               DNS_ADDRESS: "127.0.0.2"

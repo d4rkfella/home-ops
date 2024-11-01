@@ -107,7 +107,6 @@ spec:
         more-set-headers: |
           "X-Frame-Options: DENY";
           "X-Content-Type-Options: nosniff";
-          "X-XSS-Protection: 0";
         hsts-max-age: 31449600
         keep-alive-requests: 10000
         keep-alive: 120

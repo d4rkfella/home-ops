@@ -107,6 +107,7 @@ spec:
             more_set_headers "Strict-Transport-Security: max-age=31449600; includeSubDomains; preload";
             more_set_headers "Cross-Origin-Resource-Policy: same-site";
             more_set_headers "Server: hide";
+            more_set_headers "access-control-allow-origin https://plex.${PUBLIC_DOMAIN}";
         className: external
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

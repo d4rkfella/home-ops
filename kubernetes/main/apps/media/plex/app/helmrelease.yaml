@@ -103,7 +103,10 @@ spec:
             SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             more_set_headers "X-Content-Type-Options: nosniff";
-            more_set_headers "X-Xss-Protection: 0";
+            more_set_headers "Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'";
+            if ($request_uri ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|json)$) {
+                more_clear_headers Content-Security-Policy;
+            }
             more_set_headers "Strict-Transport-Security: max-age=31449600; includeSubDomains; preload";
             more_set_headers "Cross-Origin-Resource-Policy: same-site";
             more_set_headers "Server: hide";

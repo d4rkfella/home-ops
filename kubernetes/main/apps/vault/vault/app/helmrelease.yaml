@@ -289,8 +289,6 @@ spec:
       ha:
         enabled: true
         replicas: 1
-        apiAddr: https://vault-new.${PUBLIC_DOMAIN}:8200
-        clusterAddr: https://vault-new.${PUBLIC_DOMAIN}:8201
         raft:
           enabled: true
           setNodeId: false

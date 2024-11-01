@@ -104,11 +104,11 @@ spec:
         enable-real-ip: "true"
         force-ssl-redirect: "true"
         hide-headers: Server,X-Powered-By
-        more-set-headers: |
-          "X-Frame-Options: DENY";
-          "X-Content-Type-Options: nosniff";
         hsts-max-age: 31449600
         keep-alive-requests: 10000
+        configuration-snippet: |
+          more_set_headers "X-Content-Type-Options: nosniff";
+          more_set_headers "X-Frame-Options: DENY";
         keep-alive: 120
         log-format-escape-json: "true"
         log-format-upstream: >

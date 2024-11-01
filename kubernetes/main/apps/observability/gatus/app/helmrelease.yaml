@@ -118,6 +118,9 @@ spec:
             more_set_headers "Cross-Origin-Resource-Policy: same-site";
             more_set_headers "Server: hide";
             more_set_headers "Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'";
+            if ($request_uri ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|json)$) {
+                more_clear_headers Content-Security-Policy;
+            }
         className: external
         hosts:
           - host: status.${PUBLIC_DOMAIN}

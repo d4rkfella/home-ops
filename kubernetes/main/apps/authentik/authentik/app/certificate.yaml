@@ -1,0 +1,11 @@
+---
+kind: Certificate
+metadata:
+  name: authentik-server
+spec:
+  secretName: authentik-server-tls
+  issuerRef:
+    name: vault-issuer
+  commonName: authentik-server.authentik.svc.cluster.local
+  dnsNames:
+  - authentik-server.authentik.svc.cluster.local

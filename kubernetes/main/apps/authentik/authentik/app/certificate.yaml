@@ -6,6 +6,7 @@ spec:
   secretName: authentik-server-tls
   issuerRef:
     name: vault-issuer
+    kind: ClusterIssuer
   commonName: authentik-server.authentik.svc.cluster.local
   dnsNames:
-  - authentik-server.authentik.svc.cluster.local
+    - authentik-server.authentik.svc.cluster.local

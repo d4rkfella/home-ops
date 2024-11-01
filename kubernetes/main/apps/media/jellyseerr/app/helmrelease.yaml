@@ -83,9 +83,14 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
-              proxy_set_header Accept-Encoding "";
-              sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/overseerr/mind.css"></body>';
-              sub_filter_once on;
+            more_set_headers "X-Content-Type-Options: nosniff";
+            more_set_headers "X-Xss-Protection: 0";
+            more_set_headers "Strict-Transport-Security: max-age=31449600; includeSubDomains; preload";
+            more_set_headers "Cross-Origin-Resource-Policy: same-site";
+            more_set_headers "Server: hide";
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/overseerr/mind.css"></body>';
+            sub_filter_once on;
         className: external
         hosts:
           - host: requests.${PUBLIC_DOMAIN}

@@ -82,7 +82,7 @@ spec:
           - /bin/sh
           - -c
           - /vault/userconfig/mylivenessscript/run.sh
-        path: "/v1/sys/health?standbyok=true"
+        #path: "/v1/sys/health?standbyok=true"
         port: 8200
         failureThreshold: 2
         initialDelaySeconds: 60

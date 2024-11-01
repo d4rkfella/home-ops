@@ -288,7 +288,7 @@ spec:
 
       ha:
         enabled: true
-        replicas: 3
+        replicas: 1
         raft:
           enabled: true
           setNodeId: false

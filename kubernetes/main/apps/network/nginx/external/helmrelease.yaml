@@ -104,7 +104,7 @@ spec:
         enable-real-ip: "true"
         force-ssl-redirect: "true"
         hide-headers: Server,X-Powered-By
-        add-headers: X-Frame-Options DENY
+        add-headers: "X-Frame-Options: DENY"
         hsts-max-age: 31449600
         keep-alive-requests: 10000
         keep-alive: 120

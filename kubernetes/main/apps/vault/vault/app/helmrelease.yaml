@@ -188,11 +188,11 @@ spec:
 
       # Enables a headless service to be used by the Vault Statefulset
       service:
-        enabled: true
+        enabled: false
         # Enable or disable the vault-active service, which selects Vault pods that
         # have labeled themselves as the cluster leader with `vault-active: "true"`.
         active:
-          enabled: true
+          enabled: false
           # Extra annotations for the service definition. This can either be YAML or a
           # YAML-formatted multi-line templated string map of the annotations to apply
           # to the active service.
@@ -200,7 +200,7 @@ spec:
         # Enable or disable the vault-standby service, which selects Vault pods that
         # have labeled themselves as a cluster follower with `vault-active: "false"`.
         standby:
-          enabled: true
+          enabled: false
           # Extra annotations for the service definition. This can either be YAML or a
           # YAML-formatted multi-line templated string map of the annotations to apply
           # to the standby service.

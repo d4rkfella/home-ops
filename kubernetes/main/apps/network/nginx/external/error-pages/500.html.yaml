@@ -3,20 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'none';
+        img-src 'self' https://static.${PUBLIC_DOMAIN}/500-internal-server-error.png;
+        script-src 'none';
+        style-src 'unsafe-inline';
+        connect-src 'none';
+        font-src 'none';
+        object-src 'none';
+        media-src 'none';
+        child-src 'none';
+        manifest-src 'none';
+        worker-src 'none';
+    ">
     <title>Internal Server Error</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
         }
-        h1 {
-            color: #d9534f;
+        img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Internal Server Error</h1>
-    <p>Sorry, something went wrong on our end. Please try again later.</p>
+    <img src="https://static.${PUBLIC_DOMAIN}/500-internal-server-error.png" alt="500 Error Image">
 </body>
 </html>

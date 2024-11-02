@@ -3,7 +3,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./pvc.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 configMapGenerator:
@@ -25,5 +24,3 @@ configMapGenerator:
       - 403.json=./error-pages/403.json.yaml
 generatorOptions:
   disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

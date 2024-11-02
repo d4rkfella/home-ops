@@ -161,6 +161,19 @@ spec:
             path: "503.json"
           - key: "503.html"
             path: "503.html"
+          - key: "500.html"
+            path: "500.html"
+          - key: "500.json"
+            path: "500.json"
+          - key: "404.html"
+            path: "404.html"
+          - key: "404.json"
+            path: "404.json"
+          - key: "403.html"
+            path: "403.html"
+          - key: "403.json"
+            path: "403.json"
+
       extraVolumeMounts:
       - name: nginx-error-pages
         mountPath: /www

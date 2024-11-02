@@ -10,6 +10,12 @@ configMapGenerator:
     files:
       - 503.html=./error-pages/503.html.yaml
       - 503.json=./error-pages/503.json.yaml
+      - 500.html=./error-pages/500.html.yaml
+      - 500.json=./error-pages/500.json.yaml
+      - 404.html=./error-pages/404.html.yaml
+      - 404.json=./error-pages/404.json.yaml
+      - 403.html=./error-pages/403.html.yaml
+      - 403.json=./error-pages/403.json.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

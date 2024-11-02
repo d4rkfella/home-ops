@@ -6,7 +6,7 @@
     <title>Service Unavailable</title>
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'none';
-        img-src 'self' /images/503-service-unavailable.png;
+        img-src 'self';
         style-src 'unsafe-inline';">
     <style>
         body {

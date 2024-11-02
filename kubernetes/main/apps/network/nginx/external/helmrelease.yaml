@@ -157,6 +157,8 @@ spec:
         configMap:
           name: nginx-error-pages
           items:
+          - key: "503.json"
+            path: "503.json"
           - key: "503.html"
             path: "503.html"
       extraVolumeMounts:

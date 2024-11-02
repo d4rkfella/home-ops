@@ -97,7 +97,7 @@ spec:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
-          nginx.ingress.kubernetes.io/rewrite-target: /web
+          #nginx.ingress.kubernetes.io/rewrite-target: /web
           #nginx.ingress.kubernetes.io/permanent-redirect: /web
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecRule REQUEST_URI "@contains /video/:/transcode/universal/start.mpd" \

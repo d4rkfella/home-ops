@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="
-    default-src 'none';
-    img-src 'self' https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png;
-    style-src 'unsafe-inline';">
+        default-src 'none';
+        img-src 'self' https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png;
+        script-src 'none';
+        style-src 'unsafe-inline';
+        frame-ancestors 'none';
+        connect-src 'none';
+        font-src 'none';
+        object-src 'none';
+        media-src 'none';
+        child-src 'none';
+        manifest-src 'none';
+        worker-src 'none';
+    ">
     <title>Service Unavailable</title>
     <style>
         body {

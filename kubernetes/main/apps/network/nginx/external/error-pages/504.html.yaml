@@ -3,20 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gateway Timeout</title>
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'none';
+        img-src 'self' https://static.${PUBLIC_DOMAIN}/504-gateway-timeout.png;
+        script-src 'none';
+        style-src 'unsafe-inline';
+        frame-ancestors 'none';
+        connect-src 'none';
+        font-src 'none';
+        object-src 'none';
+        media-src 'none';
+        child-src 'none';
+        manifest-src 'none';
+        worker-src 'none';
+    ">
+    <title>504 Gateway Timeout</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f8f8;
         }
-        h1 {
-            color: #d9534f;
+        img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Gateway Timeout</h1>
-    <p>Sorry, the server did not receive a timely response from the upstream server.</p>
+    <img src="https://static.${PUBLIC_DOMAIN}/504-gateway-timeout.png" alt="503 Error Image">
 </body>
 </html>

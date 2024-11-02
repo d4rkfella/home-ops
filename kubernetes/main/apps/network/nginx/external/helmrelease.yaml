@@ -178,4 +178,4 @@ spec:
       extraVolumeMounts:
       - name: nginx-error-pages
         mountPath: /www
-        readOnly: "true"
+        readOnly: true

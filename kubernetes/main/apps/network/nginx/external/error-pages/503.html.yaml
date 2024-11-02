@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" content="
     default-src 'none';
-    img-src 'self' https://static.${PUBLIC_DOMAIN}/502-service-unavailable.png;
+    img-src 'self' https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png;
     style-src 'unsafe-inline';">
     <title>Service Unavailable</title>
     <style>

@@ -112,7 +112,7 @@ spec:
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
             paths:
-              - path: /
+              - path: /web
                 service:
                   identifier: app
                   port: http

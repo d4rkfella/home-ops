@@ -105,7 +105,7 @@ spec:
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000
         force-ssl-redirect: "true"
-        keep-alive-requests: 10000
+        keep-alive-requests: 1000
         keep-alive: 10
         log-format-escape-json: "true"
         log-format-upstream: >

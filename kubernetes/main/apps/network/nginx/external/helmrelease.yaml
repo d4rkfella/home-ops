@@ -157,7 +157,7 @@ spec:
         configMap:
           name: nginx-error-pages
           items:
-          - key: "503"
+          - key: "503.html"
             path: "503.html"
       extraVolumeMounts:
       - name: nginx-error-pages

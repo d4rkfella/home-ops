@@ -8,7 +8,7 @@ resources:
 configMapGenerator:
   - name: nginx-error-pages
     files:
-      - 503=./error-pages/503.yaml
+      - 503.html=./error-pages/503.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

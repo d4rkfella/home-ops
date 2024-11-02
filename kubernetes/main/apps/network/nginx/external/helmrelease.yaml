@@ -85,7 +85,7 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        custom-http-errors: "403,404,503,500"
+        custom-http-errors: "504,503,502,501,500,404,403"
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-

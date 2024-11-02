@@ -8,7 +8,6 @@
         img-src 'self' https://static.${PUBLIC_DOMAIN}/504-gateway-timeout.png;
         script-src 'none';
         style-src 'unsafe-inline';
-        frame-ancestors 'none';
         connect-src 'none';
         font-src 'none';
         object-src 'none';
@@ -34,6 +33,6 @@
     </style>
 </head>
 <body>
-    <img src="https://static.${PUBLIC_DOMAIN}/504-gateway-timeout.png" alt="503 Error Image">
+    <img src="https://static.${PUBLIC_DOMAIN}/504-gateway-timeout.png" alt="504 Error Image">
 </body>
 </html>

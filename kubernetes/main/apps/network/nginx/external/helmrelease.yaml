@@ -156,6 +156,7 @@ spec:
       - name: nginx-error-pages
         configMap:
           name: nginx-error-pages
+          defaultMode: 288
           items:
           - key: "503.json"
             path: "503.json"

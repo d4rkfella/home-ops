@@ -102,6 +102,7 @@ spec:
         enable-brotli: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
+        hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000
         force-ssl-redirect: "true"
         keep-alive-requests: 10000

@@ -8,8 +8,14 @@ resources:
 configMapGenerator:
   - name: nginx-error-pages
     files:
+      - 504.html=./error-pages/504.html.yaml
+      - 504.json=./error-pages/504.json.yaml
       - 503.html=./error-pages/503.html.yaml
       - 503.json=./error-pages/503.json.yaml
+      - 502.html=./error-pages/502.html.yaml
+      - 502.json=./error-pages/502.json.yaml
+      - 501.html=./error-pages/501.html.yaml
+      - 501.json=./error-pages/501.json.yaml
       - 500.html=./error-pages/500.html.yaml
       - 500.json=./error-pages/500.json.yaml
       - 404.html=./error-pages/404.html.yaml

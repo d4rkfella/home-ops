@@ -158,10 +158,22 @@ spec:
           name: nginx-error-pages
           defaultMode: 292
           items:
+          - key: "504.json"
+            path: "504.json"
+          - key: "504.html"
+            path: "504.html"
           - key: "503.json"
             path: "503.json"
           - key: "503.html"
             path: "503.html"
+          - key: "502.json"
+            path: "502.json"
+          - key: "502.html"
+            path: "502.html"
+          - key: "501.json"
+            path: "501.json"
+          - key: "501.html"
+            path: "501.html"
           - key: "500.html"
             path: "500.html"
           - key: "500.json"

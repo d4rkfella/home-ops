@@ -22,5 +22,6 @@ configMapGenerator:
       - 404.json=./error-pages/404.json.yaml
       - 403.html=./error-pages/403.html.yaml
       - 403.json=./error-pages/403.json.yaml
+      - 400.html=./error-pages/400.html.yaml
 generatorOptions:
   disableNameSuffixHash: true

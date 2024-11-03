@@ -85,7 +85,7 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        custom-http-errors: "504,503,502,501,500,404,403"
+        custom-http-errors: "504,503,502,501,500,404,403,400"
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-
@@ -191,4 +191,3 @@ spec:
       - name: nginx-error-pages
         mountPath: /www
         readOnly: true
-

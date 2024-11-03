@@ -94,75 +94,75 @@ spec:
         - name: default
           emptyDir: {}
         - name: flows
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: flows
         - name: rules
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: rules
         - name: transports
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: transports
         - name: event-matcher
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: event-matcher
         - name: expression
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: expression
         - name: password-policy
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: password-policy
         - name: prompts
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: prompts
         - name: authenticator-validator
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: authenticator-validator
         - name: email
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: email
         - name: identification
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: identification
         - name: invitation
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: invitation
         - name: password
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: password
         - name: prompt
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: prompt
         - name: user-login
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: user-login
         - name: user-logout
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: user-logout
         - name: user-write
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: user-write
         - name: groups
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: groups
         - name: brands
-          defaultMode: 288
+          defaultMode: 440
           configMap:
             name: brands
       volumeMounts:

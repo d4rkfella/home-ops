@@ -48,6 +48,7 @@ spec:
       ingress:
         enabled: true
         annotations:
+          nginx.ingress.kubernetes.io/proxy-ssl-server-name: "true"
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
           nginx.ingress.kubernetes.io/proxy-ssl-secret: network/vault-issuer-ca

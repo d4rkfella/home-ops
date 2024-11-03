@@ -52,7 +52,7 @@ spec:
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            more_set_headers "access-control-allow-origin authentik.${PUBLIC_DOMAIN}";
+            more_set_headers "access-control-allow-origin https://{{ .Release.Name }}.${PUBLIC_DOMAIN}";
         ingressClassName: external
         hosts:
           - "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

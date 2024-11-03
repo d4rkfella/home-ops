@@ -154,12 +154,7 @@ spec:
           mountPath: /certs
           readOnly: true
         - name: self-signed-cert
-          mountPath: /certs/self-signed/cert/tls.crt
-          subPath: tls.crt
-          readOnly: true
-        - name: self-signed-cert
-          mountPath: /certs/self-signed/key/tls.key
-          subPath: tls.key
+          mountPath: /certs/self-signed
           readOnly: true
         - name: flows
           mountPath: /blueprints/flows

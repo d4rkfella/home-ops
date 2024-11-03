@@ -3,7 +3,7 @@ data:
   X-Content-Type-Options: nosniff
   X-XSS-Protection: "1; mode=block"
   X-Frame-Options: DENY
-  Permissions-Policy: "geolocation=(self), microphone=()"
+  Permissions-Policy: "geolocation=(), microphone=(), camera=(), fullscreen=(), payment=(), display-capture=(), sync-xhr=()"
   Referrer-Policy: strict-origin-when-cross-origin
 kind: ConfigMap
 metadata:

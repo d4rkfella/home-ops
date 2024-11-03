@@ -32,10 +32,12 @@ spec:
         - secretRef:
             name: authentik-global-vars-secret
       securityContext:
-        runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+    server:
+      containerSecurityContext:
+        runAsNonRoot: true
         readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         seccomProfile:
@@ -43,7 +45,6 @@ spec:
         capabilities:
           drop:
             - ALL
-    server:
       ingress:
         enabled: true
         annotations:
@@ -76,6 +77,15 @@ spec:
         - name: media
           mountPath: /media
     worker:
+      containerSecurityContext:
+        runAsNonRoot: true
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        seccomProfile:
+          type: RuntimeDefault
+        capabilities:
+          drop:
+            - ALL
       volumes:
         - name: cert
           secret:

@@ -4,6 +4,5 @@ kind: Kustomization
 resources:
   - ./blueprints
   - ./externalsecret.yaml
-  - ./certificate.yaml
   - ./helm-release.yaml
   - ../../../../templates/gatus/external

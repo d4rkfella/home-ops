@@ -91,7 +91,7 @@ spec:
             optional: false
         - name: self-signed-cert
           secret:
-            secretName: authentik-server-tls
+            secretName: authentik-self-signed
             optional: false
         - name: default
           emptyDir: {}

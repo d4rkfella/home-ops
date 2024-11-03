@@ -94,60 +94,75 @@ spec:
         - name: default
           emptyDir: {}
         - name: flows
-          &fsmode defaultMode: 670
+          defaultMode: 670
           configMap:
             name: flows
         - name: rules
-          *fsmode
+          defaultMode: 670
           configMap:
             name: rules
         - name: transports
-          *fsmode
+          defaultMode: 670
           configMap:
             name: transports
         - name: event-matcher
+          defaultMode: 670
           configMap:
             name: event-matcher
         - name: expression
+          defaultMode: 670
           configMap:
             name: expression
         - name: password-policy
+          defaultMode: 670
           configMap:
             name: password-policy
         - name: prompts
+          defaultMode: 670
           configMap:
             name: prompts
         - name: authenticator-validator
+          defaultMode: 670
           configMap:
             name: authenticator-validator
         - name: email
+          defaultMode: 670
           configMap:
             name: email
         - name: identification
+          defaultMode: 670
           configMap:
             name: identification
         - name: invitation
+          defaultMode: 670
           configMap:
             name: invitation
         - name: password
+          defaultMode: 670
           configMap:
             name: password
         - name: prompt
+          defaultMode: 670
           configMap:
             name: prompt
         - name: user-login
+          defaultMode: 670
           configMap:
             name: user-login
         - name: user-logout
+          defaultMode: 670
           configMap:
             name: user-logout
         - name: user-write
+          defaultMode: 670
           configMap:
             name: user-write
         - name: groups
+          defaultMode: 670
           configMap:
             name: groups
         - name: brands
+          defaultMode: 670
           configMap:
             name: brands
       volumeMounts:
@@ -156,42 +171,61 @@ spec:
           readOnly: true
         - name: flows
           mountPath: /blueprints/flows
+          readOnly: true
         - name: rules
           mountPath: /blueprints/notifications/rules
+          readOnly: true
         - name: transports
           mountPath: /blueprints/notifications/transports
+          readOnly: true
         - name: event-matcher
           mountPath: /blueprints/policies/event_matcher
+          readOnly: true
         - name: expression
           mountPath: /blueprints/policies/expression
+          readOnly: true
         - name: password-policy
           mountPath: /blueprints/policies/password
+          readOnly: true
         - name: prompts
           mountPath: /blueprints/prompts
+          readOnly: true
         - name: authenticator-validator
           mountPath: /blueprints/stages/authenticator_validator
+          readOnly: true
         - name: email
           mountPath: /blueprints/stages/email
+          readOnly: true
         - name: identification
           mountPath: /blueprints/stages/identification
+          readOnly: true
         - name: invitation
           mountPath: /blueprints/stages/invitation
+          readOnly: true
         - name: password
           mountPath: /blueprints/stages/password
+          readOnly: true
         - name: prompt
           mountPath: /blueprints/stages/prompt
+          readOnly: true
         - name: user-login
           mountPath: /blueprints/stages/user_login
+          readOnly: true
         - name: user-logout
           mountPath: /blueprints/stages/user_logout
+          readOnly: true
         - name: user-write
           mountPath: /blueprints/stages/user_write
+          readOnly: true
         - name: groups
           mountPath: /blueprints/groups
+          readOnly: true
         - name: default
           mountPath: /blueprints/default
+          readOnly: true
         - name: brands
           mountPath: /blueprints/brands
+          readOnly: true
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

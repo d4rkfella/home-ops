@@ -85,7 +85,7 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        custom-http-errors: "504,503,502,501,500,404,403,400"
+        custom-http-errors: "504,503,502,501,500,410,404,403,400"
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true
         modsecurity-snippet: |-
@@ -178,6 +178,8 @@ spec:
             path: "500.html"
           - key: "500.json"
             path: "500.json"
+          - key: "410.html"
+            path: "410.html"
           - key: "404.html"
             path: "404.html"
           - key: "404.json"

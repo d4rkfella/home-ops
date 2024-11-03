@@ -51,7 +51,7 @@ spec:
           nginx.ingress.kubernetes.io/stream-snippet: |
             server {
               listen 443;
-              proxy_pass authentik-server.authentik.svc.cluster.local:443;
+              proxy_pass https://authentik-server.authentik.svc.cluster.local;
             }
           nginx.ingress.kubernetes.io/proxy-ssl-secret: network/vault-issuer-ca
           nginx.ingress.kubernetes.io/proxy-ssl-verify: on

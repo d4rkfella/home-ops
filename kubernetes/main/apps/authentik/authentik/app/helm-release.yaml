@@ -94,12 +94,15 @@ spec:
         - name: default
           emptyDir: {}
         - name: flows
+          &fsmode defaultMode: 670
           configMap:
             name: flows
         - name: rules
+          *fsmode
           configMap:
             name: rules
         - name: transports
+          *fsmode
           configMap:
             name: transports
         - name: event-matcher

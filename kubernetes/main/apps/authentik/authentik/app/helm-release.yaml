@@ -78,7 +78,7 @@ spec:
           mountPath: /media
     worker:
       containerSecurityContext:
-        runAsNonRoot: true
+        runAsNonRoot: false
         readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         seccomProfile:

@@ -89,6 +89,10 @@ spec:
           secret:
             secretName: darkfellanet-tls
             optional: false
+        - name: self-signed-cert
+          secret:
+            secretName: authentik-server-tls
+            optional: false
         - name: default
           emptyDir: {}
         - name: flows
@@ -148,6 +152,9 @@ spec:
       volumeMounts:
         - name: cert
           mountPath: /certs
+          readOnly: true
+        - name: self-signed-cert
+          mountPath: /certs/self-signed
           readOnly: true
         - name: flows
           mountPath: /blueprints/flows

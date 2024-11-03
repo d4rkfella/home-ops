@@ -55,7 +55,7 @@ spec:
             SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
         ingressClassName: external
         hosts:
-          - "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+          - authentik.${PUBLIC_DOMAIN}
         paths:
           - /
         pathType: Prefix

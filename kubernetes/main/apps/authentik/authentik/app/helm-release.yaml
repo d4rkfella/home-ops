@@ -85,14 +85,13 @@ spec:
           drop:
             - ALL
       volumes:
-        - name: cert
-          secret:
-            secretName: darkfellanet-tls
-            optional: false
-        - name: self-signed-cert
-          secret:
-            secretName: authentik-self-signed
-            optional: false
+        - name: certs
+          projected:
+            sources:
+            - secret:
+                name: darkfellanet-tls
+            - secret:
+                name: authentik-self-signed
         - name: default
           emptyDir: {}
         - name: flows
@@ -150,11 +149,8 @@ spec:
           configMap:
             name: brands
       volumeMounts:
-        - name: cert
+        - name: certs
           mountPath: /certs
-          readOnly: true
-        - name: self-signed-cert
-          mountPath: /certs/self-signed
           readOnly: true
         - name: flows
           mountPath: /blueprints/flows

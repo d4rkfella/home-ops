@@ -4,7 +4,7 @@ data:
   X-XSS-Protection: "1; mode=block"
   X-Frame-Options: DENY
   Permissions-Policy: "geolocation=(self), microphone=()"
-  Referrer-Policy: no-referrer-when-downgrade
+  Referrer-Policy: strict-origin-when-cross-origin
 kind: ConfigMap
 metadata:
   name: custom-headers

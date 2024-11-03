@@ -87,10 +87,8 @@ spec:
         - name: certs
           projected:
             sources:
-            #- secret:
-                #name: darkfellanet-tls
             - secret:
-                name: authentik-self-signed
+                name: darkfellanet-tls
         - name: default
           emptyDir: {}
         - name: flows

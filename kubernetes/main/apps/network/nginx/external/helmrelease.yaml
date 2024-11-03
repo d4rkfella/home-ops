@@ -86,9 +86,9 @@ spec:
       allowSnippetAnnotations: true
       config:
         add-headers: |
-          X-Content-Type-Options: nosniff
-          X-XSS-Protection: "1; mode=block"
-          X-Frame-Options: SAMEORIGIN
+          X-Content-Type-Options: nosniff;
+          X-XSS-Protection: "1; mode=block";
+          X-Frame-Options: SAMEORIGIN;
         custom-http-errors: "504,503,502,501,500,429,410,404,403,400"
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true

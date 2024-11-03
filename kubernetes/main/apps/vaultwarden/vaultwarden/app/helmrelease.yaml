@@ -109,7 +109,7 @@ spec:
           more_set_headers "access-control-allow-origin https://vaultwarden.${PUBLIC_DOMAIN}";
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         nginx.ingress.kubernetes.io/auth-url: |-
-          https://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx
+          http://ak-outpost-external.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
         nginx.ingress.kubernetes.io/auth-signin: |-
           https://vaultwarden.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
         nginx.ingress.kubernetes.io/auth-response-headers: |-

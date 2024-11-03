@@ -115,7 +115,7 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             more_set_headers "X-Content-Type-Options: nosniff";
             more_set_headers "Cross-Origin-Resource-Policy: same-site";
-            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self'";
+            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self'; connect-src 'https://status.${PUBLIC_DOMAIN}'; manifest-src: 'https://status.${PUBLIC_DOMAIN}/manifest.json'";
         className: external
         hosts:
           - host: status.${PUBLIC_DOMAIN}

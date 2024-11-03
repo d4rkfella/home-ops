@@ -31,6 +31,18 @@ spec:
       envFrom:
         - secretRef:
             name: authentik-global-vars-secret
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        readOnlyRootFilesystem: true
+        allowPrivilegeEscalation: false
+        seccomProfile:
+          type: RuntimeDefault
+        capabilities:
+          drop:
+            - ALL
     server:
       ingress:
         enabled: true

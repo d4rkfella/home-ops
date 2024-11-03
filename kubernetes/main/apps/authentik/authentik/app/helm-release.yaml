@@ -78,7 +78,7 @@ spec:
           mountPath: /media
     worker:
       containerSecurityContext:
-        runAsNonRoot: false
+        runAsNonRoot: true
         readOnlyRootFilesystem: true
         allowPrivilegeEscalation: false
         seccomProfile:
@@ -94,75 +94,75 @@ spec:
         - name: default
           emptyDir: {}
         - name: flows
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: flows
         - name: rules
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: rules
         - name: transports
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: transports
         - name: event-matcher
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: event-matcher
         - name: expression
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: expression
         - name: password-policy
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: password-policy
         - name: prompts
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: prompts
         - name: authenticator-validator
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: authenticator-validator
         - name: email
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: email
         - name: identification
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: identification
         - name: invitation
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: invitation
         - name: password
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: password
         - name: prompt
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: prompt
         - name: user-login
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: user-login
         - name: user-logout
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: user-logout
         - name: user-write
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: user-write
         - name: groups
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: groups
         - name: brands
-          defaultMode: 0440
+          defaultMode: 288
           configMap:
             name: brands
       volumeMounts:

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-      <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png; style-src 'unsafe-inline';">
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png; style-src 'unsafe-inline';"/>
       <title>Service Unavailable</title>
       <style>
          body {
@@ -21,6 +21,6 @@
       </style>
    </head>
    <body>
-      <img src="https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png" alt="503 Error Image">
+      <img src="https://static.${PUBLIC_DOMAIN}/503-service-unavailable.png" alt="503 Error Image"/>
    </body>
 </html>

@@ -55,7 +55,6 @@ spec:
             }
           nginx.ingress.kubernetes.io/proxy-ssl-secret: network/vault-issuer-ca
           nginx.ingress.kubernetes.io/proxy-ssl-verify: on
-          nginx.ingress.kubernetes.io/proxy-ssl-name: authentik-server.authentik.svc.cluster.local
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |

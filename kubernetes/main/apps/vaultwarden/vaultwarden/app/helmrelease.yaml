@@ -105,6 +105,8 @@ spec:
       class: external
       nginxIngressAnnotations: true
       additionalAnnotations:
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          more_set_headers "access-control-allow-origin https://vaultwarden.${PUBLIC_DOMAIN}";
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         nginx.ingress.kubernetes.io/auth-url: |-
           https://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx

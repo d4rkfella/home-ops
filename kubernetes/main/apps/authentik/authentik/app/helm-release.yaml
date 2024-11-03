@@ -48,6 +48,7 @@ spec:
       ingress:
         enabled: true
         annotations:
+          nginx.ingress.kubernetes.io/proxy-ssl-secret: network/vault-issuer-ca
           nginx.ingress.kubernetes.io/proxy-ssl-verify: on
           nginx.ingress.kubernetes.io/proxy-ssl-name: authentik-server.authentik.svc.cluster.local
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS

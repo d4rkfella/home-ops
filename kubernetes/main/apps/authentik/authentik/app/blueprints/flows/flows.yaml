@@ -75,7 +75,7 @@ data:
     context:
       name: Welcome to authentik!
       title: Welcome to authentik!
-      require_invitation: true
+      require_invitation: false
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_blueprints.metaapplyblueprint

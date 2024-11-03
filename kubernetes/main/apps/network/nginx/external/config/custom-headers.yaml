@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: "1; mode=block"
+  X-Frame-Options: DENY
+  Permissions-Policy: "geolocation=(self), microphone=()"
+  Referrer-Policy: no-referrer-when-downgrade
+kind: ConfigMap
+metadata:
+  name: custom-headers
+  namespace: network

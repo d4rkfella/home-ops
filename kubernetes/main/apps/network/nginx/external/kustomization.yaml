@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
+  - ./config
 configMapGenerator:
   - name: nginx-error-pages
     files:

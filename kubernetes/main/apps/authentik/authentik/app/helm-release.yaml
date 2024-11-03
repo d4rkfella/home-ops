@@ -49,7 +49,7 @@ spec:
         enabled: true
         annotations:
           nginx.ingress.kubernetes.io/proxy-ssl-verify: on
-          nginx.ingress.kubernetes.io/proxy-ssl-name: authentik.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/proxy-ssl-name: authentik.${PUBLIC_DOMAIN}.com
           nginx.ingress.kubernetes.io/backend-protocol: HTTPS
           external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |

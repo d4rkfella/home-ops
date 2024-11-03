@@ -18,6 +18,7 @@ configMapGenerator:
       - 501.json=./error-pages/501.json.yaml
       - 500.html=./error-pages/500.html.yaml
       - 500.json=./error-pages/500.json.yaml
+      - 429.html=./error-pages/429.html.yaml
       - 410.html=./error-pages/410.html.yaml
       - 404.html=./error-pages/404.html.yaml
       - 404.json=./error-pages/404.json.yaml

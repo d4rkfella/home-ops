@@ -186,6 +186,8 @@ spec:
             path: "403.html"
           - key: "403.json"
             path: "403.json"
+          - key: "400.html"
+            path: "400.html"
 
       extraVolumeMounts:
       - name: nginx-error-pages

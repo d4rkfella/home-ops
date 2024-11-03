@@ -105,12 +105,6 @@ spec:
       class: external
       nginxIngressAnnotations: true
       additionalAnnotations:
-        nginx.ingress.kubernetes.io/configuration-snippet: |
-          more_set_headers "X-Content-Type-Options: nosniff";
-          more_set_headers "X-Xss-Protection: 0";
-          more_set_headers "Strict-Transport-Security: max-age=31449600; includeSubDomains; preload";
-          more_set_headers "Cross-Origin-Resource-Policy: same-site";
-          more_set_headers "Server: hide";
         external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
         nginx.ingress.kubernetes.io/auth-url: |-
           https://ak-outpost-external.authentik.svc.cluster.local:9443/outpost.goauthentik.io/auth/nginx

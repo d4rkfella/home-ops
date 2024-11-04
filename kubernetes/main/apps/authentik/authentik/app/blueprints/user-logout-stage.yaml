@@ -1,0 +1,8 @@
+version: 1
+metadata:
+  name: User Logout Stage
+entries:
+- model: authentik_stages_user_logout.userlogoutstage
+  id: logout-stage
+  identifiers:
+    name: logout-stage

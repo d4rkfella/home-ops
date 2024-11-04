@@ -1,0 +1,10 @@
+version: 1
+metadata:
+  name: User Login Stage
+entries:
+- model: authentik_stages_user_login.userloginstage
+  id: user-login-stage
+  identifiers:
+    name: user-login-stage
+  attrs:
+    session_duration: seconds=0

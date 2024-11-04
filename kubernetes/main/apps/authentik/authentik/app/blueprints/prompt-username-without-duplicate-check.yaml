@@ -1,0 +1,20 @@
+version: 1
+metadata:
+  name: Prompt - username Without Duplicate Check
+entries:
+- model: authentik_stages_prompt.prompt
+  id: username-without-duplicate-check-prompt
+  identifiers:
+      name: username-without-duplicate-check-prompt
+      field_key: username
+      label: Username
+      type: text
+  attrs:
+      order: 210
+      placeholder: |
+        try:
+            return user.username
+        except:
+            return 'Username'
+      placeholder_expression: true
+      required: true

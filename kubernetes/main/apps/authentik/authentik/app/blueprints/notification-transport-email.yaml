@@ -1,0 +1,10 @@
+version: 1
+metadata:
+  name: Notification Transport - Email
+entries:
+- model: authentik_events.notificationtransport
+  id: email-notification-transport
+  identifiers:
+    name: email-notification-transport
+  attrs:
+    mode: email

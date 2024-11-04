@@ -1,0 +1,74 @@
+version: 1
+metadata:
+  name: Flow - User Settings
+context:
+  name: User settings
+  title: User settings
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Prompt Stage - User Settings
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Expression Policy - Validate email Context Attribute Is Different Than Currently Set
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Email Stage - Confirmation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Write Stage
+    required: true
+
+- model: authentik_flows.flow
+  id: flow
+  identifiers:
+    slug: 02d14ae0-6b63-41c7-89b5-5eb145475888
+  attrs:
+    authentication: require_authenticated
+    denied_action: continue
+    designation: stage_configuration
+    name: !Context name
+    title: !Context title
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_prompt.promptstage, [name, user-settings-prompt-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 100
+
+- model: authentik_flows.flowstagebinding
+  id: user-settings-defaul-confirmation-email-stage-binding
+  identifiers:
+    stage: !Find [authentik_stages_email.emailstage, [name, confirmation-email-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 200
+    re_evaluate_policies: true
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 900
+
+- model: authentik_policies.policybinding
+  identifiers:
+    policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-email-context-attribute-is-different-than-currently-set-expression-policy]]
+    target: !KeyOf user-settings-defaul-confirmation-email-stage-binding
+  attrs:
+    order: 0
+    enabled: true
+    negate: false
+    timeout: 30

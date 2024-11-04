@@ -1,0 +1,13 @@
+version: 1
+metadata:
+  name: Group - Default Users
+entries:
+- model: authentik_core.group
+  id: default-users-group
+  identifiers:
+    attributes:
+      better-blueprints/id: default-users-group
+  attrs:
+    is_superuser: false
+    name: users
+4

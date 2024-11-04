@@ -1,0 +1,12 @@
+version: 1
+metadata:
+  name: Group - Default Admins
+entries:
+- model: authentik_core.group
+  id: default-admins-group
+  identifiers:
+    attributes:
+      better-blueprints/id: default-admins-group
+  attrs:
+    is_superuser: true
+    name: admins

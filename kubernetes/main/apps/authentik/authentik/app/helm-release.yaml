@@ -69,15 +69,15 @@ spec:
             - secretRef:
                 name: authentik-initdb-secret
       volumes:
-        - name: default
-          emptyDir: {}
+        #- name: default
+          #emptyDir: {}
         - name: media
           persistentVolumeClaim:
             claimName: media
       volumeMounts:
-        - name: default
-          mountPath: /blueprints/default
-          readOnly: true
+        #- name: default
+          #mountPath: /blueprints/default
+          #readOnly: true
         - name: media
           mountPath: /media
     worker:
@@ -99,93 +99,10 @@ spec:
         - name: blueprints
           configMap:
             name: blueprints
-        - name: default
-          emptyDir: {}
-        - name: flows
-          configMap:
-            name: flows
-        - name: rules
-          configMap:
-            name: rules
-        - name: transports
-          configMap:
-            name: transports
-        - name: event-matcher
-          configMap:
-            name: event-matcher
-        - name: expression
-          configMap:
-            name: expression
-        - name: password-policy
-          configMap:
-            name: password-policy
-        - name: prompts
-          configMap:
-            name: prompts
-        - name: invitation
-          configMap:
-            name: invitation
-        - name: prompt
-          configMap:
-            name: prompt
-        - name: user-login
-          configMap:
-            name: user-login
-        - name: user-logout
-          configMap:
-            name: user-logout
-        - name: user-write
-          configMap:
-            name: user-write
-        - name: groups
-          configMap:
-            name: groups
       volumeMounts:
         - name: blueprints
           mountPath: /blueprints/custom
           readOnly: true
         - name: certs
           mountPath: /certs
-          readOnly: true
-        - name: flows
-          mountPath: /blueprints/flows
-          readOnly: true
-        - name: rules
-          mountPath: /blueprints/notifications/rules
-          readOnly: true
-        - name: transports
-          mountPath: /blueprints/notifications/transports
-          readOnly: true
-        - name: event-matcher
-          mountPath: /blueprints/policies/event_matcher
-          readOnly: true
-        - name: expression
-          mountPath: /blueprints/policies/expression
-          readOnly: true
-        - name: password-policy
-          mountPath: /blueprints/policies/password
-          readOnly: true
-        - name: prompts
-          mountPath: /blueprints/prompts
-          readOnly: true
-        - name: invitation
-          mountPath: /blueprints/stages/invitation
-          readOnly: true
-        - name: prompt
-          mountPath: /blueprints/stages/prompt
-          readOnly: true
-        - name: user-login
-          mountPath: /blueprints/stages/user_login
-          readOnly: true
-        - name: user-logout
-          mountPath: /blueprints/stages/user_logout
-          readOnly: true
-        - name: user-write
-          mountPath: /blueprints/stages/user_write
-          readOnly: true
-        - name: groups
-          mountPath: /blueprints/groups
-          readOnly: true
-        - name: default
-          mountPath: /blueprints/default
           readOnly: true

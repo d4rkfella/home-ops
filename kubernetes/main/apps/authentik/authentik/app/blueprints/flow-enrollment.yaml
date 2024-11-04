@@ -1,0 +1,154 @@
+version: 1
+metadata:
+  name: Flow - Enrollment
+context:
+  name: Welcome to authentik!
+  title: Welcome to authentik!
+  require_invitation: true
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
+      name: Invitation Stage - Allow Without Invitation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
+      name: Prompt Stage - Invitation Token
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
+      name: Invitation Stage - Deny Without Invitation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Prompt Stage - Enrollment
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Write Stage - With Add To Group and Inactive on Creation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Email Stage - Confirmation With User Activation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Login Stage
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
+      name: Expression Policy - Validate Invitation in Effect
+    required: true
+
+- model: authentik_flows.flow
+  id: flow
+  identifiers:
+    slug: 957acd39-babe-4993-8d94-2ac44283c589
+  attrs:
+    authentication: require_unauthenticated
+    denied_action: continue
+    designation: enrollment
+    name: !Context name
+    title: !Context title
+
+- model: authentik_flows.flowstagebinding
+  state: !If [!Context require_invitation, present, absent]
+  identifiers:
+    stage: !Find [authentik_stages_invitation.invitationstage, [name, allow-without-invitation-invitation-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 100
+
+- model: authentik_flows.flowstagebinding
+  id: enrollment-invitation-token-prompt-stage-binding
+  state: !If [!Context require_invitation, present, absent]
+  identifiers:
+    stage: !Find [authentik_stages_prompt.promptstage, [name, invitation-token-prompt-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 200
+    re_evaluate_policies: true
+
+- model: authentik_flows.flowstagebinding
+  id: enrollment-invitation-deny-without-invitation-stage-binding
+  state: !If [!Context require_invitation, present, absent]
+  identifiers:
+    stage: !Find [authentik_stages_invitation.invitationstage, [name, deny-without-invitation-invitation-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 300
+    re_evaluate_policies: true
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_prompt.promptstage, [name, enrollment-prompt-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 400
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-with-add-to-group-and-inactive-on-creation-user-write-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 500
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_email.emailstage, [name, confirmation-with-user-activation-email-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 600
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 700
+
+- model: authentik_policies.policybinding
+  conditions:
+  - !Context require_invitation
+  identifiers:
+    policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
+    target: !KeyOf enrollment-invitation-token-prompt-stage-binding
+  attrs:
+    order: 0
+    enabled: true
+    negate: true
+    timeout: 30
+
+- model: authentik_policies.policybinding
+  conditions:
+  - !Context require_invitation
+  identifiers:
+    policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
+    target: !KeyOf enrollment-invitation-deny-without-invitation-stage-binding
+  attrs:
+    order: 0
+    enabled: true
+    negate: true
+    timeout: 30

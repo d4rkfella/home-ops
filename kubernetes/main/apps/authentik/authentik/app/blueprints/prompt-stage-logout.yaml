@@ -1,0 +1,17 @@
+version: 1
+metadata:
+  name: Prompt Stage - Logout
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Prompt - Logout Confirmation Dummy
+    required: true
+
+- model: authentik_stages_prompt.promptstage
+  id: logout-prompt-stage
+  identifiers:
+    name: logout-prompt-stage
+  attrs:
+    fields:
+    - !Find [authentik_stages_prompt.prompt, [field_key, _logout_confirmation_dummy]]

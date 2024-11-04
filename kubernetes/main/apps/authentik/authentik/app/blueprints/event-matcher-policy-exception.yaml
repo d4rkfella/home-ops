@@ -1,0 +1,10 @@
+version: 1
+metadata:
+  name: Event Matcher Policy - Policy Exception
+entries:
+- model: authentik_policies_event_matcher.eventmatcherpolicy
+  id: policy-exception-event-matcher-policy
+  identifiers:
+    name: policy-exception-event-matcher-policy
+  attrs:
+    action: policy_exception

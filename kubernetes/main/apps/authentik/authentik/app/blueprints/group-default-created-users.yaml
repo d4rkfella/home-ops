@@ -1,0 +1,12 @@
+version: 1
+metadata:
+  name: Group - Default Created Users
+entries:
+- model: authentik_core.group
+  id: default-created-users-group
+  identifiers:
+    attributes:
+      better-blueprints/id: default-created-users-group
+  attrs:
+    is_superuser: false
+    name: new-users

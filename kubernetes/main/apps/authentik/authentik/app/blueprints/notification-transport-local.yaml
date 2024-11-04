@@ -1,0 +1,10 @@
+version: 1
+metadata:
+  name: Notification Transport - Local
+entries:
+- model: authentik_events.notificationtransport
+  id: local-notification-transport
+  identifiers:
+    name: local-notification-transport
+  attrs:
+    mode: local

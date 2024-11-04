@@ -1,0 +1,47 @@
+version: 1
+metadata:
+  name: Flow - Invalidation
+context:
+  name: Logout
+  title: Logout
+  require_confirmation: true
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context require_confirmation
+  attrs:
+    identifiers:
+      name: Prompt Stage - Logout
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Logout Stage
+    required: true
+
+- model: authentik_flows.flow
+  id: flow
+  identifiers:
+    slug: 3334e93f-90b8-4935-88c4-a7ab8335efeb
+  attrs:
+    authentication: require_authenticated
+    denied_action: continue
+    designation: invalidation
+    name: !Context name
+    title: !Context title
+
+- model: authentik_flows.flowstagebinding
+  state: !If [!Context require_confirmation, present, absent]
+  identifiers:
+    stage: !Find [authentik_stages_prompt.promptstage, [name, logout-prompt-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 100
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, logout-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 900

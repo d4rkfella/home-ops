@@ -6,19 +6,19 @@ entries:
     attrs:
       identifiers:
         name: Identification Stage
-      required: true
+      required: false
 
 - model: authentik_blueprints.metaapplyblueprint
     attrs:
       identifiers:
         name: Authenticator Validator Stage
-      required: true
+      required: false
 
 - model: authentik_blueprints.metaapplyblueprint
     attrs:
       identifiers:
         name: User Login Stage
-      required: true
+      required: false
 - attrs:
     designation: authentication
     name: Welcome to authentik!

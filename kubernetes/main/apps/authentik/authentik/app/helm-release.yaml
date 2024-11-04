@@ -122,12 +122,6 @@ spec:
         - name: prompts
           configMap:
             name: prompts
-        - name: email
-          configMap:
-            name: email
-        - name: identification
-          configMap:
-            name: identification
         - name: invitation
           configMap:
             name: invitation
@@ -174,12 +168,6 @@ spec:
         - name: prompts
           mountPath: /blueprints/prompts
           readOnly: true
-        - name: email
-          mountPath: /blueprints/stages/email
-          readOnly: true
-        - name: identification
-          mountPath: /blueprints/stages/identification
-          readOnly: true
         - name: invitation
           mountPath: /blueprints/stages/invitation
           readOnly: true
@@ -201,4 +189,3 @@ spec:
         - name: default
           mountPath: /blueprints/default
           readOnly: true
-

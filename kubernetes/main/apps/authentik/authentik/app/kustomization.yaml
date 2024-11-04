@@ -16,5 +16,9 @@ configMapGenerator:
       - authenticator-validation-stage.yaml=./blueprints/authenticator-validation-stage.yaml
       - password-stage.yaml=./blueprints/password-stage.yaml
       - identification-stage.yaml=./blueprints/identification-stage.yaml
+      - identification-stage-recovery.yaml=./blueprints/identification-stage-recovery.yaml
+      - email-confirmation-stage.yaml=./blueprints/email-confirmation-stage.yaml
+      - email-confirmation-stage-with-user-activation.yaml=./blueprints/email-confirmation-stage-with-user-activation.yaml
+      - email-confirmation-stage-recovery.yaml=./blueprints/email-confirmation-stage-recovery.yaml
 generatorOptions:
   disableNameSuffixHash: true

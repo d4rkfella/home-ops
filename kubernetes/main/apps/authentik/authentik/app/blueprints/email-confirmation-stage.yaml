@@ -1,0 +1,22 @@
+version: 1
+metadata:
+  name: Email Stage - Confirmation
+entries:
+- model: authentik_stages_email.emailstage
+  id: confirmation-email-stage
+  identifiers:
+    name: confirmation-email-stage
+  attrs:
+    subject: authentik
+    template: email/account_confirmation.html
+    from_address: system@authentik.local
+    token_expiry: 30
+    use_global_settings: true
+    host: localhost
+    port: 25
+    username: ""
+    password: ""
+    use_tls: false
+    use_ssl: false
+    timeout: 10
+    activate_user_on_success: false

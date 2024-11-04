@@ -2,8 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./email.yaml
-  - ./identification.yaml
   - ./invitation.yaml
   - ./prompt.yaml
   - ./user_login.yaml

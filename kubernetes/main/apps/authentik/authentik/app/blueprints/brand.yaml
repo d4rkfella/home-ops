@@ -29,7 +29,4 @@ entries:
     domain: ${PUBLIC_DOMAIN}
     branding_title: DarkfellaNET
     default: true
-  state: created
-  conditions:
-    - !Condition [NOR, !Find [authentik_brands.brand, [default, True]]]
   model: authentik_brands.brand

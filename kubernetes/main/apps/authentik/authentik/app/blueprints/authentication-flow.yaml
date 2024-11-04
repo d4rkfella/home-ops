@@ -36,7 +36,7 @@ entries:
   model: authentik_flows.flowstagebinding
 - identifiers:
     order: 200
-    stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, authenticator-validator-stage]]
+    stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, authenticator-validation-stage]]
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding
 - identifiers:

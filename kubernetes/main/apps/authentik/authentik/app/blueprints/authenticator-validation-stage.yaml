@@ -1,0 +1,34 @@
+version: 1
+metadata:
+  name: Authenticator Validation Stage
+context:
+  last_auth_threshold: minutes=5
+  not_configured_action: skip
+  device_classes_map: # class_type: stage_name
+    totp: totp-authenticator-setup-stage
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Flow - TOTP Authenticator Setup
+    required: true
+- model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+  id: authenticator-validation-stage
+  identifiers:
+    name: authenticator-validation-stage
+  attrs:
+    last_auth_threshold: !Context last_auth_threshold
+    not_configured_action: !Context not_configured_action
+    configuration_stages: !Enumerate [
+      !Context device_classes_map,
+      SEQ,
+      !Find [
+        !Format [authentik_stages_authenticator_%s.authenticator%sstage, !Index 0, !Index 0],
+        [name, !Value 0]
+      ]
+    ]
+    device_classes: !Enumerate [
+      !Context device_classes_map,
+      SEQ,
+      !Index 0
+    ]

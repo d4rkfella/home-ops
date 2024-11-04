@@ -1,82 +1,82 @@
 version: 1
-    metadata:
-      name: Flow - Recovery
-    context:
-      name: Welcome to authentik!
-      title: Welcome to authentik!
-    entries:
-    - model: authentik_blueprints.metaapplyblueprint
-      attrs:
-        identifiers:
-          name: Identification Stage - Recovery
-        required: true
+metadata:
+  name: Flow - Recovery
+context:
+  name: Welcome to authentik!
+  title: Welcome to authentik!
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Identification Stage - Recovery
+    required: true
 
-    - model: authentik_blueprints.metaapplyblueprint
-      attrs:
-        identifiers:
-          name: Prompt Stage - Password and Password Repeat
-        required: true
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Prompt Stage - Password and Password Repeat
+    required: true
 
-    - model: authentik_blueprints.metaapplyblueprint
-      attrs:
-        identifiers:
-          name: Email Stage - Recovery
-        required: true
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Email Stage - Recovery
+    required: true
 
-    - model: authentik_blueprints.metaapplyblueprint
-      attrs:
-        identifiers:
-          name: User Write Stage
-        required: true
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Write Stage
+    required: true
 
-    - model: authentik_blueprints.metaapplyblueprint
-      attrs:
-        identifiers:
-          name: User Login Stage
-        required: true
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Login Stage
+    required: true
 
-    - model: authentik_flows.flow
-      id: flow
-      identifiers:
-        slug: d594c13b-7b50-426a-bc46-a4c94d56a8f9
-      attrs:
-        authentication: require_unauthenticated
-        denied_action: continue
-        designation: recovery
-        name: !Context name
-        title: !Context title
+- model: authentik_flows.flow
+  id: flow
+  identifiers:
+    slug: d594c13b-7b50-426a-bc46-a4c94d56a8f9
+  attrs:
+    authentication: require_unauthenticated
+    denied_action: continue
+    designation: recovery
+    name: !Context name
+    title: !Context title
 
-    - model: authentik_flows.flowstagebinding
-      identifiers:
-        stage: !Find [authentik_stages_identification.identificationstage, [name, recovery-identification-stage]]
-        target: !KeyOf flow
-      attrs:
-        order: 100
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_identification.identificationstage, [name, recovery-identification-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 100
 
-    - model: authentik_flows.flowstagebinding
-      identifiers:
-        stage: !Find [authentik_stages_email.emailstage, [name, recovery-email-stage]]
-        target: !KeyOf flow
-      attrs:
-        order: 200
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_email.emailstage, [name, recovery-email-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 200
 
-    - model: authentik_flows.flowstagebinding
-      identifiers:
-        stage: !Find [authentik_stages_prompt.promptstage, [name, password-and-password-repeat-prompt-stage]]
-        target: !KeyOf flow
-      attrs:
-        order: 300
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_prompt.promptstage, [name, password-and-password-repeat-prompt-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 300
 
-    - model: authentik_flows.flowstagebinding
-      identifiers:
-        stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
-        target: !KeyOf flow
-      attrs:
-        order: 400
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 400
 
-    - model: authentik_flows.flowstagebinding
-      identifiers:
-        stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
-        target: !KeyOf flow
-      attrs:
-        order: 900
+- model: authentik_flows.flowstagebinding
+  identifiers:
+    stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
+    target: !KeyOf flow
+  attrs:
+    order: 900

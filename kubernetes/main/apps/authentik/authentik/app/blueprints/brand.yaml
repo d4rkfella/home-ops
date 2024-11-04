@@ -23,7 +23,7 @@ entries:
       name: Flow - User Settings
     required: true
 
-- model: authentik_tenants.tenant
+- model: authentik_brands.brand
   identifiers:
     default: True
   attrs:

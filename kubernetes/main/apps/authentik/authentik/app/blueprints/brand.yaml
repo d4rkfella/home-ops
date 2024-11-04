@@ -1,6 +1,6 @@
 version: 1
 metadata:
-  name: Brand - DarkfellaNET
+  name: Brand - Default
 context:
     fqdn: ${PUBLIC_DOMAIN}
     branding_title: DarkfellaNET
@@ -25,7 +25,7 @@ entries:
 
 - model: authentik_brands.brand
   identifiers:
-    default: False
+    default: true
   attrs:
     domain: !Context fqdn
     branding_title: !Context branding_title

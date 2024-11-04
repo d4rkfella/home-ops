@@ -122,9 +122,6 @@ spec:
         - name: prompts
           configMap:
             name: prompts
-        - name: authenticator-validator
-          configMap:
-            name: authenticator-validator
         - name: email
           configMap:
             name: email
@@ -179,9 +176,6 @@ spec:
           readOnly: true
         - name: prompts
           mountPath: /blueprints/prompts
-          readOnly: true
-        - name: authenticator-validator
-          mountPath: /blueprints/stages/authenticator_validator
           readOnly: true
         - name: email
           mountPath: /blueprints/stages/email

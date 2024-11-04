@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: authenticator-validator
 data:
-  default.yaml: |
+  totp-setup.yaml: |
     version: 1
     metadata:
       name: Authenticator Validator Stage
@@ -48,7 +48,7 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  recovery.yaml: |
+  static-setup.yaml: |
     version: 1
     metadata:
       name: Authenticator Validator Stage - Recovery

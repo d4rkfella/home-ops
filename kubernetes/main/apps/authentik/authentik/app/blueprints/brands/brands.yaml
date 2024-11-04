@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: brands
 data:
-  default.yaml: |
+  brand.yaml: |
     version: 1
     metadata:
       name: DarkfellaNET

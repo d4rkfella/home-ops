@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: user-write
 data:
-  default.yaml: |
+  user-write.yaml: |
     version: 1
     metadata:
       name: User Write Stage

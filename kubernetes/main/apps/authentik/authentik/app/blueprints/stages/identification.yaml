@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: identification
 data:
-  default.yaml: |
+  identification-stage: |
     version: 1
     metadata:
       name: Identification Stage
@@ -65,7 +65,7 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  recovery.yaml: |
+  identification-stage-recovery.yaml: |
     version: 1
     metadata:
       name: Identification Stage - Recovery

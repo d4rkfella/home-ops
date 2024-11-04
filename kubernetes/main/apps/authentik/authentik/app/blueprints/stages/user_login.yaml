@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: user-login
 data:
-  default.yaml: |
+  user-login-stage.yaml: |
     version: 1
     metadata:
       name: User Login Stage

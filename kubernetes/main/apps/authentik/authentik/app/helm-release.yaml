@@ -67,17 +67,13 @@ spec:
             - secretRef:
                 name: authentik-initdb-secret
       volumes:
-        - name: default
-          emptyDir: {}
         - name: media
           persistentVolumeClaim:
             claimName: media
       volumeMounts:
-        - name: default
-          mountPath: /blueprints/default
-          readOnly: true
         - name: media
           mountPath: /media
+          readOnly: true
     worker:
       containerSecurityContext:
         runAsNonRoot: true

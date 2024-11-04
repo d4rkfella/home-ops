@@ -11,5 +11,6 @@ configMapGenerator:
   - name: blueprints
     files:
       - brand.yaml=./blueprints/brand.yaml
+      - authentication-flow.yaml=./blueprints/authentication-flow.yaml
 generatorOptions:
   disableNameSuffixHash: true

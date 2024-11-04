@@ -131,9 +131,6 @@ spec:
         - name: invitation
           configMap:
             name: invitation
-        - name: password
-          configMap:
-            name: password
         - name: prompt
           configMap:
             name: prompt
@@ -185,9 +182,6 @@ spec:
           readOnly: true
         - name: invitation
           mountPath: /blueprints/stages/invitation
-          readOnly: true
-        - name: password
-          mountPath: /blueprints/stages/password
           readOnly: true
         - name: prompt
           mountPath: /blueprints/stages/prompt

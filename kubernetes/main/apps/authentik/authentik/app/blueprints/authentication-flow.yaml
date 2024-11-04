@@ -1,46 +1,57 @@
 version: 1
 metadata:
   name: Flow - Authentication
+context:
+  name: Welcome to authentik!
+  title: Welcome to authentik!
 entries:
-- model: authentik_blueprints.metaapplyblueprint
-    attrs:
-      identifiers:
-        name: Identification Stage
-      required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-    attrs:
-      identifiers:
-        name: Authenticator Validator Stage
-      required: true
+  attrs:
+    identifiers:
+      name: Identification Stage - Default
+    required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-    attrs:
-      identifiers:
-        name: User Login Stage
-      required: true
-- attrs:
-    designation: authentication
-    name: Welcome to authentik!
-    title: Welcome to authentik!
+  attrs:
+    identifiers:
+      name: Authenticator Validator Stage - Default
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: User Login Stage - Default
+    required: true
+
+- model: authentik_flows.flow
+  id: flow
+  identifiers:
+    slug: default-authentication-flow
+  attrs:
     authentication: require_unauthenticated
     denied_action: continue
+    designation: authentication
+    name: !Context name
+    title: !Context title
+
+- model: authentik_flows.flowstagebinding
   identifiers:
-    slug: 4bfe9942-e4b8-4096-99e8-4ac273d51737
-  model: authentik_flows.flow
-  id: flow
-- identifiers:
-    order: 100
+    target: !KeyOf flow
     stage: !Find [authentik_stages_identification.identificationstage, [name, identification-stage]]
+  attrs:
+    order: 100
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
     target: !KeyOf flow
-  model: authentik_flows.flowstagebinding
-- identifiers:
-    order: 200
     stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, authenticator-validator-stage]]
+  attrs:
+    order: 200
+
+- model: authentik_flows.flowstagebinding
+  identifiers:
     target: !KeyOf flow
-  model: authentik_flows.flowstagebinding
-- identifiers:
-    order: 900
     stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
-    target: !KeyOf flow
-  model: authentik_flows.flowstagebinding
+  attrs:
+    order: 900

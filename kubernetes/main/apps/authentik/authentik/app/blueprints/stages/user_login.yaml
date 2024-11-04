@@ -6,7 +6,7 @@ data:
   default.yaml: |
     version: 1
     metadata:
-      name: User Login Stage - Default
+      name: User Login Stage
     context:
       session_duration: seconds=0
     entries:
@@ -18,9 +18,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_user_login.userloginstage
-      id: default-user-login-stage
+      id: user-login-stage
       identifiers:
-        name: default-user-login-stage
+        name: user-login-stage
       attrs:
         session_duration: !Context session_duration
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

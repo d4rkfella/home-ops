@@ -54,7 +54,7 @@ data:
   default-confirmation.yaml: |
     version: 1
     metadata:
-      name: Email Stage - Default Confirmation
+      name: Email Stage - Confirmation
     context:
       subject: authentik
       template: email/account_confirmation.html
@@ -78,9 +78,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_email.emailstage
-      id: default-confirmation-email-stage
+      id: confirmation-email-stage
       identifiers:
-        name: default-confirmation-email-stage
+        name: confirmation-email-stage
       attrs:
         subject: !Context subject
         template: !Context template
@@ -101,7 +101,7 @@ data:
   default-recovery.yaml: |
     version: 1
     metadata:
-      name: Email Stage - Default Recovery
+      name: Email Stage - Recovery
     context:
       subject: authentik
       template: email/password_reset.html
@@ -125,9 +125,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_email.emailstage
-      id: default-recovery-email-stage
+      id: recovery-email-stage
       identifiers:
-        name: default-recovery-email-stage
+        name: recovery-email-stage
       attrs:
         subject: !Context subject
         template: !Context template

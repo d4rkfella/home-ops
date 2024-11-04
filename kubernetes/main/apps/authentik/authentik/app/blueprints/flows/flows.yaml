@@ -6,7 +6,7 @@ data:
   default-authentication.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Authentication
+      name: Flow - Authentication
     context:
       name: Welcome to authentik!
       title: Welcome to authentik!
@@ -15,19 +15,19 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Identification Stage - Default
+          name: Identification Stage
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Authenticator Validator Stage - Default
+          name: Authenticator Validator Stage
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Login Stage - Default
+          name: User Login Stage
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -49,21 +49,21 @@ data:
     - model: authentik_flows.flowstagebinding
       identifiers:
         target: !KeyOf flow
-        stage: !Find [authentik_stages_identification.identificationstage, [name, default-identification-stage]]
+        stage: !Find [authentik_stages_identification.identificationstage, [name, identification-stage]]
       attrs:
         order: 100
 
     - model: authentik_flows.flowstagebinding
       identifiers:
         target: !KeyOf flow
-        stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, default-authenticator-validator-stage]]
+        stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, authenticator-validator-stage]]
       attrs:
         order: 200
 
     - model: authentik_flows.flowstagebinding
       identifiers:
         target: !KeyOf flow
-        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
       attrs:
         order: 900
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -71,7 +71,7 @@ data:
   default-enrollment.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Enrollment
+      name: Flow - Enrollment
     context:
       name: Welcome to authentik!
       title: Welcome to authentik!
@@ -123,7 +123,7 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Login Stage - Default
+          name: User Login Stage
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
@@ -159,7 +159,7 @@ data:
         order: 100
 
     - model: authentik_flows.flowstagebinding
-      id: default-enrollment-invitation-token-prompt-stage-binding
+      id: enrollment-invitation-token-prompt-stage-binding
       state: !If [!Context require_invitation, present, absent]
       identifiers:
         stage: !Find [authentik_stages_prompt.promptstage, [name, invitation-token-prompt-stage]]
@@ -169,7 +169,7 @@ data:
         re_evaluate_policies: true
 
     - model: authentik_flows.flowstagebinding
-      id: default-enrollment-invitation-deny-without-invitation-stage-binding
+      id: enrollment-invitation-deny-without-invitation-stage-binding
       state: !If [!Context require_invitation, present, absent]
       identifiers:
         stage: !Find [authentik_stages_invitation.invitationstage, [name, deny-without-invitation-invitation-stage]]
@@ -201,7 +201,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
         target: !KeyOf flow
       attrs:
         order: 700
@@ -211,7 +211,7 @@ data:
       - !Context require_invitation
       identifiers:
         policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
-        target: !KeyOf default-enrollment-invitation-token-prompt-stage-binding
+        target: !KeyOf enrollment-invitation-token-prompt-stage-binding
       attrs:
         order: 0
         enabled: true
@@ -223,7 +223,7 @@ data:
       - !Context require_invitation
       identifiers:
         policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
-        target: !KeyOf default-enrollment-invitation-deny-without-invitation-stage-binding
+        target: !KeyOf enrollment-invitation-deny-without-invitation-stage-binding
       attrs:
         order: 0
         enabled: true
@@ -233,7 +233,7 @@ data:
   default-invalidation.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Invalidation
+      name: Flow - Invalidation
     context:
       name: Logout
       title: Logout
@@ -251,7 +251,7 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Logout Stage - Default
+          name: User Logout Stage
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -280,7 +280,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, default-logout-stage]]
+        stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, logout-stage]]
         target: !KeyOf flow
       attrs:
         order: 900
@@ -289,7 +289,7 @@ data:
   default-password-change.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Password Change
+      name: Flow - Password Change
     context:
       name: Change password
       title: Change password
@@ -313,7 +313,7 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Write Stage - Default
+          name: User Write Stage
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -349,7 +349,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
         target: !KeyOf flow
       attrs:
         order: 900
@@ -358,7 +358,7 @@ data:
   default-recovery-authenticator-setup.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Recovery Authenticator Setup
+      name: Flow - Recovery Authenticator Setup
     context:
       token_count: 1
       name: Configure Recovery Authenticator
@@ -390,9 +390,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_authenticator_static.authenticatorstaticstage
-      id: default-recovery-authenticator-setup-stage
+      id: recovery-authenticator-setup-stage
       identifiers:
-        name: default-recovery-authenticator-setup-stage
+        name: recovery-authenticator-setup-stage
       attrs:
         token_count: !Context token_count
         configure_flow: !KeyOf flow
@@ -407,7 +407,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !KeyOf default-recovery-authenticator-setup-stage
+        stage: !KeyOf recovery-authenticator-setup-stage
         target: !KeyOf flow
       attrs:
         order: 200
@@ -416,7 +416,7 @@ data:
   default-recovery.yaml: |
     version: 1
     metadata:
-      name: Flow - Default Recovery
+      name: Flow - Recovery
     context:
       name: Welcome to authentik!
       title: Welcome to authentik!
@@ -437,19 +437,19 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Email Stage - Default Recovery
+          name: Email Stage - Recovery
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Write Stage - Default
+          name: User Write Stage
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Login Stage - Default
+          name: User Login Stage
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -477,7 +477,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_email.emailstage, [name, default-recovery-email-stage]]
+        stage: !Find [authentik_stages_email.emailstage, [name, recovery-email-stage]]
         target: !KeyOf flow
       attrs:
         order: 200
@@ -491,14 +491,14 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
         target: !KeyOf flow
       attrs:
         order: 400
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
+        stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
         target: !KeyOf flow
       attrs:
         order: 900
@@ -507,7 +507,7 @@ data:
   default-totp-authenticator-setup.yaml: |
     version: 1
     metadata:
-      name: Flow - Default TOTP Authenticator Setup
+      name: Flow - TOTP Authenticator Setup
     context:
       digits: 6
       name: Configure TOTP Authenticator
@@ -526,7 +526,7 @@ data:
     # - model: authentik_blueprints.metaapplyblueprint
     #   attrs:
     #     identifiers:
-    #       name: Flow - Default Recovery Authenticator Setup
+    #       name: Flow - Recovery Authenticator Setup
     #     required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -545,9 +545,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_authenticator_totp.authenticatortotpstage
-      id: default-totp-authenticator-setup-stage
+      id: totp-authenticator-setup-stage
       identifiers:
-        name: default-totp-authenticator-setup-stage
+        name: totp-authenticator-setup-stage
       attrs:
         digits: !Context digits
         configure_flow: !KeyOf flow
@@ -562,14 +562,14 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !KeyOf default-totp-authenticator-setup-stage
+        stage: !KeyOf totp-authenticator-setup-stage
         target: !KeyOf flow
       attrs:
         order: 200
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-recovery-authenticator-setup-stage]]
+        stage: !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, recovery-authenticator-setup-stage]]
         target: !KeyOf flow
       attrs:
         order: 300
@@ -578,7 +578,7 @@ data:
   default-user-settings.yaml: |
     version: 1
     metadata:
-      name: Flow - Default User Settings
+      name: Flow - User Settings
     context:
       name: User settings
       title: User settings
@@ -599,13 +599,13 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Email Stage - Default Confirmation
+          name: Email Stage - Confirmation
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: User Write Stage - Default
+          name: User Write Stage
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -632,9 +632,9 @@ data:
         order: 100
 
     - model: authentik_flows.flowstagebinding
-      id: default-user-settings-defaul-confirmation-email-stage-binding
+      id: user-settings-defaul-confirmation-email-stage-binding
       identifiers:
-        stage: !Find [authentik_stages_email.emailstage, [name, default-confirmation-email-stage]]
+        stage: !Find [authentik_stages_email.emailstage, [name, confirmation-email-stage]]
         target: !KeyOf flow
       attrs:
         order: 200
@@ -642,7 +642,7 @@ data:
 
     - model: authentik_flows.flowstagebinding
       identifiers:
-        stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
+        stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
         target: !KeyOf flow
       attrs:
         order: 900
@@ -650,7 +650,7 @@ data:
     - model: authentik_policies.policybinding
       identifiers:
         policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-email-context-attribute-is-different-than-currently-set-expression-policy]]
-        target: !KeyOf default-user-settings-defaul-confirmation-email-stage-binding
+        target: !KeyOf user-settings-defaul-confirmation-email-stage-binding
       attrs:
         order: 0
         enabled: true
@@ -660,7 +660,7 @@ data:
   default-explicit-consent.yaml: |
     version: 1
     metadata:
-      name: Default - Provider authorization flow (explicit consent)
+      name: Provider authorization flow (explicit consent)
     entries:
     - attrs:
         designation: authorization
@@ -671,14 +671,14 @@ data:
         slug: fc1b3a2c-8086-4271-aa0d-d85772ccafe1
       model: authentik_flows.flow
       id: flow
-    - id: default-provider-authorization-consent
+    - id: provider-authorization-consent
       attrs:
         mode: expiring
       identifiers:
-        name: default-provider-authorization-consent
+        name: provider-authorization-consent
       model: authentik_stages_consent.consentstage
     - identifiers:
         order: 0
-        stage: !KeyOf default-provider-authorization-consent
+        stage: !KeyOf provider-authorization-consent
         target: !KeyOf flow
       model: authentik_flows.flowstagebinding

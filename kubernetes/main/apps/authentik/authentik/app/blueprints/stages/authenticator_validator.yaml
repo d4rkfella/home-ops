@@ -6,18 +6,18 @@ data:
   default.yaml: |
     version: 1
     metadata:
-      name: Authenticator Validator Stage - Default
+      name: Authenticator Validator Stage
     context:
       last_auth_threshold: minutes=5
       not_configured_action: skip
       device_classes_map: # class_type: stage_name
-        totp: default-totp-authenticator-setup-stage
+        totp: totp-authenticator-setup-stage
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Flow - Default TOTP Authenticator Setup
+          name: Flow - TOTP Authenticator Setup
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -26,9 +26,9 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
-      id: default-authenticator-validator-stage
+      id: authenticator-validator-stage
       identifiers:
-        name: default-authenticator-validator-stage
+        name: authenticator-validator-stage
       attrs:
         last_auth_threshold: !Context last_auth_threshold
         not_configured_action: !Context not_configured_action
@@ -54,13 +54,13 @@ data:
       name: Authenticator Validator Stage - Recovery
     context:
       device_classes_map: # class_type: stage_name
-        static: default-recovery-authenticator-setup-stage
+        static: recovery-authenticator-setup-stage
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Flow - Default Recovery Authenticator Setup
+          name: Flow - Recovery Authenticator Setup
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

@@ -15,19 +15,19 @@ data:
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Flow - Default Authentication
+          name: Flow - Authentication
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Flow - Default Invalidation
+          name: Flow - Invalidation
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Flow - Default User Settings
+          name: Flow - User Settings
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

@@ -6,7 +6,7 @@ data:
   default-configuration-error.yaml: |
     version: 1
     metadata:
-      name: Notification Rule - Default Configuration Error
+      name: Notification Rule - Configuration Error
     context:
       severity: alert
       group_name: null
@@ -19,7 +19,7 @@ data:
       - !Context notify_email
       attrs:
         identifiers:
-          name: Notification Transport - Default Email
+          name: Notification Transport - Email
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
@@ -27,19 +27,19 @@ data:
       - !Context notify_local
       attrs:
         identifiers:
-          name: Notification Transport - Default Local
+          name: Notification Transport - Local
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Event Matcher Policy - Default Configuration Error
+          name: Event Matcher Policy - Configuration Error
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_events.notificationrule
-      id: default-configuration-error-notification-rule
+      id: configuration-error-notification-rule
       identifiers:
-        name: default-configuration-error-notification-rule
+        name: configuration-error-notification-rule
       attrs:
         severity: !Context severity
         group: !If [
@@ -54,18 +54,18 @@ data:
         transports: !If [
           !Condition [AND, !Context notify_email, !Context notify_local],
           [
-            !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]],
-            !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+            !Find [authentik_events.notificationtransport, [name, email-notification-transport]],
+            !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
           ],
           !If [
             !Context notify_email,
             [
-              !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]]
+              !Find [authentik_events.notificationtransport, [name, email-notification-transport]]
             ],
             !If [
               !Context notify_local,
               [
-                !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+                !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
               ],
               []
             ]
@@ -80,8 +80,8 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_policies.policybinding
       identifiers:
-        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-configuration-error-event-matcher-policy]]
-        target: !KeyOf default-configuration-error-notification-rule
+        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, configuration-error-event-matcher-policy]]
+        target: !KeyOf configuration-error-notification-rule
       attrs:
         order: 100
         enabled: true
@@ -90,7 +90,7 @@ data:
   default-exceptions.yaml: |
     version: 1
     metadata:
-      name: Notification Rule - Default Exceptions
+      name: Notification Rule - Exceptions
     context:
       severity: alert
       group_name: null
@@ -103,7 +103,7 @@ data:
       - !Context notify_email
       attrs:
         identifiers:
-          name: Notification Transport - Default Email
+          name: Notification Transport - Email
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
@@ -111,25 +111,25 @@ data:
       - !Context notify_local
       attrs:
         identifiers:
-          name: Notification Transport - Default Local
+          name: Notification Transport - Local
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Event Matcher Policy - Default Policy Exception
+          name: Event Matcher Policy - Policy Exception
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Event Matcher Policy - Default Property Mapping Exception
+          name: Event Matcher Policy - Property Mapping Exception
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_events.notificationrule
-      id: default-exceptions-notification-rule
+      id: exceptions-notification-rule
       identifiers:
-        name: default-exceptions-notification-rule
+        name: exceptions-notification-rule
       attrs:
         severity: !Context severity
         group: !If [
@@ -144,18 +144,18 @@ data:
         transports: !If [
           !Condition [AND, !Context notify_email, !Context notify_local],
           [
-            !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]],
-            !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+            !Find [authentik_events.notificationtransport, [name, email-notification-transport]],
+            !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
           ],
           !If [
             !Context notify_email,
             [
-              !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]]
+              !Find [authentik_events.notificationtransport, [name, email-notification-transport]]
             ],
             !If [
               !Context notify_local,
               [
-                !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+                !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
               ],
               []
             ]
@@ -170,8 +170,8 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_policies.policybinding
       identifiers:
-        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-policy-exception-event-matcher-policy]]
-        target: !KeyOf default-exceptions-notification-rule
+        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, policy-exception-event-matcher-policy]]
+        target: !KeyOf exceptions-notification-rule
       attrs:
         order: 100
         enabled: true
@@ -179,8 +179,8 @@ data:
 
     - model: authentik_policies.policybinding
       identifiers:
-        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-property-mapping-exception-event-matcher-policy]]
-        target: !KeyOf default-exceptions-notification-rule
+        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, property-mapping-exception-event-matcher-policy]]
+        target: !KeyOf exceptions-notification-rule
       attrs:
         order: 200
         enabled: true
@@ -189,7 +189,7 @@ data:
   default-update-available.yaml: |
     version: 1
     metadata:
-      name: Notification Rule - Default Update Available
+      name: Notification Rule - Update Available
     context:
       severity: alert
       group_name: null
@@ -202,7 +202,7 @@ data:
       - !Context notify_email
       attrs:
         identifiers:
-          name: Notification Transport - Default Email
+          name: Notification Transport - Email
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
@@ -210,19 +210,19 @@ data:
       - !Context notify_local
       attrs:
         identifiers:
-          name: Notification Transport - Default Local
+          name: Notification Transport - Local
         required: true
 
     - model: authentik_blueprints.metaapplyblueprint
       attrs:
         identifiers:
-          name: Event Matcher Policy - Default Update Available
+          name: Event Matcher Policy - Update Available
         required: true
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_events.notificationrule
-      id: default-update-available-notification-rule
+      id: update-available-notification-rule
       identifiers:
-        name: default-update-available-notification-rule
+        name: update-available-notification-rule
       attrs:
         severity: !Context severity
         group: !If [
@@ -237,18 +237,18 @@ data:
         transports: !If [
           !Condition [AND, !Context notify_email, !Context notify_local],
           [
-            !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]],
-            !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+            !Find [authentik_events.notificationtransport, [name, email-notification-transport]],
+            !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
           ],
           !If [
             !Context notify_email,
             [
-              !Find [authentik_events.notificationtransport, [name, default-email-notification-transport]]
+              !Find [authentik_events.notificationtransport, [name, email-notification-transport]]
             ],
             !If [
               !Context notify_local,
               [
-                !Find [authentik_events.notificationtransport, [name, default-local-notification-transport]]
+                !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
               ],
               []
             ]
@@ -263,8 +263,8 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_policies.policybinding
       identifiers:
-        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-update-available-event-matcher-policy]]
-        target: !KeyOf default-update-available-notification-rule
+        policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, update-available-event-matcher-policy]]
+        target: !KeyOf update-available-notification-rule
       attrs:
         order: 100
         enabled: true

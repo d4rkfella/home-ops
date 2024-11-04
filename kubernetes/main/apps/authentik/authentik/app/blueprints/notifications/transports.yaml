@@ -6,15 +6,15 @@ data:
   default-email.yaml: |
     version: 1
     metadata:
-      name: Notification Transport - Default Email
+      name: Notification Transport - Email
     context: {}
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_events.notificationtransport
-      id: default-email-notification-transport
+      id: email-notification-transport
       identifiers:
-        name: default-email-notification-transport
+        name: email-notification-transport
       attrs:
         mode: email
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -28,15 +28,15 @@ data:
   default-local.yaml: |
     version: 1
     metadata:
-      name: Notification Transport - Default Local
+      name: Notification Transport - Local
     context: {}
     entries:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
     - model: authentik_events.notificationtransport
-      id: default-local-notification-transport
+      id: local-notification-transport
       identifiers:
-        name: default-local-notification-transport
+        name: local-notification-transport
       attrs:
         mode: local
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

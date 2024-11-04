@@ -17,7 +17,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: 59f5668b-24fe-4cc4-a11b-a65bc5414b56
+    slug: totp-authenticator-setup-flow
   attrs:
     authentication: require_authenticated
     denied_action: continue
@@ -38,6 +38,7 @@ entries:
     target: !KeyOf flow
   attrs:
     order: 100
+
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !KeyOf totp-authenticator-setup-stage

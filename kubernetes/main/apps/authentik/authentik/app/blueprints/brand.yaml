@@ -25,7 +25,7 @@ entries:
 
 - model: authentik_brands.brand
   identifiers:
-    default: True
+    default: False
   attrs:
     domain: !Context fqdn
     branding_title: !Context branding_title

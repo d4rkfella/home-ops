@@ -206,15 +206,3 @@ spec:
         - name: brands
           mountPath: /blueprints/brands
           readOnly: true
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: media
-  namespace: authentik
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 512Mi

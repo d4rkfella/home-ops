@@ -1,32 +1,34 @@
----
+version: 1
 metadata:
   name: Brand
-version: 1
+context:
+    fqdn: ${PUBLIC_DOMAIN}
+    branding_title: DarkfellaNET
 entries:
 - model: authentik_blueprints.metaapplyblueprint
   attrs:
     identifiers:
       name: Flow - Authentication
     required: true
+
 - model: authentik_blueprints.metaapplyblueprint
   attrs:
     identifiers:
       name: Flow - Invalidation
     required: true
+
 - model: authentik_blueprints.metaapplyblueprint
   attrs:
     identifiers:
       name: Flow - User Settings
     required: true
-- attrs:
-    flow_authentication:
-      !Find [authentik_flows.flow, [slug, 4bfe9942-e4b8-4096-99e8-4ac273d51737]]
-    flow_invalidation:
-      !Find [authentik_flows.flow, [slug, 3334e93f-90b8-4935-88c4-a7ab8335efeb]]
-    flow_user_settings:
-      !Find [authentik_flows.flow, [slug, 02d14ae0-6b63-41c7-89b5-5eb145475888]]
+
+- model: authentik_brands.brand
   identifiers:
-    domain: ${PUBLIC_DOMAIN}
-    branding_title: DarkfellaNET
-    default: true
-  model: authentik_brands.brand
+    default: True
+  attrs:
+    domain: !Context fqdn
+    branding_title: !Context branding_title
+    flow_authentication: !Find [authentik_flows.flow, [slug, 4bfe9942-e4b8-4096-99e8-4ac273d51737]]
+    flow_invalidation: !Find [authentik_flows.flow, [slug, 3334e93f-90b8-4935-88c4-a7ab8335efeb]]
+    flow_user_settings: !Find [authentik_flows.flow, [slug, 02d14ae0-6b63-41c7-89b5-5eb145475888]]

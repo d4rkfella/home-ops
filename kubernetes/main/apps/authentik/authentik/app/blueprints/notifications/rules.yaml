@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: rules
 data:
-  default-configuration-error.yaml: |
+  configuration-error.yaml: |
     version: 1
     metadata:
       name: Notification Rule - Configuration Error
@@ -87,7 +87,7 @@ data:
         enabled: true
         timeout: 30
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  default-exceptions.yaml: |
+  exceptions.yaml: |
     version: 1
     metadata:
       name: Notification Rule - Exceptions
@@ -186,7 +186,7 @@ data:
         enabled: true
         timeout: 30
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  default-update-available.yaml: |
+  update-available.yaml: |
     version: 1
     metadata:
       name: Notification Rule - Update Available

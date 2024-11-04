@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: transports
 data:
-  default-email.yaml: |
+  email.yaml: |
     version: 1
     metadata:
       name: Notification Transport - Email
@@ -25,7 +25,7 @@ data:
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
     #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-  default-local.yaml: |
+  local.yaml: |
     version: 1
     metadata:
       name: Notification Transport - Local

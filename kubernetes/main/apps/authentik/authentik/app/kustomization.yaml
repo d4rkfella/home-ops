@@ -7,3 +7,9 @@ resources:
   - ./externalsecret.yaml
   - ./helm-release.yaml
   - ../../../../templates/gatus/external
+configMapGenerator:
+  - name: blueprints
+    files:
+      - brand.yaml=./blueprints/brand.yaml
+generatorOptions:
+  disableNameSuffixHash: true

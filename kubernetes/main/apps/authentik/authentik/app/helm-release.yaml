@@ -102,7 +102,7 @@ spec:
       volumeMounts:
         - name: blueprints
           mountPath: /blueprints/custom
-          readOnly: true
+          readOnly: false
         - name: certs
           mountPath: /certs
           readOnly: true

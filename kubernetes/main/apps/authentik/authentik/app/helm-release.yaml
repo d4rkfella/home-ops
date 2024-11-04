@@ -89,8 +89,8 @@ spec:
             sources:
             - secret:
                 name: darkfellanet-tls
-        #- name: default
-          #emptyDir: {}
+        - name: default
+          emptyDir: {}
         - name: flows
           configMap:
             name: flows
@@ -198,11 +198,11 @@ spec:
           mountPath: /blueprints/default/stages/user_write
           readOnly: true
         - name: groups
-          mountPath: /blueprints/defaul/groups
+          mountPath: /blueprints/default/groups
           readOnly: true
-        #- name: default
-          #mountPath: /blueprints/default
-          #readOnly: true
+        - name: default
+          mountPath: /blueprints/default
+          readOnly: true
         - name: brands
           mountPath: /blueprints/default/brands
           readOnly: true

@@ -200,9 +200,9 @@ spec:
         - name: groups
           mountPath: /blueprints/groups
           readOnly: true
-        - name: default
-          mountPath: /blueprints/default
-          readOnly: true
+        #- name: default
+          #mountPath: /blueprints/default
+          #readOnly: true
         - name: brands
           mountPath: /blueprints/brands
           readOnly: true

@@ -89,8 +89,8 @@ spec:
             sources:
             - secret:
                 name: darkfellanet-tls
-        - name: default
-          emptyDir: {}
+        #- name: default
+          #emptyDir: {}
         - name: flows
           configMap:
             name: flows

@@ -1,6 +1,6 @@
 version: 1
 metadata:
-  name: Authenticator Validation Stage
+  name: Authenticator Validator Stage
 context:
   last_auth_threshold: minutes=5
   not_configured_action: skip
@@ -13,9 +13,9 @@ entries:
       name: Flow - TOTP Authenticator Setup
     required: true
 - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
-  id: authenticator-validation-stage
+  id: authenticator-validator-stage
   identifiers:
-    name: authenticator-validation-stage
+    name: authenticator-validator-stage
   attrs:
     last_auth_threshold: !Context last_auth_threshold
     not_configured_action: !Context not_configured_action

@@ -152,9 +152,6 @@ spec:
         - name: groups
           configMap:
             name: groups
-        - name: brands
-          configMap:
-            name: brands
       volumeMounts:
         - name: blueprints
           mountPath: /blueprints/custom
@@ -216,6 +213,4 @@ spec:
         - name: default
           mountPath: /blueprints/default
           readOnly: true
-        - name: brands
-          mountPath: /blueprints/brands
-          readOnly: true
+

@@ -69,15 +69,15 @@ spec:
             - secretRef:
                 name: authentik-initdb-secret
       volumes:
-        #- name: default
-          #emptyDir: {}
+        - name: default
+          emptyDir: {}
         - name: media
           persistentVolumeClaim:
             claimName: media
       volumeMounts:
-        #- name: default
-          #mountPath: /blueprints/default
-          #readOnly: true
+        - name: default
+          mountPath: /blueprints/default
+          readOnly: true
         - name: media
           mountPath: /media
     worker:
@@ -91,6 +91,8 @@ spec:
           drop:
             - ALL
       volumes:
+        - name: default
+          emptyDir: {}
         - name: certs
           projected:
             sources:
@@ -106,3 +108,5 @@ spec:
         - name: certs
           mountPath: /certs
           readOnly: true
+        - name: default
+          mountPath: /blueprints/default

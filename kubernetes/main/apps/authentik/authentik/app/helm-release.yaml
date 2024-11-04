@@ -150,61 +150,61 @@ spec:
           mountPath: /certs
           readOnly: true
         - name: flows
-          mountPath: /blueprints/flows
+          mountPath: /blueprints/default/flows
           readOnly: true
         - name: rules
-          mountPath: /blueprints/notifications/rules
+          mountPath: /blueprints/default/notifications/rules
           readOnly: true
         - name: transports
-          mountPath: /blueprints/notifications/transports
+          mountPath: /blueprints/default/notifications/transports
           readOnly: true
         - name: event-matcher
-          mountPath: /blueprints/policies/event_matcher
+          mountPath: /blueprints/default/policies/event_matcher
           readOnly: true
         - name: expression
-          mountPath: /blueprints/policies/expression
+          mountPath: /blueprints/default/policies/expression
           readOnly: true
         - name: password-policy
-          mountPath: /blueprints/policies/password
+          mountPath: /blueprints/default/policies/password
           readOnly: true
         - name: prompts
-          mountPath: /blueprints/prompts
+          mountPath: /blueprints/default/prompts
           readOnly: true
         - name: authenticator-validator
-          mountPath: /blueprints/stages/authenticator_validator
+          mountPath: /blueprints/default/stages/authenticator_validator
           readOnly: true
         - name: email
-          mountPath: /blueprints/stages/email
+          mountPath: /blueprints/default/stages/email
           readOnly: true
         - name: identification
-          mountPath: /blueprints/stages/identification
+          mountPath: /blueprints/default/stages/identification
           readOnly: true
         - name: invitation
-          mountPath: /blueprints/stages/invitation
+          mountPath: /blueprints/default/stages/invitation
           readOnly: true
         - name: password
-          mountPath: /blueprints/stages/password
+          mountPath: /blueprints/default/stages/password
           readOnly: true
         - name: prompt
-          mountPath: /blueprints/stages/prompt
+          mountPath: /blueprints/default/stages/prompt
           readOnly: true
         - name: user-login
-          mountPath: /blueprints/stages/user_login
+          mountPath: /blueprints/default/stages/user_login
           readOnly: true
         - name: user-logout
-          mountPath: /blueprints/stages/user_logout
+          mountPath: /blueprints/default/stages/user_logout
           readOnly: true
         - name: user-write
-          mountPath: /blueprints/stages/user_write
+          mountPath: /blueprints/default/stages/user_write
           readOnly: true
         - name: groups
-          mountPath: /blueprints/groups
+          mountPath: /blueprints/defaul/groups
           readOnly: true
         #- name: default
           #mountPath: /blueprints/default
           #readOnly: true
         - name: brands
-          mountPath: /blueprints/brands
+          mountPath: /blueprints/default/brands
           readOnly: true
 ---
 apiVersion: v1

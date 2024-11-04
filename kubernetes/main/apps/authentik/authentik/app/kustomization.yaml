@@ -14,5 +14,7 @@ configMapGenerator:
       - authentication-flow.yaml=./blueprints/authentication-flow.yaml
       - totp-authenticator-flow.yaml=./blueprints/totp-authenticator-flow.yaml
       - authenticator-validation-stage.yaml=./blueprints/authenticator-validation-stage.yaml
+      - password-stage.yaml=./blueprints/password-stage.yaml
+      - identification-stage.yaml=./blueprints/identification-stage.yaml
 generatorOptions:
   disableNameSuffixHash: true

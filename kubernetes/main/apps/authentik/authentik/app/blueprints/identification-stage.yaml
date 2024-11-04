@@ -1,0 +1,51 @@
+version: 1
+metadata:
+  name: Identification Stage
+context:
+  show_matched_user: false
+  user_fields:
+  - email
+  - username
+  password_stage_name: password-stage
+  password_stage_blueprint_name: Password Stage
+  recovery_flow_slug: d594c13b-7b50-426a-bc46-a4c94d56a8f9
+  recovery_flow_blueprint_name: Flow - Recovery
+  enrollment_flow_slug: 957acd39-babe-4993-8d94-2ac44283c589
+  enrollment_flow_blueprint_name: Flow - Enrollment
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context password_stage_blueprint_name
+  - !Context password_stage_name
+  attrs:
+    identifiers:
+      name: !Context password_stage_blueprint_name
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context recovery_flow_blueprint_name
+  - !Context recovery_flow_slug
+  attrs:
+    identifiers:
+      name: !Context recovery_flow_blueprint_name
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  conditions:
+  - !Context enrollment_flow_blueprint_name
+  - !Context enrollment_flow_slug
+  attrs:
+    identifiers:
+      name: !Context enrollment_flow_blueprint_name
+    required: true
+- model: authentik_stages_identification.identificationstage
+  id: identification-stage
+  identifiers:
+    name: identification-stage
+  attrs:
+    user_fields: !Context user_fields
+    show_matched_user: !Context show_matched_user
+    password_stage: !Find [authentik_stages_password.passwordstage, [name, !Context password_stage_name]]
+    enrollment_flow: !Find [authentik_flows.flow, [slug, !Context enrollment_flow_slug]]
+    recovery_flow: !Find [authentik_flows.flow, [slug, !Context recovery_flow_slug]]

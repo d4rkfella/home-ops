@@ -84,7 +84,6 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_invitation.invitationstage, [name, allow-without-invitation-invitation-stage]]
     target: !KeyOf flow
-  attrs:
     order: 100
 
 - model: authentik_flows.flowstagebinding
@@ -93,8 +92,8 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, invitation-token-prompt-stage]]
     target: !KeyOf flow
-  attrs:
     order: 200
+  attrs:
     re_evaluate_policies: true
 
 - model: authentik_flows.flowstagebinding
@@ -103,36 +102,32 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_invitation.invitationstage, [name, deny-without-invitation-invitation-stage]]
     target: !KeyOf flow
-  attrs:
     order: 300
+  attrs:
     re_evaluate_policies: true
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, enrollment-prompt-stage]]
     target: !KeyOf flow
-  attrs:
     order: 400
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-with-add-to-group-and-inactive-on-creation-user-write-stage]]
     target: !KeyOf flow
-  attrs:
     order: 500
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_email.emailstage, [name, confirmation-with-user-activation-email-stage]]
     target: !KeyOf flow
-  attrs:
     order: 600
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
     target: !KeyOf flow
-  attrs:
     order: 700
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_policies.policybinding
@@ -141,8 +136,8 @@ entries:
   identifiers:
     policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
     target: !KeyOf default-enrollment-invitation-token-prompt-stage-binding
-  attrs:
     order: 0
+  attrs:
     enabled: true
     negate: true
     timeout: 30
@@ -153,8 +148,8 @@ entries:
   identifiers:
     policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
     target: !KeyOf default-enrollment-invitation-deny-without-invitation-stage-binding
-  attrs:
     order: 0
+  attrs:
     enabled: true
     negate: true
     timeout: 30

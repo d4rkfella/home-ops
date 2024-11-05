@@ -42,14 +42,12 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, logout-prompt-stage]]
     target: !KeyOf flow
-  attrs:
     order: 100
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, default-logout-stage]]
     target: !KeyOf flow
-  attrs:
     order: 900
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

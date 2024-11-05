@@ -56,35 +56,30 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_identification.identificationstage, [name, recovery-identification-stage]]
     target: !KeyOf flow
-  attrs:
     order: 100
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_email.emailstage, [name, default-recovery-email-stage]]
     target: !KeyOf flow
-  attrs:
     order: 200
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, password-and-password-repeat-prompt-stage]]
     target: !KeyOf flow
-  attrs:
     order: 300
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
     target: !KeyOf flow
-  attrs:
     order: 400
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
     target: !KeyOf flow
-  attrs:
     order: 900
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

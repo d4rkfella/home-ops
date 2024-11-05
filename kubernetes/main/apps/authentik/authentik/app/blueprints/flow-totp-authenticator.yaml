@@ -50,14 +50,12 @@ entries:
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, current-password-prompt-stage]]
     target: !KeyOf flow
-  attrs:
     order: 100
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !KeyOf default-totp-authenticator-setup-stage
     target: !KeyOf flow
-  attrs:
     order: 200
 
 # - model: authentik_flows.flowstagebinding

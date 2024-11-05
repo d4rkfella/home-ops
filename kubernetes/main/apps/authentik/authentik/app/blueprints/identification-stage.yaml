@@ -47,7 +47,6 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_stages_identification.identificationstage
-  id: default-identification-stage
   identifiers:
     name: default-identification-stage
   attrs:

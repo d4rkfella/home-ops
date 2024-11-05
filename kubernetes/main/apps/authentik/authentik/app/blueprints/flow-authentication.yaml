@@ -58,7 +58,6 @@ entries:
   identifiers:
     target: !KeyOf flow
     stage: !Find [authentik_stages_identification.identificationstage, [name, default-identification-stage]]
-  attrs:
     order: 100
 
 - model: authentik_flows.flowstagebinding
@@ -66,21 +65,21 @@ entries:
   identifiers:
     target: !KeyOf flow
     stage: !Find [authentik_stages_captcha.captchastage, [name, captcha-stage]]
-  attrs:
     order: 110
+  attrs:
+    evaluate_on_plan: false
+    re_evaluate_policies: true
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     target: !KeyOf flow
     stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, default-authenticator-validator-stage]]
-  attrs:
     order: 200
 
 - model: authentik_flows.flowstagebinding
   identifiers:
     target: !KeyOf flow
     stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
-  attrs:
     order: 900
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_policies.policybinding

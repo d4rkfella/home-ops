@@ -9,12 +9,9 @@ resources:
 configMapGenerator:
   - name: blueprints
     files:
-      - allow-without-invitation-stage.yaml=./blueprints/allow-without-invitation-stage.yaml
-      - flow-authentication.yaml=./blueprints/flow-authentication.yaml
-      - authenticator-validator-stage.yaml=./blueprints/authenticator-validation-stage.yaml
       - authenticator-validator-stage-recovery.yaml=./blueprints/authenticator-validator-stage-recovery.yaml
+      - authenticator-validator-stage.yaml=./blueprints/authenticator-validator-stage.yaml
       - brand.yaml=./blueprints/brand.yaml
-      - deny-without-invitation-stage.yaml=./blueprints/deny-without-invitation-stage.yaml
       - email-stage-recovery.yaml=./blueprints/email-stage-recovery.yaml
       - email-stage-with-user-activation.yaml=./blueprints/email-stage-with-user-activation.yaml
       - email-stage.yaml=./blueprints/email-stage.yaml
@@ -34,21 +31,24 @@ configMapGenerator:
       - expression-validate-token-for-invitations-context-attribute.yaml=./blueprints/expression-validate-token-for-invitations-context-attribute.yaml
       - expression-validate-username-context-attribute-is-unique-to-current-user.yaml=./blueprints/expression-validate-username-context-attribute-is-unique-to-current-user.yaml
       - expression-validate-username-email-and-name-change-is-allowed.yaml=./blueprints/expression-validate-username-email-and-name-change-is-allowed.yaml
+      - flow-authentication.yaml=./blueprints/flow-authentication.yaml
       - flow-enrollment.yaml=./blueprints/flow-enrollment.yaml
       - flow-explicit-consent.yaml=./blueprints/flow-explicit-consent.yaml
       - flow-invalidation.yaml=./blueprints/flow-invalidation.yaml
       - flow-password-change.yaml=./blueprints/flow-password-change.yaml
+      - flow-provider-authorization-implicit-consent.yaml=./blueprints/flow-provider-authorization-implicit-consent.yaml
+      - flow-provider-invalidation.yaml=./blueprints/flow-provider-invalidation.yaml
       - flow-recovery-authenticator-setup.yaml=./blueprints/flow-recovery-authenticator-setup.yaml
       - flow-recovery.yaml=./blueprints/flow-recovery.yaml
-      - flow-provider-authorization-implicit-consent.yaml=./blueprints/flow-provider-authorization-implicit-consent.yaml
       - flow-totp-authenticator.yaml=./blueprints/flow-totp-authenticator.yaml
       - flow-user-settings.yaml=./blueprints/flow-user-settings.yaml
-      - flow-provider-invalidation.yaml=./blueprints/flow-provider-invalidation.yaml
       - group-default-admins.yaml=./blueprints/group-default-admins.yaml
       - group-default-created-users.yaml=./blueprints/group-default-created-users.yaml
       - group-default-users.yaml=./blueprints/group-default-users.yaml
       - identification-stage-recovery.yaml=./blueprints/identification-stage-recovery.yaml
       - identification-stage.yaml=./blueprints/identification-stage.yaml
+      - invitation-stage-allow-without-invitation.yaml=./blueprints/invitation-stage-allow-without-invitation.yaml
+      - invitation-stage-deny-without-invitation.yaml=./blueprints/invitation-stage-deny-without-invitation.yaml
       - notification-rule-configuration-error.yaml=./blueprints/notification-rule-configuration-error.yaml
       - notification-rule-exceptions.yaml=./blueprints/notification-rule-exceptions.yaml
       - notification-rule-update-available.yaml=./blueprints/notification-rule-update-available.yaml

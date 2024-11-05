@@ -1,0 +1,12 @@
+version: 1
+metadata:
+  name: Captcha Stage
+context: {}
+entries:
+- model: authentik_stages_captcha.captchastage
+  id: captcha-stage
+  identifiers:
+    name: captcha-stage
+  attrs:
+    public_key: ${TURNSTILE_SITE_KEY_AUTHENTIK}
+    private_key: ${TURNSTILE_SECRET_KEY_AUTHENTIK}

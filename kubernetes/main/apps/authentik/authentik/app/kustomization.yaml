@@ -12,6 +12,7 @@ configMapGenerator:
       - authenticator-validator-stage-recovery.yaml=./blueprints/authenticator-validator-stage-recovery.yaml
       - authenticator-validator-stage.yaml=./blueprints/authenticator-validator-stage.yaml
       - brand.yaml=./blueprints/brand.yaml
+      - captcha-stage.yaml=./blueprints/captcha-stage.yaml
       - email-stage-recovery.yaml=./blueprints/email-stage-recovery.yaml
       - email-stage-with-user-activation.yaml=./blueprints/email-stage-with-user-activation.yaml
       - email-stage.yaml=./blueprints/email-stage.yaml

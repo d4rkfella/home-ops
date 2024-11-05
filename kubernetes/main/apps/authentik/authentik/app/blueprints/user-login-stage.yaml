@@ -2,7 +2,7 @@ version: 1
 metadata:
   name: User Login Stage - Default
 context:
-  session_duration: seconds=0
+  session_duration: hours=1
 entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#

@@ -26,6 +26,14 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+- model: authentik_policies_reputation.reputationpolicy
+  id: default-authentication-flow-conditional-captcha
+  identifiers:
+    name: default-authentication-flow-conditional-captcha
+  attrs:
+    check_ip: true
+    check_username: true
+    threshold: -5
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flow
   id: flow
@@ -48,6 +56,14 @@ entries:
     order: 100
 
 - model: authentik_flows.flowstagebinding
+  id: flow-binding-captcha
+  identifiers:
+    target: !KeyOf flow
+    stage: !Find [authentik_stages_captcha.captchastage, [name, captcha-stage]]
+  attrs:
+    order: 110
+
+- model: authentik_flows.flowstagebinding
   identifiers:
     target: !KeyOf flow
     stage: !Find [authentik_stages_authenticator_validate.authenticatorvalidatestage, [name, default-authenticator-validator-stage]]
@@ -61,4 +77,9 @@ entries:
   attrs:
     order: 900
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+- model: authentik_policies.policybinding
+  identifiers:
+    policy: !KeyOf default-authentication-flow-conditional-captcha
+    target: !KeyOf flow-binding-captcha
+    order: 0
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

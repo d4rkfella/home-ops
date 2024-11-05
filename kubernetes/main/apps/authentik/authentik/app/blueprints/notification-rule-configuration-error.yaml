@@ -76,8 +76,8 @@ entries:
   identifiers:
     policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-configuration-error-event-matcher-policy]]
     target: !KeyOf default-configuration-error-notification-rule
-  attrs:
     order: 100
+  attrs:
     enabled: true
     timeout: 30
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

@@ -15,8 +15,8 @@ entries:
   identifiers:
     name: token-for-invitations-prompt
     field_key: token
-  attrs:
     order: !Context order
+  attrs:
     label: !Context label
     placeholder: !Context label
     placeholder_expression: false

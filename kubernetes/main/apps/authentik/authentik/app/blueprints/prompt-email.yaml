@@ -15,8 +15,8 @@ entries:
     name: email-prompt
     field_key: email
     label: Email
-  attrs:
     order: !Context order
+  attrs:
     placeholder: |
       try:
           return user.email

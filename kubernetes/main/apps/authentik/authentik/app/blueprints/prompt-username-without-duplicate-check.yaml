@@ -16,8 +16,8 @@ entries:
       field_key: username
       label: Username
       type: text
-  attrs:
       order: !Context order
+  attrs:
       placeholder: |
         try:
             return user.username

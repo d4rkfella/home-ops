@@ -16,8 +16,8 @@ entries:
     name: first-name-prompt
     field_key: first_name
     label: First name
-  attrs:
     order: !Context first_name_order
+  attrs:
     placeholder: |
       try:
           return user.name.split(" ")[0]
@@ -32,8 +32,8 @@ entries:
     name: last-name-prompt
     field_key: last_name
     label: Last name
-  attrs:
     order: !Context last_name_order
+  attrs:
     placeholder: |
       try:
           return user.name.split(" ")[-1]

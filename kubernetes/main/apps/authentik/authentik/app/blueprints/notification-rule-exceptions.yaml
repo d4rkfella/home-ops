@@ -82,8 +82,8 @@ entries:
   identifiers:
     policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-policy-exception-event-matcher-policy]]
     target: !KeyOf default-exceptions-notification-rule
-  attrs:
     order: 100
+  attrs:
     enabled: true
     timeout: 30
 
@@ -91,8 +91,8 @@ entries:
   identifiers:
     policy: !Find [authentik_policies_event_matcher.eventmatcherpolicy, [name, default-property-mapping-exception-event-matcher-policy]]
     target: !KeyOf default-exceptions-notification-rule
-  attrs:
     order: 200
+  attrs:
     enabled: true
     timeout: 30
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

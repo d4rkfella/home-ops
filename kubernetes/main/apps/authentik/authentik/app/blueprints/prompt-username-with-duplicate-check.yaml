@@ -16,8 +16,8 @@ entries:
       field_key: username
       label: Username
       type: username
-  attrs:
       order: !Context order
+  attrs:
       placeholder: Username
       required: true
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

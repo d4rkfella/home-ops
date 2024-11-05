@@ -50,7 +50,7 @@ spec:
             restartPolicy: Always
             resources: &resources
               requests:
-                cpu: 10m
+                cpu: 20m
               limits:
                 memory: 256Mi
         containers:

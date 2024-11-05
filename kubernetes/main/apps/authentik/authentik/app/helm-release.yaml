@@ -73,7 +73,7 @@ spec:
       volumeMounts:
         - name: media
           mountPath: /media
-          readOnly: true
+          readOnly: false
     worker:
       containerSecurityContext:
         runAsNonRoot: true

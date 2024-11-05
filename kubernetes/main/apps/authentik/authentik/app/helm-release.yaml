@@ -94,15 +94,15 @@ spec:
             sources:
             - secret:
                 name: darkfellanet-tls
-        - name: blueprints
-          configMap:
-            name: blueprints
+        #- name: blueprints
+          #configMap:
+            #name: blueprints
       volumeMounts:
         - name: certs
           mountPath: /certs
           readOnly: true
         #- name: default
           #mountPath: /blueprints/default
-        - name: blueprints
-          mountPath: /blueprints/custom
-          readOnly: true
+        #- name: blueprints
+          #mountPath: /blueprints/custom
+          #readOnly: true

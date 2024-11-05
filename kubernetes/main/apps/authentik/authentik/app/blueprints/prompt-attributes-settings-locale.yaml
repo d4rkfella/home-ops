@@ -11,7 +11,7 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_stages_prompt.prompt
-  id: attributes-settings-locale-prompt
+  id: _attributes-settings-locale-prompt
   identifiers:
     name: attributes-settings-locale-prompt
     field_key: attributes.settings.locale

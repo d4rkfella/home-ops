@@ -1,7 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Provider authorization flow (explicit consent)
+  name: Flow - Default Provider authorization flow (explicit consent)
 entries:
 - attrs:
     designation: authorization
@@ -9,17 +8,17 @@ entries:
     title: Redirecting to %(app)s
     authentication: require_authenticated
   identifiers:
-    slug: fc1b3a2c-8086-4271-aa0d-d85772ccafe1
+    slug: 5c149a72-431f-49f6-a625-eb4a6fac021d
   model: authentik_flows.flow
   id: flow
-- id: provider-authorization-consent
+- id: default-provider-authorization-consent
   attrs:
     mode: expiring
   identifiers:
-    name: provider-authorization-consent
+    name: default-provider-authorization-consent
   model: authentik_stages_consent.consentstage
 - identifiers:
     order: 0
-    stage: !KeyOf provider-authorization-consent
+    stage: !KeyOf default-provider-authorization-consent
     target: !KeyOf flow
   model: authentik_flows.flowstagebinding

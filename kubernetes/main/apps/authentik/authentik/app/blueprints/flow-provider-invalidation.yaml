@@ -1,7 +1,6 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Default - Provider invalidation flow
+  name: Flow - Default Provider invalidation flow
 entries:
 - attrs:
     designation: invalidation
@@ -9,6 +8,6 @@ entries:
     title: You've logged out of %(app)s.
     authentication: none
   identifiers:
-    slug: 23cd3c41-e8d7-41d9-ba37-2ebd1004721d
+    slug: 2dad70e1-cfb8-4c06-baec-264934bc9152
   model: authentik_flows.flow
   id: flow

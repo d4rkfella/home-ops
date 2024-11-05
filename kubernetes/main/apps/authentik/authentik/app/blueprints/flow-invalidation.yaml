@@ -1,37 +1,42 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Flow - Invalidation
+  name: Flow - Default Invalidation
 context:
   name: Logout
   title: Logout
   require_confirmation: true
 entries:
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: Prompt Stage - Logout
   conditions:
   - !Context require_confirmation
   attrs:
+    identifiers:
+      name: Prompt Stage - Logout
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: User Logout Stage
   attrs:
+    identifiers:
+      name: User Logout Stage - Default
     required: true
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: 3334e93f-90b8-4935-88c4-a7ab8335efeb
+    slug: default-invalidation-flow
   attrs:
     authentication: require_authenticated
     denied_action: continue
     designation: invalidation
     name: !Context name
     title: !Context title
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flowstagebinding
   state: !If [!Context require_confirmation, present, absent]
   identifiers:
@@ -42,7 +47,9 @@ entries:
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, logout-stage]]
+    stage: !Find [authentik_stages_user_logout.userlogoutstage, [name, default-logout-stage]]
     target: !KeyOf flow
   attrs:
     order: 900
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

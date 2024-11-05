@@ -1,22 +1,15 @@
 version: 1
 metadata:
-  name: Password Stage - Default
+  name: Authenticator Validator Stage - Recovery
 context:
-  backends:
-  - authentik.core.auth.InbuiltBackend
-  # - authentik.sources.ldap.auth.LDAPBackend
-  # - authentik.core.auth.TokenBackend
-  password_change_flow_slug: default-password-change-flow
-  password_change_flow_blueprint_name: Flow - Default Password Change
+  device_classes_map: # class_type: stage_name
+    static: default-recovery-authenticator-setup-stage
 entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context password_change_flow_blueprint_name
-  - !Context password_change_flow_slug
   attrs:
     identifiers:
-      name: !Context password_change_flow_blueprint_name
+      name: Flow - Default Recovery Authenticator Setup
     required: true
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -24,13 +17,25 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-- model: authentik_stages_password.passwordstage
-  id: default-password-stage
+- model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+  id: recovery-authenticator-validator-stage
   identifiers:
-    name: default-password-stage
+    name: recovery-authenticator-validator-stage
   attrs:
-    backends: !Context backends
-    configure_flow: !Find [authentik_flows.flow, [slug, !Context password_change_flow_slug]]
+    not_configured_action: deny
+    configuration_stages: !Enumerate [
+      !Context device_classes_map,
+      SEQ,
+      !Find [
+        !Format [authentik_stages_authenticator_%s.authenticator%sstage, !Index 0, !Index 0],
+        [name, !Value 0]
+      ]
+    ]
+    device_classes: !Enumerate [
+      !Context device_classes_map,
+      SEQ,
+      !Index 0
+    ]
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

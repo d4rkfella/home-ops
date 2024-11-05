@@ -1,80 +1,84 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Flow - Enrollment
+  name: Flow - Default Enrollment
 context:
   name: Welcome to authentik!
   title: Welcome to authentik!
   require_invitation: true
 entries:
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
       name: Invitation Stage - Allow Without Invitation
-  conditions:
-  - !Context require_invitation
-  attrs:
-
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
       name: Prompt Stage - Invitation Token
-  conditions:
-  - !Context require_invitation
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  conditions:
+  - !Context require_invitation
+  attrs:
+    identifiers:
       name: Invitation Stage - Deny Without Invitation
-  conditions:
-  - !Context require_invitation
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Prompt Stage - Enrollment
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: User Write Stage - With Add To Group and Inactive on Creation
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Email Stage - Confirmation With User Activation
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: User Login Stage
   attrs:
+    identifiers:
+      name: User Login Stage - Default
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: Expression Policy - Validate Invitation in Effect
   conditions:
   - !Context require_invitation
   attrs:
+    identifiers:
+      name: Expression Policy - Validate Invitation in Effect
     required: true
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: 957acd39-babe-4993-8d94-2ac44283c589
+    slug: default-enrollment-flow
   attrs:
     authentication: require_unauthenticated
     denied_action: continue
     designation: enrollment
     name: !Context name
     title: !Context title
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flowstagebinding
   state: !If [!Context require_invitation, present, absent]
   identifiers:
@@ -84,7 +88,7 @@ entries:
     order: 100
 
 - model: authentik_flows.flowstagebinding
-  id: enrollment-invitation-token-prompt-stage-binding
+  id: default-enrollment-invitation-token-prompt-stage-binding
   state: !If [!Context require_invitation, present, absent]
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, invitation-token-prompt-stage]]
@@ -94,7 +98,7 @@ entries:
     re_evaluate_policies: true
 
 - model: authentik_flows.flowstagebinding
-  id: enrollment-invitation-deny-without-invitation-stage-binding
+  id: default-enrollment-invitation-deny-without-invitation-stage-binding
   state: !If [!Context require_invitation, present, absent]
   identifiers:
     stage: !Find [authentik_stages_invitation.invitationstage, [name, deny-without-invitation-invitation-stage]]
@@ -126,17 +130,17 @@ entries:
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
+    stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
     target: !KeyOf flow
   attrs:
     order: 700
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_policies.policybinding
   conditions:
   - !Context require_invitation
   identifiers:
     policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
-    target: !KeyOf enrollment-invitation-token-prompt-stage-binding
+    target: !KeyOf default-enrollment-invitation-token-prompt-stage-binding
   attrs:
     order: 0
     enabled: true
@@ -148,9 +152,10 @@ entries:
   - !Context require_invitation
   identifiers:
     policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-invitation-in-effect-expression-policy]]
-    target: !KeyOf enrollment-invitation-deny-without-invitation-stage-binding
+    target: !KeyOf default-enrollment-invitation-deny-without-invitation-stage-binding
   attrs:
     order: 0
     enabled: true
     negate: true
     timeout: 30
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

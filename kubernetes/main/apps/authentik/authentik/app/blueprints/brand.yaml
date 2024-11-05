@@ -1,29 +1,43 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
-metadata:
-  name: Brand
 version: 1
+metadata:
+  name: Tenant - Default
+context:
+    fqdn: authentik - default
+    branding_title: authentik
 entries:
-  - model: authentik_blueprints.metaapplyblueprint
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
     identifiers:
-        name: Flow - Authentication
-    attrs:
-      required: true
-  - model: authentik_blueprints.metaapplyblueprint
+      name: Flow - Default Authentication
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
     identifiers:
-        name: Flow - Invalidation
-    attrs:
-      required: true
-  - model: authentik_blueprints.metaapplyblueprint
+      name: Flow - Default Invalidation
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
     identifiers:
-        name: Flow - User Settings
-    attrs:
-      required: true
-  - attrs:
-      flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
-      flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
-      flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
-    identifiers:
-      domain: authentik-default
-      default: true
-    state: created
-    model: authentik_brands.brand
+      name: Flow - Default User Settings
+    required: true
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+- model: authentik_brands.brand
+  identifiers:
+    default: True
+  attrs:
+    domain: !Context fqdn
+    branding_title: !Context branding_title
+    flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+    flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+    flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]

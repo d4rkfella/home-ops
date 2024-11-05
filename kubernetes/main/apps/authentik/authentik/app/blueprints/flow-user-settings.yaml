@@ -1,46 +1,51 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Flow - User Settings
+  name: Flow - Default User Settings
 context:
   name: User settings
   title: User settings
 entries:
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Prompt Stage - User Settings
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Expression Policy - Validate email Context Attribute Is Different Than Currently Set
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: Email Stage - Confirmation
   attrs:
+    identifiers:
+      name: Email Stage - Default Confirmation
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: User Write Stage
   attrs:
+    identifiers:
+      name: User Write Stage - Default
     required: true
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: 02d14ae0-6b63-41c7-89b5-5eb145475888
+    slug: default-user-settings-flow
   attrs:
     authentication: require_authenticated
     denied_action: continue
     designation: stage_configuration
     name: !Context name
     title: !Context title
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_prompt.promptstage, [name, user-settings-prompt-stage]]
@@ -49,9 +54,9 @@ entries:
     order: 100
 
 - model: authentik_flows.flowstagebinding
-  id: user-settings-defaul-confirmation-email-stage-binding
+  id: default-user-settings-defaul-confirmation-email-stage-binding
   identifiers:
-    stage: !Find [authentik_stages_email.emailstage, [name, confirmation-email-stage]]
+    stage: !Find [authentik_stages_email.emailstage, [name, default-confirmation-email-stage]]
     target: !KeyOf flow
   attrs:
     order: 200
@@ -59,17 +64,18 @@ entries:
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
+    stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
     target: !KeyOf flow
   attrs:
     order: 900
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_policies.policybinding
   identifiers:
     policy: !Find [authentik_policies_expression.expressionpolicy, [name, validate-email-context-attribute-is-different-than-currently-set-expression-policy]]
-    target: !KeyOf user-settings-defaul-confirmation-email-stage-binding
+    target: !KeyOf default-user-settings-defaul-confirmation-email-stage-binding
   attrs:
     order: 0
     enabled: true
     negate: false
     timeout: 30
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

@@ -1,52 +1,57 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
-  name: Flow - Recovery
+  name: Flow - Default Recovery
 context:
   name: Welcome to authentik!
   title: Welcome to authentik!
 entries:
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Identification Stage - Recovery
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
+  attrs:
+    identifiers:
       name: Prompt Stage - Password and Password Repeat
-  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: Email Stage - Recovery
   attrs:
+    identifiers:
+      name: Email Stage - Default Recovery
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: User Write Stage
   attrs:
+    identifiers:
+      name: User Write Stage - Default
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  identifiers:
-      name: User Login Stage
   attrs:
+    identifiers:
+      name: User Login Stage - Default
     required: true
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ Notification transports ~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Groups ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: d594c13b-7b50-426a-bc46-a4c94d56a8f9
+    slug: default-recovery-flow
   attrs:
     authentication: require_unauthenticated
     denied_action: continue
     designation: recovery
     name: !Context name
     title: !Context title
-
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Stage bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_flows.flowstagebinding
   identifiers:
     stage: !Find [authentik_stages_identification.identificationstage, [name, recovery-identification-stage]]
@@ -56,7 +61,7 @@ entries:
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_email.emailstage, [name, recovery-email-stage]]
+    stage: !Find [authentik_stages_email.emailstage, [name, default-recovery-email-stage]]
     target: !KeyOf flow
   attrs:
     order: 200
@@ -70,14 +75,16 @@ entries:
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_user_write.userwritestage, [name, user-write-stage]]
+    stage: !Find [authentik_stages_user_write.userwritestage, [name, default-user-write-stage]]
     target: !KeyOf flow
   attrs:
     order: 400
 
 - model: authentik_flows.flowstagebinding
   identifiers:
-    stage: !Find [authentik_stages_user_login.userloginstage, [name, user-login-stage]]
+    stage: !Find [authentik_stages_user_login.userloginstage, [name, default-user-login-stage]]
     target: !KeyOf flow
   attrs:
     order: 900
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Policy bindings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tenants ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

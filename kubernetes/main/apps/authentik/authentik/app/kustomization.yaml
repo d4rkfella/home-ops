@@ -11,7 +11,8 @@ configMapGenerator:
     files:
       - allow-without-invitation-stage.yaml=./blueprints/allow-without-invitation-stage.yaml
       - authentication-flow.yaml=./blueprints/authentication-flow.yaml
-      - authenticator-validation-stage.yaml=./blueprints/authenticator-validation-stage.yaml
+      - authenticator-validator-stage.yaml=./blueprints/authenticator-validation-stage.yaml
+      - authenticator-validator-stage-recovery.yaml=./blueprints/authenticator-validator-stage-recovery.yaml
       - brand.yaml=./blueprints/brand.yaml
       - deny-without-invitation-stage.yaml=./blueprints/deny-without-invitation-stage.yaml
       - email-stage-recovery.yaml=./blueprints/email-stage-recovery.yaml

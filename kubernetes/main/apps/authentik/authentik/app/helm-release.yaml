@@ -105,3 +105,4 @@ spec:
           #mountPath: /blueprints/default
         - name: blueprints
           mountPath: /blueprints/custom
+          readOnly: true

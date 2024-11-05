@@ -27,7 +27,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: default-invalidation-flow
+    slug: 55139a78-24f6-43dc-9d4b-c1da4d153b26
   attrs:
     authentication: require_authenticated
     denied_action: continue

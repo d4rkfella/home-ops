@@ -42,7 +42,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: default-recovery-flow
+    slug: b6b5ac5a-621d-4b5e-bdfd-cc0274340d33
   attrs:
     authentication: require_unauthenticated
     denied_action: continue

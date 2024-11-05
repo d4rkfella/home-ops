@@ -69,7 +69,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: default-enrollment-flow
+    slug: 9c17fa62-240d-4738-82d2-339cf7a190fc
   attrs:
     authentication: require_unauthenticated
     denied_action: continue

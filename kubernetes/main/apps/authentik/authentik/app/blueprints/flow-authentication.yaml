@@ -30,7 +30,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: default-authentication-flow
+    slug: 7096c3cf-0416-41e5-b1b0-c4581079cb99
   attrs:
     authentication: require_unauthenticated
     denied_action: continue

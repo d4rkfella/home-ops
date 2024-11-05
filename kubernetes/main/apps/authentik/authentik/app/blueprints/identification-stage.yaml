@@ -8,9 +8,9 @@ context:
   - username
   password_stage_name: default-password-stage
   password_stage_blueprint_name: Password Stage - Default
-  recovery_flow_slug: default-recovery-flow
+  recovery_flow_slug: b6b5ac5a-621d-4b5e-bdfd-cc0274340d33
   recovery_flow_blueprint_name: Flow - Default Recovery
-  enrollment_flow_slug: default-enrollment-flow
+  enrollment_flow_slug: 9c17fa62-240d-4738-82d2-339cf7a190fc
   enrollment_flow_blueprint_name: Flow - Default Enrollment
 entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

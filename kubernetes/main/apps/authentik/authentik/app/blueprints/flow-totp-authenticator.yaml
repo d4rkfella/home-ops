@@ -28,7 +28,7 @@ entries:
 - model: authentik_flows.flow
   id: flow
   identifiers:
-    slug: default-totp-authenticator-setup-flow
+    slug: 7af37d71-bb61-44b2-bbbb-dcd219520482
   attrs:
     authentication: require_authenticated
     denied_action: continue

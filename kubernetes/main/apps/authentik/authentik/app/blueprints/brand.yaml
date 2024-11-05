@@ -1,9 +1,9 @@
 version: 1
 metadata:
-  name: Tenant - Default
+  name: Brand - DarkfellaNET
 context:
-    fqdn: authentik - default
-    branding_title: authentik
+    fqdn: ${PUBLIC_DOMAIN}
+    branding_title: DarkfellaNET
 entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint
@@ -38,6 +38,6 @@ entries:
   attrs:
     domain: !Context fqdn
     branding_title: !Context branding_title
-    flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
-    flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
-    flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+    flow_authentication: !Find [authentik_flows.flow, [slug, 7096c3cf-0416-41e5-b1b0-c4581079cb99]]
+    flow_invalidation: !Find [authentik_flows.flow, [slug, 55139a78-24f6-43dc-9d4b-c1da4d153b26]]
+    flow_user_settings: !Find [authentik_flows.flow, [slug, 82d2ba1d-3756-49b2-9521-34bdb7f9e632]]

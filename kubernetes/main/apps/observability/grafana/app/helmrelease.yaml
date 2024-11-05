@@ -41,7 +41,7 @@ spec:
       GF_SERVER_ROOT_URL: https://grafana.${PUBLIC_DOMAIN}
     grafana.ini:
       auth:
-        signout_redirect_url: "https://auth.${PUBLIC_DOMAIN}/application/o/3c1b31a9-c749-4e2d-b401-293f7db3fb91/end-session/"
+        signout_redirect_url: "https://auth.${PUBLIC_DOMAIN}/application/o/178655f8-2194-4c44-8733-cf9caeae7fba/end-session/"
         oauth_auto_login: true
         disable_login_form: true
       auth.generic_oauth:

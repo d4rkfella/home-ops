@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Group - Default Users
@@ -10,4 +11,3 @@ entries:
   attrs:
     is_superuser: false
     name: users
-4

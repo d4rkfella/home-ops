@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Identification Stage
@@ -14,30 +15,21 @@ context:
   enrollment_flow_blueprint_name: Flow - Enrollment
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context password_stage_blueprint_name
-  - !Context password_stage_name
+  identifiers:
+      name: Password Stage
   attrs:
-    identifiers:
-      name: !Context password_stage_blueprint_name
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context recovery_flow_blueprint_name
-  - !Context recovery_flow_slug
+  identifiers:
+      name: Flow - Recovery
   attrs:
-    identifiers:
-      name: !Context recovery_flow_blueprint_name
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context enrollment_flow_blueprint_name
-  - !Context enrollment_flow_slug
+  identifiers:
+      name: Flow - Enrollment
   attrs:
-    identifiers:
-      name: !Context enrollment_flow_blueprint_name
     required: true
 - model: authentik_stages_identification.identificationstage
   id: identification-stage

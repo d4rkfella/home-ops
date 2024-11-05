@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Flow - Invalidation
@@ -7,17 +8,17 @@ context:
   require_confirmation: true
 entries:
 - model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Prompt Stage - Logout
   conditions:
   - !Context require_confirmation
   attrs:
-    identifiers:
-      name: Prompt Stage - Logout
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: User Logout Stage
+  attrs:
     required: true
 
 - model: authentik_flows.flow

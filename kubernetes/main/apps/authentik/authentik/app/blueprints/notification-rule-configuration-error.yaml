@@ -1,32 +1,28 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Notification Rule - Configuration Error
 context:
-  severity: alert
   group_name: null
   notify_email: true
   notify_local: true
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context notify_email
-  attrs:
-    identifiers:
+  identifiers:
       name: Notification Transport - Email
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context notify_local
-  attrs:
-    identifiers:
+  identifiers:
       name: Notification Transport - Local
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Event Matcher Policy - Configuration Error
+  attrs:
     required: true
 
 - model: authentik_events.notificationrule
@@ -34,7 +30,7 @@ entries:
   identifiers:
     name: configuration-error-notification-rule
   attrs:
-    severity: !Context severity
+    severity: alert
     group: !If [
       !Condition [OR, !Context notify_email, !Context notify_local],
       !If [
@@ -44,26 +40,9 @@ entries:
       ],
       null
     ]
-    transports: !If [
-      !Condition [AND, !Context notify_email, !Context notify_local],
-      [
-        !Find [authentik_events.notificationtransport, [name, email-notification-transport]],
-        !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
-      ],
-      !If [
-        !Context notify_email,
-        [
-          !Find [authentik_events.notificationtransport, [name, email-notification-transport]]
-        ],
-        !If [
-          !Context notify_local,
-          [
-            !Find [authentik_events.notificationtransport, [name, local-notification-transport]]
-          ],
-          []
-        ]
-      ]
-    ]
+    transports:
+      - notify_local
+      - notify_email
 
 - model: authentik_policies.policybinding
   identifiers:

@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Flow - Enrollment
@@ -7,59 +8,60 @@ context:
   require_invitation: true
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  conditions:
-  - !Context require_invitation
-  attrs:
-    identifiers:
+  identifiers:
       name: Invitation Stage - Allow Without Invitation
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
   conditions:
   - !Context require_invitation
   attrs:
-    identifiers:
+
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
       name: Prompt Stage - Invitation Token
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
   conditions:
   - !Context require_invitation
   attrs:
-    identifiers:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
       name: Invitation Stage - Deny Without Invitation
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
-      name: Prompt Stage - Enrollment
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
-      name: User Write Stage - With Add To Group and Inactive on Creation
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
-      name: Email Stage - Confirmation With User Activation
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
-      name: User Login Stage
-    required: true
-
-- model: authentik_blueprints.metaapplyblueprint
   conditions:
   - !Context require_invitation
   attrs:
-    identifiers:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Prompt Stage - Enrollment
+  attrs:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: User Write Stage - With Add To Group and Inactive on Creation
+  attrs:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Email Stage - Confirmation With User Activation
+  attrs:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: User Login Stage
+  attrs:
+    required: true
+
+- model: authentik_blueprints.metaapplyblueprint
+  identifiers:
       name: Expression Policy - Validate Invitation in Effect
+  conditions:
+  - !Context require_invitation
+  attrs:
     required: true
 
 - model: authentik_flows.flow

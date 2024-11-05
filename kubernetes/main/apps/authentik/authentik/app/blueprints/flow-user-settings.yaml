@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Flow - User Settings
@@ -6,27 +7,27 @@ context:
   title: User settings
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Prompt Stage - User Settings
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Expression Policy - Validate email Context Attribute Is Different Than Currently Set
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Email Stage - Confirmation
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: User Write Stage
+  attrs:
     required: true
 
 - model: authentik_flows.flow

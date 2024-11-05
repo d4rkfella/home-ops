@@ -1,11 +1,12 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Expression Policy - Validate token For Invitations Context Attribute
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Expression Policy - Validate Generic Prompt Field Data
+  attrs:
     required: true
 
 - model: authentik_policies_expression.expressionpolicy

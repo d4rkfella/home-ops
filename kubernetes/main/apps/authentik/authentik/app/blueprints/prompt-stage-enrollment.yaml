@@ -1,47 +1,48 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Prompt Stage - Enrollment
 entries:
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Prompt - first_name and last_name
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Prompt - email
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Prompt - username With Duplicate Check
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Prompt - password and password_repeat
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Expression Policy - Create name Context Attribute From first_name and last_name Context Attributes
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Expression Policy - Validate email Context Attribute Is Unique
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Expression Policy - Validate Password
+  attrs:
     required: true
 
 - model: authentik_stages_prompt.promptstage

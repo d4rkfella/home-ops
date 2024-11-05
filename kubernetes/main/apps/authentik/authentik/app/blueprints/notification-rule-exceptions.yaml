@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Notification Rule - Exceptions
@@ -9,31 +10,31 @@ context:
 entries:
 
 - model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Notification Transport - Email
   conditions:
   - !Context notify_email
   attrs:
-    identifiers:
-      name: Notification Transport - Email
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Notification Transport - Local
   conditions:
   - !Context notify_local
   attrs:
-    identifiers:
-      name: Notification Transport - Local
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Event Matcher Policy - Policy Exception
+  attrs:
     required: true
 
 - model: authentik_blueprints.metaapplyblueprint
-  attrs:
-    identifiers:
+  identifiers:
       name: Event Matcher Policy - Property Mapping Exception
+  attrs:
     required: true
 
 - model: authentik_events.notificationrule

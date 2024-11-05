@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Flow - TOTP Authenticator Setup
@@ -8,11 +9,11 @@ context:
   validate_current_password: true
 entries:
 - model: authentik_blueprints.metaapplyblueprint
+  identifiers:
+      name: Prompt Stage - Current Password
   conditions:
   - !Context validate_current_password
   attrs:
-    identifiers:
-      name: Prompt Stage - Current Password
     required: true
 - model: authentik_flows.flow
   id: flow

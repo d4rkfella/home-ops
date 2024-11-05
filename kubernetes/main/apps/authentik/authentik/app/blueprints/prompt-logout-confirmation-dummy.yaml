@@ -1,9 +1,7 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/blueprints/schema.json
 version: 1
 metadata:
   name: Prompt - Logout Confirmation Dummy
-context:
-  order: 0
-  label: Are you sure you want to logout?
 entries:
 - model: authentik_stages_prompt.prompt
   id: _logout-confirmation-dummy-prompt
@@ -11,9 +9,9 @@ entries:
     name: _logout-confirmation-dummy-prompt
     field_key: _logout_confirmation_dummy
   attrs:
-    order: !Context order
-    label: !Context label
-    placeholder: !Context label
+    order: 0
+    label: Are you sure you want to logout?
+    placeholder: Are you sure you want to logout?
     placeholder_expression: false
     required: false
     type: static

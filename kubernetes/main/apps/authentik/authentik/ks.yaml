@@ -24,5 +24,6 @@ spec:
   timeout: 5m
   postBuild:
     substitute:
-      APP: auth
+      APP: *app
       GATUS_PATH: /-/health/ready/
+      GATUS_SUBDOMAIN: auth

@@ -78,3 +78,5 @@ configMapGenerator:
       - user-write-stage.yaml=./blueprints/user-write-stage.yaml
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

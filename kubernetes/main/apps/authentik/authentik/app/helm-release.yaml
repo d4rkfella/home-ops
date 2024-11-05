@@ -87,8 +87,8 @@ spec:
           drop:
             - ALL
       volumes:
-        #- name: default
-          #emptyDir: {}
+        - name: default
+          emptyDir: {}
         - name: certs
           projected:
             sources:
@@ -101,8 +101,8 @@ spec:
         - name: certs
           mountPath: /certs
           readOnly: true
-        #- name: default
-          #mountPath: /blueprints/default
+        - name: default
+          mountPath: /blueprints/default
         - name: blueprints
           mountPath: /blueprints/custom
           readOnly: true

@@ -41,4 +41,3 @@ entries:
     flow_authentication: !Find [authentik_flows.flow, [slug, 7096c3cf-0416-41e5-b1b0-c4581079cb99]]
     flow_invalidation: !Find [authentik_flows.flow, [slug, 55139a78-24f6-43dc-9d4b-c1da4d153b26]]
     flow_user_settings: !Find [authentik_flows.flow, [slug, 82d2ba1d-3756-49b2-9521-34bdb7f9e632]]
-    flow_recovery: !Find [authentik_flows.flow, [slug, b6b5ac5a-621d-4b5e-bdfd-cc0274340d33]]

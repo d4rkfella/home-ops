@@ -14,6 +14,7 @@ entries:
 - model: authentik_stages_prompt.prompt
   id: _logout-confirmation-dummy-prompt
   identifiers:
+    name: _logout-confirmation-dummy-prompt
     field_key: _logout_confirmation_dummy
   attrs:
     order: !Context order

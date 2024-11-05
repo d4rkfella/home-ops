@@ -14,6 +14,7 @@ entries:
 - model: authentik_stages_prompt.prompt
   id: token-for-invitations-prompt
   identifiers:
+    name: token-for-invitations-prompt
     field_key: token
   attrs:
     order: !Context order

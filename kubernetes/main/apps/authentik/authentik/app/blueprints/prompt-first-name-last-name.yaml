@@ -14,6 +14,7 @@ entries:
 - model: authentik_stages_prompt.prompt
   id: first-name-prompt
   identifiers:
+    name: first-name-prompt
     field_key: first_name
     label: First name
   attrs:
@@ -30,6 +31,7 @@ entries:
 - model: authentik_stages_prompt.prompt
   id: last-name-prompt
   identifiers:
+    name: last-name-prompt
     field_key: last_name
     label: Last name
   attrs:

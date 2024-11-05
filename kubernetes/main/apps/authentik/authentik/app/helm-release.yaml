@@ -25,6 +25,8 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    authentik:
+      log_level: debug
     global:
       deploymentAnnotations:
         reloader.stakater.com/auto: "true"

@@ -2,8 +2,8 @@ version: 1
 metadata:
   name: Flow - Default Authentication
 context:
-  name: Welcome to authentik!
-  title: Welcome to authentik!
+  name: Sign In
+  title: DarkfellaNET - Sign In
 entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dependency blueprints ~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_blueprints.metaapplyblueprint

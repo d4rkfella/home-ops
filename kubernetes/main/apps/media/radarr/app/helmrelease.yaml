@@ -104,8 +104,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/auth-url: |-
-            http://ak-outpost-internal.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
-          # If you're using domain-level auth, use the authentication URL instead of the application URL
+            http://ak-proxy-outpost-internal.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
           nginx.ingress.kubernetes.io/auth-signin: |-
             https://radarr.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
           nginx.ingress.kubernetes.io/auth-response-headers: |-

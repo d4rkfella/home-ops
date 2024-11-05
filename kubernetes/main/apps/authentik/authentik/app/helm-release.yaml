@@ -96,11 +96,10 @@ spec:
           configMap:
             name: blueprints
       volumeMounts:
-        - name: blueprints
-          mountPath: /blueprints
-          readOnly: false
         - name: certs
           mountPath: /certs
           readOnly: true
         - name: default
+          mountPath: /blueprints/default
+        - name: blueprints
           mountPath: /blueprints/default

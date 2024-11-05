@@ -10,7 +10,7 @@ configMapGenerator:
   - name: blueprints
     files:
       - allow-without-invitation-stage.yaml=./blueprints/allow-without-invitation-stage.yaml
-      - authentication-flow.yaml=./blueprints/authentication-flow.yaml
+      - flow-authentication.yaml=./blueprints/flow-authentication.yaml
       - authenticator-validator-stage.yaml=./blueprints/authenticator-validation-stage.yaml
       - authenticator-validator-stage-recovery.yaml=./blueprints/authenticator-validator-stage-recovery.yaml
       - brand.yaml=./blueprints/brand.yaml

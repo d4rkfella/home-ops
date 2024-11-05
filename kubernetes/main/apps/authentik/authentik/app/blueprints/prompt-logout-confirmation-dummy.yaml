@@ -12,7 +12,6 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_stages_prompt.prompt
-  id: _logout-confirmation-dummy-prompt
   identifiers:
     name: logout-confirmation-dummy-prompt
     field_key: _logout_confirmation_dummy

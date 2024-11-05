@@ -12,7 +12,6 @@ entries:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Flows ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Prompts ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 - model: authentik_stages_prompt.prompt
-  id: _first-name-prompt
   identifiers:
     name: first-name-prompt
     field_key: first_name
@@ -29,7 +28,6 @@ entries:
     type: text
 
 - model: authentik_stages_prompt.prompt
-  id: _last-name-prompt
   identifiers:
     name: last-name-prompt
     field_key: last_name

@@ -79,7 +79,7 @@ spec:
                     command:
                       - /bin/sh
                       - -c
-                      - "curl --silent --fail http://127.0.0.1:80/api/v3/health?apiKey=$${RADARR__AUTH__APIKEY}"
+                      - "curl --fail http://127.0.0.1:80/api/v3/health?apiKey=$${RADARR__AUTH__APIKEY} || exit 1"
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

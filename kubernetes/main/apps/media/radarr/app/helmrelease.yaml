@@ -56,6 +56,8 @@ spec:
               - --skip-auth-route=GET=/api*
               - --skip-auth-route=POST=/api*
               - --skip-auth-route=PUT=/api*
+              - --skip-auth-route=PATCH=/api*
+              - --skip-auth-route=DELETE=/api*
               - --skip-auth-route=GET=/ping
               - --cookie-refresh=4m30s
               - --cookie-expire=23h30m

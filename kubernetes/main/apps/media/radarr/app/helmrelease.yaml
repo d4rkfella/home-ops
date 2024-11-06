@@ -53,7 +53,7 @@ spec:
               - --code-challenge-method=S256
               - --redis-connection-url=redis://redis-master.database.svc.cluster.local:6379/4
               - --session-store-type=redis
-              - --skip-auth-route=GET=/api*
+              - --skip-auth-route=GET,POST=/api*
               - --skip-auth-route=GET=/ping
               - --cookie-refresh=4m30s
               - --cookie-expire=23h30m

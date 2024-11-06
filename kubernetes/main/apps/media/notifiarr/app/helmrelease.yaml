@@ -94,5 +94,7 @@ spec:
     persistence:
       config:
         type: emptyDir
+        medium: Memory
       tmpdir:
         type: emptyDir
+        medium: Memory

@@ -44,6 +44,12 @@ spec:
                   name: radarr-secret
 
         containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.7.1-alpine@sha256:1a2009d3b05316a5f0a482d8951422cdf100c31fb661fd48f2b4687c87c4ffa1
+            args:
+              - --config=/config/config.cfg
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
@@ -97,20 +103,12 @@ spec:
         controller: *app
         ports:
           http:
-            port: *port
+            port: 4180
 
     ingress:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          nginx.ingress.kubernetes.io/auth-url: |-
-            http://ak-outpost-proxy-internal.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
-          nginx.ingress.kubernetes.io/auth-signin: |-
-            https://radarr.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
-          nginx.ingress.kubernetes.io/auth-response-headers: |-
-            Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
-          nginx.ingress.kubernetes.io/auth-snippet: |
-            proxy_set_header X-Forwarded-Host $http_host;
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>';
@@ -130,17 +128,21 @@ spec:
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          radarr:
+            app:
+              - path: /config
 
       scripts:
         type: configMap
         name: radarr-configmap
         defaultMode: 0550
-        globalMounts:
-          - path: /scripts/pushover-notify.sh
-            subPath: pushover-notify.sh
-            readOnly: true
+        advancedMounts:
+          radarr:
+            app:
+              - path: /scripts/pushover-notify.sh
+                subPath: pushover-notify.sh
+                readOnly: true
 
       tmp:
         type: emptyDir
@@ -150,5 +152,24 @@ spec:
         type: nfs
         server: nas.${PUBLIC_DOMAIN}
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data
+        advancedMounts:
+          radarr:
+            app:
+              - path: /data
+
+      oauth2-proxy:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          radarr:
+            app:
+              - path: /config
+
+      oauth2-proxy-config-file:
+        type: secret
+        name: radarr-oauth2-proxy-secret
+        advancedMounts:
+          radarr:
+            oauth2-proxy:
+              - path: /config/config.cfg
+                subPath: config.cfg

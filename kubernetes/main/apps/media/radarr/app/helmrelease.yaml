@@ -50,6 +50,7 @@ spec:
               tag: v7.7.1-alpine@sha256:1a2009d3b05316a5f0a482d8951422cdf100c31fb661fd48f2b4687c87c4ffa1
             args:
               - --config=/config/config.cfg
+              - --code-challenge-method=S256
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop

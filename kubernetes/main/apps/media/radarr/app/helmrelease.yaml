@@ -75,11 +75,10 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  exec:
-                    command:
-                      - /bin/sh
-                      - -c
-                      - "curl --silent --fail http://127.0.0.1:80/ping"
+                  command:
+                    - /bin/sh
+                    - -c
+                    - "curl --silent --fail http://127.0.0.1:80/ping"
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

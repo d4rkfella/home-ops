@@ -51,6 +51,7 @@ spec:
             args:
               - --config=/config/config.cfg
               - --code-challenge-method=S256
+              - --redis-connection-url=redis://redis-master.database.svc.cluster.local:6379/4
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop

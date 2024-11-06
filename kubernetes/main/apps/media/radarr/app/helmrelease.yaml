@@ -56,6 +56,7 @@ spec:
               - --skip-auth-route=GET=/ping
               - --cookie-refresh=4m30s
               - --cookie-expire=23h30m
+              - --scope=openid profile email offline_access
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop

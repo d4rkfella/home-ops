@@ -27,8 +27,8 @@ spec:
     keepHistory: false
   values:
     master:
-      args:
-        - --set master.configuration="databases 32"
+      configuration: |
+        databases 32
     architecture: standalone
     auth:
       enabled: true

@@ -136,7 +136,7 @@ spec:
                 const icon = document.createElement("img");
                 icon.src = "https://static.${PUBLIC_DOMAIN}/logout2.png";
                 icon.alt = "Logout Icon";
-                icon.style.width = "24px";
+                icon.style.width = "30px";
                 icon.style.height = "24px";
 
                 logoutButton.style.position = "fixed";

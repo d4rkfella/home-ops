@@ -155,11 +155,10 @@ spec:
 
                 logoutButton.style.transition = "all 0.3s ease";  // Smooth transition for hover effects
                 logoutButton.addEventListener("mouseover", function() {
-                  logoutButton.style.backgroundColor = "rgba(255, 0, 0, 0.2)";
+                  icon.style.filter = "invert(1) sepia(1) saturate(5) hue-rotate(180deg)";  // Change the icon's color
                 });
                 logoutButton.addEventListener("mouseout", function() {
-                  logoutButton.style.backgroundColor = "transparent";  // Remove background on mouseout
-                  logoutButton.style.transform = "scale(1)";  // Reset scale
+                  icon.style.filter = "none";  // Reset the icon's color when mouse is out
                 });
 
                 logoutButton.appendChild(icon);

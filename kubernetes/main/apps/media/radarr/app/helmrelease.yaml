@@ -125,7 +125,7 @@ spec:
     ingress:
       app:
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: "192.168.91.0/24"
+          nginx.ingress.kubernetes.io/whitelist-source-range: "172.16.0.0/16"
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";

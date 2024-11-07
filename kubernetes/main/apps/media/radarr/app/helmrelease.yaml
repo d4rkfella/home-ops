@@ -155,7 +155,7 @@ spec:
                     logoutButton.style.display = "block";
                   }
                 }
-                checkButtonPosition();  // Initial check
+                checkButtonPosition();
                 window.addEventListener("resize", checkButtonPosition);
                 window.addEventListener("scroll", checkButtonPosition);
               });

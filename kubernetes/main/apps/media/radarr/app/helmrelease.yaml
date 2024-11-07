@@ -132,11 +132,13 @@ spec:
               document.addEventListener("DOMContentLoaded", function() {
                 const logoutButton = document.createElement("a");
                 logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
+
                 const icon = document.createElement("img");
                 icon.src = "https://static.${PUBLIC_DOMAIN}/logout.png";
                 icon.alt = "Logout Icon";
                 icon.style.width = "24px";
                 icon.style.height = "24px";
+
                 logoutButton.style.position = "fixed";
                 logoutButton.style.bottom = "10px";
                 logoutButton.style.left = "10px";
@@ -144,8 +146,10 @@ spec:
                 logoutButton.style.backgroundColor = "transparent";
                 logoutButton.style.border = "none";
                 logoutButton.style.cursor = "pointer";
+
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
+
                 function checkWindowSize() {
                   if (window.innerHeight < 560) {
                     logoutButton.style.display = "none";
@@ -153,6 +157,7 @@ spec:
                     logoutButton.style.display = "block";
                   }
                 }
+
                 checkWindowSize();
                 window.addEventListener('resize', checkWindowSize);
               });

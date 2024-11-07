@@ -149,6 +149,7 @@ spec:
                 logoutButton.style.zIndex = "999";
                 logoutButton.style.width = "24px";
                 logoutButton.style.height = "24px";
+                logoutButton.style.display = "inline-block";
 
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);

@@ -132,12 +132,20 @@ spec:
               document.addEventListener("DOMContentLoaded", function() {
                 const logoutButton = document.createElement("a");
                 logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
+
+                // Create the SVG element
                 const icon = document.createElement("img");
-                icon.src = "https://static.${PUBLIC_DOMAIN}/logout2.svg";
+                icon.src = "https://static.${PUBLIC_DOMAIN}/logout2.svg";  // Path to your SVG
                 icon.alt = "Logout Icon";
-                icon.style.transition = "fill 0.3s ease";
+
+                // Define the size for the icon
                 icon.style.width = "30px";
                 icon.style.height = "22px";
+
+                // Apply CSS class for hover effect
+                icon.classList.add("logout-icon");
+
+                // Style the logout button
                 logoutButton.style.position = "fixed";
                 logoutButton.style.top = "17px";
                 logoutButton.style.right = "112px";
@@ -151,16 +159,26 @@ spec:
                 logoutButton.style.width = "33px";
                 logoutButton.style.height = "26px";
                 logoutButton.style.display = "flex";
+
+                // Append the icon to the button
                 logoutButton.appendChild(icon);
+
+                // Append the button to the body
                 document.body.appendChild(logoutButton);
-                logoutButton.addEventListener("mouseover", function() {
-                  icon.style.fill = "yellow";
-                });
-                logoutButton.addEventListener("mouseout", function() {
-                  icon.style.fill = "white";
-                });
               });
-            </script></body>';
+            </script>
+
+            <style>
+              /* CSS for hover effect */
+              .logout-icon {
+                transition: filter 0.3s ease;
+                filter: invert(100%); /* Makes the icon appear white */
+              }
+              .logout-icon:hover {
+                filter: invert(40%) sepia(100%) saturate(600%) hue-rotate(40deg) brightness(1.2) contrast(1); /* Adjust to achieve yellow */
+              }
+            </style>
+            </body>';
             sub_filter_once off;
         className: internal
         hosts:

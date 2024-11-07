@@ -125,9 +125,7 @@ spec:
     ingress:
       app:
         annotations:
-          nginx.ingress.kubernetes.io/enable-cors: "true"
-          nginx.ingress.kubernetes.io/cors-allow-origin: "https://sonarr.${PUBLIC_DOMAIN}"
-          nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE"
+          nginx.ingress.kubernetes.io/whitelist-source-range: "192.168.91.0/24"
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";

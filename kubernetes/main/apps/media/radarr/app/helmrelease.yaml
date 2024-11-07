@@ -145,11 +145,11 @@ spec:
 
                 // Add event listeners for hover effect
                 icon.addEventListener("mouseover", function() {
-                  icon.style.filter = "brightness(0) sepia(1) saturate(10) hue-rotate(50deg) brightness(2)"; // Yellow
-                });
-                icon.addEventListener("mouseout", function() {
-                  icon.style.filter = "brightness(0) invert(1)"; // Revert to white
-                });
+                icon.style.filter = "invert(84%) sepia(94%) saturate(7466%) hue-rotate(1deg) brightness(104%) contrast(102%)"; // Yellow
+              });
+              icon.addEventListener("mouseout", function() {
+                icon.style.filter = "invert(100%)"; // Revert to white
+              });
 
                 // Style the logout button
                 logoutButton.style.position = "fixed";

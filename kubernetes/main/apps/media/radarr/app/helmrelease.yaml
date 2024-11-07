@@ -146,22 +146,21 @@ spec:
                 logoutButton.style.cursor = "pointer";
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
-                function checkButtonPosition() {
-                  const buttonPosition = logoutButton.getBoundingClientRect();
-                  const windowHeight = window.innerHeight;
+                const observer = new IntersectionObserver((entries, observer) => {
+                  entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                      logoutButton.style.display = "block";  // Button is in the viewport, show it
+                    } else {
+                      logoutButton.style.display = "none";  // Button is out of the viewport, hide it
+                    }
+                  });
+                }, {
+                  root: null,  // Use the viewport as the root
+                  threshold: 0  // Trigger when even a small portion of the button is out of view
+                });
 
-                  // Check if the button is out of the viewport vertically (bottom is off-screen)
-                  if (buttonPosition.bottom > windowHeight || buttonPosition.top < 0) {
-                    logoutButton.style.display = "none";
-                  } else {
-                    logoutButton.style.display = "block";
-                  }
-                }
-
-                // Call checkButtonPosition on page load and on window resize or scroll
-                checkButtonPosition();  // Initial check
-                window.addEventListener("resize", checkButtonPosition);  // On resize event
-                window.addEventListener("scroll", checkButtonPosition);  // On scroll event
+                // Observe the logout button
+                observer.observe(logoutButton);
               });
             </script></body>';
             sub_filter_once off;

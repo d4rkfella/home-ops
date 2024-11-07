@@ -159,7 +159,7 @@ spec:
                 }
 
                 checkWindowSize();
-                window.addEventListener('resize', checkWindowSize);
+                window.addEventListener("resize", checkWindowSize);
               });
             </script></body>';
             sub_filter_once off;

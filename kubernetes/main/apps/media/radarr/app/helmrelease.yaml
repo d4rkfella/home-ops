@@ -128,7 +128,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
-            sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logout.js"></script></body>';
+            sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logoutButton.js"></script></body>';
             sub_filter_once off;
         className: internal
         hosts:

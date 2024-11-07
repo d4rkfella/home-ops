@@ -127,14 +127,25 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
+            resolver 172.17.0.10 valid=10s;
+
+            # Resolve the service name (prowlarr-service) to its IP dynamically
+            # This should resolve to the IP address of prowlarr-service
+            set $prowlarr_ip "prowlarr.media.svc.cluster.local";
+
+            # Now we will use the resolved IP in the allow directive
             location ~ ^/api/ {
-              set $prowlarr_ip "prowlarr.media.svc.cluster.local";
+              # Perform a DNS resolution to get the IP for the service
               resolver 172.17.0.10;
-              if ($prowlarr_ip = "prowlarr.media.svc.cluster.local") {
-                allow 192.0.2.1;
+
+              # Allow access only from the resolved IP of Prowlarr
+              if ($prowlarr_ip = "prowlarr-service.my-namespace.svc.cluster.local") {
+                # Placeholder for resolved IP. Replace manually after resolving the IP once.
+                allow 192.0.2.1;  # Replace with the resolved IP of prowlarr-service
                 deny all;
               }
-              deny all;
+
+              deny all;  # Deny access by default if no other conditions match
             }
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logoutButton.js"></script></body>';

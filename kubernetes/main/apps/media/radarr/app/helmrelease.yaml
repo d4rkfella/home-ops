@@ -146,10 +146,12 @@ spec:
                 logoutButton.style.backgroundColor = "transparent";
                 logoutButton.style.border = "none";
                 logoutButton.style.cursor = "pointer";
+                logoutButton.style.justifyContent = "center";
+                logoutButton.style.alignItems = "center";
                 logoutButton.style.zIndex = "999";
                 logoutButton.style.width = "24px";
                 logoutButton.style.height = "24px";
-                logoutButton.style.display = "inline-block";
+                logoutButton.style.display = "flex";
 
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);

@@ -147,6 +147,8 @@ spec:
                 logoutButton.style.border = "none";
                 logoutButton.style.cursor = "pointer";
                 logoutButton.style.zIndex = "999";
+                logoutButton.style.width = "24px";
+                logoutButton.style.height = "24px";
 
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);

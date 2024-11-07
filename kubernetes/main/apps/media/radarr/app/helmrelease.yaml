@@ -150,8 +150,8 @@ spec:
                   const buttonPosition = logoutButton.getBoundingClientRect();
                   const windowHeight = window.innerHeight;
 
-                  // Check if the button is out of the viewport at the bottom
-                  if (buttonPosition.bottom > windowHeight) {
+                  // Check if the button is out of the viewport vertically (bottom is off-screen)
+                  if (buttonPosition.bottom > windowHeight || buttonPosition.top < 0) {
                     logoutButton.style.display = "none";
                   } else {
                     logoutButton.style.display = "block";
@@ -160,8 +160,8 @@ spec:
 
                 // Call checkButtonPosition on page load and on window resize or scroll
                 checkButtonPosition();  // Initial check
-                window.addEventListener("resize", checkButtonPosition);
-                window.addEventListener("scroll", checkButtonPosition);
+                window.addEventListener("resize", checkButtonPosition);  // On resize event
+                window.addEventListener("scroll", checkButtonPosition);  // On scroll event
               });
             </script></body>';
             sub_filter_once off;

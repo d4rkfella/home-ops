@@ -127,9 +127,9 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            if ($request_uri ~ "^/api/") {
-              allow 172.16.0.0/16;
-              deny all;
+            location /api/ {
+            allow 172.16.0.0/16;
+            deny all;
             }
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logoutButton.js"></script></body>';

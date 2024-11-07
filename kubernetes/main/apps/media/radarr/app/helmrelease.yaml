@@ -127,7 +127,7 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/location-snippet: |
             if ($request_uri ~ "^/api*") {
-              allow 172.16.0.0/16;
+              allow 172.17.0.0/16;
               deny all;
             }
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}

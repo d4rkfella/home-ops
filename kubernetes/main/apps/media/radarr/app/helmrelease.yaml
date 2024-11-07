@@ -44,26 +44,6 @@ spec:
                   name: radarr-secret
 
         containers:
-          oauth2-proxy:
-            image:
-              repository: quay.io/oauth2-proxy/oauth2-proxy
-              tag: v7.7.1-alpine@sha256:1a2009d3b05316a5f0a482d8951422cdf100c31fb661fd48f2b4687c87c4ffa1
-            args:
-              - --config=/config/config.cfg
-              - --code-challenge-method=S256
-              - --redis-connection-url=redis://redis-master.database.svc.cluster.local:6379/4
-              - --session-store-type=redis
-              - --skip-auth-route=GET=/api*
-              - --skip-auth-route=POST=/api*
-              - --skip-auth-route=PUT=/api*
-              - --skip-auth-route=PATCH=/api*
-              - --skip-auth-route=DELETE=/api*
-              - --skip-auth-route=GET=/ping
-              - --cookie-refresh=4m30s
-              - --cookie-expire=23h30m
-              - --scope=openid profile email offline_access
-            env:
-              OAUTH2_PROXY_WHITELIST_DOMAINS: auth.${PUBLIC_DOMAIN}
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop
@@ -77,7 +57,6 @@ spec:
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: &port 80
               RADARR__UPDATE__BRANCH: develop
-              RADARR__SERVER__BINDADDRESS: 127.0.0.1
               TZ: Europe/Sofia
             envFrom: *envFrom
             probes:
@@ -120,16 +99,24 @@ spec:
         controller: *app
         ports:
           http:
-            port: 4180
+            port: 80
 
     ingress:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/auth-url: |-
+            http://ak-outpost-proxy-internal.authentik.svc.cluster.local:9000/outpost.goauthentik.io/auth/nginx
+          nginx.ingress.kubernetes.io/auth-signin: |-
+            https://radarr.${PUBLIC_DOMAIN}/outpost.goauthentik.io/start?rd=$scheme://$http_host$escaped_request_uri
+          nginx.ingress.kubernetes.io/auth-response-headers: |-
+            Set-Cookie,X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            proxy_set_header X-Forwarded-Host $http_host;
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
-            sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logoutButton.js"></script></body>';
-            sub_filter_once off;
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>';
+            sub_filter_once on;
         className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
@@ -173,20 +160,3 @@ spec:
           radarr:
             app:
               - path: /data
-
-      oauth2-proxy:
-        type: emptyDir
-        medium: Memory
-        advancedMounts:
-          radarr:
-            app:
-              - path: /config
-
-      oauth2-proxy-config-file:
-        type: secret
-        name: radarr-oauth2-proxy-secret
-        advancedMounts:
-          radarr:
-            oauth2-proxy:
-              - path: /config/config.cfg
-                subPath: config.cfg

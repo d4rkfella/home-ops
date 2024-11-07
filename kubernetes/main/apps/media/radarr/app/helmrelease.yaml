@@ -149,13 +149,17 @@ spec:
                 function checkButtonPosition() {
                   const buttonPosition = logoutButton.getBoundingClientRect();
                   const windowHeight = window.innerHeight;
+
+                  // Check if the button is out of the viewport at the bottom
                   if (buttonPosition.bottom > windowHeight) {
                     logoutButton.style.display = "none";
                   } else {
                     logoutButton.style.display = "block";
                   }
                 }
-                checkButtonPosition();
+
+                // Call checkButtonPosition on page load and on window resize or scroll
+                checkButtonPosition();  // Initial check
                 window.addEventListener("resize", checkButtonPosition);
                 window.addEventListener("scroll", checkButtonPosition);
               });

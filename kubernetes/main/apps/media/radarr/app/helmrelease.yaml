@@ -127,8 +127,15 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
+            resolver 172.17.0.10 valid=10s;
+                  set $prowlarr_service "prowlarr-service.my-namespace.svc.cluster.local";
+            set $resolved_ip "";
+            resolver kube-dns.k8s.local valid=10s;
             location ~ ^/api/ {
-              allow 192.168.91.0/24;
+              set $resolved_ip $prowlarr_service;
+              if ($remote_addr = $resolved_ip) {
+                allow $resolved_ip;
+              }
               deny all;
             }
             proxy_set_header Accept-Encoding "";

@@ -146,6 +146,7 @@ spec:
                 logoutButton.style.backgroundColor = "transparent";
                 logoutButton.style.border = "none";
                 logoutButton.style.cursor = "pointer";
+                logoutButton.style.zIndex = "999";
 
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);

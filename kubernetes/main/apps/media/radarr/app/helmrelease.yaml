@@ -150,15 +150,11 @@ spec:
                   const buttonPosition = logoutButton.getBoundingClientRect();
                   const windowHeight = window.innerHeight;
                   if (buttonPosition.bottom > windowHeight) {
-                    // If the button is below the visible window, hide it
                     logoutButton.style.display = "none";
                   } else {
-                    // Otherwise, show it
                     logoutButton.style.display = "block";
                   }
                 }
-
-                // Call checkButtonPosition on page load and on window resize or scroll
                 checkButtonPosition();  // Initial check
                 window.addEventListener("resize", checkButtonPosition);
                 window.addEventListener("scroll", checkButtonPosition);

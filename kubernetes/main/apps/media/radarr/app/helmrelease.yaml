@@ -148,16 +148,12 @@ spec:
                 document.body.appendChild(logoutButton);
                 function checkWindowSize() {
                   if (window.innerHeight < 560) {
-                    logoutButton.style.display = "none";  // Hide the button if the window height is less than 560px
+                    logoutButton.style.display = "none";
                   } else {
-                    logoutButton.style.display = "block";  // Show the button if the window height is greater than or equal to 560px
+                    logoutButton.style.display = "block";
                   }
                 }
-
-                // Initial check when the page loads
                 checkWindowSize();
-
-                // Check on resize
                 window.addEventListener('resize', checkWindowSize);
               });
             </script></body>';

@@ -132,7 +132,6 @@ spec:
               document.addEventListener("DOMContentLoaded", function() {
                 const logoutButton = document.createElement("a");
                 logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
-
                 const icon = document.createElement("img");
                 icon.src = "https://static.${PUBLIC_DOMAIN}/logout2.png";
                 icon.alt = "Logout Icon";

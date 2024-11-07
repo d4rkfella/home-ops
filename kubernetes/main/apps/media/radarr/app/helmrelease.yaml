@@ -132,22 +132,14 @@ spec:
             sub_filter '</body>' '
             <script>
               window.addEventListener("DOMContentLoaded", function() {
-                  // Debugging to ensure the script is running
-                  console.log("Script Loaded");
+                  var menuContainers = document.querySelectorAll("#portal-root .MenuContent-menuContent-_1J_h");
 
-                  var menuContainer = document.querySelector(".MenuContent-scroller-n5RM_");
-
-                  // Debugging to check if the container is found
-                  if (menuContainer) {
-                      console.log("Menu Container Found");
-
+                  menuContainers.forEach(function(menuContainer) {
+                      // Create the logout button
                       var logoutButton = document.createElement("a");
                       logoutButton.href = "https://radarr.darkfellanetwork.com/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
 
-                      // Styling the button
-                      logoutButton.style.position = "fixed";
-                      logoutButton.style.bottom = "10px";
-                      logoutButton.style.right = "10px";
+                      // Style the button
                       logoutButton.style.padding = "15px";
                       logoutButton.style.backgroundColor = "red";
                       logoutButton.style.color = "white";
@@ -155,17 +147,14 @@ spec:
                       logoutButton.style.fontSize = "18px";
                       logoutButton.style.fontWeight = "bold";
                       logoutButton.style.borderRadius = "5px";
-                      logoutButton.style.zIndex = "1000";  // Ensure it's above other content
+                      logoutButton.style.display = "block";
+                      logoutButton.style.margin = "10px 0";
 
                       logoutButton.innerText = "Logout";
 
-                      // Append button to menuContainer
+                      // Insert the button into the current menu container
                       menuContainer.appendChild(logoutButton);
-
-                      console.log("Logout Button Added");
-                  } else {
-                      console.log("Menu Container Not Found");
-                  }
+                  });
               });
             </script>
             </body>';

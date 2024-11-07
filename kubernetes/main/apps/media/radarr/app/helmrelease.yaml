@@ -139,7 +139,7 @@ spec:
                   if (menuContainer) {
                       // Step 3: Create a new button element
                       var logoutButton = document.createElement("button");
-                      logoutButton.classList.add("MenuItem-menuItem-XlMdU", "Link-link-RInnp");  // Add necessary classes
+                      logoutButton.classList.add("MenuItem-menuItem-XlMdU Link-link-RInnp");  // Add necessary classes
 
                       // Step 4: Create the SVG icon for the button (using the sign-out icon)
                       var svg = document.createElement("svg");

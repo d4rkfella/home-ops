@@ -138,7 +138,6 @@ spec:
                 icon.alt = "Logout Icon";
                 icon.style.width = "30px";
                 icon.style.height = "22px";
-
                 logoutButton.style.position = "fixed";
                 logoutButton.style.top = "19px";
                 logoutButton.style.right = "112px";
@@ -152,15 +151,13 @@ spec:
                 logoutButton.style.width = "33px";
                 logoutButton.style.height = "26px";
                 logoutButton.style.display = "flex";
-
-                logoutButton.style.transition = "all 0.3s ease";  // Smooth transition for hover effects
+                logoutButton.style.transition = "all 0.3s ease";
                 logoutButton.addEventListener("mouseover", function() {
-                  icon.style.filter = "invert(1) sepia(1) saturate(5) hue-rotate(180deg)";  // Change the icon's color
+                  icon.style.filter = "invert(1) sepia(1) saturate(5) hue-rotate(180deg)";
                 });
                 logoutButton.addEventListener("mouseout", function() {
-                  icon.style.filter = "none";  // Reset the icon's color when mouse is out
+                  icon.style.filter = "none";
                 });
-
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
               });

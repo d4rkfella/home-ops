@@ -132,16 +132,11 @@ spec:
             sub_filter '</body>' '
             <script>
               window.addEventListener("load", function() {
-                  // Step 1: Find the menu container where the logout button will be added
                   var menuContainer = document.querySelector(".MenuContent-scroller-n5RM_");
-
-                  // Step 2: Check if the menu container exists
                   if (menuContainer) {
-                      // Step 3: Create the new logout button element, matching the original button classes
                       var logoutButton = document.createElement("button");
-                      logoutButton.classList.add("MenuItem-menuItem-XlMdU", "Link-link-RInnp");  // Same classes as the other buttons
+                      logoutButton.classList.add("MenuItem-menuItem-XlMdU", "Link-link-RInnp");
 
-                      // Step 4: Create the SVG icon for the logout button
                       var svg = document.createElement("svg");
                       svg.setAttribute("aria-hidden", "true");
                       svg.setAttribute("focusable", "false");
@@ -151,23 +146,18 @@ spec:
                       svg.setAttribute("role", "img");
                       svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
                       svg.setAttribute("viewBox", "0 0 512 512");
-                      svg.style.fontSize = "14px";  // Matching the font size from the other buttons
+                      svg.style.fontSize = "14px";
                       svg.innerHTML = "<path fill='currentColor' d='M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 224c0 17.7 14.3 32 32 32s32-14.3 32-32l0-224zM143.5 120.6c13.6-11.3 15.4-31.5 4.1-45.1s-31.5-15.4-45.1-4.1C49.7 115.4 16 181.8 16 256c0 132.5 107.5 240 240 240s240-107.5 240-240c0-74.2-33.8-140.6-86.6-184.6c-13.6-11.3-33.8-9.4-45.1 4.1s-9.4 33.8 4.1 45.1c38.9 32.3 63.5 81 63.5 135.4c0 97.2-78.8 176-176 176s-176-78.8-176-176c0-54.4 24.7-103.1 63.5-135.4z'></path>";
 
-                      // Step 5: Add the "Logout" text
                       var textNode = document.createTextNode("Logout");
 
-                      // Step 6: Append the SVG icon and the text to the logout button
                       logoutButton.appendChild(svg);
                       logoutButton.appendChild(textNode);
 
-                      // Step 7: Set the logout functionality when the button is clicked
                       logoutButton.onclick = function() {
-                          // Replace with your OIDC provider's logout URL
                           window.location.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
                       };
 
-                      // Step 8: Append the logout button to the menu container
                       menuContainer.appendChild(logoutButton);
                   }
               });

@@ -130,7 +130,7 @@ spec:
             resolver kube-dns.k8s.local valid=10s;  # Adjust with your cluster's DNS server
 
             # Define the internal Kubernetes service name of Prowlarr
-            set $prowlarr_service "prowlarr-service.my-namespace.svc.cluster.local";
+            set $prowlarr_service "prowlarr.media.svc.cluster.local";
 
             # Resolve the IP of Prowlarr's service dynamically using DNS resolution
             set $resolved_ip "";

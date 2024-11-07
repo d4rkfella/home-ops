@@ -142,8 +142,8 @@ spec:
                 logoutButton.style.left = "10px";
                 logoutButton.style.padding = "10px";
                 logoutButton.style.backgroundColor = "transparent";
-                logoutButton.style.color = "white";
-                logoutButton.style.textDecoration = "none";
+                logoutButton.style.border = "none";
+                logoutButton.style.cursor = "pointer";
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
                 function checkButtonPosition() {

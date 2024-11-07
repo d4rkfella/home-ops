@@ -129,7 +129,7 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             location ~ ^/api/ {
               set $prowlarr_ip "prowlarr.media.svc.cluster.local";
-              resolver kube-dns.k8s.local;
+              resolver 172.17.0.10;
               if ($prowlarr_ip = "prowlarr.media.svc.cluster.local") {
                 allow 192.0.2.1;
                 deny all;

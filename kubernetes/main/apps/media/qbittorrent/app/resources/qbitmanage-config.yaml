@@ -4,7 +4,7 @@ commands:
   recheck: false
   cat_update: false
   tag_update: true
-  rem_unregistered: false
+  rem_unregistered: true
   tag_tracker_error: true
   rem_orphaned: true
   tag_nohardlinks: true

@@ -140,7 +140,7 @@ spec:
                 icon.style.height = "24px";
 
                 logoutButton.style.position = "fixed";
-                logoutButton.style.top = "7px";
+                logoutButton.style.top = "8px";
                 logoutButton.style.right = "100px";
                 logoutButton.style.padding = "10px";
                 logoutButton.style.backgroundColor = "transparent";
@@ -150,17 +150,6 @@ spec:
 
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
-
-                function checkWindowSize() {
-                  if (window.innerHeight < 560) {
-                    logoutButton.style.display = "none";
-                  } else {
-                    logoutButton.style.display = "block";
-                  }
-                }
-
-                checkWindowSize();
-                window.addEventListener("resize", checkWindowSize);
               });
             </script></body>';
             sub_filter_once off;

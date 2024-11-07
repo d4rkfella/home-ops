@@ -152,7 +152,7 @@ spec:
                 logoutButton.style.display = "flex";
                 logoutButton.style.transition = "all 0.3s ease";
                 logoutButton.addEventListener("mouseover", function() {
-                  icon.style.filter = "invert(1) sepia(1) saturate(5) hue-rotate(180deg)";
+                  icon.style.filter = "sepia(1) saturate(5) hue-rotate(50deg)";
                 });
                 logoutButton.addEventListener("mouseout", function() {
                   icon.style.filter = "none";

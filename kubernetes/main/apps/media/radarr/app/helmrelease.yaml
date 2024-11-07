@@ -153,6 +153,15 @@ spec:
                 logoutButton.style.height = "24px";
                 logoutButton.style.display = "flex";
 
+                logoutButton.style.transition = "all 0.3s ease";  // Smooth transition for hover effects
+                logoutButton.addEventListener("mouseover", function() {
+                  logoutButton.style.backgroundColor = "rgba(255, 0, 0, 0.2)";
+                });
+                logoutButton.addEventListener("mouseout", function() {
+                  logoutButton.style.backgroundColor = "transparent";  // Remove background on mouseout
+                  logoutButton.style.transform = "scale(1)";  // Reset scale
+                });
+
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
               });

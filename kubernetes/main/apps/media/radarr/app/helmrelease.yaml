@@ -163,7 +163,6 @@ spec:
               });
             </script></body>';
             sub_filter_once off;
-            sub_filter_types text/html;
         className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

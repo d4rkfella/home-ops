@@ -130,7 +130,6 @@ spec:
             resolver 172.17.0.10 valid=10s;
                   set $prowlarr_service "prowlarr-service.my-namespace.svc.cluster.local";
             set $resolved_ip "";
-            resolver kube-dns.k8s.local valid=10s;
             location ~ ^/api/ {
               set $resolved_ip $prowlarr_service;
               if ($remote_addr = $resolved_ip) {

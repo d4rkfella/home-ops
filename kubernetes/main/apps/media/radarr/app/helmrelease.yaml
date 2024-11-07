@@ -130,26 +130,22 @@ spec:
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<script>
               document.addEventListener("DOMContentLoaded", function() {
-                if (!document.querySelector("link[href*=\'font-awesome\']")) {
-                  var fontAwesomeLink = document.createElement("link");
-                  fontAwesomeLink.rel = "stylesheet";
-                  fontAwesomeLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
-                  document.head.appendChild(fontAwesomeLink);
-                }
-                fontAwesomeLink.onload = function() {
-                  const logoutButton = document.createElement("a");
-                  logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
-                  logoutButton.innerHTML = "<i class=\"fas fa-sign-out-alt\"></i>";
-                  logoutButton.style.position = "fixed";
-                  logoutButton.style.bottom = "10px";
-                  logoutButton.style.right = "10px";
-                  logoutButton.style.padding = "10px";
-                  logoutButton.style.backgroundColor = "red";
-                  logoutButton.style.color = "white";
-                  logoutButton.style.textDecoration = "none";
-                  logoutButton.style.fontSize = "24px";
-                  document.body.appendChild(logoutButton);
-                };
+                const logoutButton = document.createElement("a");
+                logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
+                const icon = document.createElement("img");
+                icon.src = "https://static.${PUBLIC_DOMAIN}/logout.png";
+                icon.alt = "Logout Icon";
+                icon.style.width = "24px";
+                icon.style.height = "24px";
+                logoutButton.style.position = "fixed";
+                logoutButton.style.bottom = "10px";
+                logoutButton.style.right = "10px";
+                logoutButton.style.padding = "10px";
+                logoutButton.style.backgroundColor = "red";
+                logoutButton.style.color = "white";
+                logoutButton.style.textDecoration = "none";
+                logoutButton.appendChild(icon);
+                document.body.appendChild(logoutButton);
               });
             </script></body>';
             sub_filter_once off;

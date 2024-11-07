@@ -150,6 +150,14 @@ spec:
                 logoutButton.style.width = "33px";
                 logoutButton.style.height = "26px";
                 logoutButton.style.display = "flex";
+                logoutButton.appendChild(icon);
+                document.body.appendChild(logoutButton);
+                logoutButton.addEventListener("mouseover", function() {
+                  icon.style.fill = "yellow";
+                });
+                logoutButton.addEventListener("mouseout", function() {
+                  icon.style.fill = "white";
+                });
               });
             </script></body>';
             sub_filter_once off;

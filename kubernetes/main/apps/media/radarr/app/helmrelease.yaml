@@ -146,21 +146,19 @@ spec:
                 logoutButton.style.cursor = "pointer";
                 logoutButton.appendChild(icon);
                 document.body.appendChild(logoutButton);
-                const observer = new IntersectionObserver((entries, observer) => {
-                  entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                      logoutButton.style.display = "block";  // Button is in the viewport, show it
-                    } else {
-                      logoutButton.style.display = "none";  // Button is out of the viewport, hide it
-                    }
-                  });
-                }, {
-                  root: null,  // Use the viewport as the root
-                  threshold: 0  // Trigger when even a small portion of the button is out of view
-                });
+                function checkWindowSize() {
+                  if (window.innerHeight < 560) {
+                    logoutButton.style.display = "none";  // Hide the button if the window height is less than 560px
+                  } else {
+                    logoutButton.style.display = "block";  // Show the button if the window height is greater than or equal to 560px
+                  }
+                }
 
-                // Observe the logout button
-                observer.observe(logoutButton);
+                // Initial check when the page loads
+                checkWindowSize();
+
+                // Check on resize
+                window.addEventListener('resize', checkWindowSize);
               });
             </script></body>';
             sub_filter_once off;

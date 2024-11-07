@@ -130,23 +130,16 @@ spec:
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<script>
               document.addEventListener("DOMContentLoaded", function() {
-                // Add Font Awesome to the head if it's not already included
                 if (!document.querySelector("link[href*=\'font-awesome\']")) {
                   var fontAwesomeLink = document.createElement("link");
                   fontAwesomeLink.rel = "stylesheet";
                   fontAwesomeLink.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css";
                   document.head.appendChild(fontAwesomeLink);
                 }
-
-                // Ensure Font Awesome is loaded before proceeding
                 fontAwesomeLink.onload = function() {
                   const logoutButton = document.createElement("a");
                   logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
-
-                  // Add the Font Awesome icon
                   logoutButton.innerHTML = "<i class=\"fas fa-sign-out-alt\"></i>";
-
-                  // Button styling
                   logoutButton.style.position = "fixed";
                   logoutButton.style.bottom = "10px";
                   logoutButton.style.right = "10px";
@@ -155,8 +148,6 @@ spec:
                   logoutButton.style.color = "white";
                   logoutButton.style.textDecoration = "none";
                   logoutButton.style.fontSize = "24px";
-
-                  // Add the button to the body
                   document.body.appendChild(logoutButton);
                 };
               });

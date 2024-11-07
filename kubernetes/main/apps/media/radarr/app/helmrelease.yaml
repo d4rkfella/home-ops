@@ -128,45 +128,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
-            sub_filter '</body>' '<script>
-              document.addEventListener("DOMContentLoaded", function() {
-                const logoutButton = document.createElement("a");
-                logoutButton.href = "https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F";
-
-                const icon = document.createElement("img");
-                icon.src = "https://static.${PUBLIC_DOMAIN}/logout4.svg";
-                icon.alt = "Logout Icon";
-
-                icon.style.width = "30px";
-                icon.style.height = "22px";
-                icon.style.filter = "brightness(0) invert(1)";
-
-                icon.addEventListener("mouseover", function() {
-                  icon.style.filter = "invert(84%) sepia(94%) saturate(7466%) hue-rotate(1deg) brightness(104%) contrast(102%)";
-                });
-                icon.addEventListener("mouseout", function() {
-                  icon.style.filter = "invert(100%)";
-                });
-
-                logoutButton.style.position = "fixed";
-                logoutButton.style.top = "17px";
-                logoutButton.style.right = "112px";
-                logoutButton.style.padding = "10px";
-                logoutButton.style.backgroundColor = "transparent";
-                logoutButton.style.border = "none";
-                logoutButton.style.cursor = "pointer";
-                logoutButton.style.justifyContent = "center";
-                logoutButton.style.alignItems = "center";
-                logoutButton.style.zIndex = "999";
-                logoutButton.style.width = "33px";
-                logoutButton.style.height = "26px";
-                logoutButton.style.display = "flex";
-
-                logoutButton.appendChild(icon);
-
-                document.body.appendChild(logoutButton);
-              });
-            </script></body>';
+            sub_filter '</body>' '<script src="https://static.${PUBLIC_DOMAIN}/logout.js"></script></body>';
             sub_filter_once off;
         className: internal
         hosts:

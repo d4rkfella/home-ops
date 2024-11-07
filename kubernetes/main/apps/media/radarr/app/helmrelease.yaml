@@ -127,14 +127,23 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            resolver 172.17.0.10 valid=10s;
-                  set $prowlarr_service "prowlarr-service.my-namespace.svc.cluster.local";
+            resolver kube-dns.k8s.local valid=10s;  # Adjust with your cluster's DNS server
+
+            # Define the internal Kubernetes service name of Prowlarr
+            set $prowlarr_service "prowlarr-service.my-namespace.svc.cluster.local";
+
+            # Resolve the IP of Prowlarr's service dynamically using DNS resolution
             set $resolved_ip "";
+            # Dynamically resolve the IP of Prowlarr's service using the resolver
+            set $resolved_ip $prowlarr_service;
+
             location ~ ^/api/ {
-              set $resolved_ip $prowlarr_service;
+              # Allow access only from Prowlarr's resolved IP
               if ($remote_addr = $resolved_ip) {
                 allow $resolved_ip;
               }
+
+              # Deny access from any other IP
               deny all;
             }
             proxy_set_header Accept-Encoding "";

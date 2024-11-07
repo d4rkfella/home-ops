@@ -127,7 +127,6 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             sub_filter '</body>' '<a href="https://radarr.${PUBLIC_DOMAIN}/oauth2/sign_out?rd=https%3A%2F%2Fauth.darkfellanetwork.com%2Fapplication%2Fo%2F415f53bd-96e7-4ca0-972b-29036d2dabc6%2Fend-session%2F" style="position: fixed; bottom: 10px; right: 10px; padding: 10px; background-color: red; color: white; text-decoration: none;">Logout</a></body>';
             sub_filter_once off;
-            sub_filter_types text/html;
         className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

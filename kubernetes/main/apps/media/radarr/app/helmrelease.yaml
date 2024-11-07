@@ -128,7 +128,12 @@ spec:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |
             location ~ ^/api/ {
-              allow prowlarr.media.svc.cluster.local;
+              set $prowlarr_ip "prowlarr.media.svc.cluster.local";
+              resolver kube-dns.k8s.local;
+              if ($prowlarr_ip = "prowlarr.media.svc.cluster.local") {
+                allow 192.0.2.1;
+                deny all;
+              }
               deny all;
             }
             proxy_set_header Accept-Encoding "";

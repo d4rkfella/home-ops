@@ -137,7 +137,7 @@ spec:
                 icon.src = "https://static.${PUBLIC_DOMAIN}/logout2.png";
                 icon.alt = "Logout Icon";
                 icon.style.width = "30px";
-                icon.style.height = "24px";
+                icon.style.height = "22px";
 
                 logoutButton.style.position = "fixed";
                 logoutButton.style.top = "18px";
@@ -150,7 +150,7 @@ spec:
                 logoutButton.style.alignItems = "center";
                 logoutButton.style.zIndex = "999";
                 logoutButton.style.width = "30px";
-                logoutButton.style.height = "24px";
+                logoutButton.style.height = "22px";
                 logoutButton.style.display = "flex";
 
                 logoutButton.appendChild(icon);

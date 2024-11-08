@@ -86,9 +86,11 @@ spec:
 
     args: []
 
-    extraEnv: ""
-      # - name: KEYCLOAK_LOGLEVEL
-      #   value: DEBUG
+    extraEnv:
+     - name: KC_BOOTSTRAP_ADMIN_USERNAME
+       value: admin
+     - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+       value: test
       # - name: WILDFLY_LOGLEVEL
       #   value: DEBUG
       # - name: CACHE_OWNERS_COUNT

@@ -85,7 +85,7 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        #add-headers: network/custom-headers
+        add-headers: network/custom-headers
         custom-http-errors: "504,503,502,501,500,429,410,404,403,400"
         enable-modsecurity: true
         enable-owasp-modsecurity-crs: true

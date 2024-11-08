@@ -85,6 +85,7 @@ spec:
           nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
           nginx.ingress.kubernetes.io/configuration-snippet: |
+            more_set_headers "access-control-allow-origin https://requests.${PUBLIC_DOMAIN}";
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/overseerr/mind.css"></body>';
             sub_filter_once on;

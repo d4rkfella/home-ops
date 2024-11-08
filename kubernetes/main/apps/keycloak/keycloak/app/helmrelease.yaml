@@ -94,7 +94,7 @@ spec:
      - name: KC_BOOTSTRAP_ADMIN_PASSWORD
        value: test
      - name: jgroups.dns.query
-       value: keycloak-http.idp.svc.cluster.local
+       value: keycloak-headless.idp.svc.cluster.local
 
     extraEnvFrom: ""
 

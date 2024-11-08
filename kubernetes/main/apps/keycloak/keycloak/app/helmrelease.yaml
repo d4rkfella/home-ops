@@ -33,8 +33,7 @@ spec:
           - secretRef:
               name: keycloak-initdb-secret
 
-    fullnameOverride: "keycloak"
-    replicas: 1
+    replicas: 3
     image:
       repository: ghcr.io/darkfella91/keycloak
       tag: latest

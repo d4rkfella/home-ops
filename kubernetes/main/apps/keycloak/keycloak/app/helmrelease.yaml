@@ -81,7 +81,7 @@ spec:
 
     clusterDomain: cluster.local
 
-    command: []
+    command: [kc.sh start --optimized]
 
     args: []
 

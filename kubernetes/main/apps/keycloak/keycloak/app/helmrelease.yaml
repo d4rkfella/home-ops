@@ -81,10 +81,10 @@ spec:
 
     clusterDomain: cluster.local
 
-    command: []
+    command:
+      - "start --optimized"
 
-    args:
-      #- "start --optimized"
+    args: []
 
     extraEnv: ""
       # - name: KEYCLOAK_LOGLEVEL

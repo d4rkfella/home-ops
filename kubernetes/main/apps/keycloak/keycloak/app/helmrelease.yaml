@@ -81,9 +81,11 @@ spec:
 
     clusterDomain: cluster.local
 
-    command: [start --optimized]
+    command: []
 
-    args: []
+    args:
+      - start
+      - --optimized
 
     extraEnv: |
      - name: KC_BOOTSTRAP_ADMIN_USERNAME

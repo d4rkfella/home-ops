@@ -81,22 +81,15 @@ spec:
 
     clusterDomain: cluster.local
 
-    command:
-      - "kc.sh start start --optimized"
+    command: []
 
     args: []
 
-    extraEnv:
+    extraEnv: |
      - name: KC_BOOTSTRAP_ADMIN_USERNAME
        value: admin
      - name: KC_BOOTSTRAP_ADMIN_PASSWORD
        value: test
-      # - name: WILDFLY_LOGLEVEL
-      #   value: DEBUG
-      # - name: CACHE_OWNERS_COUNT
-      #   value: "2"
-      # - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
-      #   value: "2"
 
     extraEnvFrom: ""
 

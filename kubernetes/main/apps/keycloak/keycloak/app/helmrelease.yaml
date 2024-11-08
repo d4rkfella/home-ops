@@ -93,6 +93,8 @@ spec:
        value: admin
      - name: KC_BOOTSTRAP_ADMIN_PASSWORD
        value: test
+     - name: JAVA_OPTS_APPEND
+       value: -Djgroups.dns.query=keycloak-headless.idp.svc.cluster.local
 
     extraEnvFrom: ""
 

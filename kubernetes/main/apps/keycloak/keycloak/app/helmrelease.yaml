@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app Keycloak
+  name: &app keycloak
 spec:
   interval: 30m
   chart:
@@ -33,7 +33,7 @@ spec:
           - secretRef:
               name: keycloak-initdb-secret
 
-    fullnameOverride: "Keycloak"
+    fullnameOverride: "keycloak"
     replicas: 1
     image:
       repository: ghcr.io/darkfella91/keycloak

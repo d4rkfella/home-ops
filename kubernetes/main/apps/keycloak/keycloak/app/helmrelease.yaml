@@ -248,7 +248,7 @@ spec:
     pgchecker:
       image:
         repository: docker.io/busybox
-        tag: 1.32
+        tag: 1.37
         pullPolicy: IfNotPresent
       securityContext:
         allowPrivilegeEscalation: false

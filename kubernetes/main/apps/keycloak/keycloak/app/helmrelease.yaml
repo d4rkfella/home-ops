@@ -33,7 +33,7 @@ spec:
           - secretRef:
               name: keycloak-initdb-secret
 
-    replicas: 3
+    replicas: 1
     image:
       repository: ghcr.io/darkfella91/keycloak
       tag: latest
@@ -98,8 +98,6 @@ spec:
     extraEnvFrom: ""
 
     priorityClassName: ""
-
-    affinity: ""
 
     nodeSelector: {}
 

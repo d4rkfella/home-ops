@@ -176,11 +176,6 @@ spec:
       httpsNodePort: null
       httpManagementPort: 9990
       httpManagementNodePort: null
-      extraPorts: |
-        - name: infinispanPort
-          port: 7800
-          targetPort: infiniband
-          protocol: TCP
       loadBalancerSourceRanges: []
       externalTrafficPolicy: "Cluster"
       sessionAffinity: ""

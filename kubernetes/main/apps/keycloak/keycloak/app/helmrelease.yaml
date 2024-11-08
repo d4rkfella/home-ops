@@ -169,12 +169,12 @@ spec:
       keycloak.cli: |
         {{- .Files.Get "scripts/keycloak.cli" }}
 
-    extraVolumes:
+    extraVolumes: |
       - name: cert
         type: secret
         secretName: keycloak-tls
 
-    extraVolumeMounts:
+    extraVolumeMounts: |
       - name: cert
         mountPath: /etc/ssl/custom/certfile.pem
         subPath: tls.crt

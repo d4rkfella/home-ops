@@ -181,7 +181,7 @@ spec:
       extraPorts: |
         - name: infinispanPort
           port: 7800
-          targetPort: 7800
+          targetPort: infiniband
           protocol: TCP
       loadBalancerSourceRanges: []
       externalTrafficPolicy: "Cluster"

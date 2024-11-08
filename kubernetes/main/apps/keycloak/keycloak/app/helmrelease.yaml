@@ -86,6 +86,7 @@ spec:
     args:
       - start
       - --optimized
+      - --verbose
 
     extraEnv: |
      - name: KC_BOOTSTRAP_ADMIN_USERNAME

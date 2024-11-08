@@ -1,0 +1,334 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app Keycloak
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: keycloak
+      version: 18.4.4
+      sourceRef:
+        kind: HelmRepository
+        name: codecentric
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    extraInitContainers:
+      - name: keycloak-initdb
+        image: "ghcr.io/onedr0p/postgres-init:16.4@sha256:e41c745b54485341e00efbd27556f0717623a119f0d5107e5ff831aa1322c76f"
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: keycloak-initdb-secret
+
+    fullnameOverride: "Keycloak"
+    replicas: 1
+    image:
+      repository: ghcr.io/darkfella91/keycloak
+      tag: latest@sha256:1c220af113b8cce4b4ca0445fc80baeafd27f25c109d608e996a7b24bcb28a11
+      pullPolicy: IfNotPresent
+
+    imagePullSecrets: github-credentials
+
+    hostAliases: []
+
+    enableServiceLinks: false
+
+    podManagementPolicy: Parallel
+
+    updateStrategy: RollingUpdate
+
+    restartPolicy: Always
+    serviceAccount:
+      create: true
+      name: ""
+      annotations: {}
+      labels: {}
+      imagePullSecrets: []
+
+    rbac:
+      create: true
+      rules:
+        - apiGroups:
+            - ""
+          resources:
+            - pods
+          verbs:
+            - get
+            - list
+
+    podSecurityContext:
+      fsGroup: 1000
+
+    securityContext:
+      runAsUser: 1000
+      runAsNonRoot: true
+
+    terminationGracePeriodSeconds: 60
+
+    clusterDomain: cluster.local
+
+    command: ["start"]
+
+    args:
+      - "--optimized"
+
+    extraEnv: ""
+      # - name: KEYCLOAK_LOGLEVEL
+      #   value: DEBUG
+      # - name: WILDFLY_LOGLEVEL
+      #   value: DEBUG
+      # - name: CACHE_OWNERS_COUNT
+      #   value: "2"
+      # - name: CACHE_OWNERS_AUTH_SESSIONS_COUNT
+      #   value: "2"
+
+    extraEnvFrom: ""
+
+    priorityClassName: ""
+
+    affinity: |
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                {{- include "keycloak.selectorLabels" . | nindent 10 }}
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: NotIn
+                  values:
+                    - test
+            topologyKey: kubernetes.io/hostname
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  {{- include "keycloak.selectorLabels" . | nindent 12 }}
+                matchExpressions:
+                  - key: app.kubernetes.io/component
+                    operator: NotIn
+                    values:
+                      - test
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+
+    topologySpreadConstraints:
+
+    nodeSelector: {}
+
+    tolerations: []
+
+    podLabels: {}
+
+    podAnnotations: {}
+
+    livenessProbe: |
+      httpGet:
+        path: /auth/
+        port: http
+      initialDelaySeconds: 0
+      timeoutSeconds: 5
+
+    readinessProbe: |
+      httpGet:
+        path: /auth/realms/master
+        port: http
+      initialDelaySeconds: 30
+      timeoutSeconds: 1
+
+    startupProbe: |
+      httpGet:
+        path: /auth/
+        port: http
+      initialDelaySeconds: 30
+      timeoutSeconds: 1
+      failureThreshold: 60
+      periodSeconds: 5
+
+    resources:
+      requests:
+        cpu: "500m"
+        memory: "1024Mi"
+      limits:
+        cpu: "500m"
+        memory: "1024Mi"
+
+    startupScripts:
+      keycloak.cli: |
+        {{- .Files.Get "scripts/keycloak.cli" }}
+
+    extraVolumes:
+      - name: cert
+        type: secret
+        secretName: keycloak-tls
+
+    extraVolumeMounts:
+      - name: cert
+        mountPath: /etc/ssl/custom/certfile.pem
+        subPath: tls.crt
+        readOnly: true
+      - name: cert
+        mountPath: /etc/ssl/custom/keyfile.pem
+        subPath: tls.key
+        readOnly: true
+
+    extraPorts: []
+
+    podDisruptionBudget: {}
+
+    statefulsetAnnotations: {}
+
+    statefulsetLabels: {}
+
+    service:
+      annotations: {}
+      labels: {}
+      type: ClusterIP
+      loadBalancerIP: ""
+      httpPort: 80
+      httpNodePort: null
+      httpsPort: 8443
+      httpsNodePort: null
+      httpManagementPort: 9990
+      httpManagementNodePort: null
+      extraPorts: []
+      loadBalancerSourceRanges: []
+      externalTrafficPolicy: "Cluster"
+      sessionAffinity: ""
+      sessionAffinityConfig: {}
+
+    ingress:
+      enabled: false
+      ingressClassName: "external"
+      servicePort: http
+      annotations:
+        nginx.ingress.kubernetes.io/proxy-buffer-size: 128k
+      rules:
+        -
+          host: 'auth.${PUBLIC_DOMAIN}'
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - auth.${PUBLIC_DOMAIN}
+          secretName: "keycloak-tls"
+
+      console:
+        enabled: false
+        ingressClassName: "internal"
+        annotations: {}
+        rules:
+          -
+            host: 'auth.${PUBLIC_DOMAIN}'
+            paths:
+              - path: /auth/admin/
+                pathType: Prefix
+        tls:
+          - hosts:
+              - console.auth.${PUBLIC_DOMAIN}
+            secretName: "keycloak-console-tls"
+
+    networkPolicy:
+      enabled: true
+
+    pgchecker:
+      image:
+        repository: docker.io/busybox
+        tag: 1.32
+        pullPolicy: IfNotPresent
+      securityContext:
+        allowPrivilegeEscalation: false
+        runAsUser: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+      resources:
+        requests:
+          cpu: "20m"
+          memory: "32Mi"
+        limits:
+          cpu: "20m"
+          memory: "32Mi"
+
+    postgresql:
+      enabled: false
+
+    serviceMonitor:
+      enabled: true
+      namespace: ""
+      namespaceSelector: {}
+      annotations: {}
+      labels: {}
+      interval: 10s
+      scrapeTimeout: 10s
+      path: /metrics
+      port: http-management
+
+    extraServiceMonitor:
+      enabled: false
+      namespace: ""
+      namespaceSelector: {}
+      annotations: {}
+      labels: {}
+      interval: 10s
+      scrapeTimeout: 10s
+      path: /auth/realms/master/metrics
+      port: http
+
+    prometheusRule:
+      enabled: true
+      annotations: {}
+      labels: {}
+      rules:
+        - alert: keycloak-IngressHigh5xxRate
+          annotations:
+            message: The percentage of 5xx errors for keycloak over the last 5 minutes is over 1%.
+          expr: |
+            (
+              sum(
+                rate(
+                  nginx_ingress_controller_response_duration_seconds_count{exported_namespace="mynamespace",ingress="mynamespace-keycloak",status=~"5[0-9]{2}"}[1m]
+                )
+              )
+              /
+              sum(
+                rate(
+                  nginx_ingress_controller_response_duration_seconds_count{exported_namespace="mynamespace",ingress="mynamespace-keycloak"}[1m]
+                )
+              )
+            ) * 100 > 1
+          for: 5m
+          labels:
+            severity: warning
+
+    autoscaling:
+      enabled: false
+      labels: {}
+      minReplicas: 3
+      maxReplicas: 10
+      metrics:
+        - type: Resource
+          resource:
+            name: cpu
+            target:
+              type: Utilization
+              averageUtilization: 80
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 1
+              periodSeconds: 300

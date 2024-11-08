@@ -99,7 +99,7 @@ spec:
 
     priorityClassName: ""
 
-    affinity: []
+    affinity: {}
 
     nodeSelector: {}
 
@@ -221,7 +221,7 @@ spec:
             secretName: "keycloak-console-tls"
 
     networkPolicy:
-      enabled: true
+      enabled: false
 
     pgchecker:
       image:

@@ -37,7 +37,7 @@ spec:
     replicas: 1
     image:
       repository: ghcr.io/darkfella91/keycloak
-      tag: latest@sha256:1c220af113b8cce4b4ca0445fc80baeafd27f25c109d608e996a7b24bcb28a11
+      tag: latest
       pullPolicy: IfNotPresent
 
     imagePullSecrets:

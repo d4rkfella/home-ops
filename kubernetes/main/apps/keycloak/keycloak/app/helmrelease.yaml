@@ -84,7 +84,6 @@ spec:
     command: []
 
     args:
-      - start
       - --optimized
       - --verbose
 
@@ -93,8 +92,6 @@ spec:
        value: admin
      - name: KC_BOOTSTRAP_ADMIN_PASSWORD
        value: test
-     - name: jgroups.dns.query
-       value: keycloak-headless.idp.svc.cluster.local
 
     extraEnvFrom: ""
 

@@ -84,7 +84,7 @@ spec:
     command: []
 
     args:
-      - "start --optimized"
+      #- "start --optimized"
 
     extraEnv: ""
       # - name: KEYCLOAK_LOGLEVEL

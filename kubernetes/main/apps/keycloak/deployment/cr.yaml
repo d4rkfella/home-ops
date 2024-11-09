@@ -12,8 +12,3 @@ spec:
     annotations:
       external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
     className: external
-  http:
-    tlsSecret: keycloak-tls
-  hostname:
-    hostname: https://auth.${PUBLIC_DOMAIN}
-    admin: https://auth.${PUBLIC_DOMAIN}/admin

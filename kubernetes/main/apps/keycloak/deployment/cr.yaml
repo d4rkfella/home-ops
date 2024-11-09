@@ -4,7 +4,7 @@ metadata:
   name: keycloak
 spec:
   instances: 1
-  image: ghcr.io/darkfella91/keycloak:latest@sha256:8caa7bfc2f1347bef41b01c52b9348a54533a58e00951b8b410936430d5af89b
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:53f946c48f5444e014493dad93ea960ae2a778317917d8383e16b29ec6283d8f
   startOptimized: true
   imagePullSecrets:
     - name: github-credentials
@@ -14,7 +14,7 @@ spec:
     tlsSecret: keycloak-tls
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
-    admin: https://admin.auth.${PUBLIC_DOMAIN}
+    admin: https://auth.${PUBLIC_DOMAIN}/admin
   unsupported:
     podTemplate:
       spec:

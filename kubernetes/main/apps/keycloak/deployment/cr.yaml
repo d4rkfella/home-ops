@@ -11,8 +11,8 @@ spec:
     - name: github-credentials
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
+  tlsSecret: keycloak-tls
   http:
-    tlsSecret: keycloak-tls
     httpEnabled: false
     httpsPort: 443
     strict: true
@@ -22,6 +22,9 @@ spec:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
     className: internal
+  additionalOptions:
+    - name: proxy
+      value: passtrough
   unsupported:
     podTemplate:
       spec:

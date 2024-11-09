@@ -1,11 +1,11 @@
 ---
-autoDirectNodeRoutes: true
-bandwidthManager:
-  enabled: true
-  bbr: true
-bpf:
-  masquerade: false
-  tproxy: false
+#autoDirectNodeRoutes: true
+#bandwidthManager:
+  #enabled: true
+  #bbr: true
+#bpf:
+  #masquerade: true
+  #tproxy: true
 cgroup:
   automount:
     enabled: false
@@ -14,12 +14,12 @@ cluster:
   id: 1
   name: main
 endpointRoutes:
-  enabled: false
+  enabled: true
 hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv4NativeRoutingCIDR: 172.16.0.0/16
+#ipv4NativeRoutingCIDR: 172.16.0.0/16
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
@@ -34,7 +34,7 @@ operator:
   replicas: 1
   rollOutPods: true
 rollOutCiliumPods: true
-routingMode: native
+#routingMode: native
 securityContext:
   capabilities:
     ciliumAgent:

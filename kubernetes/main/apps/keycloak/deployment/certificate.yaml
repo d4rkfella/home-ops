@@ -9,6 +9,6 @@ spec:
   issuerRef:
     name: zerossl-prod
     kind: ClusterIssuer
-  commonName: auth.${PUBLIC_DOMAIN}
   dnsNames:
     - auth.${PUBLIC_DOMAIN}
+    - auth-admin.${PUBLIC_DOMAIN}

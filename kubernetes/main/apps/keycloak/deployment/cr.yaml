@@ -17,6 +17,7 @@ spec:
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/modsecurity-snippet: |
             SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
     className: external

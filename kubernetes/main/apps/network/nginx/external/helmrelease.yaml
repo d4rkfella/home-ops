@@ -106,7 +106,7 @@ spec:
         enable-real-ip: "true"
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000
-        force-ssl-redirect: "true"
+        #force-ssl-redirect: "true"
         keep-alive-requests: 10000
         keep-alive: 10
         log-format-escape-json: "true"
@@ -130,7 +130,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: network/darkfellanet-tls
+        #default-ssl-certificate: network/darkfellanet-tls
         enable-ssl-passthrough: true
       terminationGracePeriodSeconds: 60
       topologySpreadConstraints:

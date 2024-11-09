@@ -9,6 +9,8 @@ spec:
   imagePullSecrets:
     - name: github-credentials
   ingress:
+    annotations:
+      external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
     className: external
   http:
     tlsSecret: keycloak-tls

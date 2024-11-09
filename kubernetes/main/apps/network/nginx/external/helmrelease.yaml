@@ -30,8 +30,6 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      extraArgs:
-        enable-ssl-passthrough
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}
@@ -133,6 +131,7 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/darkfellanet-tls
+        enable-ssl-passthrough: true
       terminationGracePeriodSeconds: 60
       topologySpreadConstraints:
         - maxSkew: 1

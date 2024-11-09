@@ -13,8 +13,8 @@ spec:
     hostname: https://auth.${PUBLIC_DOMAIN}
   http:
     tlsSecret: keycloak-tls
-    httpEnabled: false
-    strict: false
+    httpEnabled: "false"
+    strict: "false"
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}

@@ -16,9 +16,9 @@ spec:
     httpEnabled: false
   ingress:
     annotations:
-      external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+      external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    className: external
+    className: internal
   unsupported:
     podTemplate:
       spec:

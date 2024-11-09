@@ -75,6 +75,7 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: network/darkfellanet-tls
+        enable-ssl-passthrough: true
       terminationGracePeriodSeconds: 120
       topologySpreadConstraints:
         - maxSkew: 1

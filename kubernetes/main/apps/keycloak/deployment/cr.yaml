@@ -10,7 +10,7 @@ spec:
   imagePullSecrets:
     - name: github-credentials
   hostname:
-    hostname: https://auth.${PUBLIC_DOMAIN}
+    hostname: https://auth.${PUBLIC_DOMAIN}/
     admin: https://auth.${PUBLIC_DOMAIN}/admin
   http:
     httpEnabled: false
@@ -21,8 +21,6 @@ spec:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     className: internal
   unsupported:
     podTemplate:

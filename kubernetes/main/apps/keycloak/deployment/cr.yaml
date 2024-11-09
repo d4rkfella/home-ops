@@ -8,6 +8,8 @@ spec:
   startOptimized: true
   imagePullSecrets:
     - name: github-credentials
+  hostname:
+    hostname: https://auth.darkfellanetwork.com
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}

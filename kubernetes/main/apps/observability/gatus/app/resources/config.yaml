@@ -1,12 +1,12 @@
 ---
 # Note: Gatus vars should be escaped with $${VAR_NAME} to avoid interpolation by Flux
-security:
-  oidc:
-    issuer-url: https://auth.${PUBLIC_DOMAIN}/application/o/8d17c5c5-f181-45f5-beed-3941e6ad693b/
-    client-id: $${OIDC_CLIENT_ID}
-    client-secret: $${OIDC_CLIENT_SECRET}
-    redirect-url: https://status.${PUBLIC_DOMAIN}/authorization-code/callback
-    scopes: [openid]
+#security:
+  #oidc:
+    #issuer-url: https://auth.${PUBLIC_DOMAIN}/application/o/8d17c5c5-f181-45f5-beed-3941e6ad693b/
+    #client-id: $${OIDC_CLIENT_ID}
+    #client-secret: $${OIDC_CLIENT_SECRET}
+    #redirect-url: https://status.${PUBLIC_DOMAIN}/authorization-code/callback
+    #scopes: [openid]
 web:
   port: $${WEB_PORT}
 storage:

@@ -41,7 +41,7 @@ spec:
       GF_SERVER_ROOT_URL: https://grafana.${PUBLIC_DOMAIN}
     grafana.ini:
       auth:
-        signout_redirect_url: "https://auth.${PUBLIC_DOMAIN}/application/o/178655f8-2194-4c44-8733-cf9caeae7fba/end-session/"
+        #signout_redirect_url: "https://auth.${PUBLIC_DOMAIN}/application/o/178655f8-2194-4c44-8733-cf9caeae7fba/end-session/"
         oauth_auto_login: true
         disable_login_form: true
       auth.generic_oauth:
@@ -50,9 +50,9 @@ spec:
           client_id: "$__file{/etc/secrets/auth_generic_oauth/client_id}"
           client_secret: "$__file{/etc/secrets/auth_generic_oauth/client_secret}"
           scopes: "openid profile email"
-          auth_url: "https://auth.${PUBLIC_DOMAIN}/application/o/authorize/"
-          token_url: "https://auth.${PUBLIC_DOMAIN}/application/o/token/"
-          api_url: "https://auth.${PUBLIC_DOMAIN}/application/o/userinfo/"
+          #auth_url: "https://auth.${PUBLIC_DOMAIN}/application/o/authorize/"
+          #token_url: "https://auth.${PUBLIC_DOMAIN}/application/o/token/"
+          #api_url: "https://auth.${PUBLIC_DOMAIN}/application/o/userinfo/"
           role_attribute_path: contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'
       analytics:
         check_for_updates: false

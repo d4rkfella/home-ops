@@ -18,7 +18,6 @@ spec:
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     className: internal
   proxy:

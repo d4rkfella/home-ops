@@ -30,9 +30,8 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      image:
-        extraArgs:
-          enable-ssl-passthrough
+      extraArgs:
+        enable-ssl-passthrough
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}

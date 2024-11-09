@@ -10,18 +10,13 @@ spec:
   imagePullSecrets:
     - name: github-credentials
   hostname:
-    hostname: https://auth.darkfellanetwork.com
+    hostname: https://auth.${PUBLIC_DOMAIN}
   ingress:
     annotations:
-      external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
+      external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+      nginx.ingress.kubernetes.io/modsecurity-snippet: |
+            SecAction "id:900200, phase:1, pass, t:none, nolog, setvar:tx.allowed_methods=GET HEAD POST OPTIONS PUT DELETE PATCH"
     className: external
-  additionalOptions:
-    - name: BOOTSTRAP_ADMIN_USERNAME
-      value: admin
-    - name: BOOTSTRAP_ADMIN_PASSWORD
-      secret:
-        name: admin-credentials
-        key: password
   unsupported:
     podTemplate:
       spec:

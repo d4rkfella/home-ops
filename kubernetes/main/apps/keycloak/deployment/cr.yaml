@@ -10,8 +10,7 @@ spec:
   imagePullSecrets:
     - name: github-credentials
   hostname:
-    hostname: https://auth.${PUBLIC_DOMAIN}/
-    admin: https://auth.${PUBLIC_DOMAIN}/admin
+    hostname: https://auth.${PUBLIC_DOMAIN}
   http:
     httpEnabled: false
     httpsPort: 443

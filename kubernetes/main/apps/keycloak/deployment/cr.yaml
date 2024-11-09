@@ -11,11 +11,10 @@ spec:
     - name: github-credentials
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
-  tlsSecret: keycloak-tls
   http:
     httpEnabled: false
     httpsPort: 443
-    strict: true
+    tlsSecret: keycloak-tls
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}

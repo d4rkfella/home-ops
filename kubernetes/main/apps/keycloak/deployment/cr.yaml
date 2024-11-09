@@ -10,8 +10,8 @@ spec:
   imagePullSecrets:
     - name: github-credentials
   hostname:
-    hostname: https://auth.${PUBLIC_DOMAIN}
-    admin: https://auth-admin.${PUBLIC_DOMAIN}
+    hostname: https://auth.${PUBLIC_DOMAIN}:443
+    admin: https://auth-admin.${PUBLIC_DOMAIN}:443
   http:
     tlsSecret: keycloak-tls
   ingress:

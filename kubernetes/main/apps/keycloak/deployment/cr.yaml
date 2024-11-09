@@ -20,6 +20,10 @@ spec:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
       nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     className: internal
+    tls:
+      - hosts:
+          - auth.${PUBLIC_DOMAIN}
+        secretName: keycloak-tls
   proxy:
     headers: xforwarded
   unsupported:

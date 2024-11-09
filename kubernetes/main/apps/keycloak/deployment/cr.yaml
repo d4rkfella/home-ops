@@ -15,6 +15,7 @@ spec:
     tlsSecret: keycloak-tls
     httpEnabled: false
     httpsPort: 443
+    strict: true
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}

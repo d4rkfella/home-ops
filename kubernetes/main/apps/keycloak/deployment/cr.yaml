@@ -11,7 +11,6 @@ spec:
     - name: github-credentials
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
-    admin: https://auth-admin.${PUBLIC_DOMAIN}
   http:
     tlsSecret: keycloak-tls
     httpEnabled: false

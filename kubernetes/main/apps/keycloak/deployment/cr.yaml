@@ -11,6 +11,7 @@ spec:
     - name: github-credentials
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
+    admin: https://auth.${PUBLIC_DOMAIN}/admin
   http:
     httpEnabled: false
     httpsPort: 443

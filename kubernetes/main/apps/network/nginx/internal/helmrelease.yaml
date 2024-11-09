@@ -66,7 +66,7 @@ spec:
         proxy-body-size: 0
         proxy-ssl-verify: "off"
         proxy-buffer-size: 16k
-        ssl-protocols: TLSv1.3
+        #ssl-protocols: TLSv1.3
         use-forwarded-headers: "true"
       metrics:
         enabled: true

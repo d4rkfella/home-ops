@@ -8,6 +8,7 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
+  ingressClassName: internal
   rules:
     - host: auth.${PUBLIC_DOMAIN}
       http:

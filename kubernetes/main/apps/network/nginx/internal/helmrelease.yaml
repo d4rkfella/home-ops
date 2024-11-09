@@ -23,6 +23,7 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    log-level: debug
     fullnameOverride: nginx-internal
     controller:
       readOnlyRootFilesystem: true
@@ -65,8 +66,8 @@ spec:
         proxy-body-size: 0
         proxy-ssl-verify: "off"
         proxy-buffer-size: 16k
-        #ssl-protocols: TLSv1.3
-        #use-forwarded-headers: "true"
+        ssl-protocols: TLSv1.3
+        use-forwarded-headers: "true"
       metrics:
         enabled: true
         serviceMonitor:

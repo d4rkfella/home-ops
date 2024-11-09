@@ -4,7 +4,7 @@ metadata:
   name: keycloak
 spec:
   instances: 1
-  image: ghcr.io/darkfella91/keycloak:latest@sha256:78a0f6d21b79ac0b3c120c549b81e351ead5446a4aecef7c1f542675361816bb
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:fe3ff754ac29c7004b8ce55fe67658a1f775a50607ae2a224b89e4a5bca1c8e2
   startOptimized: true
   imagePullSecrets:
     - name: github-credentials

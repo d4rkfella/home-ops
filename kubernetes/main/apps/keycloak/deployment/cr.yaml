@@ -22,6 +22,7 @@ spec:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
       nginx.ingress.kubernetes.io/preserve-trailing-slash: "true"
+      nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
     className: internal
   unsupported:
     podTemplate:

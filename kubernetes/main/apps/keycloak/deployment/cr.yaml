@@ -4,7 +4,7 @@ metadata:
   name: keycloak
 spec:
   instances: 1
-  image: ghcr.io/darkfella91/keycloak:latest@sha256:53f946c48f5444e014493dad93ea960ae2a778317917d8383e16b29ec6283d8f
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:dcbdcbdde5ff6388af1086466899719a817aa3e04df141f8f1b07610ac4774d7
   startOptimized: true
   imagePullSecrets:
     - name: github-credentials
@@ -17,18 +17,3 @@ spec:
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
     admin: https://auth.${PUBLIC_DOMAIN}/admin
-  unsupported:
-    podTemplate:
-      spec:
-        containers:
-          - volumeMounts:
-              - name: cert
-                mountPath: /etc/ssl/custom/certfile.pem
-                subPath: tls.crt
-              - name: cert
-                mountPath: /etc/ssl/custom/keyfile.pem
-                subPath: tls.key
-        volumes:
-          - name: cert
-            secret:
-              secretName: keycloak-tls

@@ -1,0 +1,32 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 1
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:8caa7bfc2f1347bef41b01c52b9348a54533a58e00951b8b410936430d5af89b
+  startOptimized: true
+  imagePullSecrets:
+    - name: github-credentials
+  ingress:
+    className: external
+  http:
+    tlsSecret: keycloak-tls
+  hostname:
+    hostname: https://auth.${PUBLIC_DOMAIN}
+    admin: https://admin.auth.${PUBLIC_DOMAIN}
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - volumeMounts:
+              - name: cert
+                mountPath: /etc/ssl/custom/certfile.pem
+                subPath: tls.crt
+              - name: cert
+                mountPath: /etc/ssl/custom/keyfile.pem
+                subPath: tls.key
+        volumes:
+          - name: cert
+            secret:
+              secretName: keycloak-tls

@@ -19,6 +19,9 @@ spec:
     annotations:
       external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/server-alias: "auth.darkfellanetwork.com"
+      nginx.ingress.kubernetes.io/configuration-snippet: |
+        proxy_set_header Host $host;
     className: internal
   unsupported:
     podTemplate:

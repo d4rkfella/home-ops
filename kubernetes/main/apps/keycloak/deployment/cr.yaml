@@ -5,12 +5,15 @@ metadata:
   name: keycloak
 spec:
   instances: 1
-  image: ghcr.io/darkfella91/keycloak:latest@sha256:fe3ff754ac29c7004b8ce55fe67658a1f775a50607ae2a224b89e4a5bca1c8e2
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:435132674c7b91dd91e865e299275a8aba9217fafe1551c3fea21262000a92d9
   startOptimized: true
   imagePullSecrets:
     - name: github-credentials
   hostname:
     hostname: https://auth.${PUBLIC_DOMAIN}
+    admin: https://auth-admin.${PUBLIC_DOMAIN}
+  http:
+    tlsSecret: keycloak-tls
   ingress:
     annotations:
       external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
@@ -20,6 +23,14 @@ spec:
   unsupported:
     podTemplate:
       spec:
+        containers:
+          - volumeMounts:
+              - name: cert
+                mountPath: /etc/ssl/custom
+        volumes:
+          - name: cert
+            secret:
+              secretName: keycloak-tls
         initContainers:
           - name: init-db
             image: "ghcr.io/onedr0p/postgres-init:16.4@sha256:e41c745b54485341e00efbd27556f0717623a119f0d5107e5ff831aa1322c76f"

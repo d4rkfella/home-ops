@@ -110,7 +110,8 @@ spec:
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
             paths:
-              - path: /web
+              - path: /
+                pathType: ImplementationSpecific
                 service:
                   identifier: app
                   port: http

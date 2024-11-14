@@ -17,7 +17,7 @@ spec:
     port: 5432
     schema: public
   instances: 1
-  image: ghcr.io/darkfella91/keycloak-image:latest@sha256:a8b3530f2fdcb35952870341d4060b0daed1e043687be0add5224dedcc0c6034
+  image: ghcr.io/darkfella91/keycloak-image:latest@sha256:6066220da91a29196ab2566986cd3f542f601e383a2283bdd1bac3fd5debbce1
   startOptimized: true
   additionalOptions:
     - name: https-protocols

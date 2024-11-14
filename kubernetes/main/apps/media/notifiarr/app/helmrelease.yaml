@@ -93,8 +93,11 @@ spec:
                   port: http
     persistence:
       config:
-        type: emptyDir
-        medium: Memory
+        enabled: true
+        type: persistentVolumeClaim
+        size: 2Gi
+        accessMode: ReadWriteOnce
+
       tmpdir:
         type: emptyDir
         medium: Memory

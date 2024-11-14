@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Pre Flux-Kustomizations
+  - ./namespace.yaml
+  # Flux-Kustomizations
+  - ./coredns/ks.yaml
+  - ./cilium/ks.yaml
+  - ./descheduler/ks.yaml
+  - ./kubelet-csr-approver/ks.yaml
+  - ./metrics-server/ks.yaml
+  - ./reloader/ks.yaml
+  - ./reflector/ks.yaml
+  - ./topolvm/ks.yaml
+  - ./generic-device-plugin.yaml
+  - ./nvidia-device-plugin/ks.yaml

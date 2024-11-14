@@ -1,0 +1,53 @@
+---
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  instances: 1
+  image: ghcr.io/darkfella91/keycloak:latest@sha256:f48529f651cfb51d96554b9a3a81a732b22f096e2ab9b1dd2d9b6d278cc75a33
+  startOptimized: true
+  imagePullSecrets:
+    - name: github-credentials
+  additionalOptions:
+    - name: https-protocols
+      value: "TLSv1.3"
+  bootstrapAdmin:
+    user:
+      secret: keycloak-admin-credentials
+  proxy:
+    headers: xforwarded
+  hostname:
+    hostname: https://auth.${PUBLIC_DOMAIN}
+  http:
+    httpEnabled: false
+    httpsPort: 443
+    tlsSecret: keycloak-tls
+  ingress:
+    enabled: false
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+        initContainers:
+          - name: init-db
+            image: "ghcr.io/onedr0p/postgres-init:16.4@sha256:e41c745b54485341e00efbd27556f0717623a119f0d5107e5ff831aa1322c76f"
+            imagePullPolicy: IfNotPresent
+            envFrom:
+              - secretRef:
+                  name: keycloak-initdb-secret
+            securityContext:
+              runAsUser: 10002
+              runAsGroup: 10002
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile: { type: RuntimeDefault }

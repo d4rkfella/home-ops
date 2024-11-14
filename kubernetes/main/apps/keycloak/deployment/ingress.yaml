@@ -1,0 +1,31 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  namespace: idp
+  annotations:
+    external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+      Include /etc/nginx/modsecurity/modsecurity.conf
+      Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
+      SecRuleUpdateTargetById 942100 "!ARGS:password"
+      SecRuleUpdateTargetById 932270 "!ARGS:code_verifier"
+      SecRuleUpdateTargetById 932130 "!ARGS:json.array_0.description"
+      SecPcreMatchLimit 5000
+      SecPcreMatchLimitRecursion 5000
+spec:
+  ingressClassName: external
+  rules:
+    - host: auth.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 443

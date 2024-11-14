@@ -12,7 +12,7 @@ spec:
     passwordSecret:
       name: keycloak-initdb-secret
       key: INIT_POSTGRES_PASS
-    host: postgres://postgres17.database.svc.cluster.local
+    host: postgres17-rw.database.svc.cluster.local
     database: keycloak
     port: 5432
     schema: public

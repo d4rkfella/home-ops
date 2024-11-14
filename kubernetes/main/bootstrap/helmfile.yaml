@@ -78,7 +78,7 @@ releases:
   - name: topolvm
     namespace: kube-system
     chart: topolvm/topolvm
-    version: 15.4.0
+    version: 15.5.0
     values:
       - ../apps/kube-system/topolvm/app/helm-values.yaml
     needs:

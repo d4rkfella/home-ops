@@ -16,9 +16,6 @@ spec:
     database: keycloak
     port: 5432
     schema: public
-    poolInitialSize: 1
-    poolMinSize: 2
-    poolMaxSize: 3
   instances: 1
   image: ghcr.io/darkfella91/keycloak-image:latest@sha256:a8b3530f2fdcb35952870341d4060b0daed1e043687be0add5224dedcc0c6034
   startOptimized: true

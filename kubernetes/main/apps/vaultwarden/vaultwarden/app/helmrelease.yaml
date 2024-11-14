@@ -145,7 +145,7 @@ spec:
           if ($request_uri ~* "^/locales/.*") {
             return 200;
           }
-          if ($request_uri) ~* "^/alive") {
+          if ($request_uri ~* "^/alive") {
             return 200;
           }
       hostname: vaultwarden.${PUBLIC_DOMAIN}

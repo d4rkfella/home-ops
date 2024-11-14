@@ -56,7 +56,7 @@ releases:
   - name: lvm-disk-watcher
     namespace: kube-system
     chart: oci://tccr.io/truecharts/lvm-disk-watcher
-    version: 2.0.3
+    version: 2.0.4
     values:
       - ../apps/kube-system/lvm-disk-watcher/app/helm-values.yaml
     needs:

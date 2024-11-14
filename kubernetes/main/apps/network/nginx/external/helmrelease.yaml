@@ -170,7 +170,7 @@ spec:
         requests:
           cpu: 100m
         limits:
-          memory: 1000Mi
+          memory: 2000Mi
     defaultBackend:
       enabled: true
       image:

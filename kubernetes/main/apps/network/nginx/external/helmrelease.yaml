@@ -30,7 +30,6 @@ spec:
   values:
     fullnameOverride: nginx-external
     controller:
-      readOnlyRootFilesystem: true
       annotations:
         reloader.stakater.com/auto: "true"
       podAnnotations:

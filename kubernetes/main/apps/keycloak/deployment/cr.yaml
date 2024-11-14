@@ -5,10 +5,8 @@ metadata:
   name: keycloak
 spec:
   instances: 1
-  image: ghcr.io/darkfella91/keycloak:latest@sha256:f48529f651cfb51d96554b9a3a81a732b22f096e2ab9b1dd2d9b6d278cc75a33
+  image: ghcr.io/darkfella91/keycloak-image:latest@sha256:a8b3530f2fdcb35952870341d4060b0daed1e043687be0add5224dedcc0c6034
   startOptimized: true
-  imagePullSecrets:
-    - name: github-credentials
   additionalOptions:
     - name: https-protocols
       value: "TLSv1.3"

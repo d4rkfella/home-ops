@@ -104,16 +104,8 @@ spec:
             Include /etc/nginx/modsecurity/modsecurity.conf
             Include /etc/nginx/owasp-modsecurity-crs/nginx-modsecurity.conf
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            map $request_uri $add_security_headers {
-                default 1;
-                ~*\.(js|css|png|jpg|gif|ico|woff|woff2|ttf|svg)$ 0;
-            }
-
-            server {
-                if ($add_security_headers) {
-                    add_header X-XSS-Protection "1; mode=block";
-                    add_header X-Content-Type-Options "nosniff";
-                }
+            location ~* \.(html|htm)$ {
+                add_header X-XSS-Protection "1; mode=block" always;
             }
             add_header referrer-policy "same-origin" always;
             add_header x-frame-options sameorigin;

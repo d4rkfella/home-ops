@@ -54,8 +54,6 @@ spec:
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               VPN_INTERFACE: tun0
-              PGID: 568
-              PUID: 568
             envFrom:
               - secretRef:
                   name: gluetun-secret

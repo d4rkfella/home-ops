@@ -130,6 +130,17 @@ spec:
             envFrom:
               - secretRef:
                   name: qbittorrent-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /scripts/healthcheck.sh
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 3
             securityContext:
               privileged: false
               allowPrivilegeEscalation: false

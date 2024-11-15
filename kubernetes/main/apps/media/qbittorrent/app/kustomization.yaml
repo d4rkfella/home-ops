@@ -17,6 +17,7 @@ configMapGenerator:
   - name: qbittorrent-scripts
     files:
       - post-process.sh=./resources/post-process.sh
+      - healthcheck.sh=./resources/healthcheck.sh
   - name: qbitmanage-config
     files:
       - config.yml=./resources/qbitmanage-config.yaml

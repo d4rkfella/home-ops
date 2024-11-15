@@ -86,11 +86,12 @@ spec:
             restartPolicy: Always
             securityContext:
               runAsNonRoot: false
-              runAsUser: 568
+              runAsUser: 0
               runAsGroup: 568
+              privilaged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
             resources:
               limits:
                 squat.ai/tun: 1

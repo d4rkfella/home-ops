@@ -11,7 +11,7 @@ data:
       - name: "${APP}"
         group: external
         url: "https://${GATUS_SUBDOMAIN:-${APP}}.${PUBLIC_DOMAIN}${GATUS_PATH:-/}"
-        interval: 1m
+        interval: 10m
         client:
           dns-resolver: tcp://1.1.1.1:53
         conditions:

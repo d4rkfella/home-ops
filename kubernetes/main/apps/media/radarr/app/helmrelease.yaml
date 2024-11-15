@@ -106,7 +106,10 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
           nginx.ingress.kubernetes.io/auth-snippet: |
             if ($request_uri ~* "^/api(/|$)") {
-              return 202;
+              return 200;
+            }
+            if ($request_uri ~* "^/ping") {
+              return 200;
             }
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           nginx.ingress.kubernetes.io/configuration-snippet: |

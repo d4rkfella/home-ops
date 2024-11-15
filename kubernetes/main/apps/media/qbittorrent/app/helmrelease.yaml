@@ -80,9 +80,9 @@ spec:
                     command:
                       - /gluetun-entrypoint
                       - healthcheck
-                  initialDelaySeconds: 20
-                  periodSeconds: 10
-                  failureThreshold: 2
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 1
             lifecycle:
               postStart:
                 exec:
@@ -131,7 +131,27 @@ spec:
               - secretRef:
                   name: qbittorrent-secret
             probes:
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /scripts/healthcheck.sh
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 3
               liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /scripts/healthcheck.sh
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 3
+              startup:
                 enabled: true
                 custom: true
                 spec:

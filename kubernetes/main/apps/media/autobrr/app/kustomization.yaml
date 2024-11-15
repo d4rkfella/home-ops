@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ../../../../templates/gatus/guarded
+  - ./gatus-config.yaml
 configMapGenerator:
   - name: autobrr-loki-rules
     files:

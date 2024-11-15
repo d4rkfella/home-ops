@@ -39,11 +39,14 @@ spec:
         - namespace: vaultwarden
           podName: vaultwarden-*
           program: VAULTWARDEN
+        - namespace: idp
+          podName: keycloak-0
+          program: keycloak
       env:
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
         - name: COLLECTIONS
-          value: "crowdsecurity/modsecurity LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+          value: "crowdsecurity/modsecurity inherent-io/keycloak LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
       metrics:
         enabled: true
         serviceMonitor:

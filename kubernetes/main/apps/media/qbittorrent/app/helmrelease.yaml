@@ -57,6 +57,7 @@ spec:
             envFrom:
               - secretRef:
                   name: gluetun-secret
+            restartPolicy: Always
             probes:
               liveness:
                 enabled: true
@@ -83,7 +84,6 @@ spec:
               postStart:
                 exec:
                   command: ["/bin/sh", "-c", "(ip rule del table 51820; ip -6 rule del table 51820) || true"]
-            restartPolicy: Always
             securityContext:
               runAsNonRoot: false
               runAsUser: 0
@@ -105,7 +105,7 @@ spec:
               runAsNonRoot: true
               runAsUser: 10001
               runAsGroup: 10001
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: ["ALL"], add: ["NET_BIND_SERVICE"] }
 
         containers:
           qbittorrent:

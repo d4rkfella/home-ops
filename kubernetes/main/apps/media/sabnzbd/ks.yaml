@@ -23,4 +23,4 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_PATH: /ping/api?mode=version
+      GATUS_PATH: /api?mode=version

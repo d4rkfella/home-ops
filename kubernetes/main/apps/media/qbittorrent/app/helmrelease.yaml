@@ -80,7 +80,7 @@ spec:
                     command:
                       - /gluetun-entrypoint
                       - healthcheck
-                  initialDelaySeconds: 10
+                  initialDelaySeconds: 20
                   periodSeconds: 10
                   failureThreshold: 2
             lifecycle:

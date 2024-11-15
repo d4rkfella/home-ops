@@ -54,6 +54,8 @@ spec:
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               VPN_INTERFACE: tun0
+              PGID: 568
+              PUID: 568
             envFrom:
               - secretRef:
                   name: gluetun-secret
@@ -87,7 +89,7 @@ spec:
             securityContext:
               runAsNonRoot: false
               runAsUser: 0
-              runAsGroup: 0
+              runAsGroup: 568
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }
@@ -340,3 +342,10 @@ spec:
               - path: /etc/dnsdist/dnsdist.conf
                 subPath: dnsdist.conf
                 readOnly: true
+      tmp-gluetun:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          torrenting:
+            gluetun:
+              - path: /tmp/gluetun

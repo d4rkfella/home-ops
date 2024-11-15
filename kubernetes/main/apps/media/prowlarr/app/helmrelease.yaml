@@ -108,6 +108,9 @@ spec:
             if ($request_uri ~* "^/ping") {
               return 200;
             }
+            if ($request_uri ~* "(\/|\/[0-9]+\/)download(/|$|[?])") {
+              return 200;
+            }
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/prowlarr/mind.css"></body>';

@@ -44,18 +44,18 @@ spec:
               TZ: &TZ Europe/Sofia
               DOT: "off"
               DNS_ADDRESS: "127.0.0.2"
-              HEALTH_SERVER_ADDRESS: :9999
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: "on"
               VPN_PORT_FORWARDING_LISTENING_PORT: 50413
               WIREGUARD_ADDRESSES: 10.2.0.2/32
-              FIREWALL_INPUT_PORTS: 80,9999
+              FIREWALL_INPUT_PORTS: 80
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               VPN_INTERFACE: tun0
               PUID: 568
               PGID: 568
+              VERSION_INFORMATION: "off"
             envFrom:
               - secretRef:
                   name: gluetun-secret
@@ -76,12 +76,13 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
-                    port: 9999
+                  exec:
+                    command:
+                      - /gluetun-entrypoint
+                      - healthcheck
                   initialDelaySeconds: 10
                   periodSeconds: 10
-                  failureThreshold: 4
+                  failureThreshold: 2
             lifecycle:
               postStart:
                 exec:
@@ -203,7 +204,7 @@ spec:
             securityContext:
               privileged: false
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
             resources:
               requests:

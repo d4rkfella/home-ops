@@ -55,6 +55,7 @@ spec:
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               VPN_INTERFACE: tun0
               PUBLICIP_ENABLED: "off"
+              VERSION_INFORMATION: "off"
             envFrom:
               - secretRef:
                   name: gluetun-secret

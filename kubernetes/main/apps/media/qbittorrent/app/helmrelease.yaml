@@ -88,7 +88,7 @@ spec:
             securityContext:
               runAsNonRoot: false
               runAsUser: 0
-              runAsGroup: 0
+              runAsGroup: 568
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN", "CHOWN"] }

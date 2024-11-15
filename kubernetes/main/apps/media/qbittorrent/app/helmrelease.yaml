@@ -86,7 +86,7 @@ spec:
             restartPolicy: Always
             securityContext:
               runAsNonRoot: false
-              runAsUser: 0
+              runAsUser: 568
               runAsGroup: 568
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false

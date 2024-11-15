@@ -36,9 +36,6 @@ spec:
         - namespace: media
           podName: jellyseerr-*
           program: jellyseerr
-        - namespace: authentik
-          podName: authentik-*
-          program: authentik
         - namespace: vaultwarden
           podName: vaultwarden-*
           program: VAULTWARDEN
@@ -46,7 +43,7 @@ spec:
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
         - name: COLLECTIONS
-          value: "crowdsecurity/modsecurity LePresidente/jellyseerr crowdsecurity/nginx firix/authentik Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
+          value: "crowdsecurity/modsecurity LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
       metrics:
         enabled: true
         serviceMonitor:

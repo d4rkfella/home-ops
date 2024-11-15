@@ -10,15 +10,14 @@ data:
     endpoints:
       - name: "${APP}"
         group: guarded
-        url: 1.1.1.1
+        url: "https://${GATUS_SUBDOMAIN:-${APP}}.${PUBLIC_DOMAIN}${GATUS_PATH:-/}"
         interval: 10m
         ui:
           hide-hostname: true
           hide-url: true
-        dns:
-          query-name: "${GATUS_SUBDOMAIN:-${APP}}.${PUBLIC_DOMAIN}"
-          query-type: A
+        client:
+          dns-resolver: tcp://172.17.0.10:53
         conditions:
-          - "len([BODY]) == 0"
+          - "[STATUS] == ${GATUS_STATUS:-200}"
         alerts:
           - type: pushover

@@ -54,6 +54,9 @@ spec:
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
               SERVER_HOSTNAMES: node-ch-15.protonvpn.net
               VPN_INTERFACE: tun0
+              PUBLICIP_FILE:
+              PUID: 0
+              PGID: 0
             envFrom:
               - secretRef:
                   name: gluetun-secret
@@ -87,11 +90,11 @@ spec:
             securityContext:
               runAsNonRoot: false
               runAsUser: 0
-              runAsGroup: 568
+              runAsGroup: 0
               privilaged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN","CHOWN","SETUID","SETGID","FOWNER"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN","CHOWN"] }
             resources:
               limits:
                 squat.ai/tun: 1

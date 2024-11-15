@@ -19,5 +19,6 @@ data:
           dns-resolver: tcp://172.17.0.10:53
         conditions:
           - "[STATUS] == ${GATUS_STATUS:-200}"
+          - "[BODY].status == OK"
         alerts:
           - type: pushover

@@ -148,7 +148,7 @@ spec:
                   exec:
                     command:
                       - /scripts/healthcheck.sh
-                  initialDelaySeconds: 30
+                  initialDelaySeconds: 10
                   periodSeconds: 30
                   failureThreshold: 3
               startup:
@@ -158,7 +158,7 @@ spec:
                   exec:
                     command:
                       - /scripts/healthcheck.sh
-                  initialDelaySeconds: 30
+                  initialDelaySeconds: 1
                   periodSeconds: 30
                   failureThreshold: 3
             securityContext:

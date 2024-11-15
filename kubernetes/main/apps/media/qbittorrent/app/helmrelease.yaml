@@ -91,7 +91,7 @@ spec:
               privilaged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN","CHOWN"] }
             resources:
               limits:
                 squat.ai/tun: 1

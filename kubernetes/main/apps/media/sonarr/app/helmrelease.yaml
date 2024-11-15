@@ -105,7 +105,10 @@ spec:
           nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
           nginx.ingress.kubernetes.io/auth-snippet: |
             if ($request_uri ~* "(\/|\/[0-9]+\/)api(/|$|[?])") {
-              return 202;
+              return 200;
+            }
+            if ($request_uri ~* "^/ping") {
+              return 200;
             }
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";

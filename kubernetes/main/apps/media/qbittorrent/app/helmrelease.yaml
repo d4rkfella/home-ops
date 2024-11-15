@@ -39,7 +39,7 @@ spec:
             dependsOn: dnsdist
             image:
               repository: ghcr.io/qdm12/gluetun
-              tag: v3.39.1@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
+              tag: latest@sha256:637a3a9daf56975942a1479ca44f574f96812a90e2150334704e2bbd7aa9321d
             env:
               TZ: &TZ Europe/Sofia
               DOT: "off"

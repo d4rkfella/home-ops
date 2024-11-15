@@ -69,8 +69,8 @@ spec:
                     command:
                       - /gluetun-entrypoint
                       - healthcheck
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
                   failureThreshold: 3
               startup:
                 enabled: true
@@ -80,9 +80,9 @@ spec:
                     command:
                       - /gluetun-entrypoint
                       - healthcheck
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
-                  failureThreshold: 1
+                  initialDelaySeconds: 20
+                  periodSeconds: 10
+                  failureThreshold: 3
             lifecycle:
               postStart:
                 exec:
@@ -138,7 +138,7 @@ spec:
                   exec:
                     command:
                       - /scripts/healthcheck.sh
-                  initialDelaySeconds: 1
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   failureThreshold: 3
               liveness:
@@ -148,17 +148,7 @@ spec:
                   exec:
                     command:
                       - /scripts/healthcheck.sh
-                  initialDelaySeconds: 1
-                  periodSeconds: 10
-                  failureThreshold: 3
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - /scripts/healthcheck.sh
-                  initialDelaySeconds: 1
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   failureThreshold: 3
             securityContext:

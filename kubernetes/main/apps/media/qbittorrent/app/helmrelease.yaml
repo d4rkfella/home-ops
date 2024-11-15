@@ -66,9 +66,13 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /
-                    port: 9999
+                  exec:
+                    command:
+                      - /gluetun-entrypoint
+                      - healthcheck
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  failureThreshold: 3
               startup:
                 enabled: true
                 custom: true

@@ -37,7 +37,7 @@ endpoints:
   - name: status
     group: external
     url: https://status.${PUBLIC_DOMAIN}
-    interval: 1m
+    interval: 10m
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
@@ -47,7 +47,7 @@ endpoints:
   - name: flux-webhook
     group: external
     url: https://flux-webhook.${PUBLIC_DOMAIN}
-    interval: 1m
+    interval: 10m
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions:

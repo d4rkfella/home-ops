@@ -79,7 +79,7 @@ spec:
                     port: 9999
                   initialDelaySeconds: 10
                   periodSeconds: 10
-                  failureThreshold: 2
+                  failureThreshold: 4
             lifecycle:
               postStart:
                 exec:

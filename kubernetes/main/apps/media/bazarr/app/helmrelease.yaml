@@ -114,6 +114,9 @@ spec:
             if ($request_uri ~* "^/api(/|$)") {
               return 200;
             }
+            if ($request_uri ~* "^/healthz") {
+              return 200;
+            }
         className: internal
         hosts:
           - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"

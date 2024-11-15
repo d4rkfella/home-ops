@@ -6,7 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ../../../../templates/gatus/guarded
+  - ./gatus-config.yaml
 configMapGenerator:
   - name: sabnzbd-scripts
     files:

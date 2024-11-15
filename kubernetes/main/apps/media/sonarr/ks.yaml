@@ -24,4 +24,5 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_PATH: /api/v3/health
+      GATUS_PATH: /ping
+

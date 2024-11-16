@@ -49,20 +49,20 @@ spec:
               INIT_POSTGRES_PORT: &dbPort 5432
               INIT_POSTGRES_DBNAME: &dbName bazarr
               INIT_POSTGRES_SUPER_PASS:
-              valueFrom:
-                secretKeyRef:
-                  name: &secret bazarr-secret
-                  key: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret bazarr-secret
+                    key: INIT_POSTGRES_SUPER_PASS
               INIT_POSTGRES_USER:
-              valueFrom:
-                secretKeyRef:
-                  name: *secret
-                  key: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
               INIT_POSTGRES_PASS:
-              valueFrom:
-                secretKeyRef:
-                  name: *secret
-                  key: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
         containers:
           app:
             image:
@@ -80,15 +80,15 @@ spec:
                   name: *secret
                   key: INIT_POSTGRES_USER
               POSTGRES_PASSWORD:
-              valueFrom:
-                secretKeyRef:
-                  name: *secret
-                  key: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
               PLEX_TOKEN:
-              valueFrom:
-                secretKeyRef:
-                  name: *secret
-                  key: PLEX_TOKEN
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PLEX_TOKEN
             probes:
               liveness: &probes
                 enabled: true

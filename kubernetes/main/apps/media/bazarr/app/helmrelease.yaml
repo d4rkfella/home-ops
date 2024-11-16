@@ -157,6 +157,8 @@ spec:
     persistence:
       add-ons:
         type: emptyDir
+      config:
+        type: emptyDir
       secret-file:
         type: secret
         name: bazarr-config

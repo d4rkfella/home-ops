@@ -1,12 +1,21 @@
-endpoints:
-  - name: "vaultwarden"
-    group: external
-    url: "https://vaultwarden.${PUBLIC_DOMAIN}/alive"
-    interval: 10m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions:
-      - "[STATUS] == 200"
-      - "[BODY] == pat('^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$')"
-    alerts:
-      - type: pushover
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "vaultwarden-gatus-ep"
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: "vaultwarden"
+        group: external
+        url: "https://vaultwarden.${PUBLIC_DOMAIN}/alive"
+        interval: 10m
+        client:
+          dns-resolver: tcp://1.1.1.1:53
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == pat('^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{6}Z$')"
+        alerts:
+          - type: pushover

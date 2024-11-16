@@ -9,7 +9,9 @@ lvmd:
         name: topolvm_thin
         overprovision-ratio: 15.0
 controller:
-  replicaCount: 2
+  replicaCount: 1
+  updateStrategy:
+    type: Recreate
 storageClasses:
   - name: topolvm-provisioner-thin
     storageClass:

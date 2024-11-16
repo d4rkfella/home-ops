@@ -100,7 +100,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /secret/config.yaml /config/config/config.yaml"]
+                  command: ["/bin/sh", "-c", "mkdir -p /config/config & cp /secret/config.yaml /config/config/config.yaml"]
             resources:
               requests:
                 cpu: 10m

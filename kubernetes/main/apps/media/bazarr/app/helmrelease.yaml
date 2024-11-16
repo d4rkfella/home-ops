@@ -75,10 +75,10 @@ spec:
               POSTGRES_PORT: *dbPort
               POSTGRES_DATABASE: bazarr
               POSTGRES_USERNAME:
-              valueFrom:
-                secretKeyRef:
-                  name: *secret
-                  key: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
               POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:

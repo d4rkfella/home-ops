@@ -1,5 +1,5 @@
 lvmd:
-  managed: false
+  managed: true
   deviceClasses:
     - name: thin
       volume-group: topolvm_vg
@@ -8,10 +8,8 @@ lvmd:
       thin-pool:
         name: topolvm_thin
         overprovision-ratio: 15.0
-node:
-  lvmdEmbedded: true
 controller:
-  replicaCount: 1
+  replicaCount: 2
 storageClasses:
   - name: topolvm-provisioner-thin
     storageClass:

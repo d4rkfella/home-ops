@@ -11,7 +11,7 @@ data:
       - name: "vaultwarden"
         group: external
         url: "https://vaultwarden.${PUBLIC_DOMAIN}/alive"
-        interval: 30s
+        interval: 1m
         client:
           dns-resolver: tcp://1.1.1.1:53
         conditions:

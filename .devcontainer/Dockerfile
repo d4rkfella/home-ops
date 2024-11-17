@@ -61,4 +61,4 @@ WORKDIR /project
 
 USER $USERNAME
 
-CMD ["/bin/sh"]
+CMD ["/bin/bash"]

@@ -36,12 +36,13 @@ connectivity:
 endpoints:
   - name: status
     group: external
-    url: https://status.${PUBLIC_DOMAIN}
+    url: https://status.${PUBLIC_DOMAIN}/health
     interval: 10m
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == 200"
+      - "[BODY].status == UP"
     alerts:
       - type: pushover
   - name: flux-webhook

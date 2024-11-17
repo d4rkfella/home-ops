@@ -7,3 +7,12 @@ resources:
   - ./helmrelease.yaml
   - ./ingress-external.yaml
   - ./ingress-internal.yaml
+configMapGenerator:
+  - name: oauth2-proxy-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
+generatorOptions:
+  disableNameSuffixHash: true

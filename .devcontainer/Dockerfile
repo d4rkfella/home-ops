@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     git \
     github-cli \
     libstdc++ \
+    direnv \
     unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
@@ -60,4 +61,4 @@ WORKDIR /project
 
 USER $USERNAME
 
-CMD ["/bin/sh"]
+CMD ["/bin/bash"]

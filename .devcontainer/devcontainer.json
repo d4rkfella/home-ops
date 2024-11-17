@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:1b4fec3c5bf259480c199e6f7fc49e3b524a7d756ded76b9a80ce73d855aea76",
+    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:99fdf0103c135c00c9b84373373a613a477386475c02861446968b1253097013",
 
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",

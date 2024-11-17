@@ -1,0 +1,18 @@
+//devcontainer.json
+{
+    "name": "Kubernetes Management",
+
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:e97b85589bc66bd3387622cc925c37a0efbe809b289b1ade30f620853ff4fa32",
+
+    "workspaceFolder": "/home/darkfella/home-ops",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
+
+    "customizations": {
+      "vscode": {
+        "settings": {},
+        "extensions": ["@signageos/vscode-sops"]
+      }
+    }
+
+  }

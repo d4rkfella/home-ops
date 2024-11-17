@@ -41,9 +41,9 @@ RUN apk add --no-cache \
     grep "helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz" helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt > checksum-helmfile-linux-amd64.txt && \
     echo "$(cat checksum-helmfile-linux-amd64.txt)" | sha256sum --check --strict && \
     tar -xvzf helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz && \
-    chmod +x helmfile | mv helmfile /usr/local/bin/helmfile && \
+    chmod +x ./helmfile | mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
-    ./get_task.sh -d -b /usr/local/bin/task
+    chmod +x ./get_task.sh | ./get_task.sh -d -b /usr/local/bin/task
 USER nobody:nogroup
 
 WORKDIR /project

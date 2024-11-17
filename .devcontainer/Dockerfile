@@ -50,6 +50,4 @@ RUN apk add --no-cache \
     echo "**** Cleaning temporary directory ****" && \
     rm -rf /root/.cache /tmp/*
 
-USER nobody:nogroup
-
 CMD ["/bin/sh"]

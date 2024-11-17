@@ -6,7 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ./resources/gatus-ep.yaml
 configMapGenerator:
   - name: qbittorrent-loki-rules
     files:

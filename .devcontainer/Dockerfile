@@ -44,8 +44,10 @@ RUN apk add --no-cache \
     chmod +x ./helmfile && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
-    chmod +x ./get_task.sh && \
-    ./get_task.sh -d -b /usr/local/bin/task
+    ./get_task.sh -d -b /usr/local/bin/task && \
+    echo "**** Cleaning temporary directory ****" && \
+    rm -rf /root/.cache /tmp/*
+
 USER nobody:nogroup
 
 WORKDIR /project

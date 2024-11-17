@@ -22,19 +22,21 @@ RUN apk add --no-cache \
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
     chmod 700 get_helm.sh && \
     ./get_helm.sh && \
-    curl -LO https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.linux.amd64 && \
-    curl -LO https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.checksums.txt && \
-    curl -LO https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.checksums.pem && \
-    curl -LO https://github.com/getsops/sops/releases/download/v3.9.1/sops-v3.9.1.checksums.sig && \
-    cosign verify-blob sops-v3.9.1.checksums.txt \
-      --certificate sops-v3.9.1.checksums.pem \
-      --signature sops-v3.9.1.checksums.sig \
+    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 && \
+    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt && \
+    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.pem && \
+    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.sig && \
+    cosign verify-blob sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt \
+      --certificate sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.pem \
+      --signature sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    grep "sops-v3.9.1.linux.amd64" sops-v3.9.1.checksums.txt > checksum-linux-amd64.txt && \
+    grep "sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64" sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt > checksum-linux-amd64.txt && \
     echo "$(cat checksum-linux-amd64.txt)" | sha256sum --check --strict && \
-    mv sops-v3.9.1.linux.amd64 /usr/local/bin/sops && \
-    chmod +x /usr/local/bin/sops
+    mv sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 /usr/local/bin/sops && \
+    chmod +x /usr/local/bin/sops && \
+    curl -sL https://talos.dev/install | sh && \
+    curl -LO https://github.com/helmfile/helmfile/releases/download/v0.169.1/helmfile_0.169.1_checksums.txt
 
 USER nobody:nogroup
 

@@ -31,10 +31,10 @@ RUN apk add --no-cache \
       --signature sops-v3.9.1.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    echo "$(cat sops-v3.9.1.checksums.txt)  sops-v3.9.1.linux.amd64" | sha256sum --check --strict && \
+    grep "sops-v3.9.1.linux.amd64" sops-v3.9.1.checksums.txt > checksum-linux-amd64.txt && \
+    echo "$(cat checksum-linux-amd64.txt) sops-v3.9.1.linux.amd64" | sha256sum --check --strict && \
     mv sops-v3.9.1.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
-
 
 USER nobody:nogroup
 

@@ -8,6 +8,8 @@
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
 
+    "containerUser": "nobody",
+
     "customizations": {
       "vscode": {
         "settings": {},

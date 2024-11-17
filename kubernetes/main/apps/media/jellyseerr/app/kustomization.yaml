@@ -5,4 +5,12 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ../../../../templates/gatus/external
+configMapGenerator:
+  - name: jellyseerr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
+generatorOptions:
+  disableNameSuffixHash: true

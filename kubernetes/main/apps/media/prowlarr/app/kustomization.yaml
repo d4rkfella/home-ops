@@ -5,5 +5,12 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./gatus-config.yaml
-
+configMapGenerator:
+  - name: prowlarr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
+generatorOptions:
+  disableNameSuffixHash: true

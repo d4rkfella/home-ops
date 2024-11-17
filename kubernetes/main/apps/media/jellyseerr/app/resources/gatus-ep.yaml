@@ -1,11 +1,12 @@
 endpoints:
-  - name: "plex"
+  - name: "jellyseerr"
     group: external
-    url: "https://plex.${PUBLIC_DOMAIN}/web"
+    url: "https://requests.${PUBLIC_DOMAIN}/api/v1/status"
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == 200"
+      - "has([BODY].version) == true"
     alerts:
       - type: pushover

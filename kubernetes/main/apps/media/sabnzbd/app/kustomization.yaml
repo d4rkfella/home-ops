@@ -6,12 +6,15 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./volsync.yaml
-  - ./gatus-config.yaml
 configMapGenerator:
   - name: sabnzbd-scripts
     files:
       - post-process.sh=./resources/post-process.sh
+  - name: sabnzbd-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
 generatorOptions:
   disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

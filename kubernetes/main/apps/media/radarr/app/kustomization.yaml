@@ -5,12 +5,15 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./gatus-config.yaml
 configMapGenerator:
   - name: radarr-configmap
     files:
       - pushover-notify.sh=./resources/pushover-notify.sh
+  - name: radarr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
 generatorOptions:
   disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

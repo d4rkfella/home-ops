@@ -1,0 +1,15 @@
+endpoints:
+  - name: "sabnzbd"
+    group: guarded
+    url: "https://sabnzbd.${PUBLIC_DOMAIN}/api?mode=version"
+    interval: 10m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions:
+      - "[STATUS] == 200"
+      - "has([BODY].version) == true"
+    alerts:
+      - type: pushover

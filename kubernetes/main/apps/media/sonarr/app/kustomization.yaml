@@ -11,7 +11,11 @@ configMapGenerator:
     files:
       - pushover-notify.sh=./resources/pushover-notify.sh
       - refresh-series.sh=./resources/refresh-series.sh
+  - name: sonarr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
 generatorOptions:
   disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

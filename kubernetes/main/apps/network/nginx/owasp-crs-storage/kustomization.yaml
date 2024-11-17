@@ -9,7 +9,6 @@ configMapGenerator:
   - name: modsecurity-config
     files:
       - modsecurity.conf=./resources/modsecurity.conf
-      - nginx.tmpl=./resources/nginx.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

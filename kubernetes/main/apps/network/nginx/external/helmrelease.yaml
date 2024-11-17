@@ -86,10 +86,6 @@ spec:
           mountPath: /etc/nginx/modsecurity/modsecurity.conf
           subPath: modsecurity.conf
           readOnly: true
-        #- name: modsecurity-config
-          #mountPath: /etc/nginx/template/nginx.tmpl
-          #subPath: nginx.tmpl
-          #readOnly: false
       replicaCount: 2
       service:
         annotations:
@@ -108,7 +104,7 @@ spec:
       allowSnippetAnnotations: true
       config:
         add-headers: network/custom-headers
-        custom-http-errors: "504,503,502,501,500,429,410,404,403,400"
+        custom-http-errors: "504,500,429,410,404,403,400"
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 50m"
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go

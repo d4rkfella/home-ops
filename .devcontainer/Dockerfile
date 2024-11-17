@@ -47,9 +47,12 @@ RUN apk add --no-cache \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
     chmod +x ./get_task.sh && \
     ./get_task.sh -d -b /usr/local/bin && \
+    mkdir /vscode /project && \
+    chown 1000:1000 /vscode /project && \
+    chmod 700 /vscode /project && \
     echo "**** Cleaning temporary directory ****" && \
     rm -rf /root/.cache /tmp/*
 
-USER nobody:nogroup
+USER 1000:1000
 
 CMD ["/bin/sh"]

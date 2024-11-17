@@ -1,7 +1,7 @@
 endpoints:
-  - name: "${APP}"
+  - name: "radarr"
     group: guarded
-    url: "https://${APP}.${PUBLIC_DOMAIN}${GATUS_PATH:-/}"
+    url: "https://radarr.${PUBLIC_DOMAIN}/ping"
     interval: 10m
     ui:
       hide-hostname: true

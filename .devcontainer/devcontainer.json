@@ -2,7 +2,6 @@
 {
     "name": "Kubernetes Management",
 
-    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:1b4fec3c5bf259480c199e6f7fc49e3b524a7d756ded76b9a80ce73d855aea76",
 
     "workspaceFolder": "/project",
@@ -11,7 +10,7 @@
     "customizations": {
       "vscode": {
         "settings": {},
-        "extensions": ["@signageos/vscode-sops"]
+        "extensions": ["signageos.signageos-vscode-sops","PKief.material-icon-theme","BriteSnow.vscode-toggle-quotes","will-stone.in-any-case","redhat.vscode-yaml","mitchdenny.ecdc","mikestead.dotenv","fcrespo82.markdown-table-formatter","britesnow.vscode-toggle-quotes","albert.TabOut"]
       }
     }
 

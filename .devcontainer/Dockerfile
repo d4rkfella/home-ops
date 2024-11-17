@@ -12,12 +12,7 @@ RUN apk add --no-cache \
     unzip && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
-    if echo "$(cat ./kubectl.sha256)  ./kubectl" | sha256sum --check | grep -q '^kubectl: OK$'; then
-        echo "Checksum verified successfully."
-    else
-        echo "Checksum verification failed!" >&2
-        exit 1
-    fi && \
+    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \

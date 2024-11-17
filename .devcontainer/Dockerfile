@@ -1,5 +1,9 @@
 FROM alpine:3.20@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e017a4b4a
 
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
 WORKDIR /tmp
 
 RUN apk add --no-cache \
@@ -14,7 +18,13 @@ RUN apk add --no-cache \
     git \
     github-cli \
     libstdc++ \
-    unzip && \
+    unzip \
+    sudo && \
+    addgroup -g $USER_GID $USERNAME && \
+    adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
+    \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
@@ -49,5 +59,7 @@ RUN apk add --no-cache \
     ./get_task.sh -d -b /usr/local/bin && \
     echo "**** Cleaning temporary directory ****" && \
     rm -rf /root/.cache /tmp/*
+
+USER $USERNAME
 
 CMD ["/bin/sh"]

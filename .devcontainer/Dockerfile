@@ -18,13 +18,9 @@ RUN apk add --no-cache \
     git \
     github-cli \
     libstdc++ \
-    unzip \
-    sudo && \
+    unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    \
-    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
-    chmod 0440 /etc/sudoers.d/$USERNAME && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
@@ -61,5 +57,3 @@ RUN apk add --no-cache \
     rm -rf /root/.cache /tmp/*
 
 USER $USERNAME
-
-CMD ["/bin/sh"]

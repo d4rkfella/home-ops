@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     ca-certificates \
     git \
     github-cli \
+    libstdc++ \
     unzip && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
@@ -49,8 +50,7 @@ RUN apk add --no-cache \
     echo "**** Cleaning temporary directory ****" && \
     rm -rf /root/.cache /tmp/*
 
-USER nobody:nogroup
-
+USER root:root
 WORKDIR /project
 VOLUME ["/project"]
 

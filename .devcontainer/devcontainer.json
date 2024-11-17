@@ -3,12 +3,12 @@
     "name": "Kubernetes Management",
 
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:7e2676bb352484a40941fcd393fa28b94c5d8cc0e9bce0f663c651e61262933a",
+    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:e36942b043612fdefa2f90e6801da28c59619b5634fa17dc42facabcb77469d7",
 
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
 
-    "remoteUser": "nobody",
+    "remoteUser": "65534",
 
     "customizations": {
       "vscode": {

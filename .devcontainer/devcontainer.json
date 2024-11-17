@@ -3,7 +3,7 @@
     "name": "Kubernetes Management",
 
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:f7018816c6c70b533f460c46a92495d7bc756d37597aad787eced203a2718a92",
+    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:ec3466ced8bb6590f66b6dbffb8b83fbbc888992b4041eb16dcdec0620292f19",
 
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",

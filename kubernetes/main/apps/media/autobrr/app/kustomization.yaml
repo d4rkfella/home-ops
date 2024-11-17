@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./gatus-config.yaml
 configMapGenerator:
   - name: autobrr-loki-rules
     files:
@@ -13,5 +12,11 @@ configMapGenerator:
     options:
       labels:
         loki_rule: "true"
+  - name: autobrr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
 generatorOptions:
   disableNameSuffixHash: true

@@ -1,5 +1,5 @@
 endpoints:
-  - name: "sabnzbd"
+  - name: "SABnzbd"
     group: guarded
     url: "https://sabnzbd.${PUBLIC_DOMAIN}/api?mode=version"
     interval: 10m

@@ -1,5 +1,5 @@
 endpoints:
-  - name: "vaultwarden"
+  - name: "Vaultwarden"
     group: external
     url: "https://vaultwarden.${PUBLIC_DOMAIN}/alive"
     interval: 1m

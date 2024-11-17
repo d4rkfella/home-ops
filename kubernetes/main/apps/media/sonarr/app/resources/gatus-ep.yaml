@@ -1,5 +1,5 @@
 endpoints:
-  - name: "sonarr"
+  - name: "Sonarr"
     group: guarded
     url: "https://sonarr.${PUBLIC_DOMAIN}/ping"
     interval: 10m

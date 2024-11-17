@@ -1,5 +1,5 @@
 endpoints:
-  - name: "qbittorrent"
+  - name: "qBittorrent"
     group: guarded
     url: "https://qbittorrent.${PUBLIC_DOMAIN}/api/v2/app/version"
     interval: 5m

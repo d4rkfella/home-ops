@@ -1,5 +1,5 @@
 endpoints:
-  - name: "jellyseerr"
+  - name: "Jellyseerr"
     group: external
     url: "https://requests.${PUBLIC_DOMAIN}/api/v1/status"
     interval: 1m

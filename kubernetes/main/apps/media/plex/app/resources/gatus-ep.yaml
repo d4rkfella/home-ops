@@ -1,5 +1,5 @@
 endpoints:
-  - name: "plex"
+  - name: "Plex Media Server"
     group: external
     url: "https://plex.${PUBLIC_DOMAIN}/web"
     interval: 1m

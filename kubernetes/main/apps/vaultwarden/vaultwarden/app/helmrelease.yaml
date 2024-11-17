@@ -1,0 +1,153 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vaultwarden
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: vaultwarden
+      version: 0.29.4
+      sourceRef:
+        kind: HelmRepository
+        name: vaultwarden
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  valuesFrom:
+    - targetPath: smtp.from
+      kind: Secret
+      name: vaultwarden-secret
+      valuesKey: SMTP_SENDER
+  values:
+    image:
+      registry: docker.io
+      repository: vaultwarden/server
+      tag: 1.32.4-alpine@sha256:3eda23498a8199e58e81b01f68a3f028830224ed6f5651c8f0be33e15e5db0b7
+      pullPolicy: IfNotPresent
+    commonAnnotations:
+      reloader.stakater.com/auto: "true"
+    initContainers:
+      - name: init-db
+        image: ghcr.io/onedr0p/postgres-init:16.4@sha256:e41c745b54485341e00efbd27556f0717623a119f0d5107e5ff831aa1322c76f
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: vaultwarden-secret
+    podSecurityContext:
+    securityContext:
+      allowPrivilegeEscalation: false
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsGroup: 1001
+      runAsUser: 1001
+      capabilities:
+        drop:
+          - ALL
+    data:
+      name: vaultwarden-data
+      size: 15Gi
+      path: /data
+      keepPvc: false
+      accessMode: ReadWriteOnce
+    attachments:
+      name: vaultwarden-files
+      size: 100Gi
+      path: /files
+      keepPvc: false
+      accessMode: ReadWriteOnce
+    webVaultEnabled: true
+    database:
+      type: postgresql
+      existingSecret: &secret vaultwarden-secret
+      existingSecretKey: VAULTWARDEN_DATABASE_URI
+    eventsDayRetain: 14
+    domain: https://vaultwarden.${PUBLIC_DOMAIN}
+    sendsAllowed: true
+    trashAutoDeleteDays: 14
+    signupsAllowed: true
+    signupsVerify: true
+    signupDomains: ${PUBLIC_DOMAIN}
+    invitationsAllowed: true
+    invitationOrgName: Vaultwarden
+    ipHeader: X-Real-IP
+    iconBlacklistNonGlobalIps: true
+    requireDeviceEmail: true
+    adminToken:
+      existingSecret: *secret
+      existingSecretKey: VAULTWARDEN_ADMIN_TOKEN
+      value: {}
+    timeZone: Europe/Sofia
+    smtp:
+      existingSecret: *secret
+      host: smtp-relay.brevo.com
+      security: starttls
+      port: 587
+      fromName: DarkfellaNET
+      username:
+        existingSecretKey: SMTP_USERNAME
+      password:
+        existingSecretKey: SMTP_VAULTWARDEN_PASS
+      authMechanism: Login
+    ingress:
+      enabled: true
+      class: external
+      nginxIngressAnnotations: true
+      additionalAnnotations:
+        nginx.ingress.kubernetes.io/configuration-snippet: |
+          more_set_headers "access-control-allow-origin https://vaultwarden.${PUBLIC_DOMAIN}";
+        external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+        nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+        nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+        nginx.ingress.kubernetes.io/auth-snippet: |
+          # Bypass authentication for specific paths
+          if ($request_uri ~* "^/$") {
+            return 200;
+          }
+          if ($request_uri ~* "^/.*\.js") {
+            return 200;
+          }
+          if ($request_uri ~* "^/#/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/#/login") {
+            return 200;
+          }
+          if ($request_uri ~* "^/#/2fa") {
+            return 200;
+          }
+          if ($request_uri ~* "^/#/vault") {
+            return 200;
+          }
+          if ($request_uri ~* "^/api/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/images/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/identity/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/app/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/locales/.*") {
+            return 200;
+          }
+          if ($request_uri ~* "^/alive") {
+            return 200;
+          }
+      hostname: vaultwarden.${PUBLIC_DOMAIN}
+      path: /
+      pathType: Prefix

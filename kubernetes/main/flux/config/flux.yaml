@@ -1,0 +1,177 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: flux-manifests
+  namespace: flux-system
+spec:
+  interval: 10m
+  url: oci://ghcr.io/fluxcd/flux-manifests
+  ref:
+    tag: v2.4.0
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./
+  prune: true
+  wait: true
+  sourceRef:
+    kind: OCIRepository
+    name: flux-manifests
+  patches:
+    # Remove image automation and image reflector controllers
+    - patch: |
+        $patch: delete
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+      target:
+        kind: Deployment
+        name: (image-automation-controller|image-reflector-controller)
+    # Remove the built-in network policies
+    - patch: |
+        $patch: delete
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        metadata:
+          name: all
+      target:
+        group: networking.k8s.io
+        kind: NetworkPolicy
+    # Increase the number of workers and limits
+    # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#increase-the-number-of-workers-and-limits
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --concurrent=10
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --requeue-dependency=5s
+      target:
+        kind: Deployment
+        name: (kustomize-controller|helm-controller|source-controller)
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: all
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  resources:
+                    limits:
+                      memory: 2Gi
+      target:
+        kind: Deployment
+        name: (kustomize-controller|helm-controller|source-controller)
+    # Enable in-memory kustomize builds
+    # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#enable-in-memory-kustomize-builds
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --concurrent=20
+        - op: replace
+          path: /spec/template/spec/volumes/0
+          value:
+            name: temp
+            emptyDir:
+              medium: Memory
+      target:
+        kind: Deployment
+        name: kustomize-controller
+    # Enable Helm repositories caching
+    # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#enable-helm-repositories-caching
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-max-size=10
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-ttl=60m
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --helm-cache-purge-interval=5m
+      target:
+        kind: Deployment
+        name: source-controller
+    # Flux near OOM detection for Helm
+    # Ref: https://fluxcd.io/flux/installation/configuration/helm-oom-detection/
+    - patch: |
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --feature-gates=OOMWatch=true
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --oom-watch-memory-threshold=95
+        - op: add
+          path: /spec/template/spec/containers/0/args/-
+          value: --oom-watch-interval=500ms
+      target:
+        kind: Deployment
+        name: helm-controller
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: kustomize-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  image: ghcr.io/fluxcd/kustomize-controller:v1.4.0@sha256:e3b0cf847e9cdf47b19af0fbcfe22786b80b598e0caeea8b6d2a5f9c26a48a24
+      target:
+        kind: Deployment
+        name: kustomize-controller
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: helm-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  image: ghcr.io/fluxcd/helm-controller:v1.1.0@sha256:4c75ca6c24ceb1f1bd7e935d9287a93e4f925c512f206763ec5a47de3ef3ff48
+      target:
+        kind: Deployment
+        name: helm-controller
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: source-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  image: ghcr.io/fluxcd/source-controller:v1.4.1@sha256:3c5f0f022f990ffc0daf00e5b199548fc0fa6e7119e972318f0267081a332963
+      target:
+        kind: Deployment
+        name: source-controller
+    - patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: notification-controller
+        spec:
+          template:
+            spec:
+              containers:
+                - name: manager
+                  image: ghcr.io/fluxcd/notification-controller:v1.4.0@sha256:425309a159b15e07f7d97622effc79bc432a37ed55289dd465d37fa217a92a7d
+      target:
+        kind: Deployment
+        name: notification-controller

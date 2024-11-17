@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "qbittorrent-gatus-ep"
+  labels:
+    gatus.io/enabled: "true"
+data:
+  config.yaml: |
+    endpoints:
+      - name: "qbittorrent-version"
+        group: guarded
+        url: "https://qbittorrent.${PUBLIC_DOMAIN}/api/v2/app/version"
+        interval: 5m
+        ui:
+          hide-hostname: true
+          hide-url: true
+        conditions:
+          - "[STATUS] == 403"
+        alerts:
+          - type: pushover
+        headers:
+          Accept: application/json

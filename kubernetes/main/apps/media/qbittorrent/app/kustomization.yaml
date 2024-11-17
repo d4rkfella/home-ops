@@ -29,6 +29,6 @@ configMapGenerator:
       labels:
         gatus.io/enabled: "true"
     files:
-      - config.yaml=./resources/qbittorrent-gatus-ep.yaml
+      - config.yaml=./resources/gatus-ep.yaml
 generatorOptions:
   disableNameSuffixHash: true

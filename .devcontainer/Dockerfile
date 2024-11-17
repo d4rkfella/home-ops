@@ -36,7 +36,9 @@ RUN apk add --no-cache \
     mv sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops && \
     curl -sL https://talos.dev/install | sh && \
-    curl -LO https://github.com/helmfile/helmfile/releases/download/v0.169.1/helmfile_0.169.1_checksums.txt
+    curl -LO https://github.com/helmfile/helmfile/releases/download/$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name')/helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt && \
+    curl -LO https://github.com/helmfile/helmfile/releases/download/$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name')/helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz && \
+    echo "$(cat helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt)" | sha256sum --check --strict
 
 USER nobody:nogroup
 

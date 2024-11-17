@@ -50,7 +50,6 @@ RUN apk add --no-cache \
     rm -rf /root/.cache /tmp/*
 
 USER nobody:nogroup
-
 WORKDIR /project
 VOLUME ["/project"]
 

@@ -54,13 +54,13 @@ spec:
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
             - name: API_URL
-              value: "https://crowdsec-service.network.svc.cluster.local:8080"
+              value: "http://crowdsec-service.network.svc.cluster.local:8080"
             - name: BAN_TEMPLATE_PATH
               value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
             - name: UPDATE_FREQUENCY
               value: "60"
             - name: MODE
-              value: stream
+              value: live
             - name: API_KEY
               valueFrom:
                 secretKeyRef:

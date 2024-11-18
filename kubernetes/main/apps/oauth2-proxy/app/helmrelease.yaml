@@ -68,7 +68,7 @@ spec:
         whitelist_domains = ".${PUBLIC_DOMAIN}"
         backend_logout_url = "https://auth.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
         skip_provider_button = true
-        cookie_expire = "60m"
+        cookie_expire = "30m"
         cookie_refresh = "1m"
       # Custom configuration file: oauth2_proxy.cfg
       # configFile: |-

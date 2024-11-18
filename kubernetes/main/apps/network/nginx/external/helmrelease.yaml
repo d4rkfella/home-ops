@@ -66,17 +66,17 @@ spec:
                 secretKeyRef:
                   name: nginx-external-secret
                   key: API_KEY
-          securityContext:
-            capabilities:
-              drop:
+          #securityContext:
+            #capabilities:
+              #drop:
                 - ALL
-            runAsUser: 10001
-            runAsGroup: 10001
-            privileged: false
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
+            #runAsUser: 10001
+            #runAsGroup: 10001
+            #privileged: false
+            #allowPrivilegeEscalation: false
+            #runAsNonRoot: true
+            #seccompProfile:
+              #type: RuntimeDefault
           volumeMounts:
           - name: crowdsec-bouncer-plugin
             mountPath: /lua_plugins

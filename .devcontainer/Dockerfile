@@ -62,7 +62,6 @@ RUN apk add --no-cache \
     rm -rf /root/.cache /tmp/*
 
 WORKDIR /project
-
 USER $USERNAME
 
 CMD ["/bin/bash"]

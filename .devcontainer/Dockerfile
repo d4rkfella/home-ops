@@ -21,6 +21,7 @@ RUN apk add --no-cache \
     github-cli \
     libstdc++ \
     direnv \
+    yq \
     unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
@@ -31,7 +32,7 @@ RUN apk add --no-cache \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
-    chmod 700 get_helm.sh && \
+    chmod +x get_helm.sh && \
     ./get_helm.sh && \
     curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 && \
     curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt && \

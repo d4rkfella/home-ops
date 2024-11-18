@@ -35,10 +35,6 @@ spec:
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}
-        #- name: crowdsec-bouncer-config
-          #secret:
-            #secretName: crowdsec-bouncer-config
-            #defaultMode: 292
         #- name: owasp-crs
           #persistentVolumeClaim:
             #claimName: nfs-pvc
@@ -83,10 +79,6 @@ spec:
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
           readOnly: true
-        #- name: crowdsec-bouncer-config
-          #mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
-          #subPath: crowdsec-bouncer.conf
-          #readOnly: true
         #- mountPath: /etc/nginx/owasp-modsecurity-crs
           #name: owasp-crs
           #readOnly: false
@@ -113,7 +105,7 @@ spec:
       config:
         custom-http-errors: "504,500,429,410,404,403,400"
         plugins: "crowdsec"
-        lua-shared-dicts: "crowdsec_cache: 50m"
+        lua-shared-dicts: "crowdsec_cache: 100m"
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
         client-body-buffer-size: 100M
         client-body-timeout: 120

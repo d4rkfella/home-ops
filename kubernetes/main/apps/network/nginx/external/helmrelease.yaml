@@ -58,7 +58,7 @@ spec:
             - name: BAN_TEMPLATE_PATH
               value: /etc/nginx/lua/plugins/crowdsec/templates/ban.html
             - name: UPDATE_FREQUENCY
-              value: 60
+              value: "60"
             - name: MODE
               value: stream
             - name: API_KEY

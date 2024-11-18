@@ -65,3 +65,4 @@ WORKDIR /project
 USER $USERNAME
 
 CMD ["/bin/bash"]
+

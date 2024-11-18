@@ -52,7 +52,7 @@ spec:
           command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
           env:
             - name: BOUNCER_CONFIG
-              value: "/tmp/crowdsec-bouncer.conf"
+              value: "/crowdsec/crowdsec-bouncer.conf"
             - name: API_URL
               value: "https://crowdsec-service.network.svc.cluster.local:8080"
             - name: BAN_TEMPLATE_PATH

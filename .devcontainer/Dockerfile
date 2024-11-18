@@ -4,6 +4,8 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+ENV SHELL=/bin/bash
+
 WORKDIR /tmp
 
 RUN apk add --no-cache \
@@ -22,6 +24,7 @@ RUN apk add --no-cache \
     unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
+    echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \

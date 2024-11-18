@@ -8,7 +8,8 @@ ENV SHELL=/bin/bash
 
 WORKDIR /tmp
 
-RUN apk add --no-cache \
+RUN echo "**** Installing packages ****" && \ 
+    apk add --no-cache \
     coreutils \
     curl \
     cosign \
@@ -23,9 +24,12 @@ RUN apk add --no-cache \
     direnv \
     yq \
     unzip && \
+    echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
+    echo "**** Adding direnv hook ****" && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
+    echo "**** Installing binaries ****" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
@@ -58,11 +62,11 @@ RUN apk add --no-cache \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
     chmod +x ./get_task.sh && \
     ./get_task.sh -d -b /usr/local/bin && \
-    echo "**** Cleaning temporary directory ****" && \
+    echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 
 WORKDIR /project
+
 USER $USERNAME
 
 CMD ["/bin/bash"]
-

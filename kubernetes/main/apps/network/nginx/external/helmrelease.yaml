@@ -72,7 +72,7 @@ spec:
                 - ALL
             privileged: false
             allowPrivilegeEscalation: false
-            runAsNonRoot: true
+            runAsNonRoot: false
             seccompProfile:
               type: RuntimeDefault
           volumeMounts:

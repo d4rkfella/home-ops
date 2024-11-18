@@ -35,10 +35,10 @@ spec:
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}
-        - name: crowdsec-bouncer-config
-          secret:
-            secretName: crowdsec-bouncer-config
-            defaultMode: 292
+        #- name: crowdsec-bouncer-config
+          #secret:
+            #secretName: crowdsec-bouncer-config
+            #defaultMode: 292
         #- name: owasp-crs
           #persistentVolumeClaim:
             #claimName: nfs-pvc
@@ -53,6 +53,19 @@ spec:
           env:
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
+            - name: API_URL
+              value: "https://crowdsec-service.network.svc.cluster.local:8080"
+            - name: BAN_TEMPLATE_PATH
+              value: /etc/nginx/lua/plugins/crowdsec/templates/ban.html
+            - name: UPDATE_FREQUENCY
+              value: 60
+            - name: MODE
+              value: stream
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nginx-external-secret
+                  key: API_KEY
           securityContext:
             capabilities:
               drop:
@@ -72,10 +85,10 @@ spec:
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
           readOnly: true
-        - name: crowdsec-bouncer-config
-          mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
-          subPath: crowdsec-bouncer.conf
-          readOnly: true
+        #- name: crowdsec-bouncer-config
+          #mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
+          #subPath: crowdsec-bouncer.conf
+          #readOnly: true
         #- mountPath: /etc/nginx/owasp-modsecurity-crs
           #name: owasp-crs
           #readOnly: false
@@ -100,7 +113,6 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        add-headers: network/custom-headers
         custom-http-errors: "504,500,429,410,404,403,400"
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 50m"

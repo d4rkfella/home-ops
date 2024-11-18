@@ -39,12 +39,12 @@ spec:
           secret:
             secretName: crowdsec-bouncer-config
             defaultMode: 292
-        - name: owasp-crs
-          persistentVolumeClaim:
-            claimName: nfs-pvc
-        - name: modsecurity-config
-          configMap:
-            name: modsecurity-config
+        #- name: owasp-crs
+          #persistentVolumeClaim:
+            #claimName: nfs-pvc
+        #- name: modsecurity-config
+          #configMap:
+            #name: modsecurity-config
       extraInitContainers:
         - name: init-clone-crowdsec-bouncer
           image: crowdsecurity/lua-bouncer-plugin:v1.0.5@sha256:90f5c611bebbbe89b8aef3218dad1df3bd9fbe51554024384b56026c69c55925
@@ -76,13 +76,13 @@ spec:
           mountPath: /etc/nginx/lua/plugins/crowdsec/crowdsec-bouncer.conf
           subPath: crowdsec-bouncer.conf
           readOnly: true
-        - mountPath: /etc/nginx/owasp-modsecurity-crs
-          name: owasp-crs
-          readOnly: false
-        - name: modsecurity-config
-          mountPath: /etc/nginx/modsecurity/modsecurity.conf
-          subPath: modsecurity.conf
-          readOnly: true
+        #- mountPath: /etc/nginx/owasp-modsecurity-crs
+          #name: owasp-crs
+          #readOnly: false
+        #- name: modsecurity-config
+          #mountPath: /etc/nginx/modsecurity/modsecurity.conf
+          #subPath: modsecurity.conf
+          #readOnly: true
       replicaCount: 2
       service:
         annotations:

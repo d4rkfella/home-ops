@@ -17,14 +17,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Extract Alpine Version from Dockerfile
-      id: extract_version
-      run: |
-        # Extract the version from the 'builder' line in the Dockerfile
-        ALPINE_VERSION=$(grep -oP '(?<=^FROM alpine:)[\d\.]+(?:-\d+)?' .devcontainer/Dockerfile | head -n 1)
-        ALPINE_VERSION=$(echo $ALPINE_VERSION | xargs)
-        echo "Alpine version: $ALPINE_VERSION"
-        echo "ALPINE_VERSION=$ALPINE_VERSION" >> $GITHUB_ENV
+    - name: Image version
+      shell: bash
+      run: echo "VERSION=$(cat .devcontainer/version.txt" >> $GITHUB_ENV
+
+    - name: Lowercase repository owner
+      shell: bash
+      run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -36,23 +35,13 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
 
-    - name: Convert Repository Name to Lowercase
-      id: lowercase_repo
-      run: |
-        # Convert the GitHub repository name to lowercase
-        LOWERCASE_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-        echo "Lowercase repository name: $LOWERCASE_REPO"
-        echo "LOWERCASE_REPO=$LOWERCASE_REPO" >> $GITHUB_ENV
-
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v6
       with:
         push: true
         tags: |
-            ghcr.io/${{ env.LOWERCASE_REPO }}:latest
-            ghcr.io/${{ env.LOWERCASE_REPO }}:${{ env.ALPINE_VERSION }}
+            ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:latest
+            ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:${{ env.VERSION }}
         platforms: linux/amd64
-        build-args: |
-          ALPINE_VERSION=${{ env.ALPINE_VERSION }}
         file: .devcontainer/Dockerfile
         context: .

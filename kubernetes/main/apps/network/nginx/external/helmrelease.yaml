@@ -69,7 +69,7 @@ spec:
           #securityContext:
             #capabilities:
               #drop:
-                - ALL
+                #- ALL
             #runAsUser: 10001
             #runAsGroup: 10001
             #privileged: false

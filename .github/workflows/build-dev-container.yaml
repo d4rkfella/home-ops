@@ -19,7 +19,7 @@ jobs:
 
     - name: Image version
       shell: bash
-      run: echo "VERSION=$(cat .devcontainer/version.txt" >> $GITHUB_ENV
+      run: echo "VERSION=$(cat .devcontainer/version.txt") >> $GITHUB_ENV
 
     - name: Lowercase repository owner
       shell: bash

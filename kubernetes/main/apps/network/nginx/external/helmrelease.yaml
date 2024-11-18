@@ -52,11 +52,11 @@ spec:
           command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
           env:
             - name: BOUNCER_CONFIG
-              value: "/crowdsec/crowdsec-bouncer.conf"
+              value: "/lua_plugins/crowdsec/crowdsec-bouncer.conf"
             - name: API_URL
               value: "https://crowdsec-service.network.svc.cluster.local:8080"
             - name: BAN_TEMPLATE_PATH
-              value: /etc/nginx/lua/plugins/crowdsec/templates/ban.html
+              value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
             - name: UPDATE_FREQUENCY
               value: "60"
             - name: MODE

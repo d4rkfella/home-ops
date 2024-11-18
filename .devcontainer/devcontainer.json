@@ -2,16 +2,65 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:99fdf0103c135c00c9b84373373a613a477386475c02861446968b1253097013",
+    "image": "ghcr.io/darkfella91/home-ops:3.20@sha256:c783f8d42a11166ad9ce8b865ec3834cbccfd3bfd147b603102243d8fb17727a",
 
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
 
     "customizations": {
       "vscode": {
-        "settings": {},
-        "extensions": ["signageos.signageos-vscode-sops","PKief.material-icon-theme","BriteSnow.vscode-toggle-quotes","will-stone.in-any-case","redhat.vscode-yaml","mitchdenny.ecdc","mikestead.dotenv","fcrespo82.markdown-table-formatter","albert.TabOut"]
+        "settings": {
+            "editor.bracketPairColorization.enabled": true,
+            "editor.fontFamily": "FiraCode Nerd Font",
+            "editor.fontLigatures": true,
+            "editor.guides.bracketPairs": true,
+            "editor.guides.bracketPairsHorizontal": true,
+            "editor.guides.highlightActiveBracketPair": true,
+            "editor.hover.delay": 1500,
+            "editor.rulers": [
+                100
+            ],
+            "editor.stickyScroll.enabled": false,
+            "explorer.autoReveal": false,
+            "files.associations": {
+                "**/*.json5": "jsonc"
+            },
+            "files.trimTrailingWhitespace": true,
+            "material-icon-theme.files.associations": {
+                "*.secret.sops.env": "lock",
+                "*.secret.sops.yaml": "lock"
+            },
+            "material-icon-theme.folders.associations": {
+                ".archive": "archive",
+                ".github/workflows": "robot",
+                "actions-runner-system": "github",
+                "cert-manager": "guard",
+                "default": "home",
+                "digester-system": "hook",
+                "external-secrets": "secure",
+                "flux-system": "pipe",
+                "kube-system": "kubernetes",
+                "monitoring": "event",
+                "network": "connection",
+                "networking": "connection",
+                "observability": "event",
+                "rook-ceph": "base",
+                "storage": "dump",
+                "system-upgrade": "update",
+                "tools": "tools",
+                "volsync": "aws"
+            },
+            "sops.defaults.ageKeyFile": "age.key",
+            "vs-kubernetes.vs-kubernetes.kubeconfig": "./kubeconfig",
+            "vs-kubernetes.vs-kubernetes.knownKubeconfigs": [
+                "./kubeconfig"
+            ],
+            "yaml.schemaStore.enable": true,
+            "yaml.schemas": {
+                "kubernetes": "./kubernetes/**/*.yaml"
+            }
+        },
+        "extensions": ["signageos.signageos-vscode-sops","PKief.material-icon-theme","BriteSnow.vscode-toggle-quotes","redhat.vscode-yaml","mitchdenny.ecdc","mikestead.dotenv","fcrespo82.markdown-table-formatter","albert.TabOut"]
       }
     }
-
   }

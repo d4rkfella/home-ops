@@ -32,9 +32,6 @@ spec:
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
-      podAnnotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "10254"
       extraVolumes:
         - name: crowdsec-bouncer-plugin
           emptyDir: {}
@@ -118,7 +115,7 @@ spec:
         hsts-max-age: 31536000
         force-ssl-redirect: "true"
         keep-alive-requests: 10000
-        keep-alive: 10
+        keep-alive: 120
         log-format-escape-json: "true"
         log-format-upstream: >
           {"time": "$time_iso8601",

@@ -26,10 +26,10 @@ spec:
     annotations:
       reloader.stakater.com/auto: "true"
     extraSecretMounts:
-      - name: auth-generic-oauth-secret-mount
-        secretName: auth-generic-oauth-secret
+      - name: oauth-client-credentials
+        secretName: grafana-oauth-client-secret
         defaultMode: 0440
-        mountPath: /etc/secrets/auth_generic_oauth
+        mountPath: /etc/secrets/oauth-client-credentials
         readOnly: true
     deploymentStrategy:
       type: Recreate
@@ -52,13 +52,13 @@ spec:
           email_attribute_path: email
           login_attribute_path: preferred_username
           name_attribute_path: name
-          client_id: "$__file{/etc/secrets/auth_generic_oauth/client_id}"
-          client_secret: "$__file{/etc/secrets/auth_generic_oauth/client_secret}"
+          client_id: "$__file{/etc/secrets/oauth-client-credentials/client_id}"
+          client_secret: "$__file{/etc/secrets/oauth-client-credentials/client_secret}"
           scopes: "openid email profile roles"
-          auth_url: "https://auth.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/auth"
-          token_url: "https://auth.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/token"
-          api_url: "https://auth.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/userinfo"
-          signout_redirect_url: "https://auth.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.${PUBLIC_DOMAIN}%2Flogin"
+          auth_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/auth"
+          token_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/token"
+          api_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/userinfo"
+          signout_redirect_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.${PUBLIC_DOMAIN}%2Flogin"
           role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
           role_attribute_strict: true
           allow_assign_grafana_admin: true
@@ -241,8 +241,16 @@ spec:
       enabled: true
       annotations:
         external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+        cert-manager.io/cluster-issuer: zerossl-prod
+        cert-manager.io/private-key-rotation-policy: Always
+        cert-manager.io/private-key-algorithm: ECDSA
+        cert-manager.io/private-key-size: "384"
       ingressClassName: internal
-      hosts: ["grafana.${PUBLIC_DOMAIN}"]
+      tls:
+        - hosts:
+            - &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+          secretName: grafana-tls
+      hosts: *host
     persistence:
       enabled: false
     testFramework:

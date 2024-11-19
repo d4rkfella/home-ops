@@ -88,7 +88,7 @@ spec:
           user:     $${DB_USER}
           password: $${DB_PASSWORD}
           db_name:  crowdsec
-          host:     postgres17-rw.database
+          host:     postgres17-rw.database.svc.cluster.local
           port:     5432
           sslmode:  require
 

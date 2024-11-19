@@ -5,8 +5,15 @@ metadata:
   namespace: oauth2-proxy
   annotations:
     external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+    cert-manager.io/cluster-issuer: zerossl-prod
+    cert-manager.io/private-key-rotation-policy: always
+    cert-manager.io/private-key-algorithm: Ed25519
 spec:
   ingressClassName: external
+  tls:
+    - hosts:
+        - "*.${PUBLIC_DOMAIN}"
+      secretName: oauth2-proxy-tls
   rules:
     - host: vaultwarden.${PUBLIC_DOMAIN}
       http:

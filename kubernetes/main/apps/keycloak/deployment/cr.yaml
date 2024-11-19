@@ -28,7 +28,7 @@ spec:
   proxy:
     headers: xforwarded
   hostname:
-    hostname: https://auth.${PUBLIC_DOMAIN}
+    hostname: https://accounts.${PUBLIC_DOMAIN}
   http:
     httpEnabled: false
     httpsPort: 443

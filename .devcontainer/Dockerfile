@@ -3,6 +3,7 @@ FROM alpine:3.20@sha256:1e42bbe2508154c9126d48c2b8a75420c3544343bf86fd041fb7527e
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
+ARG FLUX_VERSION=2.4.0
 
 ENV SHELL=/bin/bash
 
@@ -62,7 +63,7 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
     chmod +x ./get_task.sh && \
     ./get_task.sh -d -b /usr/local/bin && \
-    curl -s https://fluxcd.io/install.sh | FLUX_VERSION=2.0.0 bash && \
+    curl -s https://fluxcd.io/install.sh | FLUX_VERSION=$FLUX_VERSION bash && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

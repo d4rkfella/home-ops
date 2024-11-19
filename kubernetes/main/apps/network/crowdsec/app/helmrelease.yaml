@@ -139,6 +139,7 @@ spec:
         - name: initdb
           image: "ghcr.io/onedr0p/postgres-init:16.5@sha256:53fa938cfe6d2dae23b120145362341950f1154bf9d0e7f2ec4e471d61624f79"
           imagePullPolicy: IfNotPresent
+
           envFrom:
             - secretRef:
                 name: &secret crowdsec-secret
@@ -146,6 +147,7 @@ spec:
       persistentVolume:
         data:
           enabled: false
+
         config:
           enabled: false
 
@@ -153,12 +155,16 @@ spec:
 
       ingress:
         enabled: true
+
         annotations:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           cert-manager.io/cluster-issuer: zerossl-prod
+
         ingressClassName: internal
+
         host: &host "crowdsec-api.${PUBLIC_DOMAIN}"
+
         tls:
           - hosts:
             - *host

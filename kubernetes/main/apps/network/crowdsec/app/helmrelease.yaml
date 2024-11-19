@@ -118,7 +118,7 @@ spec:
 
       env:
         - name: LOCAL_API_URL
-          value: &host "https://crowdsec-api.${PUBLIC_DOMAIN}"
+          value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
 
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
@@ -155,7 +155,7 @@ spec:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           cert-manager.io/cluster-issuer: zerossl-prod
         ingressClassName: internal
-        host: *host
+        host: &host "crowdsec-api.${PUBLIC_DOMAIN}"
         tls:
           - hosts:
             - *host

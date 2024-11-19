@@ -119,7 +119,7 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
-        className: internal
+        className: external
         tls:
           - hosts:
               - &host "status.${PUBLIC_DOMAIN}"

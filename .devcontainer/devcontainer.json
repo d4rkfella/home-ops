@@ -53,7 +53,7 @@
                 "kubernetes/main": "kubernetes",
                 "talos": "linux"
             },
-            "sops.defaults.ageKeyFile": "age.key",
+            "sops.defaults.ageKeyFile": "./age.key",
             "yaml.schemaStore.enable": true,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"

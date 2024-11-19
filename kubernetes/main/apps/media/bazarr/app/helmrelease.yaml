@@ -161,7 +161,7 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: keycloak-tls
+            secretName: bazarr-tls
     persistence:
       add-ons:
         type: emptyDir

@@ -62,6 +62,12 @@ spec:
                 secretKeyRef:
                   name: nginx-external-secret
                   key: BOUNCER_API_KEY
+            - name: APPSEC_URL
+              value: "https://crowdsec-appsec.${PUBLIC_DOMAIN}"
+            - name: SSL_VERIFY
+              value: true
+            - name: APPSEC_FAILURE_ACTION
+              value: deny
           securityContext:
             capabilities:
               drop:

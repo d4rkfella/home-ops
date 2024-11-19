@@ -61,7 +61,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: nginx-external-secret
-                  key: BOUNCER_KEY_NGINX_EXTERNAL
+                  key: BOUNCER_API_KEY
           securityContext:
             capabilities:
               drop:

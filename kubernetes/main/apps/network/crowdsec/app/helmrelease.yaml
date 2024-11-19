@@ -181,6 +181,12 @@ spec:
               name: *secret
               key: INIT_POSTGRES_USER
 
+        - name: BOUNCER_KEY_NGINX_EXTERNAL
+          valueFrom:
+            secretKeyRef:
+              name: *secret
+              key: BOUNCER_KEY_NGINX_EXTERNAL
+
       metrics:
         enabled: true
         serviceMonitor:

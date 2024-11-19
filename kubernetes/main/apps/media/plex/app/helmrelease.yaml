@@ -103,9 +103,17 @@ spec:
             add_header x-frame-options sameorigin;
             add_header x-content-type-options "nosniff" always;
             more_set_headers "access-control-allow-origin https://plex.${PUBLIC_DOMAIN}";
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
         className: external
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+            secretName: plex-tls
         hosts:
-          - host: "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+          - host: *host
             paths:
               - path: /
                 pathType: ImplementationSpecific

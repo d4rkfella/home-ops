@@ -115,9 +115,17 @@ spec:
           nginx.ingress.kubernetes.io/configuration-snippet: |
             more_set_headers "access-control-allow-origin https://status.${PUBLIC_DOMAIN}";
             more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-vOq0p1C22jhkdRTdIHA8DSPgcwXkh5mq8FK4cumu/wU='; style-src https://status.${PUBLIC_DOMAIN}/css/app.css; img-src 'self'; connect-src https://status.${PUBLIC_DOMAIN}; manifest-src 'self'";
-        className: external
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: internal
+        tls:
+          - hosts:
+              - &host "status.${PUBLIC_DOMAIN}"
+            secretName: gatus-tls
         hosts:
-          - host: status.${PUBLIC_DOMAIN}
+          - host: *host
             paths:
               - path: /
                 service:

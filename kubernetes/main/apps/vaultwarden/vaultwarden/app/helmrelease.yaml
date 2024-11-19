@@ -99,10 +99,10 @@ spec:
         existingSecretKey: SMTP_USERNAME
       password:
         existingSecretKey: SMTP_VAULTWARDEN_PASS
-      authMechanism: Login
+      authMechanism: "Login"
     ingress:
       enabled: true
-      class: external
+      class: "external"
       nginxIngressAnnotations: true
       additionalAnnotations:
         nginx.ingress.kubernetes.io/configuration-snippet: |
@@ -148,6 +148,12 @@ spec:
           if ($request_uri ~* "^/alive") {
             return 200;
           }
-      hostname: vaultwarden.${PUBLIC_DOMAIN}
-      path: /
-      pathType: Prefix
+        cert-manager.io/cluster-issuer: zerossl-prod
+        cert-manager.io/private-key-rotation-policy: Always
+        cert-manager.io/private-key-algorithm: ECDSA
+        cert-manager.io/private-key-size: "384"
+      tls: true
+      tlsSecret: "vaultwarden-tls"
+      hostname: "vaultwarden.${PUBLIC_DOMAIN}"
+      path: "/"
+      pathType: "Prefix"

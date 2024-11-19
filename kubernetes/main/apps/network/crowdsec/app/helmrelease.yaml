@@ -99,6 +99,13 @@ spec:
             Content-Type: "application/json"
 
       config.yaml.local: |
+        api:
+          server:
+            auto_registration:
+              enabled: true
+              token: "$$REGISTRATION_TOKEN"
+              allowed_ranges:
+                - 172.16.0.0/16
         db_config:
           type:     postgresql
           user:     $${DB_USER}

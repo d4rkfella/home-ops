@@ -112,6 +112,8 @@ spec:
         custom-http-errors: "504,503,500,429,410,404,403,401,400"
         plugins: "crowdsec"
         lua-shared-dicts: "crowdsec_cache: 100m"
+        server-snippet : |
+          lua_ssl_trusted_certificate "/etc/ssl/cert.pem";
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
         client-body-buffer-size: 100M
         client-body-timeout: 120

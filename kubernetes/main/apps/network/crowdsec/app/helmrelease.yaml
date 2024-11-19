@@ -117,6 +117,8 @@ spec:
           program: keycloak
 
       env:
+        - name: LOCAL_API_URL
+          value: &host "https://crowdsec-api.${PUBLIC_DOMAIN}"
         - name: PARSERS
           value: "crowdsecurity/cri-logs crowdsecurity/whitelists crowdsecurity/geoip-enrich"
 
@@ -144,6 +146,20 @@ spec:
           envFrom:
             - secretRef:
                 name: &secret crowdsec-secret
+
+      ingress:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          cert-manager.io/cluster-issuer: zerossl-prod
+        ingressClassName: internal
+        host: *host
+        tls:
+          - hosts:
+            - *host
+            secretName: crowdsec-tls
+
       env:
         - name: CROWDSEC_PUSHOVER_TOKEN
           valueFrom:

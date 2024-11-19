@@ -27,60 +27,60 @@ spec:
   values:
     config:
 
-      #profiles.yaml: |
-        #name: default_ip_remediation
+      profiles.yaml: |
+        name: default_ip_remediation
           #debug: true
-          #filters:
-          #- Alert.Remediation == true && Alert.GetScope() == "Ip"
-          #decisions:
-          #- type: ban
-            #duration: 4h
-          #duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
-          #notifications:
-            #- pushover
-          #on_success: break
-          #---
-          #name: default_range_remediation
+          filters:
+          - Alert.Remediation == true && Alert.GetScope() == "Ip"
+          decisions:
+          - type: ban
+            duration: 4h
+          duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
+          notifications:
+            - pushover
+          on_success: break
+          ---
+          name: default_range_remediation
           #debug: true
-          #filters:
-          #- Alert.Remediation == true && Alert.GetScope() == "Range"
-          #decisions:
-          #- type: ban
-            #duration: 4h
-          #duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
-          #notifications:
-            #- pushover
-          #on_success: break
+          filters:
+          - Alert.Remediation == true && Alert.GetScope() == "Range"
+          decisions:
+          - type: ban
+            duration: 4h
+          duration_expr: Sprintf('%dh', (GetDecisionsCount(Alert.GetValue()) + 1) * 4)
+          notifications:
+            - pushover
+          on_success: break
 
-      #notifications:
-        #http.yaml: |
-          #type: http
-          #name: pushover
+      notifications:
+        http.yaml: |
+          type: http
+          name: pushover
 
-          #log_level: info
+          log_level: info
 
-          #group_wait: "30s"
-          #group_threshold: 10
-          #max_retry: 5
-          #timeout: "10s"
+          group_wait: "30s"
+          group_threshold: 10
+          max_retry: 5
+          timeout: "10s"
 
           #-------------------------
-          # plugin-specific options
+          #plugin-specific options
 
           # The following template receives a list of models.Alert objects
           # The output goes in the http request body
-          #format: |
-            #{
-            #"token": $$CROWDSEC_PUSHOVER_TOKEN,
-            #"user": $$PUSHOVER_USER_KEY,
-            #"message": "{{`{{range . -}}{{$alert := . -}}{{range .Decisions -}}<b>{{.Value}}</b> will get <b>{{.Type}}</b> for the next <b>{{.Duration}}</b> for triggering <b>{{.Scenario}}</b>.\r\n https://www.shodan.io/host/{{.Value}}{{end -}}{{end -}}`}}",
-            #"html": "1",
-            #"title": "Scenario triggered on IDS/IPS !"
-            #}
-          #url: https://api.pushover.net/1/messages.json
-          #method: POST
-          #headers:
-            #Content-Type: "application/json"
+          format: |
+            {
+            "token": $$CROWDSEC_PUSHOVER_TOKEN,
+            "user": $$PUSHOVER_USER_KEY,
+            "message": "{{`{{range . -}}{{$alert := . -}}{{range .Decisions -}}<b>{{.Value}}</b> will get <b>{{.Type}}</b> for the next <b>{{.Duration}}</b> for triggering <b>{{.Scenario}}</b>.\r\n https://www.shodan.io/host/{{.Value}}{{end -}}{{end -}}`}}",
+            "html": "1",
+            "title": "Scenario triggered on IDS/IPS !"
+            }
+          url: https://api.pushover.net/1/messages.json
+          method: POST
+          headers:
+            Content-Type: "application/json"
 
       config.yaml.local: |
         db_config:

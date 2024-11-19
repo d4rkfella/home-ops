@@ -131,11 +131,6 @@ spec:
         serviceMonitor:
           enabled: true
 
-      persistentVolume:
-        config:
-          enabled: true
-        data:
-          enabled: true
     lapi:
       deployAnnotations:
         reloader.stakater.com/auto: "true"

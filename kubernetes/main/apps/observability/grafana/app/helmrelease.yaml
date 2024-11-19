@@ -135,9 +135,6 @@ spec:
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/overview.json
           datasource: Prometheus
-        modsecurity-logs:
-          url: https://raw.githubusercontent.com/Darkfella91/modsecurity-dashboard/main/dashboard.json
-          datasource: Loki
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457

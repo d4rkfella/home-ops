@@ -240,7 +240,7 @@ spec:
       acquisitions:
         - source: appsec
           listen_addr: "0.0.0.0:7422"
-          path: /appsec
+          path: /
           appsec_config: crowdsecurity/appsec-default
           labels:
             type: appsec

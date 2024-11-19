@@ -144,25 +144,31 @@ spec:
             secretKeyRef:
               name: *secret
               key: CROWDSEC_PUSHOVER_TOKEN
+
         - name: PUSHOVER_USER_KEY
           valueFrom:
             secretKeyRef:
               name: *secret
               key: PUSHOVER_USER_KEY
+
         - name: DISABLE_ONLINE_API
           value: "false"
+
         - name: ENROLL_KEY
           valueFrom:
             secretKeyRef:
               name: *secret
               key: ENROLL_KEY
+
         - name: ENROLL_INSTANCE_NAME
           value: "cluster"
+
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: *secret
               key: INIT_POSTGRES_PASS
+
         - name: DB_USER
           valueFrom:
             secretKeyRef:

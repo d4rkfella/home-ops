@@ -7,7 +7,8 @@ metadata:
     external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
     cert-manager.io/cluster-issuer: zerossl-prod
     cert-manager.io/private-key-rotation-policy: Always
-    cert-manager.io/private-key-algorithm: Ed25519
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-size: "384"
 spec:
   ingressClassName: external
   tls:

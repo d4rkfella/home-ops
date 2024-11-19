@@ -40,7 +40,7 @@ spec:
             - pushover
           on_success: break
           ---
-          name: default_range_remediation
+        name: default_range_remediation
           #debug: true
           filters:
           - Alert.Remediation == true && Alert.GetScope() == "Range"

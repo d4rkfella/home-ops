@@ -8,7 +8,7 @@ metadata:
     external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     cert-manager.io/cluster-issuer: zerossl-prod
-    cert-manager.io/private-key-rotation-policy: always
+    cert-manager.io/private-key-rotation-policy: Always
     cert-manager.io/private-key-algorithm: Ed25519
 spec:
   ingressClassName: external

@@ -183,7 +183,7 @@ spec:
           nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
           cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: always
+          cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: Ed25519
 
         ingressClassName: internal

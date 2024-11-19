@@ -39,8 +39,16 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
         ingressClassName: internal
-        hosts: ["alertmanager.${PUBLIC_DOMAIN}"]
+        tls:
+          - hosts:
+              - &host ["alertmanager.${PUBLIC_DOMAIN}"]
+            secretName: alertmanager-tls
+        hosts: *host
         pathType: Prefix
       alertmanagerSpec:
         useExistingSecret: true
@@ -73,8 +81,16 @@ spec:
         enabled: true
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
         ingressClassName: internal
-        hosts: ["prometheus.${PUBLIC_DOMAIN}"]
+        tls:
+          - hosts:
+              - &host ["prometheus.${PUBLIC_DOMAIN}"]
+            secretName: prometheus-tls
+        hosts: *host
         pathType: Prefix
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart

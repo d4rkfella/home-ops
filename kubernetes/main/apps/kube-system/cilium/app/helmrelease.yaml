@@ -56,8 +56,16 @@ spec:
           enabled: true
           annotations:
             external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+            cert-manager.io/cluster-issuer: zerossl-prod
+            cert-manager.io/private-key-rotation-policy: Always
+            cert-manager.io/private-key-algorithm: ECDSA
+            cert-manager.io/private-key-size: "384"
+          tls:
+            - hosts:
+                - &host ["hubble.${PUBLIC_DOMAIN}"]
+              secretName: hubble-tls
           className: internal
-          hosts: ["hubble.${PUBLIC_DOMAIN}"]
+          hosts: *host
     operator:
       prometheus:
         enabled: true

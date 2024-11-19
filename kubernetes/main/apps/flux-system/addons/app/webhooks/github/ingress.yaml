@@ -5,10 +5,18 @@ metadata:
   name: webhook-receiver
   annotations:
     external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+    cert-manager.io/cluster-issuer: zerossl-prod
+    cert-manager.io/private-key-rotation-policy: Always
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-size: "384"
 spec:
   ingressClassName: external
+  tls:
+    - hosts:
+        - &host "flux-webhook.${PUBLIC_DOMAIN}"
+      secretName: flux-webhook-tls
   rules:
-    - host: flux-webhook.${PUBLIC_DOMAIN}
+    - host: *host
       http:
         paths:
           - path: /hook/

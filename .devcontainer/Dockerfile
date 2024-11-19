@@ -62,7 +62,7 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \
     chmod +x ./get_task.sh && \
     ./get_task.sh -d -b /usr/local/bin && \
-    curl -s https://fluxcd.io/install.sh | sudo FLUX_VERSION=2.0.0 bash && \
+    curl -s https://fluxcd.io/install.sh | FLUX_VERSION=2.0.0 bash && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

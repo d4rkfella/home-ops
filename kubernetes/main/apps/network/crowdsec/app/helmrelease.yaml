@@ -32,13 +32,13 @@ spec:
               name: crowdsec-appsec
             patch: |
               - op: replace
-                path: /spec/template/spec/initContainers/0/env/4/value
+                path: /spec/template/spec/initContainers/0/env/2/value
                 value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
               - op: replace
-                path: /spec/template/spec/initContainers/0/env/5/value
+                path: /spec/template/spec/initContainers/0/env/3/value
                 value: "crowdsec-api.${PUBLIC_DOMAIN}"
               - op: replace
-                path: /spec/template/spec/initContainers/0/env/6/value
+                path: /spec/template/spec/initContainers/0/env/4/value
                 value: "443"
   values:
     config:

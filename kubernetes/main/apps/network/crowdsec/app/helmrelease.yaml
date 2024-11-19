@@ -143,6 +143,12 @@ spec:
             - secretRef:
                 name: &secret crowdsec-secret
 
+      persistentVolume:
+        data:
+          enabled: false
+        config:
+          enabled: false
+
       storeCAPICredentialsInSecret: true
 
       ingress:

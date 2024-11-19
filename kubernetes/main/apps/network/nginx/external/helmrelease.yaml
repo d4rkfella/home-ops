@@ -50,7 +50,7 @@ spec:
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
             - name: API_URL
-              value: "https://crowdsec-api${PUBLIC_DOMAIN}"
+              value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
             - name: BAN_TEMPLATE_PATH
               value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
             - name: UPDATE_FREQUENCY

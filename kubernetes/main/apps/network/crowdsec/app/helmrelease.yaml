@@ -148,6 +148,8 @@ spec:
             - secretRef:
                 name: &secret crowdsec-secret
 
+      storeCAPICredentialsInSecret: true
+
       ingress:
         enabled: true
         annotations:

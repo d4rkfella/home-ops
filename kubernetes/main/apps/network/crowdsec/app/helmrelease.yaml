@@ -23,7 +23,17 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-
+  #postRenderers:
+    #- kustomize:
+        #patches:
+          #- target:
+              #version: v1
+              #kind: Deployment
+              #name: crowdsec-appsec
+            #patch: |
+              #- op: replace
+                #path: /spec/template/spec/initContainers/0/env/0/value
+                #value: "new-value"
   values:
     config:
 

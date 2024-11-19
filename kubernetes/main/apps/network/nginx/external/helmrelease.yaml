@@ -85,13 +85,6 @@ spec:
           mountPath: /etc/nginx/lua/plugins/crowdsec
           subPath: crowdsec
           readOnly: true
-        #- mountPath: /etc/nginx/owasp-modsecurity-crs
-          #name: owasp-crs
-          #readOnly: false
-        #- name: modsecurity-config
-          #mountPath: /etc/nginx/modsecurity/modsecurity.conf
-          #subPath: modsecurity.conf
-          #readOnly: true
       replicaCount: 2
       service:
         annotations:

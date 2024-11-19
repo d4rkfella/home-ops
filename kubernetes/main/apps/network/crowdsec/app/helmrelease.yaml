@@ -23,17 +23,23 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  #postRenderers:
-    #- kustomize:
-        #patches:
-          #- target:
-              #version: v1
-              #kind: Deployment
-              #name: crowdsec-appsec
-            #patch: |
-              #- op: replace
-                #path: /spec/template/spec/initContainers/0/env/0/value
-                #value: "new-value"
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              version: v1
+              kind: Deployment
+              name: crowdsec-appsec
+            patch: |
+              - op: replace
+                path: /spec/template/spec/initContainers/0/env/3/value
+                value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+              - op: replace
+                path: /spec/template/spec/initContainers/0/env/4/value
+                value: "crowdsec-api.${PUBLIC_DOMAIN}"
+              - op: replace
+                path: /spec/template/spec/initContainers/0/env/5/value
+                value: "443"
   values:
     config:
 

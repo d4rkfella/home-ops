@@ -234,5 +234,5 @@ spec:
           value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules"
         - name: APPSEC_CONFIGS
           value: "crowdsecurity/appsec-default"
-        - name: LOCAL_API_URL
+        - name: LAPI_URL
           value: "https://crowdsec-api.${PUBLIC_DOMAIN}"

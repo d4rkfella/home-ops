@@ -65,7 +65,7 @@ spec:
             - name: APPSEC_URL
               value: "https://crowdsec-appsec.${PUBLIC_DOMAIN}"
             - name: SSL_VERIFY
-              value: true
+              value: "true"
             - name: APPSEC_FAILURE_ACTION
               value: deny
           securityContext:

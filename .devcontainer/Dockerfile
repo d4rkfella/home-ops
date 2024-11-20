@@ -5,9 +5,13 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 # renovate: depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.4.0
+# renovate: depName=getsops/sops
 ARG SOPS_VERSION=v3.9.1
 ARG KUBECTL_VERSION=v1.31.2
+# renovate: depName=helmfile/helmfile
 ARG HELMFILE_VERSION=v0.169.1
+# renovate: depName=helm/helm
+ARG HELM_VERSION=v3.16.3
 
 ENV SHELL=/bin/bash
 
@@ -42,7 +46,7 @@ RUN echo "**** Installing packages ****" && \
     mv ./kubectl /usr/local/bin/kubectl && \
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
     chmod +x get_helm.sh && \
-    ./get_helm.sh && \
+    DESIRED_VERSION=$HELM_VERSION ./get_helm.sh && \
     curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
     curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
     curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.pem && \

@@ -1,0 +1,65 @@
+//devcontainer.json
+{
+    "name": "Kubernetes Management",
+
+    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:44022f9e83154e942e865b833b53c6247fa5818cba01defc51afa55c9cd2eb63",
+
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
+
+    "workspaceFolder": "/project",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
+
+    "customizations": {
+      "vscode": {
+        "settings": {
+            "editor.bracketPairColorization.enabled": true,
+            "editor.fontFamily": "FiraCode Nerd Font",
+            "editor.fontLigatures": true,
+            "editor.guides.bracketPairs": true,
+            "editor.guides.bracketPairsHorizontal": true,
+            "editor.guides.highlightActiveBracketPair": true,
+            "editor.hover.delay": 1500,
+            "editor.rulers": [
+                100
+            ],
+            "editor.stickyScroll.enabled": false,
+            "explorer.autoReveal": false,
+            "files.associations": {
+                "**/*.json5": "jsonc"
+            },
+            "files.trimTrailingWhitespace": true,
+            "material-icon-theme.files.associations": {
+                "*.secret.sops.env": "lock",
+                "*.secret.sops.yaml": "lock"
+            },
+            "material-icon-theme.folders.associations": {
+                ".archive": "archive",
+                ".github/workflows": "robot",
+                "actions-runner-system": "github",
+                "cert-manager": "guard",
+                "digester-system": "hook",
+                "external-secrets": "secure",
+                "flux-system": "pipe",
+                "flux": "pipe",
+                "kube-system": "kubernetes",
+                "network": "connection",
+                "observability": "event",
+                "rook-ceph": "base",
+                "storage": "dump",
+                "system-upgrade": "update",
+                "tools": "tools",
+                "volsync": "aws",
+                "cloudflared": "cloudflare",
+                "kubernetes/main": "kubernetes",
+                "talos": "linux"
+            },
+            "sops.defaults.ageKeyFile": "./age.key",
+            "yaml.schemaStore.enable": true,
+            "yaml.schemas": {
+                "kubernetes": "./kubernetes/**/*.yaml"
+            }
+        },
+        "extensions": ["signageos.signageos-vscode-sops","PKief.material-icon-theme","BriteSnow.vscode-toggle-quotes","redhat.vscode-yaml","mitchdenny.ecdc","mikestead.dotenv","fcrespo82.markdown-table-formatter","albert.TabOut"]
+      }
+    }
+  }

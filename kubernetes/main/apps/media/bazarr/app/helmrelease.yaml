@@ -1,0 +1,201 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bazarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      bazarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16.5@sha256:53fa938cfe6d2dae23b120145362341950f1154bf9d0e7f2ec4e471d61624f79
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            env:
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_PORT: &dbPort 5432
+              INIT_POSTGRES_DBNAME: &dbName bazarr
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret bazarr-secret
+                    key: POSTGRES_SUPER_PASS
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
+        containers:
+          app:
+            image:
+              repository: ghcr.io/darkfella91/bazarr
+              tag: 1.4.5@sha256:1e3ca601b51bb061e342ab8da9ee79062a51f254b50fcc43756299a29647d3aa
+            env:
+              TZ: Europe/Sofia
+              POSTGRES_ENABLED: "true"
+              POSTGRES_HOST: *dbHost
+              POSTGRES_PORT: *dbPort
+              POSTGRES_DATABASE: *dbName
+              POSTGRES_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
+              PLEX_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PLEX_TOKEN
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 6767
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext: *securityContext
+            lifecycle:
+              postStart:
+                exec:
+                  command: ["/bin/sh", "-c", "mkdir -p /config/config & cp /secret/config.yaml /config/config/config.yaml"]
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 1Gi
+          subcleaner:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.3.0@sha256:5813a7da0ccd58f6dfb9d5e48480e2877355e6bb3d7d81c8908eb1adc3a23b6e
+            env:
+              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
+              GITSYNC_REF: master
+              GITSYNC_PERIOD: 24h
+              GITSYNC_ROOT: /add-ons
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+            securityContext: *securityContext
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      app:
+        controller: bazarr
+        ports:
+          http:
+            port: *port
+    ingress:
+      app:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+          nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+          nginx.ingress.kubernetes.io/auth-snippet: |
+            if ($request_uri ~* "^/api(/|$)") {
+              return 200;
+            }
+        className: internal
+        hosts:
+          - host: &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+            secretName: bazarr-tls
+    persistence:
+      add-ons:
+        type: emptyDir
+      config:
+        type: emptyDir
+      secret-file:
+        type: secret
+        name: bazarr-config
+        globalMounts:
+          - readOnly: true
+            path: /secret/config.yaml
+            subPath: config.yaml
+      media:
+        type: nfs
+        server: nas.${PUBLIC_DOMAIN}
+        path: /mnt/exos20/data
+        globalMounts:
+          - path: /data/media
+            subPath: media
+      scripts:
+        type: configMap
+        name: bazarr-scripts
+        defaultMode: 0775
+        globalMounts:
+          - readOnly: true
+      tmp:
+        type: emptyDir
+
+      test:
+        type: configMap
+        name: connectionpool
+        advancedMounts:
+          bazarr:
+            app:
+              - readOnly: true
+                path: /app/bin/libs/urllib3/connectionpool.py
+                subPath: connectionpool.py

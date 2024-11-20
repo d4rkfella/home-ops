@@ -1,0 +1,14 @@
+endpoints:
+  - name: "qBittorrent"
+    group: guarded
+    url: "https://qbittorrent.${PUBLIC_DOMAIN}/api/v2/app/version"
+    interval: 5m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    conditions:
+      - "[STATUS] == 403"
+    alerts:
+      - type: pushover
+    headers:
+      Accept: application/json

@@ -3,22 +3,6 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Fetch latest kubectl version from Kubernetes stable URL",
-      "fileMatch": [
-        "^\\.devcontainer/Dockerfile$"
-      ],
-      "matchStrings": [
-        "# renovate: depName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
-      ],
-      "datasourceTemplate": "url",
-      "urlTemplate": "https://dl.k8s.io/release/stable.txt",
-      "versioningTemplate": "semver",
-      "depNameTemplate": "kubectl",
-      "packageNameTemplate": "kubectl",
-      "lookupNameTemplate": "kubectl"
-    },
-    {
-      "customType": "regex",
       "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [

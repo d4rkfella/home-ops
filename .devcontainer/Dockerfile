@@ -5,6 +5,8 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 ARG FLUX_VERSION=2.4.0
 ARG SOPS_VERSION=v3.9.1
+ARG KUBECTL_VERSION=v1.31.2
+ARG HELMFILE_VERSION=v0.169.1
 
 ENV SHELL=/bin/bash
 
@@ -32,8 +34,8 @@ RUN echo "**** Installing packages ****" && \
     echo "**** Adding direnv hook ****" && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     echo "**** Installing binaries ****" && \
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
-    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256" && \
+    curl -LO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
+    curl -LO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
@@ -54,11 +56,11 @@ RUN echo "**** Installing packages ****" && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops && \
     curl -sL https://talos.dev/install | sh && \
-    curl -LO https://github.com/helmfile/helmfile/releases/download/$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name')/helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt && \
-    curl -LO https://github.com/helmfile/helmfile/releases/download/$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name')/helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz && \
-    grep "helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz" helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt > checksum-helmfile-linux-amd64.txt && \
+    curl -LO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
+    curl -LO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
+    grep "helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz" helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt > checksum-helmfile-linux-amd64.txt && \
     echo "$(cat checksum-helmfile-linux-amd64.txt)" | sha256sum --check --strict && \
-    tar -xvzf helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_linux_amd64.tar.gz && \
+    tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
     chmod +x ./helmfile && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL -o get_task.sh https://taskfile.dev/install.sh && \

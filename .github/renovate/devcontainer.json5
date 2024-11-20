@@ -6,14 +6,14 @@
       "fileMatch": ["(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"],
       "matchStrings": [
         "# renovate: depName=\"(?<depName>.*?)\"",
-        "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
+        "ARG FLUX_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
       ],
       "autoReplaceStringTemplate": [
         "# renovate: depName=\"{{{depName}}}\"",
         "ARG {{{argName}}}_VERSION={{{newValue}}}"
       ],
-      "datasourceTemplate": "github-releases",  // Specify the GitHub releases datasource
-      "versioningTemplate": "semver"
+      "datasourceTemplate": "github-releases",  // Use GitHub releases to get the version
+      "versioningTemplate": "semver"            // Use semver for versioning
     }
   ],
   "packageRules": [
@@ -21,13 +21,12 @@
       "addLabels": ["renovate/cli-tools"],
       "automerge": true,
       "automergeType": "branch",
-      "matchDatasources": ["github-releases"],  // Ensure the rule matches the GitHub releases datasource
+      "matchDatasources": ["github-releases"], // Ensure the rule applies to GitHub releases
       "matchUpdateTypes": ["minor", "patch"],
       "semanticCommitType": "chore",
       "semanticCommitScope": "cli-tools",
       "commitMessageTopic": "update CLI tool version for {{depName}}",
       "commitMessageExtra": "( {{currentValue}} → {{newValue}} )"
     }
-  ],
-  "debug": true
+  ]
 }

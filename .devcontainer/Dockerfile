@@ -43,16 +43,16 @@ RUN echo "**** Installing packages ****" && \
     echo "**** Adding direnv hook ****" && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     echo "**** Installing binaries ****" && \
-    curl -fsSL -o "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
-    curl -fsSL -o "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
+    curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
+    curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/local/bin/kubectl && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
-    curl -fsSL -o https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
-    curl -fsSL -o https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
-    curl -fsSL -o https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.pem && \
-    curl -fsSL -o https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.sig && \
+    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
+    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
+    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.pem && \
+    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.sig && \
     cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
       --certificate sops-$SOPS_VERSION.checksums.pem \
       --signature sops-$SOPS_VERSION.checksums.sig \
@@ -62,13 +62,13 @@ RUN echo "**** Installing packages ****" && \
     echo "$(cat checksum-linux-amd64.txt)" | sha256sum --check --strict && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops && \
-    curl -fsSL -o https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/talosctl-linux-amd64 && \
+    curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/talosctl-linux-amd64 && \
     curl -fsSL -o talosctl_sha256sum.txt https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/sha256sum.txt && \
     grep "talosctl-linux-amd64" talosctl_sha256sum.txt > talosctl_amd64_sha256sum.txt && \
     echo "$(cat talosctl_amd64_sha256sum.txt)" | sha256sum --check --strict && \
     chmod +x ./talosctl-linux-amd64 && mv ./talosctl-linux-amd64 /usr/local/bin/talosctl && \
-    curl -fsSL -o https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
-    curl -fsSL -o https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
+    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
+    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
     grep "helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz" helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt > checksum-helmfile-linux-amd64.txt && \
     echo "$(cat checksum-helmfile-linux-amd64.txt)" | sha256sum --check --strict && \
     tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \

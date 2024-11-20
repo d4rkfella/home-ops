@@ -6,7 +6,7 @@
     {
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=(?<depName>.*?)\\s*\\nARG (?<argName>.*?)=v(?<currentValue>.*?)(\\s|$)"
+        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)(\\s|$)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver",

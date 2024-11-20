@@ -88,8 +88,7 @@ spec:
         tls:
           - hosts: &host ["prometheus.${PUBLIC_DOMAIN}"]
             secretName: prometheus-tls
-        hosts:
-          - *host
+        hosts: *host
         pathType: Prefix
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart

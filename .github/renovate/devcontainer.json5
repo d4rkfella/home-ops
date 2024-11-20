@@ -13,6 +13,7 @@
       "depNameTemplate": "{{depName}}",
       "extractVersionTemplate": "v{{currentValue}}",
       "packageNameTemplate": "{{depName}}",
+      "lookupNameTemplate": "{{depName}}",
       "versioning": "semver"
     }
   ]

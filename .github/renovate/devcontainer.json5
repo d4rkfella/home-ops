@@ -15,11 +15,10 @@
       "description": "Process CLI tool versions in Dockerfile",
       "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
       "matchStrings": [
-        "depName=\"(?<depName>.*)\"",
+        "depName=\"(?<depName>[^\"]+)\"",
         "ARG (?<argName>.*)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
       ],
       "autoReplaceStringTemplate": [
-        "depName=\"{{{depName}}}\"",
         "ARG {{{argName}}}_VERSION={{{newValue}}}"
       ],
       "datasourceTemplate": "custom.github-releases",
@@ -36,7 +35,7 @@
       "semanticCommitType": "chore",
       "semanticCommitScope": "cli-tools",
       "commitMessageTopic": "update CLI tool version for {{depName}}",
-      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
+      "commitMessageExtra": "( {{currentValue}} → {{newValue}} )"
     }
   ]
 }

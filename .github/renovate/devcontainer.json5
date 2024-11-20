@@ -4,7 +4,7 @@
   ],
   "regexManagers": [
     {
-      "fileMatch": ["^Dockerfile$"],
+      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
         "# renovate: depName=(?<depName>.*?)\\s*\\nARG (?<argName>.*?)=(?<currentValue>.*?)(\\s|$)"
       ],

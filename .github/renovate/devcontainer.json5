@@ -8,7 +8,7 @@
         "^\\.devcontainer/Dockerfile$"
       ],
       "matchStrings": [
-        "# renovate: depName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
+        "# renovate: customDepName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
       ],
       "datasourceTemplate": "url",
       "urlTemplate": "https://dl.k8s.io/release/stable.txt",
@@ -23,7 +23,7 @@
       "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=(?!kubectl\\b)(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
+        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver",

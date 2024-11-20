@@ -12,7 +12,7 @@
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "extractVersionTemplate": "v{{currentValue}}",
-      "packageNameTemplate": "{{argName}}"
+      "packageNameTemplate": "{{depName}}"
     }
   ]
 }

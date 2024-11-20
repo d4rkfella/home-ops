@@ -4,6 +4,7 @@ ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 ARG FLUX_VERSION=2.4.0
+ARG SOPS_VERSION=v3.9.1
 
 ENV SHELL=/bin/bash
 
@@ -39,18 +40,18 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
     chmod +x get_helm.sh && \
     ./get_helm.sh && \
-    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 && \
-    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt && \
-    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.pem && \
-    curl -LO https://github.com/getsops/sops/releases/download/$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name')/sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.sig && \
-    cosign verify-blob sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt \
-      --certificate sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.pem \
-      --signature sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.sig \
+    curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
+    curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
+    curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.pem && \
+    curl -LO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.sig && \
+    cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
+      --certificate sops-$SOPS_VERSION.checksums.pem \
+      --signature sops-$SOPS_VERSION.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    grep "sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64" sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').checksums.txt > checksum-linux-amd64.txt && \
+    grep "sops-$SOPS_VERSION.linux.amd64" sops-$SOPS_VERSION.checksums.txt > checksum-linux-amd64.txt && \
     echo "$(cat checksum-linux-amd64.txt)" | sha256sum --check --strict && \
-    mv sops-$(curl -s https://api.github.com/repos/getsops/sops/releases/latest | jq -r '.tag_name').linux.amd64 /usr/local/bin/sops && \
+    mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops && \
     curl -sL https://talos.dev/install | sh && \
     curl -LO https://github.com/helmfile/helmfile/releases/download/$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name')/helmfile_$(curl -s https://api.github.com/repos/helmfile/helmfile/releases/latest | jq -r '.tag_name' | sed 's/^v//')_checksums.txt && \

@@ -12,7 +12,8 @@
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}"
+      "lookupNameTemplate": "{{depName}}",
+      "excludePackageNames": ["kubectl"]
     },
     {
       "customType": "regex",

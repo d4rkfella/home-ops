@@ -15,7 +15,7 @@
       "description": "Process CLI tool versions in Dockerfile",
       "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
       "matchStrings": [
-        "depName=\"(?<depName>.*?)\"",
+        "depName=\"(?<depName>.*)\"",
         "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
       ],
       "autoReplaceStringTemplate": [

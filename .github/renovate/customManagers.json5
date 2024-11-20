@@ -6,7 +6,8 @@
       "description": ["Process YAML custom dependencies"],
       "fileMatch": [
         "(^|/)kubernetes/.+\\.env$",
-        "(^|/)kubernetes/.+\\.ya?ml$"
+        "(^|/)kubernetes/.+\\.ya?ml$",
+        "(^|/|\\.)Dockerfile$", "(^|/)Dockerfile\\.[^/]*$"
       ],
       "matchStrings": [
         // # renovate: datasource=github-releases depName=k3s-io/k3s
@@ -15,6 +16,8 @@
         // version: 1.15.1
         // # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
         // KUBERNETES_VERSION=v1.31.1
+        // # renovate: depName="fluxcd/flux2"
+        // FLUX_VERSION=v1.31.1
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",
         // # renovate: datasource=github-releases depName=rancher/system-upgrade-controller
         // https://github.com/rancher/system-upgrade-controller/releases/download/v0.13.2/crd.yaml

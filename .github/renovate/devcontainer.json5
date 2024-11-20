@@ -8,13 +8,12 @@
         "^\\.devcontainer/Dockerfile$"
       ],
       "matchStrings": [
-        "# renovate: customDepName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
+        "# renovate: depName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
       ],
       "datasourceTemplate": "url",
       "urlTemplate": "https://dl.k8s.io/release/stable.txt",
       "versioningTemplate": "semver",
       "depNameTemplate": "kubectl",
-      "extractVersionTemplate": "{{currentVersion}}",
       "packageNameTemplate": "kubectl",
       "lookupNameTemplate": "kubectl"
     },

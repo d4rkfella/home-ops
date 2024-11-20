@@ -11,7 +11,7 @@ ARG KUBECTL_VERSION=v1.31.2
 # renovate: depName=helmfile/helmfile
 ARG HELMFILE_VERSION=v0.169.1
 # renovate: depName=helm/helm
-ARG HELM_VERSION=v3.16.3
+ARG HELM_VERSION=v3.16.2
 
 ENV SHELL=/bin/bash
 

@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/crowdsecurity/helm-charts/main/charts/crowdsec/values.schema.json
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -41,6 +41,10 @@ spec:
                 path: /spec/template/spec/initContainers/0/env/4/value
                 value: "443"
   values:
+    image:
+      repository: crowdsecurity/crowdsec
+      pullPolicy: IfNotPresent
+      tag: v1.6.3@sha256:a835cdb09ac2e0a06c03c6806da1c273008261fffb46696312777846d43a08ae
     config:
 
       profiles.yaml: |
@@ -119,8 +123,9 @@ spec:
 
     agent:
       wait_for_lapi:
+        repository: busybox
         image:
-          tag: "1.37.0@sha256:768e5c6f5cb6db0794eec98dc7a967f40631746c32232b78a3105fb946f3ab83"
+          tag: "1.37.0@sha256:5b0f33c83a97f5f7d12698df6732098b0cdb860d377f6307b68efe2c6821296f"
 
       acquisition:
         - namespace: network

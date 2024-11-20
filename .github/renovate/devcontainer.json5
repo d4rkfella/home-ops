@@ -1,20 +1,19 @@
 {
-  "extends": [
-    "config:base"
-  ],
-  "regexManagers": [
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "customManagers": [
     {
+      "customType": "regex",
+      "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)(\\s|$)"
+        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
       ],
       "datasourceTemplate": "github-tags",
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "extractVersionTemplate": "v{{currentValue}}",
       "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}",
-      "versioning": "semver"
+      "lookupNameTemplate": "{{depName}}"
     }
   ]
 }

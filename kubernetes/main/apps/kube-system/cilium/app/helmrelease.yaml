@@ -61,12 +61,10 @@ spec:
             cert-manager.io/private-key-algorithm: ECDSA
             cert-manager.io/private-key-size: "384"
           tls:
-            - hosts:
-                - &host "hubble.${PUBLIC_DOMAIN}"
+            - hosts: &host ["hubble.${PUBLIC_DOMAIN}"]
               secretName: hubble-tls
           className: internal
-          hosts:
-            - *host
+          hosts: *host
     operator:
       prometheus:
         enabled: true

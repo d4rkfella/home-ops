@@ -22,7 +22,7 @@ spec:
               - name: INIT_POSTGRES_HOST
                 value: &dbHost postgres17-rw.database.svc.cluster.local
               - name: INIT_POSTGRES_PORT
-                value: &dbPort 5432
+                value: &dbPort "5432"
               - name: INIT_POSTGRES_DBNAME
                 value: &dbName keycloak
               - name: INIT_POSTGRES_SUPER_PASS

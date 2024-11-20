@@ -1,44 +1,19 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "customDatasources": {
-    "github-releases": {
-      "defaultRegistryUrlTemplate": "https://api.github.com/repos/{{{packageName}}}/releases/latest",
-      "format": "json",
-      "transformTemplates": [
-        "{\"version\": {{#if tag_name}}$string(tag_name){{else}}$string(name){{/if}}}"
-      ]
-    }
-  },
   "customManagers": [
     {
       "customType": "regex",
-      "description": ["Process CLI tool versions in Dockerfile"],
-      "fileMatch": [
-        "(^|/)(\\.devcontainer/)?Dockerfile$"
-      ],
+      "description": ["Process ARG versions in Dockerfile"],
+      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=\"(?<depName>.*?)\"",
-        "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
+        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
       ],
-      "autoReplaceStringTemplate": [
-        "# renovate: depName=\"{{{depName}}}\"",
-        "ARG {{{argName}}}_VERSION={{{newValue}}}"
-      ],
-      "datasourceTemplate": "custom.github-releases",
-      "versioningTemplate": "regex:^(v?\\d+\\.\\d+\\.\\d+)$"
-    }
-  ],
-  "packageRules": [
-    {
-      "addLabels": ["renovate/cli-tools"],
-      "automerge": true,
-      "automergeType": "branch",
-      "matchDatasources": ["custom.github-releases"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "semanticCommitType": "chore",
-      "semanticCommitScope": "cli-tools",
-      "commitMessageTopic": "update CLI tool version for {{depName}}",
-      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )"
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver",
+      "depNameTemplate": "{{depName}}",
+      "extractVersionTemplate": "v{{currentValue}}",
+      "packageNameTemplate": "{{depName}}",
+      "lookupNameTemplate": "{{depName}}"
     }
   ]
 }

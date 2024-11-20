@@ -4,37 +4,6 @@ kind: Keycloak
 metadata:
   name: keycloak
 spec:
-  db:
-    vendor: postgres
-    usernameSecret:
-      name: keycloak-initdb-secret
-      key: INIT_POSTGRES_USER
-    passwordSecret:
-      name: keycloak-initdb-secret
-      key: INIT_POSTGRES_PASS
-    host: postgres17-rw.database.svc.cluster.local
-    database: keycloak
-    port: 5432
-    schema: public
-  instances: 1
-  image: ghcr.io/darkfella91/keycloak-image:26.0.5@sha256:368e6a03ec617c62e30c5df925734f7eaa4d9bb78592e0e6aaffc7148775b6b1
-  startOptimized: true
-  additionalOptions:
-    - name: https-protocols
-      value: "TLSv1.3"
-  bootstrapAdmin:
-    user:
-      secret: keycloak-admin-credentials
-  proxy:
-    headers: xforwarded
-  hostname:
-    hostname: https://accounts.${PUBLIC_DOMAIN}
-  http:
-    httpEnabled: false
-    httpsPort: 443
-    tlsSecret: keycloak-tls
-  ingress:
-    enabled: false
   unsupported:
     podTemplate:
       spec:
@@ -44,13 +13,30 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
+
         initContainers:
           - name: init-db
             image: "ghcr.io/onedr0p/postgres-init:16.5@sha256:53fa938cfe6d2dae23b120145362341950f1154bf9d0e7f2ec4e471d61624f79"
             imagePullPolicy: IfNotPresent
-            envFrom:
-              - secretRef:
-                  name: keycloak-initdb-secret
+            env:
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_PORT: &dbPort 5432
+              INIT_POSTGRES_DBNAME: &dbName keycloak
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret keycloak-secret
+                    key: POSTGRES_SUPER_PASS
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
             securityContext:
               runAsUser: 10002
               runAsGroup: 10002
@@ -58,6 +44,48 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+
         securityContext:
           runAsNonRoot: true
           seccompProfile: { type: RuntimeDefault }
+
+  db:
+    vendor: postgres
+    usernameSecret:
+      name: *secret
+      key: POSTGRES_USER
+    passwordSecret:
+      name: *secret
+      key: POSTGRES_PASS
+    host: *dbHost
+    database: *dbName
+    port: *dbPort
+    schema: public
+
+  instances: 1
+
+  image: ghcr.io/darkfella91/keycloak-image:26.0.5@sha256:368e6a03ec617c62e30c5df925734f7eaa4d9bb78592e0e6aaffc7148775b6b1
+
+  startOptimized: true
+
+  additionalOptions:
+    - name: https-protocols
+      value: "TLSv1.3"
+
+  bootstrapAdmin:
+    user:
+      secret: *secret
+
+  proxy:
+    headers: xforwarded
+
+  hostname:
+    hostname: https://accounts.${PUBLIC_DOMAIN}
+
+  http:
+    httpEnabled: false
+    httpsPort: 443
+    tlsSecret: keycloak-tls
+
+  ingress:
+    enabled: false

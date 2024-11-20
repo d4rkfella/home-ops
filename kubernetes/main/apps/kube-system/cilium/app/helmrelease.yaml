@@ -22,9 +22,11 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+
   valuesFrom:
     - kind: ConfigMap
       name: cilium-helm-values
+
   values:
     hubble:
       enabled: true
@@ -49,6 +51,7 @@ spec:
         prometheus:
           serviceMonitor:
             enabled: true
+
       ui:
         enabled: true
         rollOutPods: true
@@ -60,11 +63,12 @@ spec:
             cert-manager.io/private-key-rotation-policy: Always
             cert-manager.io/private-key-algorithm: ECDSA
             cert-manager.io/private-key-size: "384"
+          className: internal
           tls:
             - hosts: &host ["hubble.${PUBLIC_DOMAIN}"]
               secretName: hubble-tls
-          className: internal
           hosts: *host
+
     operator:
       prometheus:
         enabled: true
@@ -74,11 +78,13 @@ spec:
         enabled: true
         annotations:
             grafana_folder: Cilium
+
     prometheus:
       enabled: true
       serviceMonitor:
         enabled: true
         trustCRDsExist: true
+
     dashboards:
       enabled: true
       annotations:

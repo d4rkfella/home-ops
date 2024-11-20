@@ -46,17 +46,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret bazarr-secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
         containers:
           app:
             image:
@@ -67,17 +67,17 @@ spec:
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: *dbHost
               POSTGRES_PORT: *dbPort
-              POSTGRES_DATABASE: bazarr
+              POSTGRES_DATABASE: *dbName
               POSTGRES_USERNAME:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               PLEX_TOKEN:
                 valueFrom:
                   secretKeyRef:

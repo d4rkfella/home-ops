@@ -62,7 +62,7 @@ spec:
             cert-manager.io/private-key-size: "384"
           tls:
             - hosts:
-                - &host ["hubble.${PUBLIC_DOMAIN}"]
+                - &host "hubble.${PUBLIC_DOMAIN}"
               secretName: hubble-tls
           className: internal
           hosts: *host

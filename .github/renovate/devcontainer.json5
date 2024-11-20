@@ -12,8 +12,10 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": ["Process CLI tool versions in Dockerfile"],
-      "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
+      "description": "Process CLI tool versions in Dockerfile",
+      "fileMatch": [
+        "(^|/)(\\.devcontainer/)?Dockerfile$"
+      ],
       "matchStrings": [
         "# renovate: depName=\"(?<depName>.*?)\"",
         "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
@@ -23,7 +25,7 @@
         "ARG {{{argName}}}_VERSION={{{newValue}}}"
       ],
       "datasourceTemplate": "custom.github-releases",
-      "versioningTemplate": "regex:^(v\\d+\\.\\d+\\.\\d+)$"
+      "versioningTemplate": "regex:^(v?\\d+\\.\\d+\\.\\d+)$"
     }
   ],
   "packageRules": [

@@ -3,7 +3,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": ["Process ARG versions in Dockerfile, excluding kubectl"],
+      "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
         "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"

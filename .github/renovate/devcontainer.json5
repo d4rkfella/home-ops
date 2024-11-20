@@ -6,12 +6,12 @@
     {
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=(?<depName>.*?)\\s*\\nARG (?<argName>.*?)=(?<currentValue>.*?)(\\s|$)"
+        "# renovate: depName=(?<depName>.*?)\\s*\\nARG (?<argName>.*?)=v(?<currentValue>.*?)(\\s|$)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
-      "extractVersionTemplate": "{{currentValue}}",
+      "extractVersionTemplate": "v{{currentValue}}",
       "packageNameTemplate": "{{argName}}"
     }
   ]

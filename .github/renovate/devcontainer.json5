@@ -12,7 +12,8 @@
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "extractVersionTemplate": "v{{currentValue}}",
-      "packageNameTemplate": "{{depName}}"
+      "packageNameTemplate": "{{depName}}",
+      "versioning": "semver"
     }
   ]
 }

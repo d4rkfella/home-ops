@@ -16,7 +16,7 @@
       "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
       "matchStrings": [
         "depName=\"(?<depName>.*)\"",
-        "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
+        "ARG (?<argName>.*)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
       ],
       "autoReplaceStringTemplate": [
         "depName=\"{{{depName}}}\"",

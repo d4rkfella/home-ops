@@ -1,0 +1,18 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "regexManagers": [
+    {
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "# renovate: depName=(?<depName>.*?)\\s*\\nARG (?<argName>.*?)=(?<currentValue>.*?)(\\s|$)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver",
+      "depNameTemplate": "{{depName}}",
+      "extractVersionTemplate": "{{currentValue}}",
+      "packageNameTemplate": "{{argName}}"
+    }
+  ]
+}

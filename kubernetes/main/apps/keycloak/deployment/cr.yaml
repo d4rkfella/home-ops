@@ -19,20 +19,23 @@ spec:
             image: "ghcr.io/onedr0p/postgres-init:16.5@sha256:53fa938cfe6d2dae23b120145362341950f1154bf9d0e7f2ec4e471d61624f79"
             imagePullPolicy: IfNotPresent
             env:
-              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
-              INIT_POSTGRES_PORT: &dbPort 5432
-              INIT_POSTGRES_DBNAME: &dbName keycloak
-              INIT_POSTGRES_SUPER_PASS:
+              - name: INIT_POSTGRES_HOST
+                value: &dbHost postgres17-rw.database.svc.cluster.local
+              - name: INIT_POSTGRES_PORT
+                value: &dbPort 5432
+              - name: INIT_POSTGRES_DBNAME
+                value: &dbName keycloak
+              - name: INIT_POSTGRES_SUPER_PASS
                 valueFrom:
                   secretKeyRef:
                     name: &secret keycloak-secret
                     key: POSTGRES_SUPER_PASS
-              INIT_POSTGRES_USER:
+              - name: INIT_POSTGRES_USER
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_USER
-              INIT_POSTGRES_PASS:
+              - name: INIT_POSTGRES_PASS
                 valueFrom:
                   secretKeyRef:
                     name: *secret

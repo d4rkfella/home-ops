@@ -13,6 +13,23 @@
       "depNameTemplate": "{{depName}}",
       "packageNameTemplate": "{{depName}}",
       "lookupNameTemplate": "{{depName}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Fetch latest kubectl version from Kubernetes stable URL",
+      "fileMatch": [
+        "^\\.devcontainer/Dockerfile$"
+      ],
+      "matchStrings": [
+        "# renovate: depName=kubectl\\s*\\nARG KUBECTL_VERSION=(?<currentVersion>\\S+)"
+      ],
+      "datasourceTemplate": "url",
+      "urlTemplate": "https://dl.k8s.io/release/stable.txt",
+      "versioningTemplate": "semver",
+      "depNameTemplate": "kubectl",
+      "extractVersionTemplate": "{{currentVersion}}",
+      "packageNameTemplate": "kubectl",
+      "lookupNameTemplate": "kubectl"
     }
   ]
 }

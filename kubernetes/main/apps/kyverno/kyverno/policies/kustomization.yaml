@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./dns-config.yaml
   - ./hostpath-readonly.yaml
-  - ./default-deny.yaml
+  #- ./default-deny.yaml

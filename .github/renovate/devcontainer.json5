@@ -3,20 +3,6 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": ["Process ARG versions in Dockerfile"],
-      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
-      "matchStrings": [
-        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver",
-      "depNameTemplate": "{{depName}}",
-      "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}",
-      "excludePackageNames": ["kubectl"]
-    },
-    {
-      "customType": "regex",
       "description": "Fetch latest kubectl version from Kubernetes stable URL",
       "fileMatch": [
         "^\\.devcontainer/Dockerfile$"
@@ -31,6 +17,19 @@
       "extractVersionTemplate": "{{currentVersion}}",
       "packageNameTemplate": "kubectl",
       "lookupNameTemplate": "kubectl"
+    },
+    {
+      "customType": "regex",
+      "description": ["Process ARG versions in Dockerfile"],
+      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
+      "matchStrings": [
+        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver",
+      "depNameTemplate": "{{depName}}",
+      "packageNameTemplate": "{{depName}}",
+      "lookupNameTemplate": "{{depName}}"
     }
   ]
 }

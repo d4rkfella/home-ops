@@ -23,14 +23,13 @@
       "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [
-        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
+        "# renovate: depName=(?!kubectl\\b)(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}",
-      "excludePackagePatterns": ["kubectl"]
+      "lookupNameTemplate": "{{depName}}"
     }
   ]
 }

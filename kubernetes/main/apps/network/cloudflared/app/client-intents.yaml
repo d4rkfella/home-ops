@@ -1,0 +1,10 @@
+apiVersion: k8s.otterize.com/v1alpha3
+kind: ClientIntents
+metadata:
+  name: client-intents-for-cloudflared
+  namespace: network
+spec:
+  service:
+    name: cloudflared
+  calls:
+    - name: "nginx-external-controller"

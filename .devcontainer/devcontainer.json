@@ -7,13 +7,13 @@
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
     "workspaceFolder": "/project",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=cached",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
 
     "customizations": {
       "vscode": {
         "settings": {
             "editor.bracketPairColorization.enabled": true,
-            "editor.fontFamily": "FiraCode Nerd Font",
+            "editor.fontFamily": "FiraCode Nerd Font, monospace",
             "editor.fontLigatures": true,
             "editor.guides.bracketPairs": true,
             "editor.guides.bracketPairsHorizontal": true,
@@ -24,14 +24,17 @@
             ],
             "editor.stickyScroll.enabled": false,
             "explorer.autoReveal": false,
+
             "files.associations": {
                 "**/*.json5": "jsonc"
             },
             "files.trimTrailingWhitespace": true,
+
             "material-icon-theme.files.associations": {
                 "*.secret.sops.env": "lock",
                 "*.secret.sops.yaml": "lock"
             },
+            "material-icon-theme.activeIconPack": "angular",
             "material-icon-theme.folders.associations": {
                 ".archive": "archive",
                 ".github/workflows": "robot",
@@ -50,7 +53,6 @@
                 "tools": "tools",
                 "volsync": "aws",
                 "cloudflared": "cloudflare",
-                "kubernetes/main": "kubernetes",
                 "talos": "linux"
             },
             "sops.defaults.ageKeyFile": "./age.key",
@@ -59,7 +61,16 @@
                 "kubernetes": "./kubernetes/**/*.yaml"
             }
         },
-        "extensions": ["signageos.signageos-vscode-sops","PKief.material-icon-theme","BriteSnow.vscode-toggle-quotes","redhat.vscode-yaml","mitchdenny.ecdc","mikestead.dotenv","fcrespo82.markdown-table-formatter","albert.TabOut"]
+        "extensions": [
+            "signageos.signageos-vscode-sops",
+            "BriteSnow.vscode-toggle-quotes",
+            "redhat.vscode-yaml",
+            "mitchdenny.ecdc",
+            "mikestead.dotenv",
+            "fcrespo82.markdown-table-formatter",
+            "albert.TabOut",
+            "PKief.material-icon-theme"
+        ]
       }
     }
-  }
+}

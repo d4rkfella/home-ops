@@ -67,7 +67,7 @@ releases:
   - name: cert-manager
     namespace: cert-manager
     chart: cert-manager/cert-manager
-    version: 1.16.1
+    version: v1.16.2
     values:
       - ../apps/cert-manager/cert-manager/app/helm-values.yaml
     needs:

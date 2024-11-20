@@ -45,8 +45,7 @@ spec:
           cert-manager.io/private-key-size: "384"
         ingressClassName: internal
         tls:
-          - hosts:
-              - &host ["alertmanager.${PUBLIC_DOMAIN}"]
+          - hosts: &host ["alertmanager.${PUBLIC_DOMAIN}"]
             secretName: alertmanager-tls
         hosts: *host
         pathType: Prefix
@@ -87,10 +86,10 @@ spec:
           cert-manager.io/private-key-size: "384"
         ingressClassName: internal
         tls:
-          - hosts:
-              - &host ["prometheus.${PUBLIC_DOMAIN}"]
+          - hosts: &host ["prometheus.${PUBLIC_DOMAIN}"]
             secretName: prometheus-tls
-        hosts: *host
+        hosts:
+          - *host
         pathType: Prefix
       prometheusSpec:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart

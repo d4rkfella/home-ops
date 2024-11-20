@@ -50,7 +50,7 @@ spec:
                 value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
               - op: replace
                 path: /spec/template/spec/initContainers/0/command
-                value: ["sh", "-c", "until nc https://crowdsec-api.${PUBLIC_DOMAIN} 443 -z; do echo waiting for lapi to start; sleep 5; done"]
+                value: ["sh", "-c", "until nc crowdsec-api.${PUBLIC_DOMAIN} 443 -z; do echo waiting for lapi to start; sleep 5; done"]
   values:
     image:
       repository: crowdsecurity/crowdsec

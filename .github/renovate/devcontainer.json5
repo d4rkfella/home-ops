@@ -13,9 +13,7 @@
     {
       "customType": "regex",
       "description": "Process CLI tool versions in Dockerfile",
-      "fileMatch": [
-        "(^|/).devcontainer/Dockerfile$"
-      ],
+      "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
       "matchStrings": [
         "# renovate: depName=\"(?<depName>.*?)\"",
         "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"

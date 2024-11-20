@@ -8,7 +8,7 @@
       "matchStrings": [
         "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)(\\s|$)"
       ],
-      "datasourceTemplate": "github-releases",
+      "datasourceTemplate": "github-tags",
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "extractVersionTemplate": "v{{currentValue}}",

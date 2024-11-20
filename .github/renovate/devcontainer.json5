@@ -29,13 +29,8 @@
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
       "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}"
-    }
-  ],
-  "packageRules": [
-    {
-      "packageNames": ["kubectl"],
-      "excludePackageNames": ["kubectl"]
+      "lookupNameTemplate": "{{depName}}",
+      "excludePackagePatterns": ["kubectl"]
     }
   ]
 }

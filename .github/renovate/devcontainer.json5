@@ -15,16 +15,12 @@
       "description": ["Process CLI tool versions in Dockerfile"],
       "fileMatch": ["(^|/)(\\.devcontainer/)?Dockerfile$"],
       "matchStrings": [
-        "ARG FLUX_VERSION=(?<fluxVersion>v\\d+\\.\\d+\\.\\d+)",
-        "ARG SOPS_VERSION=(?<sopsVersion>v\\d+\\.\\d+\\.\\d+)",
-        "ARG KUBECTL_VERSION=(?<kubectlVersion>v\\d+\\.\\d+\\.\\d+)",
-        "ARG HELMFILE_VERSION=(?<helmfileVersion>v\\d+\\.\\d+\\.\\d+)"
+        "# renovate: depName=\"(?<depName>.*?)\"",
+        "ARG (?<argName>.*?)_VERSION=(?<currentValue>v?\\d+\\.\\d+\\.\\d+)"
       ],
       "autoReplaceStringTemplate": [
-        "ARG FLUX_VERSION={{{newFluxVersion}}}",
-        "ARG SOPS_VERSION={{{newSopsVersion}}}",
-        "ARG KUBECTL_VERSION={{{newKubectlVersion}}}",
-        "ARG HELMFILE_VERSION={{{newHelmfileVersion}}}"
+        "# renovate: depName=\"{{{depName}}}\"",
+        "ARG {{{argName}}}_VERSION={{{newValue}}}"
       ],
       "datasourceTemplate": "custom.github-releases",
       "versioningTemplate": "regex:^(v\\d+\\.\\d+\\.\\d+)$"

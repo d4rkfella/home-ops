@@ -11,7 +11,6 @@
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver",
       "depNameTemplate": "{{depName}}",
-      "extractVersionTemplate": "v{{currentValue}}",
       "packageNameTemplate": "{{depName}}",
       "lookupNameTemplate": "{{depName}}"
     }

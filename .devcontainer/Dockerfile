@@ -17,6 +17,8 @@ ARG HELM_VERSION=v3.16.3
 ARG TASK_VERSION=v3.40.0
 # renovate: depName=siderolabs/talos
 ARG TALOSCTL_VERSION=v1.8.3
+# renovate: depName=kubevirt/kubevirt
+ARG VIRTCTL_VERSION=v1.4.0
 
 ENV SHELL=/bin/bash
 
@@ -77,6 +79,7 @@ RUN echo "**** Installing packages ****" && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
+    wget https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

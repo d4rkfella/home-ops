@@ -40,6 +40,7 @@ RUN echo "**** Installing packages ****" && \
     direnv \
     yq \
     unzip && \
+    virt-viewer && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

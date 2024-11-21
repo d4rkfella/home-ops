@@ -40,7 +40,6 @@ RUN echo "**** Installing packages ****" && \
     direnv \
     yq \
     unzip && \
-    virt-viewer && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
@@ -82,6 +81,9 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     chmod +x ./virtctl-$VIRTCTL_VERSION-linux-amd64 && mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    curl -fsSLO https://releases.pagure.org/virt-viewer/virt-viewer-11.0.tar.xz && \
+    tar -xJf virt-viewer-11.0.tar.xz && \
+    chmod +x ./virt-viewer-11.0 && mv ./virt-viewer-11.0 /usr/local/bin/virt-viewer && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

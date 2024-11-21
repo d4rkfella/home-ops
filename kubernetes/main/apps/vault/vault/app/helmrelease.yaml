@@ -40,7 +40,7 @@ spec:
       enabled: true
       image:
         repository: "hashicorp/vault"
-        tag: "1.18.1"
+        tag: "1.18.2"
         pullPolicy: IfNotPresent
 
       updateStrategyType: "OnDelete"

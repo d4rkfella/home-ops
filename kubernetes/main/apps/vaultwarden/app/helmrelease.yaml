@@ -30,6 +30,8 @@ spec:
       name: vaultwarden-secret
       valuesKey: SMTP_SENDER
   values:
+    logging:
+      logLevel: debug
     image:
       registry: docker.io
       repository: vaultwarden/server

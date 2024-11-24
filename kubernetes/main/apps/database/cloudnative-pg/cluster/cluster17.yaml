@@ -58,7 +58,7 @@ spec:
       endpointURL: ${S3URL}
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres17-v3
+      serverName: &currentCluster postgres17-v4
       s3Credentials:
         accessKeyId:
           name: *secret

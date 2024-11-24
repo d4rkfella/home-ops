@@ -392,6 +392,7 @@ spec:
                 readOnly: true
 
       gluetun:
+        enabled: true
         type: persistentVolumeClaim
         size: 512Mi
         accessMode: ReadWriteOnce
@@ -399,4 +400,4 @@ spec:
         advancedMounts:
           torrenting:
             gluetun:
-              - path: /tmp
+              - path: /tmp/gluetun

@@ -28,7 +28,7 @@ spec:
   values:
     master:
       persistence:
-        storageClass: openebz-zfs-128k
+        storageClass: openebs-zfs-128k
       configuration: |
         databases 32
     architecture: standalone

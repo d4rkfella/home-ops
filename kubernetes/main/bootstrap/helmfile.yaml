@@ -14,12 +14,12 @@ repositories:
     url: https://coredns.github.io/helm
   - name: postfinance
     url: https://postfinance.github.io/kubelet-csr-approver
-  - name: topolvm
-    url: https://topolvm.github.io/topolvm/
   - name: cert-manager
     url: https://charts.jetstack.io
   - name: prometheus-community
     url: https://prometheus-community.github.io/helm-charts
+  - name: zfs-localpv
+    url: https://openebs.github.io/zfs-localpv
 
 releases:
   - name: prometheus-operator-crds
@@ -53,17 +53,6 @@ releases:
       - observability/prometheus-operator-crds
       - kube-system/cilium
       - kube-system/coredns
-  - name: lvm-disk-watcher
-    namespace: kube-system
-    chart: oci://tccr.io/truecharts/lvm-disk-watcher
-    version: 2.0.4
-    values:
-      - ../apps/kube-system/lvm-disk-watcher/app/helm-values.yaml
-    needs:
-      - observability/prometheus-operator-crds
-      - kube-system/cilium
-      - kube-system/coredns
-      - kube-system/kubelet-csr-approver
   - name: cert-manager
     namespace: cert-manager
     chart: cert-manager/cert-manager
@@ -75,16 +64,15 @@ releases:
       - kube-system/cilium
       - kube-system/coredns
       - kube-system/kubelet-csr-approver
-  - name: topolvm
+  - name: zfs-localpv
     namespace: kube-system
-    chart: topolvm/topolvm
-    version: 15.5.0
+    chart: zfs-localpv/zfs-localpv
+    version: 2.7.0-develop
     values:
-      - ../apps/kube-system/topolvm/app/helm-values.yaml
+      - ../apps/kube-system/openebs-zfs-localpv/app/helm-values.yaml
     needs:
       - observability/prometheus-operator-crds
       - kube-system/cilium
       - kube-system/coredns
       - kube-system/kubelet-csr-approver
-      - kube-system/lvm-disk-watcher
       - cert-manager/cert-manager

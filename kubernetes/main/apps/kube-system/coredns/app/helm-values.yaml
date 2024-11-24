@@ -11,6 +11,24 @@ service:
   clusterIP: 172.17.0.10
 servers:
   - zones:
+      - zone: ${PUBLIC_DOMAIN}
+        scheme: dns://
+        use_tcp: true
+    port: 53
+    plugins:
+      - name: errors
+      - name: health
+        configBlock: |-
+          lameduck 5s
+      - name: log
+      - name: forward
+        parameters: . 192.168.91.41
+      - name: cache
+        parameters: 30
+      - name: loop
+      - name: reload
+      - name: loadbalance
+  - zones:
       - zone: .
         scheme: dns://
         use_tcp: true
@@ -32,7 +50,7 @@ servers:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: forward
-        parameters: . /etc/resolv.conf
+        parameters: . 192.168.91.1
       - name: cache
         parameters: 30
       - name: loop

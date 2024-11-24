@@ -24,9 +24,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: topolvm
-      namespace: kube-system
 
   values:
     controllers:
@@ -139,6 +136,7 @@ spec:
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
         advancedMounts:
           radarr:
             app:

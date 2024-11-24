@@ -4,6 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app vault
+  namespace: vault
 spec:
   interval: 30m
   chart:
@@ -108,7 +109,7 @@ spec:
         - name: vault-tls
           secret:
             defaultMode: 420
-            secretName: darkfellanet-tls
+            secretName: vault-tls
 
       volumeMounts:
         - mountPath: /vault/tls
@@ -272,6 +273,7 @@ spec:
         size: 20Gi
         mountPath: "/vault/data"
         accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
 
       persistentVolumeClaimRetentionPolicy:
         whenDeleted: Retain
@@ -282,6 +284,7 @@ spec:
         size: 10Gi
         mountPath: "/vault/audit"
         accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
 
       standalone:
         enabled: false
@@ -303,7 +306,7 @@ spec:
 
             ui = true
             api_addr = "https://vault.${PUBLIC_DOMAIN}:8200"
-            cluster_addr = "https://vault.${PUBLIC_DOMAIN}:8201"
+            cluster_addr = "https://vault.${PUBLIC_DOMAIN}.com:8201"
 
             listener "tcp" {
               tls_disable = 0

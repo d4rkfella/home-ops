@@ -56,9 +56,16 @@ spec:
               PUID: 568
               PGID: 568
               VERSION_INFORMATION: "off"
-            envFrom:
-              - secretRef:
-                  name: gluetun-secret
+              WIREGUARD_PRIVATE_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret qbittorrent-secret
+                    key: WIREGUARD_PRIVATE_KEY
+              WIREGUARD_PUBLIC_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret qbittorrent-secret
+                    key: WIREGUARD_PUBLIC_KEY
             restartPolicy: Always
             probes:
               liveness:
@@ -287,6 +294,7 @@ spec:
         type: persistentVolumeClaim
         size: 5Gi
         accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
         advancedMounts:
           torrenting:
             qbittorrent:
@@ -354,7 +362,7 @@ spec:
 
       config-file-cross-seed:
         type: secret
-        name: cross-seed-secret
+        name: qbittorrent-secret
         advancedMounts:
           torrenting:
             cross-seed:

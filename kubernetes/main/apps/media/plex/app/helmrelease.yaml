@@ -22,9 +22,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: topolvm
-      namespace: kube-system
 
   values:
     controllers:
@@ -124,8 +121,9 @@ spec:
     persistence:
       config:
         type: persistentVolumeClaim
-        size: 100Gi
+        size: 50Gi
         accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-1m
         globalMounts:
           - path: /config/Library/Application Support/Plex Media Server
 
@@ -140,7 +138,8 @@ spec:
 
       transcode:
         type: persistentVolumeClaim
-        size: 200Gi
+        size: 150Gi
+        storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
 
       media:

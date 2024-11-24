@@ -104,6 +104,7 @@ spec:
         enabled: true
         type: persistentVolumeClaim
         size: 2Gi
+        storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
 
       tmpdir:

@@ -61,12 +61,14 @@ spec:
       path: /data
       keepPvc: false
       accessMode: ReadWriteOnce
+      class: openebs-zfs-128k
     attachments:
       name: vaultwarden-files
       size: 100Gi
       path: /files
       keepPvc: false
       accessMode: ReadWriteOnce
+      class: openebs-zfs-1m
     webVaultEnabled: true
     database:
       type: postgresql

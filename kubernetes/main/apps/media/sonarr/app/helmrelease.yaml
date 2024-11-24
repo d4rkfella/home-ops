@@ -136,6 +136,7 @@ spec:
         enabled: true
         type: persistentVolumeClaim
         size: 15Gi
+        storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /config

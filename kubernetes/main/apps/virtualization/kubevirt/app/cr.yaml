@@ -1,0 +1,17 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+spec:
+  configuration:
+    developerConfiguration:
+      featureGates:
+        - HostDevices
+        - DataVolumes
+    permittedHostDevices:
+      pciHostDevices:
+        - pciVendorSelector: 1000:0097
+          resourceName: devices.kubevirt.io/sas
+        - pciVendorSelector: 8086:2701
+          resourceName: devices.kubevirt.io/nvme

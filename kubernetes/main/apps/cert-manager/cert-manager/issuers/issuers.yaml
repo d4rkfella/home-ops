@@ -9,10 +9,11 @@ spec:
     privateKeySecretRef:
       name: zerossl-prod
     externalAccountBinding:
-      keyID: ${EAB_KEY_ID}
+      keyID: jnTUJ0UFn6YhlBZUrjmrfA
       keySecretRef:
         name: &secret zerossl-credentials
         key: EAB_HMAC_KEY
+      keyAlgorithm: HS256
     solvers:
       - dns01:
           cloudflare:

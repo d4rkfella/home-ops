@@ -36,9 +36,24 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16.5@sha256:53fa938cfe6d2dae23b120145362341950f1154bf9d0e7f2ec4e471d61624f79
-            envFrom: &envFrom
-              - secretRef:
-                  name: prowlarr-secret
+            env:
+              INIT_POSTGRES_DBNAME: &dbName prowlarr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_SUPER_PASS
 
         containers:
           app:
@@ -54,8 +69,25 @@ spec:
               PROWLARR__LOG__LEVEL: info
               PROWLARR__SERVER__PORT: &port 80
               PROWLARR__UPDATE__BRANCH: develop
+              PROWLARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PROWLARR__AUTH__APIKEY
+              PROWLARR__POSTGRES__HOST: *dbHost
+              PROWLARR__POSTGRES__PORT: "5432"
+              PROWLARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              PROWLARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              PROWLARR__POSTGRES__MAINDB: *dbName
               TZ: Europe/Sofia
-            envFrom: *envFrom
             probes:
               liveness: &probes
                 enabled: true

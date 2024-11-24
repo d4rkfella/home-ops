@@ -28,8 +28,6 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
       namespace: observability
-    - name: topolvm
-      namespace: kube-system
   values:
     crds:
       enabled: false
@@ -55,7 +53,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: topolvm-provisioner-thin
+              storageClassName: openebs-zfs-128k
               resources:
                 requests:
                   storage: 1Gi
@@ -114,7 +112,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: topolvm-provisioner-thin
+              storageClassName: openebs-zfs-128k
               resources:
                 requests:
                   storage: 75Gi

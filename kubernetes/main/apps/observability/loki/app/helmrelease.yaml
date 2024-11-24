@@ -26,7 +26,7 @@ spec:
       strategy: rollback
       retries: 3
   dependsOn:
-    - name: topolvm
+    - name: zfs-localpv
       namespace: kube-system
   values:
     deploymentMode: SingleBinary

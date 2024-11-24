@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:dd3abd8fd8b9b3704cdaa2b8594d061ef62e725b8e639a3e86a75e0b4714ecf6",
+    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:b28e24f1a7af8ccc3f7961bda3a7e61915514f39460d0ab57b57667753b49e43",
 
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
@@ -56,6 +56,7 @@
                 "talos": "linux"
             },
             "sops.defaults.ageKeyFile": "./age.key",
+            "sops.creationEnabled": true,
             "yaml.schemaStore.enable": true,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"

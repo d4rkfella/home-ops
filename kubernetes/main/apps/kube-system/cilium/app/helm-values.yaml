@@ -1,4 +1,6 @@
 ---
+cni:
+  exclusive: false
 enableIPv4BIGTCP: true
 autoDirectNodeRoutes: true
 bandwidthManager:
@@ -28,8 +30,6 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: true
 loadBalancer:
-  standalone: true
-  acceleration: native
   algorithm: maglev
   mode: dsr
 localRedirectPolicy: true

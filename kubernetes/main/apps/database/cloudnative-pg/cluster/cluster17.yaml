@@ -14,7 +14,9 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 5Gi
+      storageClassName: openebs-zfs-32k
+      volumeMode: Filesystem
     resizeInUseVolumes: true
   walStorage:
     pvcTemplate:
@@ -22,7 +24,9 @@ spec:
         - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 5Gi
+      storageClassName: openebs-zfs-32k
+      volumeMode: Filesystem
   superuserSecret:
     name: &secret cloudnative-pg-secret
   enableSuperuserAccess: true
@@ -54,7 +58,7 @@ spec:
       endpointURL: ${S3URL}
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres17-v2
+      serverName: &currentCluster postgres17-v3
       s3Credentials:
         accessKeyId:
           name: *secret
@@ -66,7 +70,7 @@ spec:
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres17-v1
+      source: &previousCluster postgres17-v2
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster

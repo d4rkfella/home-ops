@@ -35,6 +35,7 @@ spec:
     schedule: "0 7 * * *"
   restic:
     copyMethod: Snapshot
+    storageClassName: openebs-zfs-128k
     pruneIntervalDays: 7
     repository: sabnzbd-volsync-secret
     cacheCapacity: 2Gi

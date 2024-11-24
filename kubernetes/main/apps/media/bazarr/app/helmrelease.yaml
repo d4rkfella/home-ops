@@ -176,7 +176,7 @@ spec:
             subPath: config.yaml
       media:
         type: nfs
-        server: 192.168.91.41
+        server: 192.168.91.40
         path: /mnt/exos20/data
         globalMounts:
           - path: /data/media

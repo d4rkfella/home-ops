@@ -27,6 +27,8 @@ spec:
     keepHistory: false
   values:
     master:
+      persistence:
+        storageClass: openebz-zfs-128k
       configuration: |
         databases 32
     architecture: standalone

@@ -42,7 +42,7 @@ spec:
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret prowlarr-secret
                     key: INIT_POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:

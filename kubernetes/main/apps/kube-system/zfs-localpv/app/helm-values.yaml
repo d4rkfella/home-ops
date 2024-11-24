@@ -67,7 +67,7 @@ zfsController:
       registry: registry.k8s.io/
       repository: sig-storage/csi-provisioner
       pullPolicy: IfNotPresent
-      tag: v3.5.0
+      tag: v3.6.4
     extraArgs: []
   updateStrategy:
     type: RollingUpdate

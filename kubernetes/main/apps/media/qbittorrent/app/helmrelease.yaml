@@ -392,7 +392,10 @@ spec:
                 readOnly: true
 
       gluetun:
-        type: emptyDir
+        type: persistentVolumeClaim
+        size: 512Mi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
         advancedMounts:
           torrenting:
             gluetun:

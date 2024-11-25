@@ -159,7 +159,7 @@ spec:
 
       media:
         type: nfs
-        server: nas.${PUBLIC_DOMAIN}
+        server: 192.168.91.41
         path: /mnt/exos20/data
         advancedMounts:
           radarr:

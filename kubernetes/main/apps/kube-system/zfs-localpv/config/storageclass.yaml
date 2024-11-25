@@ -9,6 +9,7 @@ parameters:
   compression: "lz4"
   dedup: "off"
   fstype: "zfs"
+  shared: "yes"
   poolname: "ssd_pool"
 provisioner: zfs.csi.openebs.io
 
@@ -23,6 +24,7 @@ parameters:
   compression: "lz4"
   dedup: "off"
   fstype: "zfs"
+  shared: "yes"
   poolname: "ssd_pool"
 provisioner: zfs.csi.openebs.io
 ---
@@ -36,5 +38,6 @@ parameters:
   compression: "lz4"
   dedup: "off"
   fstype: "zfs"
+  shared: "yes"
   poolname: "ssd_pool"
 provisioner: zfs.csi.openebs.io

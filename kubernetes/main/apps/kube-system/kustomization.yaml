@@ -8,7 +8,6 @@ resources:
   # Flux-Kustomizations
   - ./coredns/ks.yaml
   - ./cilium/ks.yaml
-  - ./descheduler/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml

@@ -25,10 +25,10 @@ spec:
   values:
     replicas: 1
     kind: Deployment
-    deschedulerPolicyAPIVersion: descheduler/v1alpha2
+    deschedulerPolicyAPIVersion: descheduler/v1alpha1  # Use the correct API version
     deschedulerPolicy:
       profiles:
-        - name: RemoveFailedPodsPolicy
+        - name: SingleNodePolicy
           plugins:
             deschedule:
               enabled:
@@ -37,7 +37,7 @@ spec:
             - name: RemoveFailedPods
               args:
                 failedPods:
-                  excludeOwnerKinds: []
+                  excludeOwnerKinds: []  # Include all types of failed pods
                   reasons:
                     - Evicted
                     - NodeAffinity
@@ -45,12 +45,8 @@ spec:
                     - FailedScheduling
                   minPodLifetimeSeconds: 60
                   includingInitContainers: true
-            - name: DefaultEvictor
-              args:
-                evictFailedBarePods: true
-                evictLocalStoragePods: true
-                evictSystemCriticalPods: false
-                nodeFit: false
+    evictLocalStoragePods: true  # Enable eviction in single-node clusters
+    tolerateUnreadyNodes: true   # Tolerate unready nodes to allow single-node operation
     service:
       enabled: true
     serviceMonitor:

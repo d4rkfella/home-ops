@@ -41,10 +41,13 @@ spec:
               tag: 1.0.20210914
             restartPolicy: Always
             securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
               runAsNonRoot: false
               runAsUser: 0
-              runAsGroup: 568
-              privileged: false
+              runAsGroup: 0
+              privileged: true
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
         containers:

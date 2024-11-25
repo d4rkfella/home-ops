@@ -60,7 +60,7 @@ spec:
               tag: 5.0.2@sha256:b905a9e4eef9ffabd10ad8618ffdc2661d20c1a910441e5f921c851c10974444
             env:
               UMASK: "022"
-              TZ: *TZ
+              TZ: &TZ Europe/Sofia
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: 50413
               CROSS_SEED_ENABLED: true

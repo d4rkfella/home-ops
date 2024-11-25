@@ -3,7 +3,7 @@ kind: VirtualMachine
 metadata:
   name: truenas-scale
 spec:
-  running: false
+  running: true
   template:
     metadata:
       labels:

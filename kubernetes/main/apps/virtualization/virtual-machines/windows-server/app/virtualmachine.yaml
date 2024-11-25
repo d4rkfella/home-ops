@@ -3,7 +3,7 @@ kind: VirtualMachine
 metadata:
   name: windows-server-2022
 spec:
-  running: false
+  running: true
   template:
     metadata:
       labels:

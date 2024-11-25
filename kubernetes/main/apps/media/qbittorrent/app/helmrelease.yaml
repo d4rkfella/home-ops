@@ -35,7 +35,7 @@ spec:
           reloader.stakater.com/auto: "true"
 
         initContainers:
-          gluetun:
+          vpn:
             image:
               repository: ghcr.io/jordanpotter/docker-wireguard
               tag: 2024-11-19@sha256:ab89714a9ccc136c194a8ddbeec7706bff6da1a1e35adeb185a600ce611f28f8

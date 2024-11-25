@@ -27,7 +27,7 @@ spec:
         - |
           name: tun
           groups:
-            - count: 1000
+            - count: 1
               paths:
                 - path: /dev/net/tun
         name: generic-device-plugin

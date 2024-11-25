@@ -36,13 +36,12 @@ spec:
 
         initContainers:
           gluetun:
-            dependsOn: dnsdist
             image:
               repository: ghcr.io/qdm12/gluetun
               tag: latest@sha256:aaaf6c7c108f7f7caae978499b4cb823a135324992ce7cea4acd405a29298141
             env:
               TZ: &TZ Europe/Sofia
-              DNS_KEEP_NAMESERVER: on
+              DNS_KEEP_NAMESERVER: "on"
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: "on"
@@ -115,9 +114,21 @@ spec:
               CROSS_SEED_PORT: 8080
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
-            envFrom:
-              - secretRef:
-                  name: qbittorrent-secret
+              CROSS_SEED_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CROSS_SEED_API_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
             probes:
               readiness:
                 enabled: true
@@ -233,7 +244,6 @@ spec:
     service:
       qbittorrent:
         controller: torrenting
-        primary: true
         ports:
           http:
             port: *port

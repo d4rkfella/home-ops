@@ -139,28 +139,28 @@ spec:
                 exec:
                   command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
 
-          cross-seed:
-            dependsOn: qbittorrent
-            image:
-              repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.0.0-46@sha256:4aac1ae4f78f9a6563e5e2e74b8191014d49c1ea4d55abd98b931fb766e2899e
-            env:
-              TZ: *TZ
-            args: ["daemon"]
-            probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 512Mi
+          #cross-seed:
+            #dependsOn: qbittorrent
+            #image:
+              #repository: ghcr.io/cross-seed/cross-seed
+              #tag: 6.0.0-46@sha256:4aac1ae4f78f9a6563e5e2e74b8191014d49c1ea4d55abd98b931fb766e2899e
+            #env:
+              #TZ: *TZ
+            #args: ["daemon"]
+            #probes:
+              #liveness:
+                #enabled: false
+              #readiness:
+                #enabled: false
+            #securityContext:
+              #allowPrivilegeEscalation: false
+              #readOnlyRootFilesystem: true
+              #capabilities: { drop: ["ALL"] }
+            #resources:
+              #requests:
+                #cpu: 10m
+              #limits:
+                #memory: 512Mi
 
           vuetorrent:
             dependsOn: qbittorrent
@@ -294,23 +294,23 @@ spec:
                 subPath: config.yml
                 readOnly: true
 
-      config-cross-seed:
-        type: emptyDir
-        medium: Memory
-        advancedMounts:
-          torrenting:
-            cross-seed:
-              - path: /config
+      #config-cross-seed:
+        #type: emptyDir
+        #medium: Memory
+        #advancedMounts:
+          #torrenting:
+            #cross-seed:
+              #- path: /config
 
-      config-file-cross-seed:
-        type: secret
-        name: qbittorrent-secret
-        advancedMounts:
-          torrenting:
-            cross-seed:
-              - path: /config/config.js
-                subPath: config.js
-                readOnly: true
+      #config-file-cross-seed:
+        #type: secret
+        #name: qbittorrent-secret
+        #advancedMounts:
+          #torrenting:
+            #cross-seed:
+              #- path: /config/config.js
+                #subPath: config.js
+                #readOnly: true
 
       addons:
         type: emptyDir

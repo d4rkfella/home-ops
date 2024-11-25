@@ -3,7 +3,7 @@ kind: VirtualMachine
 metadata:
   name: windows-server-2022
 spec:
-  running: true
+  running: false
   template:
     metadata:
       labels:
@@ -16,7 +16,8 @@ spec:
             networkName: kube-system/bridge-windows-server
       domain:
         clock:
-          utc: {}
+          timezone: Europe/Sofia
+          timer: {}
         cpu:
           cores: 2
           model: host-passthrough
@@ -34,7 +35,7 @@ spec:
             - name: bridge
               bridge: {}
               model: virtio
-              macAddress: 54:3e:a4:5c:32:ea
+              macAddress: 52:54:00:ab:cd:ef
           tpm: {}
           disks:
             - cdrom:

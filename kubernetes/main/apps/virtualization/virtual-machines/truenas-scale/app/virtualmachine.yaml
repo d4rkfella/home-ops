@@ -3,7 +3,7 @@ kind: VirtualMachine
 metadata:
   name: truenas-scale
 spec:
-  running: true
+  running: false
   template:
     metadata:
       labels:
@@ -42,11 +42,11 @@ spec:
             - name: bridge-1
               bridge: {}
               model: virtio
-              macAddress: 77:8e:77:4e:18:75
+              macAddress: 00:16:3e:bc:da:12
             - name: bridge-2
               bridge: {}
               model: virtio
-              macAddress: 3e:f7:90:c5:54:1f
+              macAddress: 52:54:00:fa:3d:88
           disks:
             - disk:
                 bus: virtio

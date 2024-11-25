@@ -25,6 +25,7 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    replicaCount: 1
     database:
       type: postgresql
       existingSecret: &secret vaultwarden-secret

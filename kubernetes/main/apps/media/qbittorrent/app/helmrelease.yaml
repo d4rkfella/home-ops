@@ -37,15 +37,10 @@ spec:
         initContainers:
           vpn:
             image:
-              repository: ghcr.io/jordanpotter/docker-wireguard
-              tag: 2024-11-19@sha256:ab89714a9ccc136c194a8ddbeec7706bff6da1a1e35adeb185a600ce611f28f8
-            env:
-              LOCAL_SUBNETS: 172.16.0.0/16,172.17.0.0/16
+              repository: linuxserver/wireguard
+              tag: 1.0.20210914
             restartPolicy: Always
             securityContext:
-              sysctls:
-                - name: net.ipv4.conf.all.src_valid_mark
-                  value: "1"
               runAsNonRoot: false
               runAsUser: 0
               runAsGroup: 568
@@ -331,6 +326,6 @@ spec:
         advancedMounts:
           torrenting:
             vpn:
-              - path: /etc/wireguard/wg0.conf
+              - path: /config/wg_confs/wg-CH-175.conf
                 subPath: wg0.conf
                 readOnly: true

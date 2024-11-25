@@ -25,37 +25,32 @@ spec:
   values:
     replicas: 1
     kind: Deployment
-    deschedulerPolicyAPIVersion: descheduler/v1alpha2
+    deschedulerPolicyAPIVersion: descheduler/v1alpha1
     deschedulerPolicy:
       profiles:
-        - name: Default
+        - name: RemoveFailedPodsPolicy
+          plugins:
+            deschedule:
+              enabled:
+                - RemoveFailedPods
           pluginConfig:
+            - name: RemoveFailedPods
+              args:
+                failedPods:
+                  excludeOwnerKinds: []
+                  reasons:
+                    - Evicted
+                    - NodeAffinity
+                    - NodeLost
+                    - FailedScheduling
+                  minPodLifetimeSeconds: 60
+                  includingInitContainers: true
             - name: DefaultEvictor
               args:
                 evictFailedBarePods: true
                 evictLocalStoragePods: true
                 evictSystemCriticalPods: false
                 nodeFit: false
-            - name: RemovePodsViolatingInterPodAntiAffinity
-            - name: RemovePodsViolatingNodeAffinity
-              args:
-                nodeAffinityType:
-                  - requiredDuringSchedulingIgnoredDuringExecution
-            - name: RemovePodsViolatingNodeTaints
-            - name: RemovePodsViolatingTopologySpreadConstraint
-              args:
-                constraints:
-                  - DoNotSchedule
-                  - ScheduleAnyway
-          plugins:
-            balance:
-              enabled:
-                - RemovePodsViolatingTopologySpreadConstraint
-            deschedule:
-              enabled:
-                - RemovePodsViolatingInterPodAntiAffinity
-                - RemovePodsViolatingNodeAffinity
-                - RemovePodsViolatingNodeTaints
     service:
       enabled: true
     serviceMonitor:

@@ -34,6 +34,7 @@ spec:
             - name: bridge
               bridge: {}
               model: virtio
+              macAddress: 54:3e:a4:5c:32:ea
           tpm: {}
           disks:
             - cdrom:

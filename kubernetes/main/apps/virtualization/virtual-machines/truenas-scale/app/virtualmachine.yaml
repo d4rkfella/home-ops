@@ -42,9 +42,11 @@ spec:
             - name: bridge-1
               bridge: {}
               model: virtio
+              macAddress: 77:8e:77:4e:18:75
             - name: bridge-2
               bridge: {}
               model: virtio
+              macAddress: 3e:f7:90:c5:54:1f
           disks:
             - disk:
                 bus: virtio

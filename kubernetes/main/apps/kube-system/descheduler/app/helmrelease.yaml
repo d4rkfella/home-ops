@@ -34,8 +34,8 @@ spec:
               args:
                 evictFailedBarePods: true
                 evictLocalStoragePods: true
-                evictSystemCriticalPods: true
-                nodeFit: true
+                evictSystemCriticalPods: false
+                nodeFit: false
             - name: RemovePodsViolatingInterPodAntiAffinity
             - name: RemovePodsViolatingNodeAffinity
               args:

@@ -1,0 +1,18 @@
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: jellyseerr-dst
+  namespace: media
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: jellyseerr-volsync-secret
+    copyMethod: Direct
+    storageClassName: openebs-zfs-128k
+    destinationPVC: jellyseerr-config
+    enableFileDeletion: true
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568

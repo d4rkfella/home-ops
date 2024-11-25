@@ -16,8 +16,7 @@ spec:
             networkName: kube-system/bridge-windows-server
       domain:
         clock:
-          timezone: "Europe/Sofia"
-          timer: {}
+          utc: {}
         cpu:
           cores: 2
           model: host-passthrough

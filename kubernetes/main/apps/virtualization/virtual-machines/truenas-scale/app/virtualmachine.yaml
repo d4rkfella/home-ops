@@ -19,8 +19,7 @@ spec:
             networkName: kube-system/bridge-truenas-2
       domain:
         clock:
-          timezone: "Europe/Sofia"
-          timer: {}
+          utc: {}
         cpu:
           cores: 4
           model: host-passthrough

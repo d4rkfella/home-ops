@@ -167,7 +167,8 @@ spec:
         cert-manager.io/private-key-size: "384"
       tls:
         - secretName: vaultwarden-tls
-          hosts: ["*host"]
+          hosts:
+            - *host
 
     persistence:
       enabled: true

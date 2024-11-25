@@ -20,9 +20,6 @@ configMapGenerator:
   - name: qbitmanage-config
     files:
       - config.yml=./resources/qbitmanage-config.yaml
-  - name: qbittorrent-dnsdist
-    files:
-      - ./resources/dnsdist.conf
   - name: qbittorrent-gatus-ep
     options:
       labels:

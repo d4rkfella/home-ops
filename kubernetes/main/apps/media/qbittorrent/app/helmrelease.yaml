@@ -60,7 +60,7 @@ spec:
               TZ: &TZ Europe/Sofia
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: 50413
-              CROSS_SEED_ENABLED: true
+              CROSS_SEED_ENABLED: false
               CROSS_SEED_HOST: localhost
               CROSS_SEED_PORT: 8080
               CROSS_SEED_SLEEP_INTERVAL: 15
@@ -245,10 +245,10 @@ spec:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
-            cross-seed:
-              - path: /qbittorrent/qBittorrent/BT_backup
-                subPath: qBittorrent/BT_backup
-                readOnly: true
+            #cross-seed:
+              #- path: /qbittorrent/qBittorrent/BT_backup
+                #subPath: qBittorrent/BT_backup
+                #readOnly: true
       scripts:
         type: configMap
         name: qbittorrent-scripts

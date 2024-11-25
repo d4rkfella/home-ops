@@ -35,23 +35,70 @@ spec:
           reloader.stakater.com/auto: "true"
 
         initContainers:
-          vpn:
+          gluetun:
             image:
-              repository: linuxserver/wireguard
-              tag: 1.0.20210914
+              repository: ghcr.io/qdm12/gluetun
+              tag: latest@sha256:aaaf6c7c108f7f7caae978499b4cb823a135324992ce7cea4acd405a29298141
             env:
-              INTERNAL_SUBNET: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
+              TZ: &TZ Europe/Sofia
+              DNS_KEEP_NAMESERVER: "on"
+              VPN_TYPE: wireguard
+              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_PORT_FORWARDING: "on"
+              VPN_PORT_FORWARDING_LISTENING_PORT: 50413
+              WIREGUARD_ADDRESSES: 10.2.0.2/32
+              FIREWALL_INPUT_PORTS: 80
+              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
+              SERVER_HOSTNAMES: node-ch-21.protonvpn.net
+              PUID: 568
+              PGID: 568
+              VERSION_INFORMATION: "off"
+              VPN_INTERFACE: tun1
+              WIREGUARD_PRIVATE_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret qbittorrent-secret
+                    key: WIREGUARD_PRIVATE_KEY
+              WIREGUARD_PUBLIC_KEY: "XPVCz7LndzqWe7y3+WSo51hvNOX8nX5CTwVTWhzg8g8="
             restartPolicy: Always
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /gluetun-entrypoint
+                      - healthcheck
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /gluetun-entrypoint
+                      - healthcheck
+                  initialDelaySeconds: 20
+                  periodSeconds: 10
+                  failureThreshold: 3
+            lifecycle:
+              postStart:
+                exec:
+                  command: ["/bin/sh", "-c", "(ip rule del table 51820; ip -6 rule del table 51820) || true"]
             securityContext:
-              capabilities:
-                add:
-                  - NET_ADMIN
               runAsNonRoot: false
               runAsUser: 0
-              runAsGroup: 0
-              privileged: true
-              allowPrivilegeEscalation: true
+              runAsGroup: 568
+              privileged: false
+              allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"], add: ["NET_ADMIN","CHOWN"] }
+            resources:
+              limits:
+                squat.ai/tun: 1
         containers:
           qbittorrent:
             image:
@@ -323,13 +370,3 @@ spec:
                 readOnly: true
             vuetorrent:
               - path: /addons
-
-      vpn-config:
-        type: secret
-        name: qbittorrent-secret
-        advancedMounts:
-          torrenting:
-            vpn:
-              - path: /config/wg_confs/wg-CH-175.conf
-                subPath: wg0.conf
-                readOnly: true

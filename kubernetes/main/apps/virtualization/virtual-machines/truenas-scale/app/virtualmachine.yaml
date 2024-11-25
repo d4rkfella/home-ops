@@ -18,10 +18,15 @@ spec:
           multus:
             networkName: kube-system/bridge-truenas-2
       domain:
+        clock:
+          timezone: "Europe/Sofia"
+          timer: {}
         cpu:
           cores: 4
           model: host-passthrough
         features:
+          acpi: {}
+          apic: {}
           smm:
             enabled: false
         firmware:

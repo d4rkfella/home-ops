@@ -24,18 +24,13 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  valuesFrom:
-    - targetPath: smtp.from
-      kind: Secret
-      name: vaultwarden-secret
-      valuesKey: SMTP_SENDER
   values:
     database:
       type: postgresql
       existingSecret: &secret vaultwarden-secret
       existingSecretKey: VAULTWARDEN_DATABASE_URI
     vaultwarden:
-      domain: vaultwarden.${PUBLIC_DOMAIN}
+      domain: https://vaultwarden.${PUBLIC_DOMAIN}
       allowSignups: true
       signupDomains:
         - ${PUBLIC_DOMAIN}

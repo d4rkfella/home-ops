@@ -44,7 +44,7 @@ servers:
     plugins:
       - name: errors
       - name: forward
-        parameters: 192.168.91.41
+        parameters: . 192.168.91.41
       - name: cache
         parameters: 60
       - name: loop

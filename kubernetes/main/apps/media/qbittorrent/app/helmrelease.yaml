@@ -260,7 +260,6 @@ spec:
 
       config-qbitmanage:
         type: emptyDir
-        medium: Memory
         advancedMounts:
           torrenting:
             qbitmanage:

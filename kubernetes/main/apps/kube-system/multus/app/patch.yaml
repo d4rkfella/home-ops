@@ -22,3 +22,12 @@ spec:
         - mountPath: /host/opt/cni/bin
           mountPropagation: Bidirectional
           name: cnibin
+      containers:
+        - name: kube-multus
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 100m
+              memory: 50Mi

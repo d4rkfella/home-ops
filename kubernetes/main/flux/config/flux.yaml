@@ -35,16 +35,7 @@ spec:
           name: all
       target:
         kind: Deployment
-        name: image-automation-controller
-    - patch: |
-        $patch: delete
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: all
-      target:
-        kind: Deployment
-        name: image-reflector-controller
+        name: (image-automation-controller|image-reflector-controller)
     # Increase the number of workers and limits
     # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#increase-the-number-of-workers-and-limits
     - patch: |

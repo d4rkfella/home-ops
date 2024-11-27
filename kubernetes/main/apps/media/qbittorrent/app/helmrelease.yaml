@@ -295,10 +295,10 @@ spec:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
-            #cross-seed:
-              #- path: /qbittorrent/qBittorrent/BT_backup
-                #subPath: qBittorrent/BT_backup
-                #readOnly: true
+            cross-seed:
+              - path: /qbittorrent/qBittorrent/BT_backup
+                subPath: qBittorrent/BT_backup
+                readOnly: true
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -343,23 +343,23 @@ spec:
                 subPath: config.yml
                 readOnly: true
 
-      #config-cross-seed:
-        #type: emptyDir
-        #medium: Memory
-        #advancedMounts:
-          #torrenting:
-            #cross-seed:
-              #- path: /config
+      config-cross-seed:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          torrenting:
+            cross-seed:
+              - path: /config
 
-      #config-file-cross-seed:
-        #type: secret
-        #name: qbittorrent-secret
-        #advancedMounts:
-          #torrenting:
-            #cross-seed:
-              #- path: /config/config.js
-                #subPath: config.js
-                #readOnly: true
+      config-file-cross-seed:
+        type: secret
+        name: qbittorrent-secret
+        advancedMounts:
+          torrenting:
+            cross-seed:
+              - path: /config/config.js
+                subPath: config.js
+                readOnly: true
 
       addons:
         type: emptyDir

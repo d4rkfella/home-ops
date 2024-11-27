@@ -180,6 +180,7 @@ spec:
       qbittorrent:
         controller: torrenting
         type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
         annotations:
           lbipam.cilium.io/ips: 192.168.91.82
         ports:

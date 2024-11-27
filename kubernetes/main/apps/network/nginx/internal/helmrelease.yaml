@@ -47,7 +47,9 @@ spec:
         client-body-buffer-size: 100M
         client-body-timeout: 120
         client-header-timeout: 120
-        enable-brotli: "false"
+        enable-brotli: "true"
+        disable-ipv6: "true"
+        disable-ipv6-dns: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
         force-ssl-redirect: "true"
@@ -77,19 +79,10 @@ spec:
       extraArgs:
         default-ssl-certificate: network/darkfellanet-tls
       terminationGracePeriodSeconds: 120
-      topologySpreadConstraints:
-        - maxSkew: 1
-          topologyKey: kubernetes.io/hostname
-          whenUnsatisfiable: DoNotSchedule
-          labelSelector:
-            matchLabels:
-              app.kubernetes.io/name: ingress-nginx
-              app.kubernetes.io/instance: nginx-internal
-              app.kubernetes.io/component: controller
       resources:
         requests:
           cpu: 100m
         limits:
-          memory: 1000Mi
+          memory: 5Gi
     defaultBackend:
       enabled: false

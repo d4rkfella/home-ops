@@ -107,6 +107,8 @@ spec:
         client-body-timeout: 120
         client-header-timeout: 120
         enable-brotli: "true"
+        disable-ipv6: "true"
+        disable-ipv6-dns: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
         hide-headers: Server,X-Powered-By
@@ -161,7 +163,7 @@ spec:
         requests:
           cpu: 100m
         limits:
-          memory: 2000Mi
+          memory: 5Gi
     defaultBackend:
       enabled: true
       image:

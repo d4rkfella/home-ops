@@ -81,7 +81,10 @@ RUN echo "**** Installing packages ****" && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     echo "**** Setting permissions ****" && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
+    echo "**** Setting up kubectl autocompletion ****" && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
+    echo 'alias k=kubectl' >>~/.bashrc && \
+    echo 'complete -o default -F __start_kubectl k' >>~/.bashrc && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

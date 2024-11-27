@@ -41,7 +41,7 @@ spec:
               tag: latest@sha256:aaaf6c7c108f7f7caae978499b4cb823a135324992ce7cea4acd405a29298141
             env:
               TZ: &TZ Europe/Sofia
-              DNS_KEEP_NAMESERVER: "on"
+              #DNS_KEEP_NAMESERVER: "on"
               VPN_TYPE: wireguard
               VPN_SERVICE_PROVIDER: protonvpn
               VPN_PORT_FORWARDING: "on"

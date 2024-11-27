@@ -55,11 +55,6 @@ spec:
                 # Connect to ProtonVPN using the ProtonVPN CLI
                 protonvpn-cli connect --config /etc/wireguard/wg0.conf
 
-                # Check if the WireGuard interface is up
-                if ! ip link show wg0 | grep -q "state UP"; then
-                    echo "WireGuard interface is not up. Exiting..."
-                    exit 1
-                fi
 
                 # Fetch the dynamically assigned forwarded port
                 FORWARDED_PORT=$(protonvpn-cli get-forwarded-port)

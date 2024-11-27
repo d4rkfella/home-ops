@@ -43,7 +43,7 @@ spec:
               UMASK: "022"
               TZ: &TZ Europe/Sofia
               QBT_WEBUI_PORT: &port 80
-              QBT_TORRENTING_PORT: 50413
+              QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: false
               CROSS_SEED_HOST: localhost
               CROSS_SEED_PORT: 8080
@@ -177,11 +177,22 @@ spec:
     terminationGracePeriodSeconds: 300
 
     service:
-      qbittorrent:
-        controller: torrenting
+      app:
+        controller: qbittorrent
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.82
         ports:
           http:
             port: *port
+          bittorrent-tcp:
+            enabled: true
+            port: *torrentPort
+            protocol: TCP
+          bittorrent-udp:
+            enabled: true
+            port: *torrentPort
+            protocol: UDP
 
     ingress:
       qbittorrent:

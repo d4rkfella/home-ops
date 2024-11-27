@@ -81,7 +81,7 @@ jobs:
           for r in "${repos[@]}"; do
               IFS=':' read -r cluster_name repo_namespace repo_name <<< "${r}"
               flux \
-                  --context ${cluster_name} \
+                  --context admin@${cluster_name} \
                   --namespace ${repo_namespace} \
                   reconcile source helm ${repo_name}
           done

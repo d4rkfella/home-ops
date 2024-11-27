@@ -65,6 +65,8 @@ spec:
                 # Bring up the WireGuard VPN using the provided config file
                 wg-quick up /etc/wireguard/wg0.conf
 
+                echo "nameserver 172.17.0.10" > /etc/resolv.conf
+                echo "nameserver 172.17.0.10" >> /etc/resolv.conf
                 # Wait for the VPN connection to be established
                 sleep 5
 

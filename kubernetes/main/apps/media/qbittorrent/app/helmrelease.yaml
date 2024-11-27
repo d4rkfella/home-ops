@@ -94,8 +94,8 @@ spec:
               runAsNonRoot: false
               runAsUser: 0
               runAsGroup: 0
-              privileged: false
-              allowPrivilegeEscalation: false
+              privileged: true
+              allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"], add: ["NET_ADMIN"] }
             resources:

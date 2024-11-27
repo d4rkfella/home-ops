@@ -2,7 +2,7 @@ endpoints:
   - name: "Autobrr"
     group: guarded
     url: "https://autobrr.${PUBLIC_DOMAIN}/api/healthz/liveness"
-    interval: 5m
+    interval: 1m
     ui:
       hide-hostname: true
       hide-url: true

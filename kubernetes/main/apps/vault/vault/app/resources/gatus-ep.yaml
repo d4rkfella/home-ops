@@ -2,7 +2,7 @@ endpoints:
   - name: "HashiCorp Vault"
     group: guarded
     url: "https://vault.${PUBLIC_DOMAIN}:8200/v1/sys/health"
-    interval: 5m
+    interval: 1m
     ui:
       hide-hostname: true
       hide-url: true

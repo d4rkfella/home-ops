@@ -2,7 +2,7 @@ endpoints:
   - name: "Vaultwarden"
     group: external
     url: "https://vaultwarden.${PUBLIC_DOMAIN}/alive"
-    interval: 5m
+    interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
     conditions:

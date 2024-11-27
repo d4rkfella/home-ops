@@ -2,7 +2,7 @@ endpoints:
   - name: "SABnzbd"
     group: guarded
     url: "https://sabnzbd.${PUBLIC_DOMAIN}/api?mode=version"
-    interval: 5m
+    interval: 1m
     ui:
       hide-hostname: true
       hide-url: true

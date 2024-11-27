@@ -51,7 +51,6 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     mv ./kubectl /usr/local/bin/kubectl && \
-    kubectl completion bash | sudo tee /etc/bash_completion.d/kubectl > /dev/null && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
@@ -82,6 +81,7 @@ RUN echo "**** Installing packages ****" && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     echo "**** Setting permissions ****" && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
+    kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

@@ -177,8 +177,8 @@ spec:
     terminationGracePeriodSeconds: 300
 
     service:
-      app:
-        controller: qbittorrent
+      qbittorrent:
+        controller: torrenting
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: 192.168.91.82

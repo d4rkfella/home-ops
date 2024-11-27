@@ -44,9 +44,9 @@ RUN echo "**** Installing packages ****" && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    echo "**** Adding direnv hook ****" && \
+    echo 'alias k=kubectl' >>~/.bashrc && \
+    echo 'complete -o default -F __start_kubectl k' >>~/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
-    echo "**** Installing binaries ****" && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
@@ -79,12 +79,9 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
-    echo "**** Setting permissions ****" && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
-    echo "**** Setting up kubectl autocompletion ****" && \
+    chown -R vscode:vscode /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    echo 'alias k=kubectl' >>~/.bashrc && \
-    echo 'complete -o default -F __start_kubectl k' >>~/.bashrc && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 

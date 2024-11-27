@@ -366,13 +366,3 @@ spec:
                 readOnly: true
             vuetorrent:
               - path: /addons
-
-      wireguard-config:
-        type: secret
-        name: qbittorrent-secret
-        advancedMounts:
-          torrenting:
-            vpn:
-              - path: /etc/wireguard/wg0.conf
-                subPath: wg0.conf
-                readOnly: true

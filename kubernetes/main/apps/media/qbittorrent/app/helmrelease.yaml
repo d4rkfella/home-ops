@@ -53,7 +53,6 @@ spec:
               PUID: 568
               PGID: 568
               VERSION_INFORMATION: "off"
-              VPN_INTERFACE: tun1
               WIREGUARD_PRIVATE_KEY:
                 valueFrom:
                   secretKeyRef:

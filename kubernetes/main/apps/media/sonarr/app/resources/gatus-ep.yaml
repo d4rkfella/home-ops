@@ -2,7 +2,7 @@ endpoints:
   - name: "Sonarr"
     group: guarded
     url: "https://sonarr.${PUBLIC_DOMAIN}/ping"
-    interval: 5m
+    interval: 1m
     ui:
       hide-hostname: true
       hide-url: true

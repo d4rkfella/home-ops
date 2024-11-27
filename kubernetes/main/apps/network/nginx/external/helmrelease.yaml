@@ -84,6 +84,7 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: external.${PUBLIC_DOMAIN}
           lbipam.cilium.io/ips: 192.168.91.95
+        allocateLoadBalancerNodePorts: false
       ingressClassResource:
         name: external
         default: false

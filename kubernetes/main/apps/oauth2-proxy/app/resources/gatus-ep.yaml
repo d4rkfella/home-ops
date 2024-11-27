@@ -1,0 +1,15 @@
+endpoints:
+  - name: "OAuth2-Proxy"
+    group: guarded
+    url: "https://oauth2-proxy.${PUBLIC_DOMAIN}/ready"
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY] == OK"
+    alerts:
+      - type: pushover

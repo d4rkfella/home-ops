@@ -1,0 +1,172 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nginx-external
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 4.11.3
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  valuesFrom:
+    - targetPath: controller.maxmindLicenseKey
+      kind: Secret
+      name: nginx-external-secret
+      valuesKey: MAXMIND_LICENSE_KEY
+  values:
+    fullnameOverride: nginx-external
+    controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      extraVolumes:
+        - name: crowdsec-bouncer-plugin
+          emptyDir: {}
+      extraInitContainers:
+        - name: init-clone-crowdsec-bouncer
+          image: crowdsecurity/lua-bouncer-plugin:v1.0.5@sha256:90f5c611bebbbe89b8aef3218dad1df3bd9fbe51554024384b56026c69c55925
+          imagePullPolicy: IfNotPresent
+          command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
+          env:
+            - name: BOUNCER_CONFIG
+              value: "/crowdsec/crowdsec-bouncer.conf"
+            - name: API_URL
+              value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+            - name: BAN_TEMPLATE_PATH
+              value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
+            - name: UPDATE_FREQUENCY
+              value: "60"
+            - name: MODE
+              value: stream
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nginx-external-secret
+                  key: BOUNCER_API_KEY
+            - name: APPSEC_URL
+              value: "https://crowdsec-appsec.${PUBLIC_DOMAIN}"
+            - name: SSL_VERIFY
+              value: "true"
+            - name: APPSEC_FAILURE_ACTION
+              value: deny
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            allowPrivilegeEscalation: false
+            runAsNonRoot: false
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+          - name: crowdsec-bouncer-plugin
+            mountPath: /lua_plugins
+      extraVolumeMounts:
+        - name: crowdsec-bouncer-plugin
+          mountPath: /etc/nginx/lua/plugins/crowdsec
+          subPath: crowdsec
+          readOnly: true
+      replicaCount: 2
+      service:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: external.${PUBLIC_DOMAIN}
+          lbipam.cilium.io/ips: 192.168.91.95
+        allocateLoadBalancerNodePorts: false
+      ingressClassResource:
+        name: external
+        default: false
+        controllerValue: k8s.io/external
+      admissionWebhooks:
+        objectSelector:
+          matchExpressions:
+            - key: ingress-class
+              operator: In
+              values: ["external"]
+      allowSnippetAnnotations: true
+      config:
+        custom-http-errors: "504,503,500,429,410,404,403,401,400"
+        plugins: "crowdsec"
+        lua-shared-dicts: "crowdsec_cache: 100m"
+        server-snippet : |
+          lua_ssl_trusted_certificate "/etc/ssl/cert.pem";
+        block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
+        client-body-buffer-size: 100M
+        client-body-timeout: 120
+        client-header-timeout: 120
+        enable-brotli: "true"
+        disable-ipv6: "true"
+        disable-ipv6-dns: "true"
+        enable-ocsp: "true"
+        enable-real-ip: "true"
+        hide-headers: Server,X-Powered-By
+        hsts-max-age: 31536000
+        force-ssl-redirect: "true"
+        keep-alive-requests: 10000
+        keep-alive: 120
+        log-format-escape-json: "true"
+        log-format-upstream: >
+          {"time": "$time_iso8601",
+          "remote_addr": "proxy_protocol_addr": "$proxy_protocol_addr", "x_forwarded_for": "$proxy_add_x_forwarded_for",
+          "request_id": "$req_id",
+          "remote_user": "$remote_user",
+          "bytes_sent": "$bytes_sent",
+          "request_time": "$request_time",
+          "status": "$status",
+          "vhost": "$host",
+          "request_proto": "$server_protocol",
+          "path": "$uri",
+          "request_query": "$args",
+          "request_length": "$request_length",
+          "duration": "$request_time",
+          "method": "$request_method",
+          "http_referrer": "$http_referer",
+          "http_user_agent": "$http_user_agent"}
+        proxy-body-size: 0
+        proxy-buffer-size: 16k
+        ssl-protocols: TLSv1.3
+        ssl-ciphers: ECDHE+AESGCM:DHE+AESGCM
+        ssl-dh-param: network/nginx-external-dhparam
+        use-geoip2: "false"
+        use-forwarded-headers: "true"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespaceSelector:
+            any: true
+      extraArgs:
+        default-ssl-certificate: network/darkfellanet-tls
+      terminationGracePeriodSeconds: 60
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/instance: nginx-external
+              app.kubernetes.io/component: controller
+      resources:
+        requests:
+          cpu: 100m
+        limits:
+          memory: 5Gi
+    defaultBackend:
+      enabled: true
+      image:
+        registry: ghcr.io
+        image: darkfella91/custom-error-pages
+        tag: v1.0.5@sha256:9bcb25b28c0bc5f3434845fa43e3ffe3f6a34c6a1c4da416298c916f5939c969

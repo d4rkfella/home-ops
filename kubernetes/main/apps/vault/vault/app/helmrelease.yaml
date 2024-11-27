@@ -1,0 +1,455 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vault
+  namespace: vault
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: vault
+      version: 0.29.1
+      sourceRef:
+        kind: HelmRepository
+        name: vault
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+
+    global:
+      enabled: true
+      tlsDisable: false
+      serverTelemetry:
+        prometheusOperator: false
+
+    injector:
+      enabled: false
+
+    server:
+      enabled: true
+      image:
+        repository: "hashicorp/vault"
+        tag: "1.18.2"
+        pullPolicy: IfNotPresent
+
+      updateStrategyType: "OnDelete"
+
+      logLevel: "info"
+      logFormat: "json"
+
+      resources: {}
+
+      authDelegator:
+        enabled: true
+
+      extraInitContainers: null
+
+      extraContainers: null
+
+      shareProcessNamespace: false
+
+      extraArgs: ""
+
+      # extraPorts is a list of extra ports. Specified as a YAML list.
+      # This is useful if you need to add additional ports to the statefulset in dynamic way.
+      extraPorts: null
+        # - containerPort: 8300
+        #   name: http-monitoring
+
+      # Used to define custom readinessProbe settings
+      readinessProbe:
+        enabled: true
+        port: 8200
+        failureThreshold: 2
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+      livenessProbe:
+        enabled: true
+        path: "/v1/sys/health?standbyok=true"
+        port: 8200
+        failureThreshold: 2
+        initialDelaySeconds: 60
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+
+      terminationGracePeriodSeconds: 10
+
+      preStopSleepSeconds: 5
+
+      # Used to define commands to run after the pod is ready.
+      # This can be used to automate processes such as initialization
+      # or boostrapping auth methods.
+      postStart: []
+      # - /bin/sh
+      # - -c
+      # - /vault/userconfig/myscript/run.sh
+
+      extraEnvironmentVars:
+        VAULT_TLSCERT: /vault/tls/tls.crt
+        VAULT_TLSKEY: /vault/tls/tls.key
+
+      extraSecretEnvironmentVars: []
+
+      volumes:
+        - name: vault-tls
+          secret:
+            defaultMode: 420
+            secretName: vault-tls
+
+      volumeMounts:
+        - mountPath: /vault/tls
+          name: vault-tls
+          readOnly: true
+
+      affinity: |
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ template "vault.name" . }}
+                  app.kubernetes.io/instance: "{{ .Release.Name }}"
+                  component: server
+              topologyKey: kubernetes.io/hostname
+
+      # Topology settings for server pods
+      # ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
+      # This should be either a multi-line string or YAML matching the topologySpreadConstraints array
+      # in a PodSpec.
+      topologySpreadConstraints: []
+
+      # Toleration Settings for server pods
+      # This should be either a multi-line string or YAML matching the Toleration array
+      # in a PodSpec.
+      tolerations: []
+
+      # nodeSelector labels for server pod assignment, formatted as a multi-line string or YAML map.
+      # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+      # Example:
+      # nodeSelector:
+      #   beta.kubernetes.io/arch: amd64
+      nodeSelector: {}
+
+      # Enables network policy for server pods
+      networkPolicy:
+        enabled: false
+        egress: []
+        # egress:
+        # - to:
+        #   - ipBlock:
+        #       cidr: 10.0.0.0/24
+        #   ports:
+        #   - protocol: TCP
+        #     port: 443
+        ingress:
+          - from:
+            - namespaceSelector: {}
+            ports:
+            - port: 8200
+              protocol: TCP
+            - port: 8201
+              protocol: TCP
+
+      # Priority class for server pods
+      priorityClassName: ""
+
+      # Extra labels to attach to the server pods
+      # This should be a YAML map of the labels to apply to the server pods
+      extraLabels: {}
+
+      # Extra annotations to attach to the server pods
+      # This can either be YAML or a YAML-formatted multi-line templated string map
+      # of the annotations to apply to the server pods
+      annotations: {}
+
+      # Add an annotation to the server configmap and the statefulset pods,
+      # vaultproject.io/config-checksum, that is a hash of the Vault configuration.
+      # This can be used together with an OnDelete deployment strategy to help
+      # identify which pods still need to be deleted during a deployment to pick up
+      # any configuration changes.
+      includeConfigAnnotation: false
+
+      # Enables a headless service to be used by the Vault Statefulset
+      service:
+        enabled: false
+        # Enable or disable the vault-active service, which selects Vault pods that
+        # have labeled themselves as the cluster leader with `vault-active: "true"`.
+        active:
+          enabled: false
+          # Extra annotations for the service definition. This can either be YAML or a
+          # YAML-formatted multi-line templated string map of the annotations to apply
+          # to the active service.
+          annotations: {}
+        # Enable or disable the vault-standby service, which selects Vault pods that
+        # have labeled themselves as a cluster follower with `vault-active: "false"`.
+        standby:
+          enabled: false
+          # Extra annotations for the service definition. This can either be YAML or a
+          # YAML-formatted multi-line templated string map of the annotations to apply
+          # to the standby service.
+          annotations: {}
+        # If enabled, the service selectors will include `app.kubernetes.io/instance: {{ .Release.Name }}`
+        # When disabled, services may select Vault pods not deployed from the chart.
+        # Does not affect the headless vault-internal service with `ClusterIP: None`
+        instanceSelector:
+          enabled: true
+        # clusterIP controls whether a Cluster IP address is attached to the
+        # Vault service within Kubernetes.  By default, the Vault service will
+        # be given a Cluster IP address, set to None to disable.  When disabled
+        # Kubernetes will create a "headless" service.  Headless services can be
+        # used to communicate with pods directly through DNS instead of a round-robin
+        # load balancer.
+        # clusterIP: None
+
+        # Configures the service type for the main Vault service.  Can be ClusterIP
+        # or NodePort.
+        #type: ClusterIP
+
+        # The IP family and IP families options are to set the behaviour in a dual-stack environment.
+        # Omitting these values will let the service fall back to whatever the CNI dictates the defaults
+        # should be.
+        # These are only supported for kubernetes versions >=1.23.0
+        #
+        # Configures the service's supported IP family policy, can be either:
+        #     SingleStack: Single-stack service. The control plane allocates a cluster IP for the Service, using the first configured service cluster IP range.
+        #     PreferDualStack: Allocates IPv4 and IPv6 cluster IPs for the Service.
+        #     RequireDualStack: Allocates Service .spec.ClusterIPs from both IPv4 and IPv6 address ranges.
+        ipFamilyPolicy: ""
+
+        # Sets the families that should be supported and the order in which they should be applied to ClusterIP as well.
+        # Can be IPv4 and/or IPv6.
+        ipFamilies: []
+
+        # Do not wait for pods to be ready before including them in the services'
+        # targets. Does not apply to the headless service, which is used for
+        # cluster-internal communication.
+        publishNotReadyAddresses: true
+
+        # The externalTrafficPolicy can be set to either Cluster or Local
+        # and is only valid for LoadBalancer and NodePort service types.
+        # The default value is Cluster.
+        # ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-traffic-policy
+        externalTrafficPolicy: Cluster
+
+        # If type is set to "NodePort", a specific nodePort value can be configured,
+        # will be random if left blank.
+        #nodePort: 30000
+
+        # When HA mode is enabled
+        # If type is set to "NodePort", a specific nodePort value can be configured,
+        # will be random if left blank.
+        #activeNodePort: 30001
+
+        # When HA mode is enabled
+        # If type is set to "NodePort", a specific nodePort value can be configured,
+        # will be random if left blank.
+        #standbyNodePort: 30002
+
+        # Port on which Vault server is listening
+        port: 8200
+        # Target port to which the service should be mapped to
+        targetPort: 8200
+        # Extra annotations for the service definition. This can either be YAML or a
+        # YAML-formatted multi-line templated string map of the annotations to apply
+        # to the service.
+        annotations: {}
+
+      dataStorage:
+        enabled: true
+        size: 20Gi
+        mountPath: "/vault/data"
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+
+      persistentVolumeClaimRetentionPolicy:
+        whenDeleted: Retain
+        whenScaled: Retain
+
+      auditStorage:
+        enabled: true
+        size: 10Gi
+        mountPath: "/vault/audit"
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+
+      standalone:
+        enabled: false
+
+      ha:
+        enabled: true
+        replicas: 1
+        raft:
+          enabled: true
+          setNodeId: false
+          config: |
+
+            seal "awskms" {
+              region = "us-east-1"
+              access_key = "${AWS_ACCESS_KEY}"
+              secret_key = "${AWS_SECRET_KEY}"
+              kms_key_id = "${AWS_KEY_ID}"
+            }
+
+            ui = true
+            api_addr = "https://vault.${PUBLIC_DOMAIN}:8200"
+            cluster_addr = "https://vault.${PUBLIC_DOMAIN}.com:8201"
+
+            listener "tcp" {
+              tls_disable = 0
+              address = "0.0.0.0:8200"
+              cluster_address = "0.0.0.0:8201"
+              tls_cert_file = "/vault/tls/tls.crt"
+              tls_key_file = "/vault/tls/tls.key"
+              tls_min_version = "tls13"
+
+              # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+              #telemetry {
+              #  unauthenticated_metrics_access = "true"
+              #}
+            }
+
+            storage "raft" {
+              path = "/vault/data"
+            }
+
+            service_registration "kubernetes" {}
+
+        disruptionBudget:
+          enabled: true
+          maxUnavailable: null
+
+      serviceAccount:
+        create: true
+        name: ""
+        createSecret: false
+        serviceDiscovery:
+          enabled: true
+
+      statefulSet:
+        annotations: {}
+        securityContext:
+          pod: {}
+          container: {}
+
+      hostNetwork: false
+
+    ui:
+      enabled: true
+      publishNotReadyAddresses: true
+      activeVaultPodOnly: false
+      serviceType: "LoadBalancer"
+      serviceNodePort: null
+      externalPort: 8200
+      targetPort: 8200
+      externalTrafficPolicy: Cluster
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: vault.${PUBLIC_DOMAIN}
+        lbipam.cilium.io/ips: 192.168.91.96
+
+    serverTelemetry:
+      # Enable support for the Prometheus Operator. If authorization is not set for authenticating
+      # to Vault's metrics endpoint, the following Vault server `telemetry{}` config must be included
+      # in the `listener "tcp"{}` stanza
+      #  telemetry {
+      #    unauthenticated_metrics_access = "true"
+      #  }
+      #
+      # See the `standalone.config` for a more complete example of this.
+      #
+      # In addition, a top level `telemetry{}` stanza must also be included in the Vault configuration:
+      #
+      # example:
+      #  telemetry {
+      #    prometheus_retention_time = "30s"
+      #    disable_hostname = true
+      #  }
+      #
+      # Configuration for monitoring the Vault server.
+      serviceMonitor:
+        # The Prometheus operator *must* be installed before enabling this feature,
+        # if not the chart will fail to install due to missing CustomResourceDefinitions
+        # provided by the operator.
+        #
+        # Instructions on how to install the Helm chart can be found here:
+        #  https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+        # More information can be found here:
+        #  https://github.com/prometheus-operator/prometheus-operator
+        #  https://github.com/prometheus-operator/kube-prometheus
+
+        # Enable deployment of the Vault Server ServiceMonitor CustomResource.
+        enabled: false
+
+        # Selector labels to add to the ServiceMonitor.
+        # When empty, defaults to:
+        #  release: prometheus
+        selectors: {}
+
+        # Interval at which Prometheus scrapes metrics
+        interval: 30s
+
+        # Timeout for Prometheus scrapes
+        scrapeTimeout: 10s
+
+        # tlsConfig used for scraping the Vault metrics API.
+        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.TLSConfig
+        # example:
+        # tlsConfig:
+        #   ca:
+        #     secret:
+        #       name: vault-metrics-client
+        #       key: ca.crt
+        tlsConfig: {}
+
+        # authorization used for scraping the Vault metrics API.
+        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.SafeAuthorization
+        # example:
+        # authorization:
+        #   credentials:
+        #     name: vault-metrics-client
+        #     key: token
+        authorization: {}
+
+      prometheusRules:
+          # The Prometheus operator *must* be installed before enabling this feature,
+          # if not the chart will fail to install due to missing CustomResourceDefinitions
+          # provided by the operator.
+
+          # Deploy the PrometheusRule custom resource for AlertManager based alerts.
+          # Requires that AlertManager is properly deployed.
+          enabled: false
+
+          # Selector labels to add to the PrometheusRules.
+          # When empty, defaults to:
+          #  release: prometheus
+          selectors: {}
+
+          # Some example rules.
+          rules: []
+          #  - alert: vault-HighResponseTime
+          #    annotations:
+          #      message: The response time of Vault is over 500ms on average over the last 5 minutes.
+          #    expr: vault_core_handle_request{quantile="0.5", namespace="mynamespace"} > 500
+          #    for: 5m
+          #    labels:
+          #      severity: warning
+          #  - alert: vault-HighResponseTime
+          #    annotations:
+          #      message: The response time of Vault is over 1s on average over the last 5 minutes.
+          #    expr: vault_core_handle_request{quantile="0.5", namespace="mynamespace"} > 1000
+          #    for: 5m
+          #    labels:
+          #      severity: critical

@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./externalsecret.yaml
+  - ./helmrelease.yaml
+configMapGenerator:
+  - name: sonarr-configmap
+    files:
+      - pushover-notify.sh=./resources/pushover-notify.sh
+      - refresh-series.sh=./resources/refresh-series.sh
+  - name: sonarr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
+generatorOptions:
+  disableNameSuffixHash: true

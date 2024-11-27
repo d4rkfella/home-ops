@@ -1,0 +1,152 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: plex
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      plex:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/plex
+              tag: 1.41.2.9200-c6bbc1b53@sha256:47c6f3d85f4e739210860934a0bb24126170fa2f6a602fb909467f17a035c311
+            env:
+              TZ: Europe/Sofia
+              PLEX_ADVERTISE_URL: https://plex.${PUBLIC_DOMAIN}:443,http://192.168.91.98:32400
+              PLEX_UID: 568
+              PLEX_GID: 568
+              NVIDIA_VISIBLE_DEVICES: all
+              NVIDIA_DRIVER_CAPABILITIES: all
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 3Gi
+                nvidia.com/gpu: 1
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: plex
+        type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.98
+        ports:
+          http:
+            port: 32400
+
+    ingress:
+      app:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            add_header referrer-policy "same-origin" always;
+            add_header x-frame-options sameorigin;
+            add_header x-content-type-options "nosniff" always;
+            more_set_headers "access-control-allow-origin https://plex.${PUBLIC_DOMAIN}";
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: external
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+            secretName: plex-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                pathType: ImplementationSpecific
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        type: persistentVolumeClaim
+        size: 50Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-1m
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server
+
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server/Logs
+
+      tmp:
+        type: emptyDir
+        medium: Memory
+
+      transcode:
+        type: persistentVolumeClaim
+        size: 150Gi
+        storageClass: openebs-zfs-1m
+        accessMode: ReadWriteOnce
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        globalMounts:
+          - path: /data/media
+            readOnly: true
+            subPath: media

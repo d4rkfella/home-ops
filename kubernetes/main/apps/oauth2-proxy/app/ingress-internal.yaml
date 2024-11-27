@@ -1,0 +1,74 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth2-proxy-internal
+  namespace: oauth2-proxy
+  annotations:
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+spec:
+  ingressClassName: internal
+  tls:
+    - hosts:
+        - "*.${PUBLIC_DOMAIN}"
+      secretName: oauth2-proxy-tls
+  rules:
+    - host: radarr.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80
+    - host: sonarr.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80
+    - host: prowlarr.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80
+    - host: qbittorrent.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80
+    - host: sabnzbd.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80
+    - host: bazarr.${PUBLIC_DOMAIN}
+      http:
+        paths:
+          - path: /oauth2
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: oauth2-proxy
+                port:
+                  number: 80

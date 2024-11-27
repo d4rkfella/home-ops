@@ -1,0 +1,78 @@
+//devcontainer.json
+{
+    "name": "Kubernetes Management",
+
+    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:a14b98f82f1ac17d530156e84b77a53c4e68112ed39016641a0158d418a97986",
+
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
+
+    "workspaceFolder": "/project",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
+
+    "customizations": {
+      "vscode": {
+        "settings": {
+            "editor.bracketPairColorization.enabled": true,
+            "editor.fontFamily": "FiraCode Nerd Font, monospace",
+            "editor.fontLigatures": true,
+            "editor.guides.bracketPairs": true,
+            "editor.guides.bracketPairsHorizontal": true,
+            "editor.guides.highlightActiveBracketPair": true,
+            "editor.hover.delay": 1500,
+            "editor.rulers": [
+                100
+            ],
+            "editor.stickyScroll.enabled": false,
+            "explorer.autoReveal": false,
+
+            "files.associations": {
+                "**/*.json5": "jsonc"
+            },
+            "files.trimTrailingWhitespace": true,
+
+            "material-icon-theme.files.associations": {
+                "*.secret.sops.env": "lock",
+                "*.secret.sops.yaml": "lock"
+            },
+            "material-icon-theme.activeIconPack": "angular",
+            "material-icon-theme.folders.associations": {
+                ".archive": "archive",
+                ".github/workflows": "robot",
+                "actions-runner-system": "github",
+                "cert-manager": "guard",
+                "digester-system": "hook",
+                "external-secrets": "secure",
+                "flux-system": "pipe",
+                "flux": "pipe",
+                "kube-system": "kubernetes",
+                "network": "connection",
+                "observability": "event",
+                "rook-ceph": "base",
+                "storage": "dump",
+                "system-upgrade": "update",
+                "tools": "tools",
+                "volsync": "aws",
+                "cloudflared": "cloudflare",
+                "talos": "linux"
+            },
+            "sops.defaults.ageKeyFile": "./age.key",
+            "sops.creationEnabled": true,
+            "yaml.schemaStore.enable": true,
+            "yaml.schemas": {
+                "kubernetes": "./kubernetes/**/*.yaml"
+            }
+        },
+        "extensions": [
+            "signageos.signageos-vscode-sops",
+            "BriteSnow.vscode-toggle-quotes",
+            "redhat.vscode-yaml",
+            "mitchdenny.ecdc",
+            "mikestead.dotenv",
+            "fcrespo82.markdown-table-formatter",
+            "albert.TabOut",
+            "PKief.material-icon-theme",
+            "PKief.material-product-icons"
+        ]
+      }
+    }
+}

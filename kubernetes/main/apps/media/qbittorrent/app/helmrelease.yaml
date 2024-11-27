@@ -137,6 +137,7 @@ spec:
               readiness:
                 enabled: false
             securityContext:
+              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }

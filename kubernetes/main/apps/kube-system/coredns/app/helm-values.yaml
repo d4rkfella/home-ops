@@ -46,7 +46,7 @@ servers:
       - name: forward
         parameters: . 192.168.91.41
       - name: cache
-        parameters: 60
+        parameters: 86,400
       - name: loop
       - name: reload
       - name: loadbalance

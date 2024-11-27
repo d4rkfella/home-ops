@@ -44,8 +44,8 @@ RUN echo "**** Installing packages ****" && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    echo 'alias k=kubectl' >>~/.bashrc && \
-    echo 'complete -o default -F __start_kubectl k' >>~/.bashrc && \
+    echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
+    echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
@@ -80,7 +80,7 @@ RUN echo "**** Installing packages ****" && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
-    chown -R vscode:vscode /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
+    chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*

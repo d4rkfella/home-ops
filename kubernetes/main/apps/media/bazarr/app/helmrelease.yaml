@@ -190,12 +190,12 @@ spec:
       tmp:
         type: emptyDir
 
-      test:
-        type: configMap
-        name: connectionpool
-        advancedMounts:
-          bazarr:
-            app:
-              - readOnly: true
-                path: /app/bin/libs/urllib3/connectionpool.py
-                subPath: connectionpool.py
+      #test:
+        #type: configMap
+        #name: connectionpool
+        #advancedMounts:
+          #bazarr:
+            #app:
+              #- readOnly: true
+                #path: /app/bin/libs/urllib3/connectionpool.py
+                #subPath: connectionpool.py

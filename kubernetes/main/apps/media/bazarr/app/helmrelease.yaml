@@ -60,8 +60,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/darkfella91/bazarr
-              tag: 1.4.5@sha256:1e3ca601b51bb061e342ab8da9ee79062a51f254b50fcc43756299a29647d3aa
+              repository: ghcr.io/onedr0p/bazarr
+              tag: 1.4.5@sha256:c0bf91443c32f3978777b4ddd2732908f51b157bbe00cd3259b23f7716bb4af7
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

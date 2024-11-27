@@ -43,12 +43,13 @@ spec:
               TZ: &TZ Europe/Sofia
               DNS_KEEP_NAMESERVER: "on"
               VPN_TYPE: wireguard
-              VPN_SERVICE_PROVIDER: protonvpn
+              VPN_SERVICE_PROVIDER: custom
               VPN_PORT_FORWARDING: "on"
               WIREGUARD_ADDRESSES: 10.2.0.2/32
               FIREWALL_INPUT_PORTS: 80
               FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
-              SERVER_HOSTNAMES: node-ch-21.protonvpn.net
+              WIREGUARD_ENDPOINT_IP: 149.88.27.234
+              WIREGUARD_ENDPOINT_PORT: 51820
               VERSION_INFORMATION: "off"
               WIREGUARD_PRIVATE_KEY:
                 valueFrom:

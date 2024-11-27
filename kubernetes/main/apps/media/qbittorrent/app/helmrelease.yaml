@@ -44,16 +44,6 @@ spec:
               - -c
               - |
                 # Install necessary packages
-                apk update && apk add --no-cache \
-                  wireguard-tools \
-                  iproute2 \
-                  iputils \
-                  iptables \
-                  curl \
-                  bash \
-                  jq  # jq to parse JSON for port forwarding API response
-
-                # Create the TUN device (WireGuard requires this device)
                 if [ ! -c /dev/net/tun ]; then
                     echo "/dev/net/tun not found. Exiting..."
                     exit 1
@@ -62,34 +52,38 @@ spec:
                 # Enable IP forwarding
                 echo 1 > /proc/sys/net/ipv4/ip_forward
 
-                # Bring up the WireGuard VPN using the provided config file
-                wg-quick up /etc/wireguard/wg0.conf
+                # Connect to ProtonVPN using the ProtonVPN CLI
+                protonvpn-cli connect --config /etc/wireguard/wg0.conf
 
-                echo "nameserver 172.17.0.10" > /etc/resolv.conf
-                echo "nameserver 172.17.0.10" >> /etc/resolv.conf
-                # Wait for the VPN connection to be established
-                sleep 5
+                # Check if the WireGuard interface is up
+                if ! ip link show wg0 | grep -q "state UP"; then
+                    echo "WireGuard interface is not up. Exiting..."
+                    exit 1
+                fi
 
-                # Request port forwarding from ProtonVPN (modify based on the API you're using)
-                FORWARDED_PORT=$(curl -s https://api.protonvpn.com/port-forwarding | jq -r .port)
+                # Fetch the dynamically assigned forwarded port
+                FORWARDED_PORT=$(protonvpn-cli get-forwarded-port)
 
-                # Check if we got a forwarded port, otherwise exit
+                # If the forwarded port is empty or invalid, exit
                 if [ -z "$FORWARDED_PORT" ]; then
                     echo "Error: Could not obtain forwarded port from ProtonVPN!"
                     exit 1
                 fi
 
-                # Set up port forwarding from the VPN port to qBittorrent's port (6881)
+                # Output the port to the log for reference
+                echo "Using forwarded port: $FORWARDED_PORT"
+
+                # Forward the port to qBittorrent's port (assuming qBittorrent is listening on 6881)
                 echo "Forwarding port $FORWARDED_PORT to qBittorrent's port 6881"
                 iptables -t nat -A PREROUTING -p tcp --dport $FORWARDED_PORT -j DNAT --to-destination 127.0.0.1:6881
                 iptables -t nat -A PREROUTING -p udp --dport $FORWARDED_PORT -j DNAT --to-destination 127.0.0.1:6881
                 iptables -A FORWARD -p tcp --dport $FORWARDED_PORT -j ACCEPT
                 iptables -A FORWARD -p udp --dport $FORWARDED_PORT -j ACCEPT
 
-                # Log success message
-                echo "VPN connected, Port forwarding from $FORWARDED_PORT to qBittorrent on 6881"
+                # Log success
+                echo "Port forwarding setup completed. Forwarded port $FORWARDED_PORT to qBittorrent's port 6881"
 
-                # Keep the container running
+                # Keep the container running (optional)
                 tail -f /dev/null
             restartPolicy: Always
             securityContext:

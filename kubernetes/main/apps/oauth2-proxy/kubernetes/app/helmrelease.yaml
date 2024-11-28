@@ -43,6 +43,8 @@ spec:
         cookie_expire = "29m30s"
         cookie_refresh = "1m"
         allowed_groups = "Cluster-Admins"
+        set_authorization_header = true
+        pass_authorization_header = true
 
     image:
       repository: "quay.io/oauth2-proxy/oauth2-proxy"

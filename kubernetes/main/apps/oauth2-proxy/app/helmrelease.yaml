@@ -71,7 +71,7 @@ spec:
         skip_provider_button = true
         cookie_expire = "29m30s"
         cookie_refresh = "1m"
-        allowed_group = "Admins"
+        allowed_groups = "Admins"
       # Custom configuration file: oauth2_proxy.cfg
       # configFile: |-
       #   pass_basic_auth = false

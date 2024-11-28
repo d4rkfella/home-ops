@@ -27,8 +27,11 @@ rules:
     resources: ["customresourcedefinitions"]
     verbs: ["list", "get", "watch", "delete"]
   - apiGroups: ""
-    resources: persistentvolumes
+    resources: ["persistentvolumes"]
     verbs: ["list", "get", "watch", "delete"]
+  - apiGroups: ["storage.k8s.io"]
+    resources: ["storageclasses"]
+    verbs: ["list", "get", "watch", "delete", "create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

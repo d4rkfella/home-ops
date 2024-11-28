@@ -28,7 +28,7 @@ spec:
       cookieName: "_oauth2_proxy"
       configFile: |-
         email_domains = [ "*" ]
-        upstreams = [ "https://kubernetes-dashboard.${PUBLIC_DOMAIN}" ]
+        upstreams = [ "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/" ]
         redirect_url = "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/oauth2/callback"
         reverse_proxy = true
         scope = "openid profile email"

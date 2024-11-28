@@ -56,6 +56,7 @@ spec:
           secretName: kubernetes-dashboard-tls
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"

@@ -24,7 +24,8 @@ ENV SHELL=/bin/bash
 
 WORKDIR /tmp
 
-RUN echo "**** Installing packages ****" && \ 
+RUN apk update && \
+    apk upgrade && \
     apk add --no-cache \
     coreutils \
     curl \

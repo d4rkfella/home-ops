@@ -19,6 +19,8 @@ ARG TASK_VERSION=v3.40.0
 ARG TALOSCTL_VERSION=v1.8.3
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
+# renovate: depName=int128/kubelogin
+ARG KUBELOGIN_VERSION=v1.31.0
 
 ENV SHELL=/bin/bash
 
@@ -41,7 +43,6 @@ RUN apk update && \
     libstdc++ \
     direnv \
     yq \
-    kubectl-oidc_login \
     unzip && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
@@ -81,6 +82,11 @@ RUN apk update && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    curl -fsSLO https://github.com/int128/kubelogin/releases/download/$KUBELOGIN_VERSION/kubelogin_linux_amd64.zip && \
+    curl -fsSLO https://github.com/int128/kubelogin/releases/download/v1.31.0/kubelogin_linux_amd64.zip.sha256 && \
+    echo "$(cat kubelogin_linux_amd64.zip.sha256)" | sha256sum --check --strict && \
+    unzip kubelogin_linux_amd64.zip && \
+    mv ./kubelogin /usr/local/bin/kubectl-oidc_login && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \

@@ -24,8 +24,6 @@ spec:
       retries: 3
 
   values:
-    kong:
-      enabled: false
     app:
       annotations: {}
 

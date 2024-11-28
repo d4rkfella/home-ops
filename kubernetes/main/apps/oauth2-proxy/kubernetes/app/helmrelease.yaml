@@ -1,0 +1,169 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy-kubernetes
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: oauth2-proxy
+      version: 7.8.0
+      sourceRef:
+        kind: HelmRepository
+        name: oauth2-proxy
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    config:
+      existingSecret: oauth2-kubernetes-secret
+      cookieName: "_oauth2_proxy"
+      configFile: |-
+        email_domains = [ "*" ]
+        upstreams = [ "https://kubernetes-dashboard.${PUBLIC_DOMAIN}" ]
+        reverse_proxy = true
+        scope = "openid profile email"
+        cookie_secure = true
+        provider = "keycloak-oidc"
+        oidc_issuer_url = "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET"
+        code_challenge_method = "S256"
+        cookie_domains = ".${PUBLIC_DOMAIN}"
+        whitelist_domains = ".${PUBLIC_DOMAIN}"
+        backend_logout_url = "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+        skip_provider_button = true
+        cookie_expire = "29m30s"
+        cookie_refresh = "1m"
+        allowed_groups = "Cluster-Admins"
+
+    image:
+      repository: "quay.io/oauth2-proxy/oauth2-proxy"
+      tag: "v7.7.1-alpine@sha256:a6a1e44374d5d9b72cddf6e3d1177361b91698ae9c6da7e247139094494d3b93"
+      pullPolicy: "IfNotPresent"
+      command: []
+
+    service:
+      type: ClusterIP
+      portNumber: 80
+      appProtocol: http
+
+    serviceAccount:
+      enabled: true
+      automountServiceAccountToken: true
+
+    ingress:
+      enabled: true
+      annotations:
+        external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+      className: internal
+      path: /
+      pathType: Prefix
+      hosts:
+        - kubernetes-dashboard.${PUBLIC_DOMAIN}
+
+    proxyVarsAsSecrets: true
+
+    securityContext:
+      enabled: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 2000
+      runAsGroup: 2000
+      seccompProfile:
+        type: RuntimeDefault
+
+    replicaCount: 1
+
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 1
+
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 80
+
+    httpScheme: http
+
+    initContainers:
+      waitForRedis:
+        enabled: true
+        image:
+          repository: "alpine"
+          tag: "latest"
+          pullPolicy: "IfNotPresent"
+        securityContext:
+          enabled: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 65534
+          runAsGroup: 65534
+          seccompProfile:
+            type: RuntimeDefault
+        timeout: 180
+
+    sessionStorage:
+      type: redis
+      redis:
+        existingSecret: "oauth2-kubernetes-secret"
+        passwordKey: "redis-password"
+        clientType: "standalone"
+        standalone:
+          connectionUrl: "redis://redis-master.database.svc.cluster.local:6379/2"
+
+    redis:
+      enabled: false
+
+    checkDeprecation: true
+
+    metrics:
+      enabled: true
+      port: 44180
+      service:
+        appProtocol: http
+      serviceMonitor:
+        enabled: false
+        namespace: ""
+        prometheusInstance: default
+        interval: 60s
+        scrapeTimeout: 30s
+        labels: {}
+
+        scheme: ""
+
+        tlsConfig: {}
+
+        bearerTokenFile: ""
+
+        annotations: {}
+
+        metricRelabelings: []
+        # - action: keep
+        #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+        #   sourceLabels: [__name__]
+
+        ## Relabel configs to apply to samples before ingestion.
+        ## [Relabeling](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config)
+        relabelings: []
+        # - sourceLabels: [__meta_kubernetes_pod_node_name]
+        #   separator: ;
+        #   regex: ^(.*)$
+        #   targetLabel: nodename
+        #   replacement: $1
+        #   action: replace

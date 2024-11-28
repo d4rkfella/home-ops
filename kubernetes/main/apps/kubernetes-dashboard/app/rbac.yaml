@@ -25,7 +25,10 @@ metadata:
 rules:
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
-    verbs: ["list", "get", "watch"]
+    verbs: ["list", "get", "watch", "delete"]
+  - apiGroups: ""
+    resources: persistentvolumes
+    verbs: ["list", "get", "watch", "delete"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

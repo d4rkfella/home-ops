@@ -34,7 +34,8 @@ spec:
   trigger:
     schedule: "0 7 * * *"
   restic:
-    copyMethod: Snapshot
+    copyMethod: Clone
+    storageClassName: openebs-zfs-128k
     pruneIntervalDays: 7
     repository: jellyseerr-volsync-secret
     cacheCapacity: 2Gi

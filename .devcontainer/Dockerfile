@@ -85,7 +85,7 @@ RUN apk update && \
     curl -fsSLO https://github.com/int128/kubelogin/releases/download/$KUBELOGIN_VERSION/kubelogin_linux_amd64.zip && \
     curl -fsSLO https://github.com/int128/kubelogin/releases/download/v1.31.0/kubelogin_linux_amd64.zip.sha256 && \
     echo "$(cat kubelogin_linux_amd64.zip.sha256)" | sha256sum --check --strict && \
-    unzip kubelogin_linux_amd64.zip && \
+    unzip -n kubelogin_linux_amd64.zip && \
     mv ./kubelogin /usr/local/bin/kubectl-oidc_login && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \

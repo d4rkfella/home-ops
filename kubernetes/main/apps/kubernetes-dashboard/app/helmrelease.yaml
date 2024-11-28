@@ -63,3 +63,5 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
+          nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+          nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"

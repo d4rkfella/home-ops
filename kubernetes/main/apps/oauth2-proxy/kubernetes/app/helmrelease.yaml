@@ -29,6 +29,7 @@ spec:
       configFile: |-
         email_domains = [ "*" ]
         upstreams = [ "https://kubernetes-dashboard.${PUBLIC_DOMAIN}" ]
+        redirect_url = "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/oauth2/callback"
         reverse_proxy = true
         scope = "openid profile email"
         cookie_secure = true
@@ -63,7 +64,7 @@ spec:
       annotations:
         external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
       className: internal
-      path: /
+      path: /oauth2
       pathType: Prefix
       hosts:
         - kubernetes-dashboard.${PUBLIC_DOMAIN}

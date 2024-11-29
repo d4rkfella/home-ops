@@ -28,8 +28,7 @@ spec:
       cookieName: "_oauth2_proxy"
       configFile: |-
         email_domains = [ "*" ]
-        upstreams = [ "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/" ]
-        redirect_url = "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/oauth2/callback"
+        upstreams = [ "file:///dev/null" ]
         reverse_proxy = true
         scope = "openid profile email"
         cookie_secure = true
@@ -43,8 +42,8 @@ spec:
         cookie_expire = "29m30s"
         cookie_refresh = "1m"
         allowed_groups = [ "Cluster-Admins" ]
-        set_authorization_header = true
-        pass_authorization_header = true
+        set_authorization_header = false
+        pass_authorization_header = false
 
     image:
       repository: "quay.io/oauth2-proxy/oauth2-proxy"

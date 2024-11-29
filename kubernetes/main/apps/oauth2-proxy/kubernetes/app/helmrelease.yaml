@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-#set_authorization_header = true
+#pass_authorization_header = true
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -43,7 +43,7 @@ spec:
         cookie_expire = "29m30s"
         cookie_refresh = "1m"
         allowed_groups = [ "Cluster-Admins" ]
-        pass_authorization_header = true
+        set_authorization_header = true
 
     image:
       repository: "quay.io/oauth2-proxy/oauth2-proxy"

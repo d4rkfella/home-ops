@@ -43,6 +43,9 @@ spec:
               - op: add
                 path: /spec/template/spec/hostname
                 value: crowdsec-appsec
+              - op: replace
+                path: /spec/template/spec/initContainers/0/env/1/value
+                value: crowdsec-appsec
           - target:
               version: v1
               kind: DaemonSet

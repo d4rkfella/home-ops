@@ -22,7 +22,7 @@ ARG VIRTCTL_VERSION=v1.4.0
 # renovate: depName=int128/kubelogin
 ARG KUBELOGIN_VERSION=v1.31.0
 
-ENV SHELL=/bin/bash
+ENV LANG="C.UTF-8"
 
 WORKDIR /tmp
 
@@ -98,4 +98,4 @@ WORKDIR /project
 
 USER $USERNAME
 
-CMD ["/bin/bash"]
+SHELL ["/bin/bash", "-c"]

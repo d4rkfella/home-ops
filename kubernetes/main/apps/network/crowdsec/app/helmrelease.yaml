@@ -49,7 +49,7 @@ spec:
                 path: /spec/template/spec/initContainers/0/command
                 value: ["sh", "-c", "until nc $LAPI_HOST $LAPI_PORT -z; do echo waiting for lapi to start; sleep 5; done"]
               - op: add
-                path: /spec/template/spec/initContainers/0/env/0
+                path: /spec/template/spec/initContainers/0/env
                 value:
                   name: "LAPI_HOST"
                   value: "crowdsec-api.${PUBLIC_DOMAIN}"

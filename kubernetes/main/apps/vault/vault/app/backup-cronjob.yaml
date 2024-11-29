@@ -23,7 +23,7 @@ spec:
             args:
               - >
                 SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token);
-                export VAULT_TOKEN=$(vault write -field=token auth/kubernetes/login jwt=$SA_TOKEN role=vault-backup);
+                export VAULT_TOKEN=$(vault write -field=token auth/kubernetes/login jwt=$SA_TOKEN role=vault-snapshotter);
                 vault operator raft snapshot save /share/vault-raft.snap;
             volumeMounts:
               - name: share

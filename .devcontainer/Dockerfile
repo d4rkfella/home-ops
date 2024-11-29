@@ -45,6 +45,9 @@ RUN apk update && \
     direnv \
     yq \
     python3 \
+    py3-pip \
+    py3-dev \
+    libmagic \
     libc6-compat \
     unzip && \
     echo "**** Creating user and group ****" && \

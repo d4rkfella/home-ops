@@ -46,8 +46,7 @@ RUN apk update && \
     libstdc++ \
     direnv \
     yq \
-    python3 \
-    libc6-compat \
+    aws-cli \
     unzip && \
     echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
@@ -95,10 +94,8 @@ RUN apk update && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    ln -s /usr/lib/libpython3.12.so.1.0 /usr/local/bin/libpython3.12.so.1.0 && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
-COPY --from=docker.io/amazon/aws-cli:2.22.7           /usr/local/bin/aws /usr/local/bin/aws
 
 WORKDIR /project
 

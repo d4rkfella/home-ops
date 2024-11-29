@@ -47,10 +47,20 @@ spec:
             patch: |
               - op: replace
                 path: /spec/template/spec/initContainers/0/command
-                value: ["sh", "-c", "until nc "$LAPI_HOST" "LAPI_PORT" -z; do echo waiting for lapi to start; sleep 5; done"]
-      #- op: replace
-        #path: /spec/template/spec/containers/0/env/2/value
-        #value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+                value: ["sh", "-c", "until nc "$LAPI_HOST" "$LAPI_PORT" -z; do echo waiting for lapi to start; sleep 5; done"]
+              - op: add
+                path: /spec/template/spec/initContainers/0/env/0
+                value:
+                  name: "LAPI_HOST"
+                  value: "crowdsec-api.${PUBLIC_DOMAIN}"
+              - op: add
+                path: /spec/template/spec/initContainers/0/env/1
+                value:
+                  name: "LAPI_PORT"
+                  value: "443"
+              - op: replace
+                path: /spec/template/spec/containers/0/env/2/value
+                value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
   values:
     image:
       repository: crowdsecurity/crowdsec
@@ -164,12 +174,6 @@ spec:
 
         - name: COLLECTIONS
           value: "crowdsecurity/modsecurity inherent-io/keycloak LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
-
-        - name: LAPI_HOST
-          value: crowdsec-api.${PUBLIC_DOMAIN}
-
-        - name: LAPI_PORT
-          value: "443"
 
       metrics:
         enabled: true

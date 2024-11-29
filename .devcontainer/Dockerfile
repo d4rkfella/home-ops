@@ -24,8 +24,6 @@ ARG KUBELOGIN_VERSION=v1.31.0
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
-ENV PYTHONHOME=/usr/lib/python3.12
-ENV PYTHONPATH=/usr/lib/python3.12
 
 WORKDIR /tmp
 

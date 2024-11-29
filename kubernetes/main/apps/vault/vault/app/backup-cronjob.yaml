@@ -48,7 +48,7 @@ spec:
             - -ec
             - |
                 until [ -f /share/vault-raft.snap ]; do sleep 5; done;
-                aws --endpoint-url=${S3_URL} s3 cp /share/vault-raft.snap s3://backups/vault/vault_raft_$(date +"%Y%m%d_%H%M%S").snap;
+                aws --endpoint-url=${S3URL} s3 cp /share/vault-raft.snap s3://backups/vault/vault_raft_$(date +"%Y%m%d_%H%M%S").snap;
             volumeMounts:
             - mountPath: /share
               name: share

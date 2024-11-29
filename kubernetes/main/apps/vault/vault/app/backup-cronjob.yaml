@@ -14,7 +14,7 @@ spec:
               emptyDir: {}
           containers:
           - name: backup
-            image: vault:1.12.1
+            image: hashicorp/vault:1.18.2@sha256:2090eb7ac7a4bdef802f685698bd4dc0740de683affe8ff7df55f4fc77077ba7
             imagePullPolicy: IfNotPresent
             env:
             - name: VAULT_ADDR
@@ -29,7 +29,7 @@ spec:
               - name: share
                 mountPath: "/share"
           - name: snapshotupload
-            image: amazon/AWS-cli:2.11.21
+            image: amazon/aws-cli:2.22.7@sha256:8e5304698fd84c0c7a8780e1fcef10c659c1b269db185404990d91da0d7ec840
             imagePullPolicy: IfNotPresent
             env:
               - name: AWS_ACCESS_KEY_ID

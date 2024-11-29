@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vault-snapshot-cronjob
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+     template:
+        spec:
+          serviceAccountName: vault-snapshotter
+          volumes:
+            - name: share
+              emptyDir: {}
+          containers:
+          - name: backup
+            image: vault:1.12.1
+            imagePullPolicy: IfNotPresent
+            env:
+            - name: VAULT_ADDR
+              value: https://vault.${PUBLIC_DOMAIN}:8200
+            command: ["/bin/sh", "-c"]
+            args:
+              - >
+                SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token);
+                export VAULT_TOKEN=$(vault write -field=token auth/kubernetes/login jwt=$SA_TOKEN role=vault-backup);
+                vault operator raft snapshot save /share/vault-raft.snap;
+            volumeMounts:
+              - name: share
+                mountPath: "/share"
+          - name: snapshotupload
+            image: amazon/AWS-cli:2.11.21
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: cloudflare-credentials-secret
+                    key: access-key-id
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: cloudflare-credentials-secret
+                    key: secret-access-key
+            command:
+            - /bin/sh
+            args:
+            - -ec
+            - |
+                until [ -f /share/vault-raft.snap ]; do sleep 5; done;
+                aws --endpoint-url=${S3_URL} s3 cp /share/vault-raft.snap s3://backups/vault/vault_raft_$(date +"%Y%m%d_%H%M%S").snap;
+            volumeMounts:
+            - mountPath: /share
+              name: share
+          restartPolicy: OnFailure

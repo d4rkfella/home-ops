@@ -92,6 +92,7 @@ RUN apk update && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
+COPY --from=docker.io/amazon/aws-cli:2.13.2           /usr/local/bin/aws /usr/local/bin/aws
 
 WORKDIR /project
 

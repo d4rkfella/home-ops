@@ -46,7 +46,7 @@ RUN apk update && \
     yq \
     python3 \
     py3-pip \
-    py3-dev \
+    python3-dev \
     libmagic \
     libc6-compat \
     unzip && \

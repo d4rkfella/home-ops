@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./secret.yaml
+  - ./serviceaccount.yaml
   - ./backup-cronjob.yaml
 configMapGenerator:
   - name: vault-gatus-ep

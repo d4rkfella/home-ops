@@ -29,7 +29,7 @@
       "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml$"],
       "matchStrings": ["imageName: (?<depName>\\S+):(?<currentValue>[\\w.-]+@sha256:[a-f0-9]+)"],
       "datasourceTemplate": "docker",
-      "versioningTemplate": "redhat"
+      "versioningTemplate": "docker"
     }
   ]
 }

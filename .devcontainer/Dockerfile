@@ -24,6 +24,7 @@ ARG KUBELOGIN_VERSION=v1.31.0
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
+ENV EDITOR=/usr/bin/nano
 
 WORKDIR /tmp
 
@@ -46,7 +47,6 @@ RUN apk update && \
     yq \
     aws-cli \
     unzip && \
-    echo "**** Creating user and group ****" && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
@@ -92,7 +92,6 @@ RUN apk update && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    echo "**** Cleaning up ****" && \
     rm -rf /root/.cache /tmp/*
 
 WORKDIR /project

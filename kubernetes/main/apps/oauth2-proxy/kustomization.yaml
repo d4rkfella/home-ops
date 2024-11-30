@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   # Pre Flux-Kustomizations
   - ./namespace.yaml
-  - ./ks.yaml
+  - ./kubernetes/ks.yaml
+  - ./media/ks.yaml

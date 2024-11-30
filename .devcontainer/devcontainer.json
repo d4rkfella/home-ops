@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:778ec784eec1883e52c65766d90e793d8c26c2582b9bb5972698667588b73ae2",
+    "image": "ghcr.io/darkfella91/devcontainer:v1.0.0@sha256:4643108e03e4b0dd4ddb639f51664b602352d842f692a172458887cd6394fe9d",
 
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
@@ -34,26 +34,26 @@
                 "*.secret.sops.env": "lock",
                 "*.secret.sops.yaml": "lock"
             },
-            "material-icon-theme.activeIconPack": "angular",
             "material-icon-theme.folders.associations": {
                 ".archive": "archive",
                 ".github/workflows": "robot",
                 "actions-runner-system": "github",
                 "cert-manager": "guard",
-                "digester-system": "hook",
                 "external-secrets": "secure",
                 "flux-system": "pipe",
                 "flux": "pipe",
                 "kube-system": "kubernetes",
                 "network": "connection",
                 "observability": "event",
-                "rook-ceph": "base",
                 "storage": "dump",
                 "system-upgrade": "update",
                 "tools": "tools",
                 "volsync": "aws",
                 "cloudflared": "cloudflare",
-                "talos": "linux"
+                "talos": "linux",
+                "vault": "secure",
+                "cdi": "upload",
+                "virtual-machines": "Vm"
             },
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,
@@ -70,7 +70,7 @@
             "mikestead.dotenv",
             "fcrespo82.markdown-table-formatter",
             "albert.TabOut",
-            "PKief.material-icon-theme",
+            "pkief.material-icon-theme",
             "PKief.material-product-icons"
         ]
       }

@@ -29,7 +29,7 @@ ENV EDITOR=/usr/bin/nano
 WORKDIR /tmp
 
 RUN apk update && \
-    apk upgrade && \
+    apk upgrade --no-cache && \
     apk add --no-cache \
     coreutils \
     curl \

@@ -48,21 +48,29 @@ spec:
             args:
               - --config=/etc/oauth2-proxy.cfg
             env:
-              REDIS_PASSWORD:
+              OAUTH2_PROXY_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: REDIS_PASSWORD
-              CLIENT_SECRET:
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: CLIENT_SECRET
-              COOKIE_SECRET:
+              OAUTH2_PROXY_COOKIE_SECRET:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: REDIS_PASSWORD
+              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/4
+
           app:
             image:
               repository: ghcr.io/onedr0p/radarr-develop

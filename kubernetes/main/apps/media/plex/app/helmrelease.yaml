@@ -127,7 +127,7 @@ spec:
           - path: /data/media
             readOnly: true
             subPath: media
-      etc:
+      ssl:
         type: emptyDir
         globalMounts:
           - path: /ssl

@@ -62,7 +62,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "openssl pkcs12 -export -out /etc/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -password pass: || exit 1"]
+                  command: ["/bin/sh", "-c", "mkdir -p /etc/certs && openssl pkcs12 -export -out /etc/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -password pass: || exit 1"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -130,7 +130,7 @@ spec:
       etc:
         type: emptyDir
         globalMounts:
-          - path: /etc/certs
+          - path: /etc
       cert:
         type: secret
         name: plex-tls

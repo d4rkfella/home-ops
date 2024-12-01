@@ -85,8 +85,8 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
-                    port: *port
+                    path: /ready
+                    port: 4180
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

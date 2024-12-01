@@ -62,7 +62,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "mkdir -p /ssl/certs && openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -password pass: || exit 1"]
+                  command: ["/bin/sh", "-c", "mkdir -p /ssl/certs && openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passout pass: || exit 1"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

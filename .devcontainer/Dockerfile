@@ -29,8 +29,8 @@ ENV EDITOR=/usr/bin/nano
 WORKDIR /tmp
 
 RUN apk update && \
-    apk upgrade --no-cache && \
-    apk add --no-cache \
+    apk upgrade && \
+    apk add \
     coreutils \
     curl \
     cosign \
@@ -92,7 +92,7 @@ RUN apk update && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    rm -rf /root/.cache /tmp/*
+    rm -rf /root/.cache /tmp/* /var/cache/apk/*
 
 WORKDIR /project
 

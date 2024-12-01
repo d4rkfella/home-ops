@@ -340,7 +340,8 @@ spec:
           enabled: true
 
       statefulSet:
-        annotations: {}
+        annotations:
+          reloader.stakater.com/auto: "true"
         securityContext:
           pod: {}
           container: {}

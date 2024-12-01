@@ -6,7 +6,7 @@ metadata:
   name: &app oauth2-proxy-kubernetes
   namespace: flux-system
 spec:
-  targetNamespace: oauth2-proxy
+  targetNamespace: kubernetes-dashboard
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

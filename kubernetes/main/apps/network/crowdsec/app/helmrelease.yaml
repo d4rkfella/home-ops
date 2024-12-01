@@ -152,18 +152,22 @@ spec:
         - namespace: network
           podName: nginx-external-controller-*
           program: nginx
+          poll_without_inotify: true
 
         - namespace: media
           podName: jellyseerr-*
           program: jellyseerr
+          poll_without_inotify: true
 
         - namespace: vaultwarden
           podName: vaultwarden-*
           program: VAULTWARDEN
+          poll_without_inotify: true
 
         - namespace: idp
           podName: keycloak-0
           program: keycloak
+          poll_without_inotify: true
 
       env:
         - name: PARSERS

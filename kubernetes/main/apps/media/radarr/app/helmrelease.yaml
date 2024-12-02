@@ -36,9 +36,24 @@ spec:
             image:
               repository: ghcr.io/onedr0p/postgres-init
               tag: 16.6@sha256:35353a77777ee8f634d0f3945f495b4a40065134b8619e0d18bd49b0ee9c855b
-            envFrom: &envFrom
-              - secretRef:
-                  name: &secret radarr-secret
+            env:
+              INIT_POSTGRES_DBNAME: &dbName radarr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret radarr-secret
+                    key: INIT_POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_SUPER_PASS
 
         containers:
           oauth2-proxy:
@@ -82,6 +97,7 @@ spec:
               repository: ghcr.io/onedr0p/radarr-develop
               tag: 5.16.0.9485@sha256:f21d401a2ce6ebf5401c4dc71e3184ece740fff227a6af0ffa1a51fe4af7627c
             env:
+              TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
@@ -91,8 +107,24 @@ spec:
               RADARR__SERVER__PORT: &port 80
               RADARR__SERVER__BINDADDRESS: 127.0.0.1
               RADARR__UPDATE__BRANCH: develop
-              TZ: Europe/Sofia
-            envFrom: *envFrom
+              RADARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: RADARR__AUTH__APIKEY
+              RADARR__POSTGRES__HOST: *dbHost
+              RADARR__POSTGRES__PORT: 5432
+              RADARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              RADARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              RADARR__POSTGRES__MAINDB: *dbName
             probes:
               liveness: &probes
                 enabled: true

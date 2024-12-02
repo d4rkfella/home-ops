@@ -90,13 +90,12 @@ spec:
                   name: *secret
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
-                  httpGet:
-                    path: /api?mode=version
-                    port: *port
-                  initialDelaySeconds: 0
+                  exec:
+                    command: ["/bin/sh", "-c", "curl -s http://localhost/api?mode=version | jq -e '.version' > /dev/null"]
+                  initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

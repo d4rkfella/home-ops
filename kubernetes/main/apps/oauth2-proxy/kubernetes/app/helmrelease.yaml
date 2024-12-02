@@ -25,7 +25,7 @@ spec:
   values:
     config:
       existingSecret: oauth2-kubernetes-secret
-      cookieName: "_oauth2_proxy"
+      cookieName: "__Secure-oauth2_proxy"
       configFile: |-
         email_domains = [ "*" ]
         upstreams = [ "file:///dev/null" ]

@@ -47,10 +47,10 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl -s http://localhost:32400/identity | grep -q 'MediaContaineraa'"]
-                  initialDelaySeconds: 10
+                    command: ["/bin/sh", "-c", "curl -s http://localhost:32400/identity | grep -q 'MediaContainer'"]
+                  initialDelaySeconds: 1
                   periodSeconds: 10
-                  timeoutSeconds: 2
+                  timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
               startup:

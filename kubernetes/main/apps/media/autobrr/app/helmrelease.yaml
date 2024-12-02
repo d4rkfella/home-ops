@@ -155,6 +155,8 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -186,6 +188,9 @@ spec:
                   port: http
 
     persistence:
+      config:
+        type: emptyDir
+
       tmp:
         type: emptyDir
 

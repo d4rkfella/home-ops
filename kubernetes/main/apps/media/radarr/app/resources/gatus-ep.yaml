@@ -10,8 +10,6 @@ endpoints:
       dns-resolver: tcp://172.17.0.10:53
     conditions:
       - "[STATUS] == 200"
-      - "[BODY] == OK"
+      - "[BODY].status == OK"
     alerts:
       - type: pushover
-    headers:
-      Accept: application/json

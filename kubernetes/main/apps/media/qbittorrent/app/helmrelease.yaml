@@ -35,6 +35,36 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: REDIS_PASSWORD
+              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/4
+
           qbittorrent:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
@@ -186,7 +216,7 @@ spec:
           lbipam.cilium.io/ips: 192.168.91.82
         ports:
           http:
-            port: *port
+            port: 4180
           bittorrent-tcp:
             enabled: true
             port: *torrentPort
@@ -200,12 +230,6 @@ spec:
       qbittorrent:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-          nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-          nginx.ingress.kubernetes.io/auth-snippet: |
-            if ($request_uri ~* "^/api(/|$)") {
-              return 202;
-            }
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/vuetorrent/mind.css"></body>';
@@ -246,6 +270,7 @@ spec:
               - path: /qbittorrent/qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
+
       scripts:
         type: configMap
         name: qbittorrent-scripts
@@ -317,3 +342,13 @@ spec:
                 readOnly: true
             vuetorrent:
               - path: /addons
+
+      oauth2-proxy-config:
+        type: configMap
+        name: qbittorrent-oauth2-proxy-config
+        advancedMounts:
+          torrenting:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true

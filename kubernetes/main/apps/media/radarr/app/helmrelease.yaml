@@ -83,7 +83,7 @@ spec:
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: &port 80
-              RADARR__SERVER__BINDADDRESS: 127.0.0.2
+              RADARR__SERVER__BINDADDRESS: 127.0.0.1
               RADARR__UPDATE__BRANCH: develop
               TZ: Europe/Sofia
             envFrom: *envFrom

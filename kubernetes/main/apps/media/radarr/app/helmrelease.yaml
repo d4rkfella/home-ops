@@ -99,8 +99,8 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl -s http://127.0.0.1/ping | jq -e '.status == \"OKI\"'"]
-                  initialDelaySeconds: 0
+                    command: ["/bin/sh", "-c", "curl -s http://localhost/ping | jq -e '.status == \"OK\"'"]
+                  initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

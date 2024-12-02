@@ -4,7 +4,7 @@ endpoints:
     url: "https://plex.${PUBLIC_DOMAIN}:32400/identity"
     interval: 1m
     client:
-      dns-resolver: tcp://1.1.1.1:53
+      dns-resolver: tcp://172.17.0.10:53
     conditions:
       - "[STATUS] == 200"
       - "[BODY].MediaContainer.claimed == 1"

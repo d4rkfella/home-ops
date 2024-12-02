@@ -102,7 +102,7 @@ spec:
                     key: PUSHOVER_USER_KEY
             probes:
               readiness:
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   exec:
@@ -112,7 +112,7 @@ spec:
                   periodSeconds: 10
                   failureThreshold: 3
               liveness:
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   exec:

@@ -13,3 +13,5 @@ endpoints:
       - "[BODY].status == OK"
     alerts:
       - type: pushover
+    headers:
+      Accept: application/json

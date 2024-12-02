@@ -44,6 +44,9 @@ spec:
         allowed_groups = [ "Cluster-Admins" ]
         set_authorization_header = true
         pass_authorization_header = true
+        redirect_url = "https://kubernetes-dashboard.${PUBLIC_DOMAIN}/oauth2/callback"
+        cookie_csrf_per_request = true
+        cookie_csrf_expire = "5m"
 
     image:
       repository: "quay.io/oauth2-proxy/oauth2-proxy"

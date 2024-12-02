@@ -7,7 +7,7 @@ endpoints:
       dns-resolver: tcp://172.17.0.10:53
     conditions:
       - "[STATUS] == 200"
-      - "[BODY].MediaContainer.claimed == 1"
+      - "[BODY].MediaContainer.claimed == true"
     alerts:
       - type: pushover
     headers:

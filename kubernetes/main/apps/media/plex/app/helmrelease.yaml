@@ -47,7 +47,7 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl --silent --show-error --fail https://plex.${PUBLIC_DOMAIN}:32400/identity >/dev/null"]
+                    command: ["/bin/sh", "-c", "curl -s https://plex.${PUBLIC_DOMAIN}:32400/identity | grep -q 'MediaContainer'"]
                   initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 2

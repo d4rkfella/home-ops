@@ -35,13 +35,44 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: REDIS_PASSWORD
+              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/7
+
           app:
             image:
               repository: ghcr.io/onedr0p/sabnzbd
               tag: 4.3.3@sha256:86c645db93affcbf01cc2bce2560082bfde791009e1506dba68269b9c50bc341
             env:
               TZ: Europe/Sofia
-              SABNZBD__PORT: &port 80
+              SABNZBD__PORT: 80
+              SABNZBD__ADDRESS: 127.0.0.1
               SABNZBD__HOST_WHITELIST_ENTRIES: >-
                 sabnzbd,
                 sabnzbd.media,
@@ -50,7 +81,7 @@ spec:
                 sabnzbd.media.svc.cluster.local,
                 sabnzbd.${PUBLIC_DOMAIN}
               CROSS_SEED_HOST: cross-seed.media.svc.cluster.local
-              CROSS_SEED_ENABLED: true
+              CROSS_SEED_ENABLED: false
               CROSS_SEED_PORT: 80
               CROSS_SEED_SLEEP_INTERVAL: 30
               PUSHOVER_ENABLED: true
@@ -59,7 +90,7 @@ spec:
                   name: sabnzbd-secret
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   httpGet:
@@ -95,18 +126,12 @@ spec:
         controller: sabnzbd
         ports:
           http:
-            port: *port
+            port: 4180
 
     ingress:
       app:
         annotations:
           external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
-          nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
-          nginx.ingress.kubernetes.io/auth-snippet: |
-            if ($request_uri ~* "(\/|\/[0-9]+\/)api(/|$|[?])") {
-              return 202;
-            }
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/sabnzbd/mind.css"></body>';
@@ -159,3 +184,13 @@ spec:
         globalMounts:
           - path: /data/downloads/usenet
             subPath: downloads/usenet
+
+      oauth2-proxy-config:
+        type: configMap
+        name: sabnzbd-oauth2-proxy-config
+        advancedMounts:
+          sabnzbd:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true

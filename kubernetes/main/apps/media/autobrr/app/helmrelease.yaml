@@ -192,7 +192,7 @@ spec:
     oauth2-proxy-config:
         type: configMap
         name: autobrr-oauth2-proxy-config
-        defaultMode: 0444
+        defaultMode: 0777
         advancedMounts:
           autobrr:
             oauth2-proxy:

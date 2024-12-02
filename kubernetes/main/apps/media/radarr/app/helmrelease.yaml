@@ -131,7 +131,7 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl -s http://localhost/ping | jq -e '.status == \"OK\"'"]
+                    command: ["/bin/sh", "-c", "curl -s http://localhost/ping | jq -e '.status == \"OK\"' > /dev/null"]
                   initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1

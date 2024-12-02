@@ -125,7 +125,7 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl -s http://127.0.0.1/ping | jq -e '.status == \"OK\"'"]
+                    command: ["/bin/sh", "-c", "curl -s http://127.0.0.1/ping | jq -e '.status == \"OK\"' > /dev/null"]
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

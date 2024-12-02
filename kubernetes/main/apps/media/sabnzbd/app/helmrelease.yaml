@@ -100,7 +100,7 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl -s http://localhost/api?mode=version | jq -e '.versiona' > /dev/null"]
+                    command: ["/bin/sh", "-c", "curl -s http://localhost/api?mode=version | jq -e '.version' > /dev/null"]
                   initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1

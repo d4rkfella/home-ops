@@ -26,7 +26,9 @@ spec:
     installCRDs: true
     image:
       repository: ghcr.io/external-secrets/external-secrets
-    extraArgs: ["--enable-secrets-caching=true", "--enable-managed-secrets-caching=true"]
+    extraArgs:
+      - --enable-secrets-caching
+      - --enable-managed-secrets-caching
     webhook:
       image:
         repository: ghcr.io/external-secrets/external-secrets

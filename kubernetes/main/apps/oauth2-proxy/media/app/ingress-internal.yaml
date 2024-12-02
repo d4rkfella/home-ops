@@ -22,16 +22,6 @@ spec:
                 name: oauth2-proxy
                 port:
                   number: 80
-    - host: sabnzbd.${PUBLIC_DOMAIN}
-      http:
-        paths:
-          - path: /oauth2
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: oauth2-proxy
-                port:
-                  number: 80
     - host: bazarr.${PUBLIC_DOMAIN}
       http:
         paths:

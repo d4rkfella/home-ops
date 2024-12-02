@@ -187,7 +187,7 @@ spec:
         type: configMap
         name: sonarr-oauth2-proxy-config
         advancedMounts:
-          radarr:
+          sonarr:
             oauth2-proxy:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg

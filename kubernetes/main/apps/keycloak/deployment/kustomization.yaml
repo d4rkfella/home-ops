@@ -5,4 +5,5 @@ kind: Kustomization
 resources:
   - ./ingress.yaml
   - ./externalsecret.yaml
+  - ./networkpolicy.yaml
   - ./cr.yaml

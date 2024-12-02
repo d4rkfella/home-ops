@@ -47,7 +47,7 @@ spec:
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl --connect-timeout 15 --max-time 100 --silent --show-error --fail http://plex.${PUBLIC_DOMAIN}:32400/identity >/dev/null"]
+                    command: ["/bin/sh", "-c", "curl --connect-timeout 15 --max-time 100 --silent --show-error --fail https://plex.${PUBLIC_DOMAIN}:32400/identity >/dev/null"]
                   initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1

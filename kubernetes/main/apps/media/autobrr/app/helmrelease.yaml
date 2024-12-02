@@ -88,8 +88,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-              runAsUser: 65534
-              runAsGroup: 65534
+              runAsUser: 2000
+              runAsGroup: 2000
 
           app:
             image:
@@ -155,8 +155,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -188,19 +186,15 @@ spec:
                   port: http
 
     persistence:
-      config:
-        type: emptyDir
-
       tmp:
         type: emptyDir
 
-    oauth2-proxy-config:
-        type: configMap
-        name: autobrr-oauth2-proxy-config
-        defaultMode: 0777
-        advancedMounts:
-          autobrr:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
+      oauth2-proxy-config:
+          type: configMap
+          name: autobrr-oauth2-proxy-config
+          advancedMounts:
+            autobrr:
+              oauth2-proxy:
+                - path: /etc/oauth2-proxy.cfg
+                  subPath: oauth2-proxy.cfg
+                  readOnly: true

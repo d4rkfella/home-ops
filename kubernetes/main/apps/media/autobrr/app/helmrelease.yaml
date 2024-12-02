@@ -155,8 +155,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -194,6 +192,7 @@ spec:
     oauth2-proxy-config:
         type: configMap
         name: autobrr-oauth2-proxy-config
+        defaultMode: 0444
         advancedMounts:
           autobrr:
             oauth2-proxy:

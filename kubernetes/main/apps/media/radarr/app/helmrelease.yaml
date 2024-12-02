@@ -190,7 +190,7 @@ spec:
 
       oauth2-proxy-config:
         type: configMap
-        name: oauth2-proxy-config
+        name: radarr-oauth2-proxy-config
         advancedMounts:
           radarr:
             oauth2-proxy:

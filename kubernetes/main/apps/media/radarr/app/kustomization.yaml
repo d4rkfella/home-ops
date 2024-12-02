@@ -15,7 +15,7 @@ configMapGenerator:
         gatus.io/enabled: "true"
     files:
       - config.yaml=./resources/gatus-ep.yaml
-  - name: oauth2-proxy-config
+  - name: radarr-oauth2-proxy-config
     options:
       labels:
         gatus.io/enabled: "true"

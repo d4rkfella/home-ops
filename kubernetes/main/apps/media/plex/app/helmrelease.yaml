@@ -43,14 +43,14 @@ spec:
               NVIDIA_DRIVER_CAPABILITIES: all
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   exec:
-                    command: ["/bin/sh", "-c", "curl --connect-timeout 15 --max-time 100 --silent --show-error --fail https://plex.${PUBLIC_DOMAIN}:32400/identity >/dev/null"]
+                    command: ["/bin/sh", "-c", "curl --silent --show-error --fail https://plex.${PUBLIC_DOMAIN}:32400/identity >/dev/null"]
                   initialDelaySeconds: 10
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 2
                   failureThreshold: 3
               readiness: *probes
               startup:

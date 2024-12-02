@@ -101,7 +101,15 @@ spec:
                     key: DATABASE_URL
               PUSH_ENABLED: true
               PUSH_INSTALLATION_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSH_INSTALLATION_ID
               PUSH_INSTALLATION_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSH_INSTALLATION_KEY
               PUSH_RELAY_URI: https://api.bitwarden.eu
               PUSH_IDENTITY_URI: https://identity.bitwarden.eu
             securityContext:

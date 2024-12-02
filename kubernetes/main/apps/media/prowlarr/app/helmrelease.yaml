@@ -193,7 +193,7 @@ spec:
 
       oauth2-proxy-config:
         type: configMap
-        name: sonarr-oauth2-proxy-config
+        name: prowlarr-oauth2-proxy-config
         advancedMounts:
           prowlarr:
             oauth2-proxy:

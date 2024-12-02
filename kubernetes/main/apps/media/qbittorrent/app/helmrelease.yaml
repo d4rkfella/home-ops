@@ -45,7 +45,7 @@ spec:
               OAUTH2_PROXY_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret qbittorrent-secret
                     key: CLIENT_ID
               OAUTH2_PROXY_CLIENT_SECRET:
                 valueFrom:
@@ -82,7 +82,7 @@ spec:
               CROSS_SEED_API_KEY:
                 valueFrom:
                   secretKeyRef:
-                    name: &secret qbittorrent-secret
+                    name: *secret
                     key: CROSS_SEED_API_KEY
               PUSHOVER_TOKEN:
                 valueFrom:

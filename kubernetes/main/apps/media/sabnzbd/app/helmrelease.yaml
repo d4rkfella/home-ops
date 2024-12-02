@@ -45,7 +45,7 @@ spec:
               OAUTH2_PROXY_CLIENT_ID:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret sabnzbd-secret
                     key: CLIENT_ID
               OAUTH2_PROXY_CLIENT_SECRET:
                 valueFrom:
@@ -87,7 +87,7 @@ spec:
               PUSHOVER_ENABLED: true
             envFrom:
               - secretRef:
-                  name: sabnzbd-secret
+                  name: *secret
             probes:
               liveness: &probes
                 enabled: false

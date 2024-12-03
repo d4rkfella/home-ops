@@ -159,7 +159,7 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
-        scrapeInterval: 1m # Must match interval in Grafana Helm chart
+        scrapeInterval: 1m
         podMonitorSelector: &selector
           matchLabels: null
         probeSelector: *selector

@@ -34,9 +34,11 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       service:
-        additionalPorts:
-          - name: oauth-proxy
-            port: 4180
+        port: 9093
+        targetPort: 4180
+        #additionalPorts:
+          #- name: oauth-proxy
+            #port: 4180
       ingress:
         enabled: true
         annotations:

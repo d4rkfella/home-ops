@@ -67,7 +67,7 @@ RUN apk update && \
       --signature sops-$SOPS_VERSION.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    echo "$(cat sops-$SOPS_VERSION.linux.amd64)" | sha256sum --check --strict --ignore-missing && \
+    echo "$(cat sops-$SOPS_VERSION.checksums.txt)" | sha256sum --check --strict --ignore-missing && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
     curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/talosctl-linux-amd64 && \
     curl -fsSL -o talosctl_sha256sum.txt https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/sha256sum.txt && \

@@ -126,11 +126,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: SMTP_PASSWORD
-              ADMIN_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: ADMIN_TOKEN
               DATABASE_URL:
                 valueFrom:
                   secretKeyRef:

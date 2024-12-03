@@ -3,6 +3,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: openebs-zfs-1m
+allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"
   recordsize: "1m"
@@ -18,6 +19,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: openebs-zfs-128k
+allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"
   recordsize: "128k"
@@ -32,6 +34,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: openebs-zfs-32k
+allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"
   recordsize: "32k"

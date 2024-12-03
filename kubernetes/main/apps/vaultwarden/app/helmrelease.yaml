@@ -99,6 +99,7 @@ spec:
               repository: vaultwarden/server
               tag: 1.32.5@sha256:84015c9306cc58f4be8b09c1adc62cfc3b2648b1430e9c15901482f3d870bd14
             env:
+              DISABLE_ADMIN_TOKEN: true
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments

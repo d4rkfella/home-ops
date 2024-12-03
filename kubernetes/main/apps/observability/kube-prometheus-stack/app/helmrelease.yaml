@@ -35,10 +35,9 @@ spec:
     alertmanager:
       service:
         port: 9093
-        targetPort: 4180
-        #additionalPorts:
-          #- name: oauth-proxy
-            #port: 4180
+        additionalPorts:
+          - name: oauth-proxy
+            port: 4180
       ingress:
         enabled: true
         annotations:

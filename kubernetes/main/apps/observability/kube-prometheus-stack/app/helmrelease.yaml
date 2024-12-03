@@ -145,8 +145,6 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
-        additionalArgs:
-          - additionalArgs:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector
           matchLabels: null

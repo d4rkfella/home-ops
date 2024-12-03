@@ -34,8 +34,9 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       service:
-        port: 4180
-        targetPort: oauth-proxy
+        additionalPorts:
+          - name: oauth-proxy
+            port: 4180
       ingress:
         enabled: true
         annotations:
@@ -144,6 +145,8 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
+        additionalArgs:
+          - additionalArgs:
         scrapeInterval: 1m # Must match interval in Grafana Helm chart
         podMonitorSelector: &selector
           matchLabels: null

@@ -21,6 +21,8 @@ ARG TALOSCTL_VERSION=v1.8.3
 ARG VIRTCTL_VERSION=v1.4.0
 # renovate: depName=int128/kubelogin
 ARG KUBELOGIN_VERSION=v1.31.0
+# renovate: depName=cilium/hubble
+ARG HUBBLE_VERSION=v1.16.4
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
@@ -57,6 +59,9 @@ RUN apk update && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     mv ./kubectl /usr/local/bin/kubectl && \
+    curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum} && \
+    sha256sum --check --strict hubble-linux-amd64.tar.gz.sha256sum && \
+    tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \

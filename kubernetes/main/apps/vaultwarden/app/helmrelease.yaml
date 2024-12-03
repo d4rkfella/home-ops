@@ -99,6 +99,10 @@ spec:
               repository: vaultwarden/server
               tag: 1.32.5@sha256:84015c9306cc58f4be8b09c1adc62cfc3b2648b1430e9c15901482f3d870bd14
             env:
+              EMAIL_2FA_ENFORCE_ON_VERIFIED_INVITE: true
+              EMAIL_2FA_AUTO_FALLBACK: true
+              AUTHENTICATOR_DISABLE_TIME_DRIFT: true
+              REQUIRE_DEVICE_EMAIL: true
               DISABLE_ADMIN_TOKEN: true
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache

@@ -66,19 +66,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     key: CLIENT_SECRET
-                    name: prowlarr-secret
+                    name: alertmanager-oauth-secret
               - name: OAUTH2_PROXY_COOKIE_SECRET
                 valueFrom:
                   secretKeyRef:
                     key: COOKIE_SECRET
-                    name: prowlarr-secret
+                    name: alertmanager-oauth-secret
               - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
                 value: redis://redis-master.database.svc.cluster.local:6379/5
               - name: OAUTH2_PROXY_REDIS_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     key: REDIS_PASSWORD
-                    name: prowlarr-secret
+                    name: alertmanager-oauth-secret
               - name: OAUTH2_PROXY_SESSION_STORE_TYPE
                 value: redis
             securityContext:

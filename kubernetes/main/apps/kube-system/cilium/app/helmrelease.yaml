@@ -30,6 +30,10 @@ spec:
   values:
     hubble:
       enabled: true
+      export:
+        static:
+          enabled: true
+          filePath: /var/run/cilium/hubble/events.log
       metrics:
         enabled:
           - dns:query

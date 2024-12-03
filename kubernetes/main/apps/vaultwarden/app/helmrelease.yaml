@@ -208,7 +208,7 @@ spec:
 
       oauth2-proxy-config:
         type: configMap
-        name: radarr-oauth2-proxy-config
+        name: vaultwarden-oauth2-proxy-config
         advancedMounts:
           vaultwarden:
             oauth2-proxy:

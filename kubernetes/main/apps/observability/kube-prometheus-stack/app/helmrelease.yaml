@@ -126,12 +126,7 @@ spec:
         selector:
           k8s-app: kube-controller-manager
     kubeEtcd:
-      endpoints:
-        - 192.168.91.9
-      service:
-        enabled: true
-        port: 2381
-        targetPort: 2381
+      <<: *kubeControllerManager
     kubeProxy:
       enabled: false
     prometheus:

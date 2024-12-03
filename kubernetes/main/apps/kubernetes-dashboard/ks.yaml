@@ -30,7 +30,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/main/apps/oauth2-proxy/kubernetes/app
+  path: ./kubernetes/main/apps/kubernetes-dashboard/oauth2-proxy
   prune: true
   sourceRef:
     kind: GitRepository

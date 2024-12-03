@@ -23,6 +23,8 @@ ARG VIRTCTL_VERSION=v1.4.0
 ARG KUBELOGIN_VERSION=v1.31.0
 # renovate: depName=cilium/hubble
 ARG HUBBLE_VERSION=v1.16.4
+# renovate: depName=cilium/cilium-cli
+ARG CILIUM_VERSION=v0.16.20
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
@@ -59,6 +61,9 @@ RUN apk update && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     mv ./kubectl /usr/local/bin/kubectl && \
+    curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/$CILIUM_VERSION/cilium-linux-amd64.tar.gz{,.sha256sum} && \
+    sha256sum --check --strict cilium-linux-amd64.tar.gz.sha256sum && \
+    tar xzvf cilium-linux-amd64.tar.gz -C /usr/local/bin && \
     curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum} && \
     sha256sum --check --strict hubble-linux-amd64.tar.gz.sha256sum && \
     tar xzvf hubble-linux-amd64.tar.gz -C /usr/local/bin && \

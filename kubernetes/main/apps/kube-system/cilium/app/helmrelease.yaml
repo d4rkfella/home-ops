@@ -28,6 +28,15 @@ spec:
       name: cilium-helm-values
 
   values:
+    extraVolumes:
+      - name: hubble-logs
+        nfs:
+          path: /mnt/exos20/data
+          server: 192.168.91.40
+    extraVolumeMounts:
+      - mountPath: /var/run/cilium/hubble
+        name: hubble-logs
+        subPath: hubble-logs
     hubble:
       enabled: true
       export:

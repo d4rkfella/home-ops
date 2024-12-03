@@ -64,6 +64,7 @@ spec:
               tag: 1.4.5@sha256:1e3ca601b51bb061e342ab8da9ee79062a51f254b50fcc43756299a29647d3aa
             env:
               TZ: Europe/Sofia
+              BAZARR__BINDADDRESS: 127.0.0.1
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: *dbHost
               POSTGRES_PORT: *dbPort
@@ -128,7 +129,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
         seccompProfile: { type: RuntimeDefault }
     service:
       app:

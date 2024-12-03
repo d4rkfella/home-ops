@@ -3,46 +3,28 @@ apiVersion: cdi.kubevirt.io/v1beta1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-1m
-spec: {}
-status:
+spec:
   claimPropertySets:
-  - accessModes:
-    - ReadWriteOnce
-    volumeMode: Filesystem
-  cloneStrategy: snapshot
-  dataImportCronSourceFormat: pvc
-  provisioner: zfs.csi.openebs.io
-  snapshotClass: zfspv-snapclass
-  storageClass: openebs-zfs-1m
+    - accessModes:
+      - ReadWriteOnce
+      volumeMode: Filesystem
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-128k
-spec: {}
-status:
+spec:
   claimPropertySets:
-  - accessModes:
-    - ReadWriteOnce
-    volumeMode: Filesystem
-  cloneStrategy: snapshot
-  dataImportCronSourceFormat: pvc
-  provisioner: zfs.csi.openebs.io
-  snapshotClass: zfspv-snapclass
-  storageClass: openebs-zfs-128k
+    - accessModes:
+      - ReadWriteOnce
+      volumeMode: Filesystem
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-32k
-spec: {}
-status:
+spec:
   claimPropertySets:
-  - accessModes:
-    - ReadWriteOnce
-    volumeMode: Filesystem
-  cloneStrategy: snapshot
-  dataImportCronSourceFormat: pvc
-  provisioner: zfs.csi.openebs.io
-  snapshotClass: zfspv-snapclass
-  storageClass: openebs-zfs-32k
+    - accessModes:
+      - ReadWriteOnce
+      volumeMode: Filesystem

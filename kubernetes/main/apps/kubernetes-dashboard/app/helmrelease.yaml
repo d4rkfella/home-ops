@@ -29,7 +29,6 @@ spec:
       installCRDs: false
     app:
       annotations: {}
-
       settings:
         global:
           clusterName: main
@@ -42,7 +41,15 @@ spec:
           defaultNamespace: default
           namespaceFallbackList:
             - default
-
+      api:
+        containers:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 200Mi
+            limits:
+              cpu: 400m
+              memory: 400Mi
       ingress:
         enabled: true
         hosts:

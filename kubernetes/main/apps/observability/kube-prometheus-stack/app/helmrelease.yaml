@@ -126,7 +126,21 @@ spec:
         selector:
           k8s-app: kube-controller-manager
     kubeEtcd:
-      <<: *kubeControllerManager
+      enabled: true
+      service:
+        selector:
+          k8s-app: kube-controller-manager
+      serviceMonitor:
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_node_name]
+            separator: ;
+            regex: ^(.*)$
+            targetLabel: nodename
+            replacement: $1
+            action: replace
+        metricRelabelings:
+          - action: labeldrop
+            regex: pod
     kubeProxy:
       enabled: false
     prometheus:

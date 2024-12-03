@@ -61,7 +61,7 @@ RUN apk update && \
     mv ./kubectl /usr/local/bin/kubectl && \
     curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum} && \
     sha256sum --check --strict hubble-linux-amd64.tar.gz.sha256sum && \
-    tar xzvfC hubble-linux-amd64.tar.gz /usr/local/bin && \
+    tar xzvf hubble-linux-amd64.tar.gz -C /usr/local/bin && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \

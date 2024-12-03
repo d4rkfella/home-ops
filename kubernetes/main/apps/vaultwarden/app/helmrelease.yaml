@@ -58,6 +58,42 @@ spec:
                     key: INIT_POSTGRES_SUPER_PASS
 
         containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: REDIS_PASSWORD
+              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/4
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              runAsUser: 2000
+              runAsGroup: 2000
+
           app:
             image:
               repository: vaultwarden/server
@@ -72,7 +108,7 @@ spec:
               SIGNUPS_ALLOWED: false
               SIGNUPS_VERIFY: true
               SIGNUPS_DOMAINS_WHITELIST: ${PUBLIC_DOMAIN}
-              ROCKET_ADDRESS: 0.0.0.0
+              ROCKET_ADDRESS: 127.0.0.1
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com.
               SMTP_FROM: noreply@${PUBLIC_DOMAIN}
@@ -137,7 +173,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port 80
+            port: &port 4180
 
     ingress:
       app:
@@ -169,3 +205,13 @@ spec:
         storageClass: openebs-zfs-128k
         globalMounts:
           - path: /data
+
+      oauth2-proxy-config:
+        type: configMap
+        name: radarr-oauth2-proxy-config
+        advancedMounts:
+          vaultwarden:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true

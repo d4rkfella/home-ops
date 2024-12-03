@@ -11,5 +11,8 @@ configMapGenerator:
         gatus.io/enabled: "true"
     files:
       - config.yaml=./resources/gatus-ep.yaml
+  - name: vaultwarden-oauth2-proxy-config
+    files:
+      - oauth2-proxy.cfg=./resources/oauth2-proxy.cfg
 generatorOptions:
   disableNameSuffixHash: true

@@ -47,7 +47,6 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
-        servicePort: 4180
         ingressClassName: internal
         tls:
           - hosts: &host ["alertmanager.${PUBLIC_DOMAIN}"]

@@ -67,18 +67,15 @@ RUN apk update && \
       --signature sops-$SOPS_VERSION.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    grep "sops-$SOPS_VERSION.linux.amd64" sops-$SOPS_VERSION.checksums.txt > checksum-linux-amd64.txt && \
-    echo "$(cat checksum-linux-amd64.txt)" | sha256sum --check --strict && \
+    echo "$(cat sops-$SOPS_VERSION.linux.amd64)" | sha256sum --check --strict --ignore-missing && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
     curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/talosctl-linux-amd64 && \
     curl -fsSL -o talosctl_sha256sum.txt https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/sha256sum.txt && \
-    grep "talosctl-linux-amd64" talosctl_sha256sum.txt > talosctl_amd64_sha256sum.txt && \
-    echo "$(cat talosctl_amd64_sha256sum.txt)" | sha256sum --check --strict && \
+    echo "$(cat talosctl_sha256sum.txt)" | sha256sum --check --strict --ignore-missing && \
     mv ./talosctl-linux-amd64 /usr/local/bin/talosctl && \
     curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
     curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
-    grep "helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz" helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt > checksum-helmfile-linux-amd64.txt && \
-    echo "$(cat checksum-helmfile-linux-amd64.txt)" | sha256sum --check --strict && \
+    echo "$(cat helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt)" | sha256sum --check --strict --ignore-missing && \
     tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \

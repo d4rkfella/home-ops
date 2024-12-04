@@ -6,7 +6,6 @@ metadata:
   name: tekton-pipeline
   namespace: flux-system
 spec:
-  targetNamespace: tekton-pipelines
   path: ./kubernetes/main/apps/virtualization/tekton-pipeline/app
   prune: true
   dependsOn:

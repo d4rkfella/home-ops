@@ -69,8 +69,8 @@ spec:
     - IPv4
   ipFamilyPolicy: SingleStack
   ports:
-    - port: 4180
-      name: web
+    - name: http
+      port: 4180
       protocol: TCP
       targetPort: 4180
   selector:

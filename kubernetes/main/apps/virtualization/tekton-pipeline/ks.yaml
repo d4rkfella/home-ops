@@ -6,9 +6,9 @@ metadata:
   name: tekton-pipeline
   namespace: flux-system
 spec:
-  targetNamespace: virtualization
+  targetNamespace: tekton-pipelines
   path: ./kubernetes/main/apps/virtualization/tekton-pipeline/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

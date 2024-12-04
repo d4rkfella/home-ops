@@ -1,5 +1,5 @@
 ---
-apiVersion: tekton.dev/v1
+apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   annotations:
@@ -47,16 +47,16 @@ spec:
     - name: preferenceName
       type: string
       description: Name of VirtualMachineClusterPreference object
-      default: windows.11.virtio
+      default: windows.2k25.virtio
     - name: virtualMachinePreferenceKind
       type: string
       description: Kind of virtualMachinePreference object
       default: VirtualMachineClusterPreference
-    - default: windows11-autounattend
-      description: Name of the ConfigMap containing the sysprep configuration files (autounattend.xml, etc.). For example windows11-autounattend, windows10-efi-autounattend or windows2022-autounattend. It is possible to provide customize ConfigMaps created by the user too.
+    - description: Name of the ConfigMap containing the sysprep configuration files (autounattend.xml, etc.). For example windows11-autounattend, windows10-efi-autounattend or windows2022-autounattend. It is possible to provide customize ConfigMaps created by the user too.
       name: autounattendConfigMapName
       type: string
-    - default: quay.io/kubevirt/virtio-container-disk:v1.2.0
+      value: windows2k25-autounattend
+    - default: quay.io/kubevirt/virtio-container-disk:v1.4.0
       description: Reference to the containerdisk containing the virtio-win drivers ISO.
       name: virtioContainerDiskName
       type: string

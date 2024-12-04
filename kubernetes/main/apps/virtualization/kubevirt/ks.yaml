@@ -6,7 +6,6 @@ metadata:
   name: kubevirt
   namespace: flux-system
 spec:
-  targetNamespace: kubevirt
   path: ./kubernetes/main/apps/virtualization/kubevirt/app
   prune: false
   sourceRef:

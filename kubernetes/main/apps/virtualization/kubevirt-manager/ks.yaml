@@ -6,7 +6,6 @@ metadata:
   name: kubevirt-manager
   namespace: flux-system
 spec:
-  targetNamespace: kubevirt-manager
   dependsOn:
     - name: kubevirt
     - name: cdi

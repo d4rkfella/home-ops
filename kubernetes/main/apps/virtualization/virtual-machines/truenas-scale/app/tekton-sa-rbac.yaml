@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: custom-pipelinerun-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: custom-pipelinerun-sa-role
+rules:
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims", "pods", "configmaps"]
+    verbs: ["create", "get", "list", "delete", "patch", "update"]
+  - apiGroups: ["cdi.kubevirt.io"]
+    resources: ["datavolumes"]
+    verbs: ["create", "get", "list", "delete", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: custom-pipelinerun-sa-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: custom-pipelinerun-sa
+    namespace: virtualization
+roleRef:
+  kind: Role
+  name: custom-pipelinerun-sa-role
+  apiGroup: rbac.authorization.k8s.io

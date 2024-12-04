@@ -1,4 +1,4 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   generateName: windows2k25-installer-run-
@@ -29,10 +29,13 @@ spec:
         value: windows-efi-installer
       - name: version
         value: v0.23.0
+  taskRunTemplate:
+    serviceAccountName: custom-pipelinerun-sa
   taskRunSpecs:
     - pipelineTaskName: "modify-windows-iso-file"
       podTemplate:
         securityContext:
           runAsUser: 107
           fsGroup: 107
-  timeout: 1h0m0s
+  timeouts:
+    pipeline: 1h0m0s

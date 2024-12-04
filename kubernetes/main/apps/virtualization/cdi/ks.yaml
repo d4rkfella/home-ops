@@ -6,7 +6,6 @@ metadata:
   name: cdi
   namespace: flux-system
 spec:
-  targetNamespace: cdi
   dependsOn:
     - name: kubevirt
   path: ./kubernetes/main/apps/virtualization/cdi/app

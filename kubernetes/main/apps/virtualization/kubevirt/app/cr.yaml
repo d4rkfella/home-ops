@@ -12,6 +12,7 @@ spec:
         - DataVolumes
         - VMPersistentState
         - ExpandDisks
+        - Snapshot
     permittedHostDevices:
       pciHostDevices:
         - pciVendorSelector: 1000:0097

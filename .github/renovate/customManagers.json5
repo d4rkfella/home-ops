@@ -25,21 +25,13 @@
     },
     {
       "customType": "regex",
-      "description": ["Update the Keycloak K8S resources version in Kustomization"],
       "fileMatch": [
-        "/kubernetes/main/apps/keycloak/crds/kustomization.yaml", 
-        "/kubernetes/main/apps/keycloak/operator/kustomization.yaml"
+        "(^|/)kubernetes/.+/kustomization.ya?ml$"
       ],
       "matchStrings": [
-        "# renovate: depName=keycloak/keycloak-k8s-resources\nhttps://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/(?<currentVersion>\\d+\\.\\d+\\.\\d+)/kubernetes/keycloaks.k8s.keycloak.org-v1.yml"
+        "https://raw\\.githubusercontent\\.com/(?<depName>[^/]*/[^/]*)/(?<currentValue>.*?)/"
       ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver",
-      "depNameTemplate": "keycloak/keycloak-k8s-resources",
-      "packageNameTemplate": "keycloak/keycloak-k8s-resources",
-      "lookupNameTemplate": "keycloak/keycloak-k8s-resources",
-      "newVersion": "{{currentVersion}}",
-      "resourceName": "{{resourceName}}"
+      "datasourceTemplate": "github-tags"
     },
     {
       "customType": "regex",

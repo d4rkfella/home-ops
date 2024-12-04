@@ -16,7 +16,6 @@ resources:
   - ./emberstack.yaml
   - ./external-dns.yaml
   - ./external-secrets.yaml
-  - ./vaultwarden.yaml
   - ./grafana.yaml
   - ./jetstack.yaml
   - ./kyverno.yaml
@@ -32,3 +31,4 @@ resources:
   - ./oauth2-proxy.yaml
   - ./zfs-localpv.yaml
   - ./kubernetes-dashboard.yaml
+  - ./tekton-pipeline.yaml

@@ -27,6 +27,7 @@ spec:
     keepHistory: false
   values:
     master:
+      resourcesPreset: "small"
       persistence:
         storageClass: openebs-zfs-128k
       configuration: |
@@ -36,4 +37,4 @@ spec:
       enabled: true
       sentinel: false
       existingSecret: redis-credentials
-      existingSecretPasswordKey: AUTHENTIK_REDIS__PASSWORD
+      existingSecretPasswordKey: REDIS_PASSWORD

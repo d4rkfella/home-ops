@@ -24,24 +24,24 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: CLIENT_ID
-                  name: alertmanager-oauth-secret
+                  name: &secret kubevirt-manager-oauth-secret
             - name: OAUTH2_PROXY_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   key: CLIENT_SECRET
-                  name: alertmanager-oauth-secret
+                  name: *secret
             - name: OAUTH2_PROXY_COOKIE_SECRET
               valueFrom:
                 secretKeyRef:
                   key: COOKIE_SECRET
-                  name: alertmanager-oauth-secret
+                  name: *secret
             - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
               value: redis://redis-master.database.svc.cluster.local:6379/5
             - name: OAUTH2_PROXY_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   key: REDIS_PASSWORD
-                  name: alertmanager-oauth-secret
+                  name: *secret
             - name: OAUTH2_PROXY_SESSION_STORE_TYPE
               value: redis
           securityContext:

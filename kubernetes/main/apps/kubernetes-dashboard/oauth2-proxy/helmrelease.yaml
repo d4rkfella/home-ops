@@ -50,7 +50,7 @@ spec:
 
     image:
       repository: "quay.io/oauth2-proxy/oauth2-proxy"
-      tag: "v7.7.1-alpine@sha256:a6a1e44374d5d9b72cddf6e3d1177361b91698ae9c6da7e247139094494d3b93"
+      tag: "v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c"
       pullPolicy: "IfNotPresent"
       command: []
 

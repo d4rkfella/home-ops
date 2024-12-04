@@ -9,6 +9,9 @@ spec:
   targetNamespace: tekton-pipelines
   path: ./kubernetes/main/apps/virtualization/tekton-pipeline/app
   prune: true
+  dependsOn:
+    - name: kubevirt
+    - name: cdi
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

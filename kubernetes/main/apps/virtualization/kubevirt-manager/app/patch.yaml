@@ -57,23 +57,3 @@ spec:
               name: oauth2-proxy-config
               readOnly: true
               subPath: oauth2-proxy.cfg
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: kubevirt-manager
-  namespace: kubevirt-manager
-spec:
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-    - IPv4
-  ipFamilyPolicy: SingleStack
-  ports:
-    - name: http
-      port: 4180
-      protocol: TCP
-      targetPort: 4180
-  selector:
-    app: kubevirt-manager
-  sessionAffinity: None
-  type: ClusterIP

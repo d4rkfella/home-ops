@@ -12,3 +12,16 @@ configMapGenerator:
       - oauth2-proxy.cfg=./resources/oauth2-proxy.cfg
 generatorOptions:
   disableNameSuffixHash: true
+patches:
+  - target:
+      kind: Service
+      name: kubevirt-manager
+      namespace: kubevirt-manager
+    patch: |
+      - op: replace
+        path: /spec/ports/0
+        value:
+          name: http
+          port: 4180
+          protocol: TCP
+          targetPort: 4180

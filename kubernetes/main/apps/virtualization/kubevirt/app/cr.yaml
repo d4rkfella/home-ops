@@ -5,7 +5,7 @@ metadata:
   name: kubevirt
 spec:
   configuration:
-    vmStateStorageClass: "openebs-zfs-1m"
+    vmStateStorageClass: "openebs-zfs-128k"
     developerConfiguration:
       featureGates:
         - HostDevices

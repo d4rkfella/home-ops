@@ -70,6 +70,7 @@ spec:
   ipFamilyPolicy: SingleStack
   ports:
     - port: 4180
+      name: web
       protocol: TCP
       targetPort: 4180
   selector:

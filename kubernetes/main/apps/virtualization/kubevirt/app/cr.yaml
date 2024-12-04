@@ -11,6 +11,7 @@ spec:
         - HostDevices
         - DataVolumes
         - VMPersistentState
+        - ExpandDisks
     permittedHostDevices:
       pciHostDevices:
         - pciVendorSelector: 1000:0097

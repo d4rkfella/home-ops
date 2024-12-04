@@ -52,6 +52,16 @@
       "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml$"],
       "matchStrings": ["imageName: (?<depName>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?)"],
       "datasourceTemplate": "docker",
+    },
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)kubernetes/.+/kustomization.ya?ml$"
+      ],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>.*/.*?)/releases/download/(?<currentValue>.*?)/"
+      ],
+      "datasourceTemplate": "github-releases"
     }
   ]
 }

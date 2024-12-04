@@ -30,6 +30,6 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tekton
+  name: tekton-pipelines
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled

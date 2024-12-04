@@ -1,5 +1,5 @@
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -94,7 +94,7 @@ spec:
         secretName: $(params.secretName)
         optional: true
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -177,7 +177,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -262,7 +262,7 @@ spec:
       limits:
         memory: "5Gi"
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -399,7 +399,7 @@ spec:
       optional: true
       mountPath: /data10
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -536,7 +536,7 @@ spec:
       optional: true
       mountPath: /data10
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -612,7 +612,7 @@ spec:
         secretName: $(params.secretName)
         optional: true
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -690,7 +690,7 @@ spec:
         - name: ADDITIONAL_SSH_KEYGEN_OPTIONS
           value: $(params.additionalSSHKeygenOptions)
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -789,7 +789,7 @@ spec:
             fieldRef:
               fieldPath: metadata.name
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:
@@ -929,7 +929,7 @@ spec:
       emptyDir:
         sizeLimit: 12Gi
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Task
 metadata:
   annotations:

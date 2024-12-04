@@ -4,6 +4,7 @@ kind: StorageProfile
 metadata:
   name: openebs-zfs-1m
 spec:
+  cloneStrategy: snapshot
   claimPropertySets:
     - accessModes:
       - ReadWriteOnce
@@ -14,6 +15,7 @@ kind: StorageProfile
 metadata:
   name: openebs-zfs-128k
 spec:
+  cloneStrategy: snapshot
   claimPropertySets:
     - accessModes:
       - ReadWriteOnce
@@ -24,6 +26,7 @@ kind: StorageProfile
 metadata:
   name: openebs-zfs-32k
 spec:
+  cloneStrategy: snapshot
   claimPropertySets:
     - accessModes:
       - ReadWriteOnce

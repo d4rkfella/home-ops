@@ -26,10 +26,3 @@ metadata:
   name: cdi
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: tekton-pipelines
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled

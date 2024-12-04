@@ -25,6 +25,23 @@
     },
     {
       "customType": "regex",
+      "description": ["Update the Keycloak K8S resources version in Kustomization"],
+      "fileMatch": [
+        "/kubernetes/main/apps/keycloak/crds/kustomization.yaml", 
+        "/kubernetes/main/apps/keycloak/operator/kustomization.yaml"
+      ],
+      "matchStrings": [
+        "https://raw.githubusercontent.com/keycloak/keycloak-k8s-resources/(?<currentVersion>\d+\.\d+\.\d+)/kubernetes/(keycloakrealmimports.k8s.keycloak.org-v1.yml|keycloaks.k8s.keycloak.org-v1.yml|kubernetes.yml)"
+      ],
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver",
+      "depNameTemplate": "keycloak/keycloak-k8s-resources",
+      "packageNameTemplate": "keycloak/keycloak-k8s-resources",
+      "lookupNameTemplate": "keycloak/keycloak-k8s-resources",
+      "newVersion": "{{currentVersion}}"
+    }
+    {
+      "customType": "regex",
       "description": ["Process ARG versions in Dockerfile"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "matchStrings": [

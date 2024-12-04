@@ -9,6 +9,7 @@ spec:
       featureGates:
         - HostDevices
         - DataVolumes
+        - VMPersistentState
     permittedHostDevices:
       pciHostDevices:
         - pciVendorSelector: 1000:0097

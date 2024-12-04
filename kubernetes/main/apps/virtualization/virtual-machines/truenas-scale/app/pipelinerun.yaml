@@ -12,10 +12,10 @@ spec:
       value: windows.2k25.virtio
     - name: autounattendConfigMapName
       value: windows2k25-autounattend
-    - name: baseDvName-os-disk
+    - name: baseDvName
       value: win2k25
     - name: isoDVName
-      value: win2k25-iso
+      value: win2k25
   pipelineRef:
     resolver: hub
     params:

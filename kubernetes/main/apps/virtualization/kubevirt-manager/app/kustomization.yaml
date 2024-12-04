@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/main/kubernetes/bundled.yaml
   - ./externalsecret.yaml
+  - ./ingress.yaml
 patchesStrategicMerge:
   - patch.yaml
 configMapGenerator:

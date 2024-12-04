@@ -1,4 +1,50 @@
+---
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: "*"
+  name: cleanup-vm
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: create-vm-from-manifest
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: disk-uploader
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: disk-virt-customize
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: disk-virt-sysprep
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: execute-in-vm
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: generate-ssh-keys
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: modify-data-object
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: modify-windows-iso-file
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: wait-for-vmi-status

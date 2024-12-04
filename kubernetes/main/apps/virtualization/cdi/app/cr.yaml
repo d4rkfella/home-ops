@@ -4,6 +4,7 @@ metadata:
   name: cdi
   namespace: cdi
 spec:
+  cloneStrategyOverride: snapshot
   config:
     scratchSpaceStorageClass: openebs-zfs-1m
     podResourceRequirements:

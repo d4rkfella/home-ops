@@ -39,7 +39,7 @@
       "packageNameTemplate": "keycloak/keycloak-k8s-resources",
       "lookupNameTemplate": "keycloak/keycloak-k8s-resources",
       "newVersion": "{{currentVersion}}"
-    }
+    },
     {
       "customType": "regex",
       "description": ["Process ARG versions in Dockerfile"],

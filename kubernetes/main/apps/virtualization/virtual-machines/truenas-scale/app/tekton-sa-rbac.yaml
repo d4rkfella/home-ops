@@ -13,7 +13,7 @@ rules:
     resources: ["persistentvolumeclaims", "pods", "configmaps"]
     verbs: ["create", "get", "list", "delete", "patch", "update"]
   - apiGroups: ["cdi.kubevirt.io"]
-    resources: ["datavolumes"]
+    resources: ["datavolumes", "datasources"]
     verbs: ["create", "get", "list", "delete", "patch", "update"]
   - apiGroups: ["kubevirt.io"]
     resources: ["virtualmachines", "virtualmachineinstances"]

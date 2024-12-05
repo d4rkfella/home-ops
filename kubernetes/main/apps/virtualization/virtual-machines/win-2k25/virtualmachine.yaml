@@ -1,0 +1,49 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: win-2k25
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: win-2k25
+    spec:
+      networks:
+       - name: default
+         pod: {}
+      domain:
+        clock:
+          timezone: Europe/Sofia
+          timer: {}
+        cpu:
+          cores: 2
+          model: host-passthrough
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+          uuid: c9db879b-5e87-455e-bb16-4ed27d77e522
+        devices:
+          interfaces:
+            - name: default
+              masquerade: {}
+              model: virtio
+          tpm: {}
+          disks:
+            - disk:
+                bus: virtio
+              name: win2k25
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 4G
+      volumes:
+      - name: win2k25
+        persistentVolumeClaim:
+          claimName: win2k25-clone

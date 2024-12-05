@@ -16,6 +16,8 @@ spec:
       value: win2k25
     - name: isoDVName
       value: win2k25
+    - name: virtioContainerDiskName
+      value: quay.io/kubevirt/virtio-container-disk:v1.4.0
   pipelineRef:
     resolver: hub
     params:

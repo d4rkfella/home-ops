@@ -4,7 +4,7 @@ kind: StorageClass
 metadata:
   name: openebs-zfs-1m
   annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
+    cdi.kubevirt.io/clone-strategy: csi-clone
 allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"
@@ -23,7 +23,7 @@ metadata:
   name: openebs-zfs-128k
   annotations:
     storageclass.kubernetes.io/is-default-class: "true"
-    cdi.kubevirt.io/clone-strategy: snapshot
+    cdi.kubevirt.io/clone-strategy: csi-clone
 allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"
@@ -40,7 +40,7 @@ kind: StorageClass
 metadata:
   name: openebs-zfs-32k
   annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
+    cdi.kubevirt.io/clone-strategy: csi-clone
 allowVolumeExpansion: true
 parameters:
   thinprovision: "yes"

@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
     - name: winImageDownloadURL
-      value: https://software-static.download.prss.microsoft.com/dbazure/888969d5-f34g-4e03-ac9d-1f9786c66749/26100.1742.240906-0331.ge_release_svc_refresh_SERVER_EVAL_x64FRE_en-us.iso
+      value: https://go.microsoft.com/fwlink/?linkid=2293312&clcid=0x409&culture=en-us&country=us
     - name: acceptEula
       value: true
     - name: preferenceName
@@ -17,7 +17,9 @@ spec:
     - name: isoDVName
       value: win2k25
     - name: virtioContainerDiskName
-      value: quay.io/kubevirt/virtio-container-disk:v1.4.0
+      value: quay.io/kubevirt/virtio-container-disk:20241123_0c488c19c5
+    - name: autounattendXMLConfigMapsURL
+      value: https://raw.githubusercontent.com/Darkfella91/home-ops/main/kubernetes/main/apps/virtualization/virtual-machines/truenas-scale/app/autounattend.yaml
   pipelineRef:
     resolver: hub
     params:

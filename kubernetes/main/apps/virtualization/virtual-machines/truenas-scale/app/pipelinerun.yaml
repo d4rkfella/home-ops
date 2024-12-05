@@ -32,10 +32,10 @@ spec:
   taskRunTemplate:
     serviceAccountName: custom-pipelinerun-sa
   taskRunSpecs:
-    - pipelineTaskName: "modify-windows-iso-file"
+    - pipelineTaskName: modify-windows-iso-file
       podTemplate:
         securityContext:
-          runAsUser: 107
           fsGroup: 107
+          runAsUser: 107
   timeouts:
     pipeline: 1h0m0s

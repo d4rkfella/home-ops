@@ -4,7 +4,7 @@ metadata:
   name: openebs-zfs-snapshot-role
 rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
-    resources: ["volumesnapshotcontents"]
+    resources: ["volumesnapshotcontents/status"]
     verbs: ["get", "list", "create", "update", "patch", "delete", "deletecollection"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

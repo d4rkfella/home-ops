@@ -23,6 +23,15 @@
       "separateMinorPatch": true
     },
     {
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["{{depName}}"],
+      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
+      "groupName": "Devcontainer dependancies",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["Talos Group"],
       "groupName": "Talos",
       "matchPackagePatterns": ["siderolabs/talosctl", "siderolabs/installer"],

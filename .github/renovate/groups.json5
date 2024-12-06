@@ -23,6 +23,7 @@
       "separateMinorPatch": true
     },
     {
+      "description": ["Devcontainer Group"],
       "matchDatasources": ["github-releases"],
       "matchPackageNames": ["{{depName}}"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],

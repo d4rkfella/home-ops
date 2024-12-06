@@ -14,7 +14,7 @@ ARG HELMFILE_VERSION=v0.169.2
 # renovate: depName=helm/helm
 ARG HELM_VERSION=v3.16.3
 # renovate: depName=go-task/task
-ARG TASK_VERSION=v3.40.0
+ARG TASK_VERSION=v3.40.1
 # renovate: depName=siderolabs/talos
 ARG TALOSCTL_VERSION=v1.8.3
 # renovate: depName=kubevirt/kubevirt
@@ -24,7 +24,7 @@ ARG KUBELOGIN_VERSION=v1.31.0
 # renovate: depName=cilium/hubble
 ARG HUBBLE_VERSION=v1.16.4
 # renovate: depName=cilium/cilium-cli
-ARG CILIUM_VERSION=v0.16.20
+ARG CILIUM_VERSION=v0.16.21
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash

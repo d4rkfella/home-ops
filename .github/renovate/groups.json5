@@ -25,8 +25,9 @@
     {
       "description": ["Devcontainer Group"],
       "matchDatasources": ["github-releases"],
-      "matchPackageNames": ["{{depName}}"],
+      "matchPackageNames": ["fluxcd/flux2", "getsops/sops", "kubernetes/kubernetes", "helmfile/helmfile", "helm/helm", "go-task/task", "siderolabs/talos", "kubevirt/kubevirt", "int128/kubelogin", "cilium/hubble", "cilium/cilium-cli"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
+      "versioning": "semver",
       "groupName": "Devcontainer dependancies",
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"

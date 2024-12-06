@@ -5,10 +5,3 @@ metadata:
   name: virtualization
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: vm-01
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled

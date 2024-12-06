@@ -68,33 +68,27 @@ RUN apk update && \
     sha256sum --check --strict hubble-linux-amd64.tar.gz.sha256sum && \
     tar xzvf hubble-linux-amd64.tar.gz -C /usr/local/bin && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
-    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.linux.amd64 && \
-    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.txt && \
-    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.pem && \
-    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION.checksums.sig && \
+    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION{,.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig} && \
     cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
       --certificate sops-$SOPS_VERSION.checksums.pem \
       --signature sops-$SOPS_VERSION.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    echo "$(cat sops-$SOPS_VERSION.checksums.txt)" | sha256sum --check --strict --ignore-missing && \
+    sha256sum --check --strict --ignore-missing sops-$SOPS_VERSION.checksums.txt && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
-    curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/talosctl-linux-amd64 && \
-    curl -fsSL -o talosctl_sha256sum.txt https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/sha256sum.txt && \
-    echo "$(cat talosctl_sha256sum.txt)" | sha256sum --check --strict --ignore-missing && \
+    curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/{,talosctl-linux-amd64,sha256sum.txt} && \
+    sha256sum --check --strict --ignore-missing sha256sum.txt && \
     mv ./talosctl-linux-amd64 /usr/local/bin/talosctl && \
-    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
-    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
-    echo "$(cat helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt)" | sha256sum --check --strict --ignore-missing && \
+    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//'){,_linux_amd64.tar.gz,_checksums.txt} && \
+    sha256sum --check --strict --ignore-missing helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
     tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
-    curl -fsSLO https://github.com/int128/kubelogin/releases/download/$KUBELOGIN_VERSION/kubelogin_linux_amd64.zip && \
-    curl -fsSLO https://github.com/int128/kubelogin/releases/download/v1.31.0/kubelogin_linux_amd64.zip.sha256 && \
-    echo "$(cat kubelogin_linux_amd64.zip.sha256)" | sha256sum --check --strict && \
+    curl -fsSLO https://github.com/int128/kubelogin/releases/download/$KUBELOGIN_VERSION/kubelogin_linux_amd64.zip{,.sha256} && \
+    sha256sum --check --strict kubelogin_linux_amd64.zip.sha256 && \
     unzip -n kubelogin_linux_amd64.zip && \
     mv ./kubelogin /usr/local/bin/kubectl-oidc_login && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \

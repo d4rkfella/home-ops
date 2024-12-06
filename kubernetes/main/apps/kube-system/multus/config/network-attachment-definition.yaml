@@ -10,6 +10,8 @@ spec:
       "name": "bridge-truenas-1",
       "type": "bridge",
       "bridge": "br0",
+      "disableContainerInterface": true,
+      "macspoofchk": true,
       "ipam": {
         "type": "static",
         "addresses": [
@@ -35,6 +37,8 @@ spec:
       "name": "bridge-truenas-2",
       "type": "bridge",
       "bridge": "br0",
+      "disableContainerInterface": true,
+      "macspoofchk": true,
       "ipam": {
         "type": "static",
         "addresses": [
@@ -60,6 +64,8 @@ spec:
       "name": "bridge-windows-server",
       "type": "bridge",
       "bridge": "br0",
+      "disableContainerInterface": true,
+      "macspoofchk": true,
       "ipam": {
         "type": "static",
         "addresses": [
@@ -85,6 +91,8 @@ spec:
       "name": "bridge-win-2k25",
       "type": "bridge",
       "bridge": "br0",
+      "disableContainerInterface": true,
+      "macspoofchk": true,
       "ipam": {
         "type": "static",
         "addresses": [

@@ -7,5 +7,6 @@ resources:
   - ./kubevirt/ks.yaml
   - ./kubevirt-manager/ks.yaml
   - ./virtual-machines/truenas-scale/ks.yaml
+  - ./virtual-machines/win-2k25/ks.yaml
   - ./virtual-machines/windows-server/ks.yaml
   - ./tekton-pipeline/ks.yaml

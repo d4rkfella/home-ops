@@ -37,13 +37,27 @@ spec:
           disks:
             - disk:
                 bus: virtio
-              name: win2k25
+              name: root-disk
         machine:
           type: q35
         resources:
           requests:
             memory: 4G
       volumes:
-      - name: win2k25
-        persistentVolumeClaim:
-          claimName: win2k25-clone
+      - dataVolume:
+          name: win-2k25-1
+        name: root-disk
+  dataVolumeTemplates:
+  - metadata:
+      name: win-2k25-1
+    spec:
+      pvc:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 64Gi
+      source:
+        pvc:
+          namespace: virtualization
+          name: win2k25

@@ -73,3 +73,28 @@ spec:
         ]
       }
     }'
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: bridge-windows-server
+  namespace: kube-system
+spec:
+  config: '{
+      "cniVersion": "0.3.1",
+      "name": "bridge-win-2k25",
+      "type": "bridge",
+      "bridge": "br0",
+      "ipam": {
+        "type": "static",
+        "addresses": [
+          {
+            "address": "192.168.91.38/24",
+            "gateway": "192.168.91.1"
+          }
+        ],
+        "routes": [
+          { "dst": "0.0.0.0/0", "gw": "192.168.91.1" }
+        ]
+      }
+    }'

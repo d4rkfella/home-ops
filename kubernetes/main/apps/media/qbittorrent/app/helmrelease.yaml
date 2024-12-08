@@ -159,29 +159,29 @@ spec:
                 exec:
                   command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
 
-          #cross-seed:
-            #dependsOn: qbittorrent
-            #image:
-              #repository: ghcr.io/cross-seed/cross-seed
-              #tag: 6.1.1@sha256:5cb54b46a614f362c0332a91e5754d6998d45ae27ccc2c77b04b1a3493816331
-            #env:
-              #TZ: *TZ
-            #args: ["daemon"]
-            #probes:
-              #liveness:
-                #enabled: false
-              #readiness:
-                #enabled: false
-            #securityContext:
-              #privileged: false
-              #allowPrivilegeEscalation: false
-              #readOnlyRootFilesystem: true
-              #capabilities: { drop: ["ALL"] }
-            #resources:
-              #requests:
-                #cpu: 10m
-              #limits:
-                #memory: 512Mi
+          cross-seed:
+            dependsOn: qbittorrent
+            image:
+              repository: ghcr.io/cross-seed/cross-seed
+              tag: 6.1.1@sha256:5cb54b46a614f362c0332a91e5754d6998d45ae27ccc2c77b04b1a3493816331
+            env:
+              TZ: *TZ
+            args: ["daemon"]
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
 
           vuetorrent:
             dependsOn: qbittorrent
@@ -272,10 +272,10 @@ spec:
               - path: /qBittorrent/BT_backup
                 subPath: qBittorrent/BT_backup
                 readOnly: true
-            #cross-seed:
-              #- path: /qbittorrent/qBittorrent/BT_backup
-                #subPath: qBittorrent/BT_backup
-                #readOnly: true
+            cross-seed:
+              - path: /qbittorrent/qBittorrent/BT_backup
+                subPath: qBittorrent/BT_backup
+                readOnly: true
 
       scripts:
         type: configMap
@@ -311,8 +311,8 @@ spec:
               - path: /config
 
       config-file-qbitmanage:
-        type: configMap
-        name: qbitmanage-config
+        type: secret
+        name: *secret
         defaultMode: 0600
         advancedMounts:
           torrenting:
@@ -321,23 +321,23 @@ spec:
                 subPath: config.yml
                 readOnly: true
 
-      #config-cross-seed:
-        #type: emptyDir
-        #medium: Memory
-        #advancedMounts:
-          #torrenting:
-            #cross-seed:
-              #- path: /config
+      config-cross-seed:
+        type: emptyDir
+        medium: Memory
+        advancedMounts:
+          torrenting:
+            cross-seed:
+              - path: /config
 
-      #config-file-cross-seed:
-        #type: secret
-        #name: qbittorrent-secret
-        #advancedMounts:
-          #torrenting:
-            #cross-seed:
-              #- path: /config/config.js
-                #subPath: config.js
-                #readOnly: true
+      config-file-cross-seed:
+        type: secret
+        name: qbittorrent-secret
+        advancedMounts:
+          torrenting:
+            cross-seed:
+              - path: /config/config.js
+                subPath: config.js
+                readOnly: true
 
       addons:
         type: emptyDir

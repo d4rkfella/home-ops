@@ -24,7 +24,7 @@ ARG KUBELOGIN_VERSION=v1.31.0
 # renovate: depName=cilium/hubble
 ARG HUBBLE_VERSION=v1.16.4
 # renovate: depName=cilium/cilium-cli
-ARG CILIUM_VERSION=v0.16.21
+ARG CILIUM_VERSION=v0.16.22
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash

@@ -51,7 +51,7 @@ zfsController:
       registry: registry.k8s.io/
       repository: sig-storage/csi-snapshotter
       pullPolicy: IfNotPresent
-      tag: v8.1.0
+      tag: v8.2.0
     extraArgs: []
   snapshotController:
     name: "snapshot-controller"

@@ -163,7 +163,7 @@ spec:
             dependsOn: qbittorrent
             image:
               repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.1.1@sha256:5cb54b46a614f362c0332a91e5754d6998d45ae27ccc2c77b04b1a3493816331
+              tag: 6.2.1@sha256:f20dbee55ceafbe398679181331fd8a110f7da0fbcd77cfdbc02e1b438a5e1fa
             env:
               TZ: *TZ
             args: ["daemon"]
@@ -187,7 +187,7 @@ spec:
             dependsOn: qbittorrent
             image:
               repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.3.0
+              tag: v4.4.0
             args:
               - --repo=https://github.com/WDaan/VueTorrent
               - --ref=latest-release

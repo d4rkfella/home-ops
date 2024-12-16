@@ -27,11 +27,37 @@ spec:
   dependsOn:
     - name: volsync
       namespace: volsync-system
+
   values:
     controllers:
       jellyseerr:
         annotations:
           reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/onedr0p/postgres-init
+              tag: 16.6@sha256:35353a77777ee8f634d0f3945f495b4a40065134b8619e0d18bd49b0ee9c855b
+            env:
+              INIT_POSTGRES_DBNAME: &dbName jellyseerr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret jellyseerr-secret
+                    key: INIT_POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_SUPER_PASS
+
         containers:
           app:
             image:
@@ -41,6 +67,19 @@ spec:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"
               PORT: &port 80
+              DB_TYPE: postgres
+              DB_HOST: *dbName
+              DB_NAME: *dbHost
+              DB_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              DB_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
             probes:
               liveness: &probes
                 enabled: true
@@ -64,6 +103,7 @@ spec:
                 memory: 512Mi
               limits:
                 memory: 2Gi
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -72,12 +112,14 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: jellyseerr
         ports:
           http:
             port: *port
+
     ingress:
       app:
         annotations:
@@ -103,6 +145,7 @@ spec:
                 service:
                   identifier: app
                   port: http
+
     persistence:
       config:
         enabled: true
@@ -112,9 +155,11 @@ spec:
         storageClass: openebs-zfs-128k
         globalMounts:
           - path: /app/config
+
       logs:
         type: emptyDir
         globalMounts:
           - path: /app/config/logs
+
       tmp:
         type: emptyDir

@@ -83,7 +83,7 @@ spec:
                     key: INIT_POSTGRES_PASS
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   httpGet:

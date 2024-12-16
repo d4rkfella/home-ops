@@ -68,9 +68,9 @@ spec:
               LOG_LEVEL: "info"
               PORT: &port 80
               DB_TYPE: postgres
-              DB_HOST: *dbName
+              DB_HOST: *dbHost
               DB_PORT: 5432
-              DB_NAME: *dbHost
+              DB_NAME: *dbName
               DB_USER:
                 valueFrom:
                   secretKeyRef:

@@ -38,9 +38,6 @@ spec:
               macAddress: 52:54:00:ab:cd:ef
           tpm: {}
           disks:
-            - cdrom:
-                bus: sata
-              name: windows-server-iso
             - disk:
                 bus: sata
               name: windows-server-os-disk
@@ -50,9 +47,6 @@ spec:
           requests:
             memory: 4G
       volumes:
-      - name: windows-server-iso
-        persistentVolumeClaim:
-          claimName: windows-server-iso
       - name: windows-server-os-disk
         persistentVolumeClaim:
           claimName: windows-server-os-disk

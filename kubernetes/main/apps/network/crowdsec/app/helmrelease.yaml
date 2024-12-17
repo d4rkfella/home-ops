@@ -143,11 +143,6 @@ spec:
     container_runtime: containerd
 
     agent:
-      wait_for_lapi:
-        repository: busybox
-        image:
-          tag: "1.37.0@sha256:5b0f33c83a97f5f7d12698df6732098b0cdb860d377f6307b68efe2c6821296f"
-
       acquisition:
         - namespace: network
           podName: nginx-external-controller-*

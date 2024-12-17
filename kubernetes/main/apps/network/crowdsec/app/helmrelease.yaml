@@ -48,9 +48,6 @@ spec:
               kind: DaemonSet
               name: crowdsec-agent
             patch: |
-              - op: replace
-                path: /spec/template/spec/initContainers/0/command
-                value: ["sh", "-c", "until nc $LAPI_HOST $LAPI_PORT -z; do echo waiting for lapi to start; sleep 5; done"]
               - op: add
                 path: /spec/template/spec/initContainers/0/env
                 value:

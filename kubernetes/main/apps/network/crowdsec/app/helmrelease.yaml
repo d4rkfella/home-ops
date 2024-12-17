@@ -55,9 +55,8 @@ spec:
                     value: "crowdsec-api.${PUBLIC_DOMAIN}"
                   - name: "LAPI_PORT"
                     value: "443"
-              - op: replace
-                path: /spec/template/spec/containers/0/env/2/value
-                value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+                  - name: "LAPI_URL"
+                    value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
   values:
     image:
       repository: crowdsecurity/crowdsec

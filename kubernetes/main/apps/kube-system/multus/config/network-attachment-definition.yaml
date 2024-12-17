@@ -10,7 +10,6 @@ spec:
       "name": "bridge-truenas-1",
       "type": "bridge",
       "bridge": "br0",
-      "disableContainerInterface": true,
       "macspoofchk": true,
       "ipam": {
         "type": "static",
@@ -37,7 +36,6 @@ spec:
       "name": "bridge-truenas-2",
       "type": "bridge",
       "bridge": "br0",
-      "disableContainerInterface": true,
       "macspoofchk": true,
       "ipam": {
         "type": "static",

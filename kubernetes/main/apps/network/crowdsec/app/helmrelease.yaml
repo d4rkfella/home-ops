@@ -168,7 +168,7 @@ spec:
           value: "crowdsecurity/modsecurity inherent-io/keycloak LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
 
         - name: LOCAL_API_URL
-          value: https://crowdsec-api.${PUBLIC_DOMAIN}
+          value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
 
       metrics:
         enabled: true

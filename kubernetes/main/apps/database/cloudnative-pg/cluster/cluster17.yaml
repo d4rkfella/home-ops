@@ -58,7 +58,7 @@ spec:
       endpointURL: ${S3URL}
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres17-v7
+      serverName: &currentCluster postgres17-v8
       s3Credentials:
         accessKeyId:
           name: *secret
@@ -70,7 +70,7 @@ spec:
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres17-v6
+      source: &previousCluster postgres17-v7
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster

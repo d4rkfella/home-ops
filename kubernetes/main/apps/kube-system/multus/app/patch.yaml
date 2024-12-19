@@ -15,7 +15,7 @@ spec:
         - name: install-multus-binary
           image: ghcr.io/buroa/multus-cni:dev@sha256:873788c07144c6339fde6b734b67208f425a533607a7d915291f0f46bad92084
         - name: install-cni
-          image: ghcr.io/siderolabs/install-cni:v1.9.0
+          image: ghcr.io/siderolabs/install-cni:v1.9.0-2-gf755eb4@sha256:f890e9a666a8a11fdd9b9bd57b30713b59ed9f9ffb6f7cbb608048915fb7e8f6
           command:
             - /install-cni.sh
           securityContext:

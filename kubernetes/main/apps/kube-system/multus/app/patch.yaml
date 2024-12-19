@@ -13,7 +13,7 @@ spec:
             path: /var/run/netns/
       initContainers:
         - name: install-multus-binary
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.1.4-thick@sha256:16030e8320088cf74dc5fbc7dccfea40169f09722dfad15765fa28bceb8de439
+          image: ghcr.io/buroa/multus-cni:dev@sha256:873788c07144c6339fde6b734b67208f425a533607a7d915291f0f46bad92084
         - name: install-cni
           image: ghcr.io/siderolabs/install-cni:v1.9.0
           command:
@@ -26,7 +26,7 @@ spec:
               name: cnibin
       containers:
         - name: kube-multus
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.1.4-thick@sha256:16030e8320088cf74dc5fbc7dccfea40169f09722dfad15765fa28bceb8de439
+          image: ghcr.io/buroa/multus-cni:dev@sha256:873788c07144c6339fde6b734b67208f425a533607a7d915291f0f46bad92084
           resources:
             limits:
               cpu: 500m

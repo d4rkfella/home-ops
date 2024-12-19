@@ -22,7 +22,7 @@ ARG VIRTCTL_VERSION=v1.4.0
 # renovate: depName=int128/kubelogin
 ARG KUBELOGIN_VERSION=v1.31.0
 # renovate: depName=cilium/hubble
-ARG HUBBLE_VERSION=v1.16.4
+ARG HUBBLE_VERSION=v1.16.5
 # renovate: depName=cilium/cilium-cli
 ARG CILIUM_VERSION=v0.16.22
 

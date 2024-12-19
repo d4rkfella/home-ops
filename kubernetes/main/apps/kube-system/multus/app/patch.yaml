@@ -12,18 +12,21 @@ spec:
           hostPath:
             path: /var/run/netns/
       initContainers:
-      - command:
-        - /install-cni.sh
-        image: ghcr.io/siderolabs/install-cni:v1.9.0
-        name: install-cni
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - mountPath: /host/opt/cni/bin
-          mountPropagation: Bidirectional
-          name: cnibin
+        - name: install-multus-binary
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.1.4-thick@sha256:16030e8320088cf74dc5fbc7dccfea40169f09722dfad15765fa28bceb8de439
+        - name: install-cni
+          image: ghcr.io/siderolabs/install-cni:v1.9.0
+          command:
+            - /install-cni.sh
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /host/opt/cni/bin
+              mountPropagation: Bidirectional
+              name: cnibin
       containers:
         - name: kube-multus
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.1.4-thick@sha256:16030e8320088cf74dc5fbc7dccfea40169f09722dfad15765fa28bceb8de439
           resources:
             limits:
               cpu: 500m

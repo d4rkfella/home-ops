@@ -159,5 +159,6 @@ spec:
                   port: http
 
     persistence:
-      tmp:
+      config:
         type: emptyDir
+        medium: Memory

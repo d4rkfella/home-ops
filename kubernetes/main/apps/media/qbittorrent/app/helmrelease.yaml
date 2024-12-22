@@ -163,7 +163,7 @@ spec:
             dependsOn: qbittorrent
             image:
               repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.2.3@sha256:22184878995cd3ea7027ec2045aec0323f43621135f51747ca00adfc17e6d01f
+              tag: 6.5.2@sha256:d0a9e80d026e37806960ac3551e97b7cf75ae16470dbbf1df217a7aec86cf9c5
             env:
               TZ: *TZ
             args: ["daemon"]

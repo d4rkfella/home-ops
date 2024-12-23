@@ -15,4 +15,4 @@ resources:
   - ./nvidia-device-plugin/ks.yaml
   - ./zfs-localpv/ks.yaml
   - ./multus/ks.yaml
-  - ./pcidriverbindconfig.yaml
+  - ./vfio-binding.yaml

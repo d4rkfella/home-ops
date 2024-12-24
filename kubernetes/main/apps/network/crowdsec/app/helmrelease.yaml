@@ -31,18 +31,24 @@ spec:
               kind: Deployment
               name: crowdsec-appsec
             patch: |
-              - op: replace
-                path: /spec/template/spec/initContainers/0/env/2/value
-                value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
-              - op: replace
-                path: /spec/template/spec/initContainers/0/env/3/value
-                value: "crowdsec-api.${PUBLIC_DOMAIN}"
-              - op: replace
-                path: /spec/template/spec/initContainers/0/env/4/value
-                value: "443"
-              - op: replace
-                path: /spec/template/spec/containers/0/env/2/value
-                value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+              - op: add
+                path: /spec/template/spec/initContainers/0/env
+                value:
+                  - name: "LAPI_HOST"
+                    value: "crowdsec-api.${PUBLIC_DOMAIN}"
+                  - name: "LAPI_PORT"
+                    value: "443"
+                  - name: "LAPI_URL"
+                    value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+                  - name: REGISTRATION_TOKEN
+                    valueFrom:
+                      secretKeyRef:
+                        name: crowdsec-lapi-secrets
+                        key: registrationToken
+                  - name: USERNAME
+                    valueFrom:
+                      fieldRef:
+                        fieldPath: metadata.name
           - target:
               version: v1
               kind: DaemonSet
@@ -57,6 +63,15 @@ spec:
                     value: "443"
                   - name: "LAPI_URL"
                     value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+                  - name: REGISTRATION_TOKEN
+                    valueFrom:
+                      secretKeyRef:
+                        name: crowdsec-lapi-secrets
+                        key: registrationToken
+                  - name: USERNAME
+                    valueFrom:
+                      fieldRef:
+                        fieldPath: metadata.name
   values:
     image:
       repository: crowdsecurity/crowdsec

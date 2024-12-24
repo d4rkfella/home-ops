@@ -85,7 +85,7 @@ spec:
                     key: AUTOBRR_POSTGRESS_ENCODED_PASS
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
-              AUTOBRR__OIDC_CLIENT_ID: f710a9b4-4404-46a3-8831-5377aab29185
+              AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
               AUTOBRR__OIDC_CLIENT_SECRET:
                 valueFrom:
                   secretKeyRef:

@@ -23,55 +23,6 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              version: v1
-              kind: Deployment
-              name: crowdsec-appsec
-            patch: |
-              - op: add
-                path: /spec/template/spec/initContainers/0/env
-                value:
-                  - name: "LAPI_HOST"
-                    value: "crowdsec-api.${PUBLIC_DOMAIN}"
-                  - name: "LAPI_PORT"
-                    value: "443"
-                  - name: "LAPI_URL"
-                    value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
-                  - name: REGISTRATION_TOKEN
-                    valueFrom:
-                      secretKeyRef:
-                        name: crowdsec-lapi-secrets
-                        key: registrationToken
-                  - name: USERNAME
-                    valueFrom:
-                      fieldRef:
-                        fieldPath: metadata.name
-          - target:
-              version: v1
-              kind: DaemonSet
-              name: crowdsec-agent
-            patch: |
-              - op: add
-                path: /spec/template/spec/initContainers/0/env
-                value:
-                  - name: "LAPI_HOST"
-                    value: "crowdsec-api.${PUBLIC_DOMAIN}"
-                  - name: "LAPI_PORT"
-                    value: "443"
-                  - name: "LAPI_URL"
-                    value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
-                  - name: REGISTRATION_TOKEN
-                    valueFrom:
-                      secretKeyRef:
-                        name: crowdsec-lapi-secrets
-                        key: registrationToken
-                  - name: USERNAME
-                    valueFrom:
-                      fieldRef:
-                        fieldPath: metadata.name
   values:
     image:
       repository: crowdsecurity/crowdsec
@@ -208,26 +159,6 @@ spec:
           enabled: false
 
       storeCAPICredentialsInSecret: true
-
-      ingress:
-        enabled: true
-
-        annotations:
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-
-        ingressClassName: internal
-
-        host: &host "crowdsec-api.${PUBLIC_DOMAIN}"
-
-        tls:
-          - hosts:
-            - *host
-            secretName: crowdsec-tls
 
       env:
         - name: CROWDSEC_PUSHOVER_TOKEN

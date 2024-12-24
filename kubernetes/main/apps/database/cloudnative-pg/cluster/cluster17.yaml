@@ -5,7 +5,7 @@ kind: Cluster
 metadata:
   name: postgres17
 spec:
-  instances: 2
+  instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2-5@sha256:423ad68f6bba1020b6ae5f26aada7e00e2cea18ed1bb2386841a46c40041e808
   primaryUpdateStrategy: unsupervised
   storage:
@@ -70,7 +70,7 @@ spec:
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres17-v7
+      source: &previousCluster postgres17-v8
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
     - name: *previousCluster

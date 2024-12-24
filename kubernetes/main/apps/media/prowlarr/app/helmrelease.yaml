@@ -34,8 +34,8 @@ spec:
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16.6@sha256:c1d3a845d47fe1aeebd110fefb5f43f54c4735aec1d2b0c01de8d4d5e8cdd6a4
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
             env:
               INIT_POSTGRES_DBNAME: &dbName prowlarr
               INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local

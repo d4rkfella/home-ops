@@ -1,0 +1,5 @@
+---
+apiVersion: v1alpha1
+kind: PCIDriverRebindConfig
+pciID: 0000:05:00.0
+targetDriver: vfio-pci

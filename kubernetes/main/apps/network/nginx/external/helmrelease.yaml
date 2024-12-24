@@ -44,7 +44,7 @@ spec:
             - name: BOUNCER_CONFIG
               value: "/crowdsec/crowdsec-bouncer.conf"
             - name: API_URL
-              value: "https://crowdsec-api.${PUBLIC_DOMAIN}"
+              value: "http://crowdsec-service.network.svc.cluster.local:8080"
             - name: BAN_TEMPLATE_PATH
               value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
             - name: UPDATE_FREQUENCY
@@ -57,7 +57,7 @@ spec:
                   name: nginx-external-secret
                   key: BOUNCER_API_KEY
             - name: APPSEC_URL
-              value: "https://crowdsec-appsec.${PUBLIC_DOMAIN}"
+              value: "http://crowdsec-appsec-service.network.svc.cluster.local:7422"
             - name: SSL_VERIFY
               value: "true"
             - name: APPSEC_FAILURE_ACTION

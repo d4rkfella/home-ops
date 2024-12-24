@@ -59,7 +59,7 @@ spec:
             - name: APPSEC_URL
               value: "http://crowdsec-appsec-service.network.svc.cluster.local:7422"
             - name: SSL_VERIFY
-              value: "true"
+              value: "false"
             - name: APPSEC_FAILURE_ACTION
               value: deny
           securityContext:

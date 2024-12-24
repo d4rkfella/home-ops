@@ -182,9 +182,6 @@ spec:
         - name: COLLECTIONS
           value: "crowdsecurity/modsecurity inherent-io/keycloak LePresidente/jellyseerr crowdsecurity/nginx Dominic-Wagner/vaultwarden crowdsecurity/base-http-scenarios crowdsecurity/http-cve crowdsecurity/http-dos crowdsecurity/whitelist-good-actors"
 
-        - name: LOCAL_API_URL
-          value: "https://crowdsec-api.darkfellanetwork.com"
-
       metrics:
         enabled: true
         serviceMonitor:
@@ -296,5 +293,3 @@ spec:
           value: "crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules"
         - name: APPSEC_CONFIGS
           value: "crowdsecurity/appsec-default"
-        - name: LOCAL_API_URL
-          value: "https://crowdsec-api.darkfellanetwork.com"

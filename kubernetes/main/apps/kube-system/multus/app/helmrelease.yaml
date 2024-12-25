@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-multus
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: multus
+      version: 5.0.7
+      sourceRef:
+        kind: HelmRepository
+        name: angelnu
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    image:
+      repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+      tag: "latest-thick@sha256:15c58fef59fe3066b7c9e8e14318ebab069f48497aa6a27d103e17147285a9d7"
+      pullPolicy: IfNotPresent
+
+    hostPID: true
+
+    cni:
+      image:
+        repository: ghcr.io/darkfella91/install-cni-bundle
+        tag: v1.6.1@sha256:380eac1bcede209d6e5e5c247f58786489d049141f3f1a0b72b7e9052533818a
+        pullPolicy: IfNotPresent
+
+      paths:
+        config: /etc/cni/net.d
+        bin: /opt/cni/bin
+
+      logLevel: verbose
+      version: "0.3.1"
+
+    hostPaths:
+      netns: /var/run/netns/

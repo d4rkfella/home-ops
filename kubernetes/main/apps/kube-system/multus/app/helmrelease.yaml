@@ -33,7 +33,7 @@ spec:
     cni:
       image:
         repository: ghcr.io/darkfella91/install-cni-bundle
-        tag: v1.6.1@sha256:380eac1bcede209d6e5e5c247f58786489d049141f3f1a0b72b7e9052533818a
+        tag: v1.6.1@sha256:fc27f07868a353d2d0a4f7581bbd01554189042e439d2120d4f27efe0fccd397
         pullPolicy: IfNotPresent
 
       paths:

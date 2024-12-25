@@ -37,7 +37,7 @@ spec:
         pullPolicy: IfNotPresent
 
       paths:
-        config: /etc/cni/net.d
+        config: /host/etc/cni/net.d
         bin: /opt/cni/bin
 
       logLevel: verbose

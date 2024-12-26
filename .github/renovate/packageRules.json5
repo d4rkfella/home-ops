@@ -2,19 +2,21 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "description": ["Allowed postgresql major release"],
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["postgresql"],
+      "allowedVersions": "<18"
+    },
+    {
       "description": ["Loose versioning for non-semver packages"],
       "matchDatasources": ["docker"],
-      "matchPackagePatterns": ["cross-seed", "plex"],
+      "matchPackagePatterns": ["plex"],
       "versioning": "loose"
     },
     {
-      "packageNames": ["factory.talos.dev/installer-secureboot"],
-      "enabled": false
-    },
-    {
       "description": ["Custom schedule for frequently updated packages"],
-      "matchDataSources": ["docker", "helm"],
-      "matchPackagePatterns": ["postgresql", "reloader", "aws-cli"],
+      "matchDataSources": ["docker"],
+      "matchPackagePatterns": ["postgresql", "aws-cli"],
       "schedule": ["on the first day of the month"]
     }
   ]

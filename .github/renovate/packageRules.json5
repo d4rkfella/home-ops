@@ -8,6 +8,10 @@
       "versioning": "loose"
     },
     {
+      "packageNames": ["factory.talos.dev/installer-secureboot"],
+      "enabled": false
+    },
+    {
       "description": ["Custom schedule for frequently updated packages"],
       "matchDataSources": ["docker", "helm"],
       "matchPackagePatterns": ["postgresql", "reloader", "aws-cli"],

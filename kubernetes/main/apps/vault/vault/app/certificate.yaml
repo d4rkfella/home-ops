@@ -5,7 +5,7 @@ metadata:
   name: vault-tls
 spec:
   dnsNames:
-    - vault.${PUBLIC_DOMAIN}
+    - vault.darkfellanetwork.com
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

@@ -305,8 +305,8 @@ spec:
             }
 
             ui = true
-            api_addr = "https://vault.${PUBLIC_DOMAIN}:8200"
-            cluster_addr = "https://vault.${PUBLIC_DOMAIN}.com:8201"
+            api_addr = "https://vault.darkfellanetwork.com:8200"
+            cluster_addr = "https://vault.darkfellanetwork.com:8201"
 
             listener "tcp" {
               tls_disable = 0
@@ -358,7 +358,7 @@ spec:
       targetPort: 8200
       externalTrafficPolicy: Cluster
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: vault.${PUBLIC_DOMAIN}
+        external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.96
 
     serverTelemetry:

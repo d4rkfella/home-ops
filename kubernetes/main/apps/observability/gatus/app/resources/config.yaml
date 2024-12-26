@@ -2,10 +2,10 @@
 # Note: Gatus vars should be escaped with $${VAR_NAME} to avoid interpolation by Flux
 security:
   oidc:
-    issuer-url: https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET
+    issuer-url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
     client-id: $${OIDC_CLIENT_ID}
     client-secret: $${OIDC_CLIENT_SECRET}
-    redirect-url: https://status.${PUBLIC_DOMAIN}/authorization-code/callback
+    redirect-url: https://status.darkfellanetwork.com/authorization-code/callback
     scopes: [openid]
 web:
   port: $${WEB_PORT}
@@ -36,7 +36,7 @@ connectivity:
 endpoints:
   - name: status
     group: external
-    url: https://status.${PUBLIC_DOMAIN}/health
+    url: https://status.darkfellanetwork.com/health
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
@@ -47,7 +47,7 @@ endpoints:
       - type: pushover
   - name: flux-webhook
     group: external
-    url: https://flux-webhook.${PUBLIC_DOMAIN}
+    url: https://flux-webhook.darkfellanetwork.com
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53

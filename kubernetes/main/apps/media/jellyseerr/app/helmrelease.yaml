@@ -124,9 +124,9 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            more_set_headers "access-control-allow-origin https://requests.${PUBLIC_DOMAIN}";
+            more_set_headers "access-control-allow-origin https://requests.darkfellanetwork.com";
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/overseerr/mind.css"></body>';
             sub_filter_once on;
@@ -137,7 +137,7 @@ spec:
         className: external
         tls:
           - hosts:
-              - &host requests.${PUBLIC_DOMAIN}
+              - &host requests.darkfellanetwork.com
             secretName: jellyseerr-tls
         hosts:
           - host: *host

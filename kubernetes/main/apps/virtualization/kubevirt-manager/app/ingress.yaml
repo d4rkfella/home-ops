@@ -13,7 +13,7 @@ metadata:
 spec:
   ingressClassName: internal
   rules:
-    - host: &host kubevirt-manager.${PUBLIC_DOMAIN}
+    - host: &host kubevirt-manager.darkfellanetwork.com
       http:
         paths:
           - backend:

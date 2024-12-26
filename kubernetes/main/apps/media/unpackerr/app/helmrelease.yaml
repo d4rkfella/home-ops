@@ -41,9 +41,9 @@ spec:
               UN_WEBSERVER_METRICS: true
               UN_WEBSERVER_LOG_FILE: /logs/webserver.log
               UN_ACTIVITY: true
-              UN_SONARR_0_URL: https://sonarr.${PUBLIC_DOMAIN}
+              UN_SONARR_0_URL: https://sonarr.darkfellanetwork.com
               UN_SONARR_0_PATHS_0: /data/downloads/torrents/complete/tv
-              UN_RADARR_0_URL: https://radarr.${PUBLIC_DOMAIN}
+              UN_RADARR_0_URL: https://radarr.darkfellanetwork.com
               UN_RADARR_0_PATHS_0: /data/downloads/torrents/complete/movies
             envFrom:
               - secretRef:

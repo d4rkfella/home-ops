@@ -9,7 +9,7 @@ spec:
   issuerRef:
     name: zerossl-prod
     kind: ClusterIssuer
-  commonName: ${PUBLIC_DOMAIN}
+  commonName: darkfellanetwork.com
   dnsNames:
-    - ${PUBLIC_DOMAIN}
-    - "*.${PUBLIC_DOMAIN}"
+    - darkfellanetwork.com
+    - "*.darkfellanetwork.com"

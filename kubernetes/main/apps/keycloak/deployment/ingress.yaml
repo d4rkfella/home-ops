@@ -5,7 +5,7 @@ metadata:
   name: keycloak-ingress
   namespace: idp
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     cert-manager.io/cluster-issuer: zerossl-prod
     cert-manager.io/private-key-rotation-policy: Always
@@ -15,7 +15,7 @@ spec:
   ingressClassName: external
   tls:
     - hosts:
-        - &host accounts.${PUBLIC_DOMAIN}
+        - &host accounts.darkfellanetwork.com
       secretName: keycloak-tls
   rules:
     - host: *host

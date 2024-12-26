@@ -51,7 +51,7 @@ spec:
     sources: ["crd", "ingress"]
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["${PUBLIC_DOMAIN}"]
+    domainFilters: ["darkfellanetwork.com"]
     serviceMonitor:
       enabled: true
     podAnnotations:

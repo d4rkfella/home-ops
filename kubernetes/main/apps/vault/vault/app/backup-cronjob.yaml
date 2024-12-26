@@ -18,7 +18,7 @@ spec:
             imagePullPolicy: IfNotPresent
             env:
             - name: VAULT_ADDR
-              value: https://vault.${PUBLIC_DOMAIN}:8200
+              value: https://vault.darkfellanetwork.com:8200
             command: ["/bin/sh", "-c"]
             args:
               - >

@@ -107,16 +107,16 @@ spec:
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
-              DOMAIN: https://vaultwarden.${PUBLIC_DOMAIN}
+              DOMAIN: https://vaultwarden.darkfellanetwork.com
               TZ: "Europe/Sofia"
               EMAIL_CHANGE_ALLOWED: false
               SIGNUPS_ALLOWED: false
               SIGNUPS_VERIFY: true
-              SIGNUPS_DOMAINS_WHITELIST: ${PUBLIC_DOMAIN}
+              SIGNUPS_DOMAINS_WHITELIST: darkfellanetwork.com
               ROCKET_ADDRESS: 127.0.0.1
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com.
-              SMTP_FROM: noreply@${PUBLIC_DOMAIN}
+              SMTP_FROM: noreply@darkfellanetwork.com
               SMTP_FROM_NAME: vaultwarden
               SMTP_PORT: 587
               SMTP_SECURITY: starttls
@@ -192,13 +192,13 @@ spec:
         enabled: true
         className: external
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
         hosts:
-          - host: &host vaultwarden.${PUBLIC_DOMAIN}
+          - host: &host vaultwarden.darkfellanetwork.com
             paths:
               - path: /
                 service:

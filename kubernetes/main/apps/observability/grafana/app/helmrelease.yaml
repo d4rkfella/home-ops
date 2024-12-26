@@ -38,7 +38,7 @@ spec:
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: false
-      GF_SERVER_ROOT_URL: https://grafana.${PUBLIC_DOMAIN}
+      GF_SERVER_ROOT_URL: https://grafana.darkfellanetwork.com
     grafana.ini:
       auth:
         oauth_auto_login: true
@@ -55,10 +55,10 @@ spec:
           client_id: "$__file{/etc/secrets/oauth-client-credentials/client_id}"
           client_secret: "$__file{/etc/secrets/oauth-client-credentials/client_secret}"
           scopes: "openid email profile roles"
-          auth_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/auth"
-          token_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/token"
-          api_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/userinfo"
-          signout_redirect_url: "https://accounts.${PUBLIC_DOMAIN}/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.${PUBLIC_DOMAIN}%2Flogin"
+          auth_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
+          token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+          api_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/userinfo"
+          signout_redirect_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.darkfellanetwork.com%2Flogin"
           role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
           role_attribute_strict: true
           allow_assign_grafana_admin: true
@@ -240,7 +240,7 @@ spec:
     ingress:
       enabled: true
       annotations:
-        external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+        external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
         cert-manager.io/cluster-issuer: zerossl-prod
         cert-manager.io/private-key-rotation-policy: Always
         cert-manager.io/private-key-algorithm: ECDSA
@@ -248,7 +248,7 @@ spec:
       ingressClassName: internal
       tls:
         - hosts:
-            - &host "grafana.${PUBLIC_DOMAIN}"
+            - &host "grafana.darkfellanetwork.com"
           secretName: grafana-tls
       hosts:
         - *host

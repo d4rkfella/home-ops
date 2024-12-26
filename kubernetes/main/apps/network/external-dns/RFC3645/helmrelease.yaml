@@ -32,9 +32,9 @@ spec:
       - --events
       - --ignore-ingress-tls-spec
       - --rfc2136-gss-tsig
-      - --rfc2136-host=dc01.${PUBLIC_DOMAIN}
+      - --rfc2136-host=dc01.darkfellanetwork.com
       - --rfc2136-port=53
-      - --rfc2136-zone=${PUBLIC_DOMAIN}
+      - --rfc2136-zone=darkfellanetwork.com
       - --rfc2136-kerberos-username=externaldns_service
       - --rfc2136-kerberos-password=${KERBEROS_PASSWORD}
       - --rfc2136-kerberos-realm=${AD_REALM}
@@ -43,7 +43,7 @@ spec:
     sources: ["ingress", "service"]
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["${PUBLIC_DOMAIN}"]
+    domainFilters: ["darkfellanetwork.com"]
     serviceMonitor:
       enabled: true
     extraVolumes:

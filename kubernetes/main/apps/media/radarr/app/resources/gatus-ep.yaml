@@ -1,7 +1,7 @@
 endpoints:
   - name: "Radarr"
     group: guarded
-    url: "https://radarr.${PUBLIC_DOMAIN}/ping"
+    url: "https://radarr.darkfellanetwork.com/ping"
     interval: 1m
     ui:
       hide-hostname: true

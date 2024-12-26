@@ -82,7 +82,7 @@ spec:
       replicaCount: 2
       service:
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: external.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/hostname: external.darkfellanetwork.com
           lbipam.cilium.io/ips: 192.168.91.95
         allocateLoadBalancerNodePorts: false
       ingressClassResource:

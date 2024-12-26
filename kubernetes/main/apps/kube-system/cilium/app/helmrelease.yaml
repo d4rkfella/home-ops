@@ -58,14 +58,14 @@ spec:
         ingress:
           enabled: false
           annotations:
-            external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+            external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
             cert-manager.io/cluster-issuer: zerossl-prod
             cert-manager.io/private-key-rotation-policy: Always
             cert-manager.io/private-key-algorithm: ECDSA
             cert-manager.io/private-key-size: "384"
           className: internal
           tls:
-            - hosts: &host ["hubble.${PUBLIC_DOMAIN}"]
+            - hosts: &host ["hubble.darkfellanetwork.com"]
               secretName: hubble-tls
           hosts: *host
 

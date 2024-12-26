@@ -85,7 +85,7 @@ spec:
                 sabnzbd.media.svc,
                 sabnzbd.media.svc.cluster,
                 sabnzbd.media.svc.cluster.local,
-                sabnzbd.${PUBLIC_DOMAIN}
+                sabnzbd.darkfellanetwork.com
               CROSS_SEED_HOST: cross-seed.media.svc.cluster.local
               CROSS_SEED_ENABLED: false
               CROSS_SEED_PORT: 80
@@ -136,7 +136,7 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/sabnzbd/mind.css"></body>';
@@ -148,7 +148,7 @@ spec:
         className: internal
         tls:
           - hosts:
-              - &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
             secretName: sabnzbd-tls
         hosts:
           - host: *host

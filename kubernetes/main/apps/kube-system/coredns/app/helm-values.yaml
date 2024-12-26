@@ -37,7 +37,7 @@ servers:
       - name: reload
       - name: loadbalance
   - zones:
-      - zone: ${PUBLIC_DOMAIN}
+      - zone: darkfellanetwork.com
         scheme: dns://
         use_tcp: true
     port: 53

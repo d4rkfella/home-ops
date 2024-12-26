@@ -111,10 +111,10 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
           nginx.ingress.kubernetes.io/configuration-snippet: |
-            more_set_headers "access-control-allow-origin https://status.${PUBLIC_DOMAIN}";
-            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-vOq0p1C22jhkdRTdIHA8DSPgcwXkh5mq8FK4cumu/wU='; style-src https://status.${PUBLIC_DOMAIN}/css/app.css; img-src 'self'; connect-src https://status.${PUBLIC_DOMAIN}; manifest-src 'self'";
+            more_set_headers "access-control-allow-origin https://status.darkfellanetwork.com";
+            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-vOq0p1C22jhkdRTdIHA8DSPgcwXkh5mq8FK4cumu/wU='; style-src https://status.darkfellanetwork.com/css/app.css; img-src 'self'; connect-src https://status.darkfellanetwork.com; manifest-src 'self'";
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
@@ -122,7 +122,7 @@ spec:
         className: external
         tls:
           - hosts:
-              - &host "status.${PUBLIC_DOMAIN}"
+              - &host "status.darkfellanetwork.com"
             secretName: gatus-tls
         hosts:
           - host: *host

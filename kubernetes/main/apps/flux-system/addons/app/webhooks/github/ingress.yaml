@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: webhook-receiver
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.${PUBLIC_DOMAIN}
+    external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
     cert-manager.io/cluster-issuer: zerossl-prod
     cert-manager.io/private-key-rotation-policy: Always
     cert-manager.io/private-key-algorithm: ECDSA
@@ -13,7 +13,7 @@ spec:
   ingressClassName: external
   tls:
     - hosts:
-        - &host "flux-webhook.${PUBLIC_DOMAIN}"
+        - &host "flux-webhook.darkfellanetwork.com"
       secretName: flux-webhook-tls
   rules:
     - host: *host

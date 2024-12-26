@@ -1,7 +1,7 @@
 endpoints:
   - name: "qBittorrent"
     group: guarded
-    url: "https://qbittorrent.${PUBLIC_DOMAIN}/api/v2/app/version"
+    url: "https://qbittorrent.darkfellanetwork.com/api/v2/app/version"
     interval: 1m
     ui:
       hide-hostname: true

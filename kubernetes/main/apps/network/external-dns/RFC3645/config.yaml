@@ -23,10 +23,10 @@ data:
 
     [realms]
     ${AD_REALM} = {
-      kdc = dc01.${PUBLIC_DOMAIN}
-      admin_server = dc01.${PUBLIC_DOMAIN}
+      kdc = dc01.darkfellanetwork.com
+      admin_server = dc01.darkfellanetwork.com
     }
 
     [domain_realm]
-    ${PUBLIC_DOMAIN} = ${AD_REALM}
-    .${PUBLIC_DOMAIN} = ${AD_REALM}
+    darkfellanetwork.com = ${AD_REALM}
+    .darkfellanetwork.com = ${AD_REALM}

@@ -1,7 +1,7 @@
 endpoints:
   - name: "SABnzbd"
     group: guarded
-    url: "https://sabnzbd.${PUBLIC_DOMAIN}/api?mode=version"
+    url: "https://sabnzbd.darkfellanetwork.com/api?mode=version"
     interval: 1m
     ui:
       hide-hostname: true

@@ -41,14 +41,14 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
         ingressClassName: internal
         tls:
-          - hosts: &host ["alertmanager.${PUBLIC_DOMAIN}"]
+          - hosts: &host ["alertmanager.darkfellanetwork.com"]
             secretName: alertmanager-tls
         hosts: *host
         pathType: Prefix
@@ -147,14 +147,14 @@ spec:
       ingress:
         enabled: true
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.${PUBLIC_DOMAIN}
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
         ingressClassName: internal
         tls:
-          - hosts: &host ["prometheus.${PUBLIC_DOMAIN}"]
+          - hosts: &host ["prometheus.darkfellanetwork.com"]
             secretName: prometheus-tls
         hosts: *host
         pathType: Prefix

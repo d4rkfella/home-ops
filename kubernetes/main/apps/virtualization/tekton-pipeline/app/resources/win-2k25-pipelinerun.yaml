@@ -19,7 +19,7 @@ spec:
     - name: virtioContainerDiskName
       value: quay.io/kubevirt/virtio-container-disk:20241123_0c488c19c5
     - name: autounattendXMLConfigMapsURL
-      value: https://raw.githubusercontent.com/Darkfella91/home-ops/main/kubernetes/main/apps/virtualization/virtual-machines/truenas-scale/app/autounattend.yaml
+      value: https://raw.githubusercontent.com/d4rkfella/home-ops/main/kubernetes/main/apps/virtualization/virtual-machines/truenas-scale/app/autounattend.yaml
   pipelineRef:
     resolver: hub
     params:

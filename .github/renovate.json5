@@ -10,7 +10,6 @@
     ":semanticCommits",
     ":skipStatusChecks",
     ":timezone(Europe/Sofia)",
-    "github>d4rkfella/home-ops//.github/renovate/allowedVersions.json5",
     "github>d4rkfella/home-ops//.github/renovate/autoMerge.json5",
     "github>d4rkfella/home-ops//.github/renovate/clusters.json5",
     "github>d4rkfella/home-ops//.github/renovate/commitMessage.json5",
@@ -25,7 +24,7 @@
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "onboarding": false,
   "requireConfig": "ignored",
-  "ignorePaths": ["**/*.sops.*", "**/.archive/**", "**/resources/**"],
+  "ignorePaths": ["**/*.sops.*", "**/.archive/**", "**/resources/**", "**/k8s-0.secret.sops.yaml"],
   "flux": {
     "fileMatch": [
       "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"

@@ -19,14 +19,14 @@ data:
     pkinit_anchors = /etc/pki/tls/certs/ca-bundle.crt
     default_ccache_name = KEYRING:persistent:%{uid}
 
-    default_realm = ${AD_REALM}
+    default_realm = DARKFELLANETWORK.COM
 
     [realms]
-    ${AD_REALM} = {
+    DARKFELLANETWORK.COM = {
       kdc = dc01.darkfellanetwork.com
       admin_server = dc01.darkfellanetwork.com
     }
 
     [domain_realm]
-    darkfellanetwork.com = ${AD_REALM}
-    .darkfellanetwork.com = ${AD_REALM}
+    darkfellanetwork.com = DARKFELLANETWORK.COM
+    .darkfellanetwork.com = DARKFELLANETWORK.COM

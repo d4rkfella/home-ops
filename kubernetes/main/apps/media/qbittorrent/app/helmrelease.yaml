@@ -231,6 +231,14 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: UDP
+      cross-seed:
+        controller: torrenting
+        type: ClusterIP
+        ports:
+          http:
+            enabled: true
+            port: 8080
+            protocol: TCP
 
     ingress:
       qbittorrent:

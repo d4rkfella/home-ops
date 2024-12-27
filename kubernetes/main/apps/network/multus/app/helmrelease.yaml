@@ -92,13 +92,19 @@ spec:
       config:
         type: configMap
         name: multus-configmap
-        globalMounts:
-          - path: /config/00-multus.conf
-            subPath: 00-multus.conf
-            readOnly: true
+        advancedMounts:
+          multus:
+            multus:
+              - path: /config/00-multus.conf
+                subPath: 00-multus.conf
+                readOnly: true
       etc-cni-net-d:
         type: hostPath
         hostPath: /etc/cni/net.d
+        advancedMounts:
+          multus:
+            multus:
+              - path: /etc/cni/net.d
       opt-cni-bin:
         type: hostPath
         hostPath: /opt/cni/bin

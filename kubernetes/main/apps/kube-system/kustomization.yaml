@@ -14,5 +14,5 @@ resources:
   - ./generic-device-plugin.yaml
   - ./nvidia-device-plugin/ks.yaml
   - ./zfs-localpv/ks.yaml
-  - ./multus/ks.yaml
+  #- ./multus/ks.yaml
   - ./vfio-binding.yaml

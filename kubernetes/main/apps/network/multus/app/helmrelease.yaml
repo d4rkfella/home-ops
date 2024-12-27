@@ -61,13 +61,6 @@ spec:
             image:
               repository: ghcr.io/d4rkfella/install-cni-bundle
               tag: v1.6.1@sha256:8931f56cffc585397cd4c7d96a635ae64afba9a0d76d3fe2219a3fc025ddc1b9
-            resources:
-              requests:
-                cpu: "10m"
-              limits:
-                memory: "512Mi"
-            securityContext:
-              privileged: true
 
         containers:
           multus:

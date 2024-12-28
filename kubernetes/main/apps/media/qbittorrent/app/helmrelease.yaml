@@ -30,12 +30,12 @@ spec:
 
   values:
     controllers:
-      qbittorrent:
+      torrenting:
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
-          app:
+          qbittorrent:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.3@sha256:025f32d260a3e924885405c0ca01ab8e396360330438ef8562ffd973d2dbb927
@@ -86,7 +86,7 @@ spec:
               limits:
                 memory: 16Gi
 
-          git-sync:
+          vuetorrent:
             image:
               repository: registry.k8s.io/git-sync/git-sync
               tag: v4.4.0
@@ -112,7 +112,7 @@ spec:
 
     service:
       app:
-        controller: qbittorrent
+        controller: torrenting
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
         annotations:
@@ -162,8 +162,8 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbittorrent:
               - path: /config
 
       scripts:
@@ -171,8 +171,8 @@ spec:
         name: qbittorrent-scripts
         defaultMode: 0500
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbittorrent:
               - readOnly: true
 
       media:
@@ -180,24 +180,24 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbittorrent:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
 
       addons:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
-            app:
+          torrenting:
+            qbittorrent:
               - path: /addons
                 readOnly: true
-            git-sync:
+            vuetorrent:
               - path: /addons
 
       tmp:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
-            git-sync:
+          torrenting:
+            qbittorrent:
               - path: /tmp

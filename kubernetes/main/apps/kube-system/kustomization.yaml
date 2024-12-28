@@ -11,8 +11,6 @@ resources:
   - ./kubelet-csr-approver/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
-  - ./generic-device-plugin.yaml
   - ./nvidia-device-plugin/ks.yaml
   - ./zfs-localpv/ks.yaml
-  #- ./multus/ks.yaml
   - ./vfio-binding.yaml

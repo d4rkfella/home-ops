@@ -30,12 +30,12 @@ spec:
 
   values:
     controllers:
-      torrenting:
+      qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
-          qbittorrent:
+          app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.3@sha256:025f32d260a3e924885405c0ca01ab8e396360330438ef8562ffd973d2dbb927
@@ -45,8 +45,7 @@ spec:
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: true
-              CROSS_SEED_HOST: localhost
-              CROSS_SEED_PORT: 8080
+              CROSS_SEED_HOST: cross-seed.darkfellanetwork.com
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
               CROSS_SEED_API_KEY:
@@ -66,7 +65,7 @@ spec:
                     key: PUSHOVER_USER_KEY
             probes:
               readiness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   exec:
@@ -87,51 +86,7 @@ spec:
               limits:
                 memory: 16Gi
 
-          qbitmanage:
-            dependsOn: qbittorrent
-            image:
-              repository: ghcr.io/stuffanthings/qbit_manage
-              tag: v4.1.14@sha256:a64f0781aabe3e66a261c8b21b7192555bc785f178cae40c6e8b88bf9b853c16
-            env:
-              TZ: *TZ
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: false
-            securityContext: *securityContext
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 8Gi
-            lifecycle:
-              postStart:
-                exec:
-                  command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
-
-          cross-seed:
-            dependsOn: qbittorrent
-            image:
-              repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.5.2@sha256:d0a9e80d026e37806960ac3551e97b7cf75ae16470dbbf1df217a7aec86cf9c5
-            env:
-              TZ: *TZ
-            args: ["daemon"]
-            probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
-            securityContext: *securityContext
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 512Mi
-
-          vuetorrent:
-            dependsOn: qbittorrent
+          git-sync:
             image:
               repository: registry.k8s.io/git-sync/git-sync
               tag: v4.4.0
@@ -154,11 +109,10 @@ spec:
         fsGroup: 2000
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
-    terminationGracePeriodSeconds: 300
 
     service:
-      qbittorrent:
-        controller: torrenting
+      app:
+        controller: qbittorrent
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
         annotations:
@@ -174,14 +128,6 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: UDP
-      cross-seed:
-        controller: torrenting
-        type: ClusterIP
-        ports:
-          http:
-            enabled: true
-            port: 8080
-            protocol: TCP
 
     ingress:
       qbittorrent:
@@ -205,7 +151,7 @@ spec:
             paths:
               - path: /
                 service:
-                  identifier: qbittorrent
+                  identifier: app
                   port: http
 
     persistence:
@@ -219,19 +165,11 @@ spec:
           torrenting:
             qbittorrent:
               - path: /config
-            qbitmanage:
-              - path: /qBittorrent/BT_backup
-                subPath: qBittorrent/BT_backup
-                readOnly: true
-            cross-seed:
-              - path: /qbittorrent/qBittorrent/BT_backup
-                subPath: qBittorrent/BT_backup
-                readOnly: true
 
       scripts:
         type: configMap
         name: qbittorrent-scripts
-        defaultMode: 0550
+        defaultMode: 0500
         advancedMounts:
           torrenting:
             qbittorrent:
@@ -243,52 +181,9 @@ spec:
         path: /mnt/exos20/data
         advancedMounts:
           torrenting:
-            qbitmanage:
-              - path: /data/downloads/torrents
-                subPath: downloads/torrents
             qbittorrent:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
-            cross-seed:
-              - path: /data/downloads/torrents/complete
-                subPath: downloads/torrents/complete
-
-      config-qbitmanage:
-        type: emptyDir
-        advancedMounts:
-          torrenting:
-            qbitmanage:
-              - path: /app/config
-              - path: /config
-
-      config-file-qbitmanage:
-        type: secret
-        name: *secret
-        defaultMode: 0600
-        advancedMounts:
-          torrenting:
-            qbitmanage:
-              - path: /secret/config.yml
-                subPath: config.yml
-                readOnly: true
-
-      config-cross-seed:
-        type: emptyDir
-        medium: Memory
-        advancedMounts:
-          torrenting:
-            cross-seed:
-              - path: /config
-
-      config-file-cross-seed:
-        type: secret
-        name: qbittorrent-secret
-        advancedMounts:
-          torrenting:
-            cross-seed:
-              - path: /config/config.js
-                subPath: config.js
-                readOnly: true
 
       addons:
         type: emptyDir
@@ -297,12 +192,12 @@ spec:
             qbittorrent:
               - path: /addons
                 readOnly: true
-            vuetorrent:
+            git-sync:
               - path: /addons
 
       tmp:
         type: emptyDir
         advancedMounts:
           torrenting:
-            vuetorrent:
+            git-sync:
               - path: /tmp

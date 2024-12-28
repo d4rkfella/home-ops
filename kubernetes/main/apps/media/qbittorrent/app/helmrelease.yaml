@@ -199,5 +199,5 @@ spec:
         type: emptyDir
         advancedMounts:
           torrenting:
-            qbittorrent:
+            vuetorrent:
               - path: /tmp

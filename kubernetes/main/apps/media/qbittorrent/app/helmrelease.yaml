@@ -30,12 +30,12 @@ spec:
 
   values:
     controllers:
-      torrenting:
+      qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
 
         containers:
-          qbittorrent:
+          app:
             image:
               repository: ghcr.io/onedr0p/qbittorrent
               tag: 5.0.3@sha256:025f32d260a3e924885405c0ca01ab8e396360330438ef8562ffd973d2dbb927
@@ -86,7 +86,7 @@ spec:
               limits:
                 memory: 16Gi
 
-          vuetorrent:
+          git-sync:
             image:
               repository: registry.k8s.io/git-sync/git-sync
               tag: v4.4.0
@@ -112,7 +112,7 @@ spec:
 
     service:
       app:
-        controller: torrenting
+        controller: qbittorrent
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
         annotations:
@@ -162,27 +162,17 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /config
-      test:
-        enabled: true
-        type: persistentVolumeClaim
-        size: 5Gi
-        accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-128k
-        advancedMounts:
-          torrenting:
-            qbittorrent:
-              - path: /test
 
       scripts:
         type: configMap
         name: qbittorrent-scripts
         defaultMode: 0550
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - readOnly: true
 
       media:
@@ -190,24 +180,24 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
 
       addons:
         type: emptyDir
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /addons
                 readOnly: true
-            vuetorrent:
+            git-sync:
               - path: /addons
 
       tmp:
         type: emptyDir
         advancedMounts:
-          torrenting:
-            vuetorrent:
+          qbittorrent:
+            git-sync:
               - path: /tmp

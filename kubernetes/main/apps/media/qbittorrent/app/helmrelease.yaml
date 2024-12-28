@@ -336,6 +336,13 @@ spec:
             vuetorrent:
               - path: /addons
 
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          torrenting:
+            vuetorrent:
+              - path: /tmp
+
       oauth2-proxy-config:
         type: configMap
         name: qbittorrent-oauth2-proxy-config

@@ -101,8 +101,8 @@ spec:
                     name: *secret
                     key: PUSHOVER_USER_KEY
             probes:
-              readiness:
-                enabled: false
+              readiness: &probes
+                enabled: true
                 custom: true
                 spec:
                   exec:
@@ -111,17 +111,8 @@ spec:
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   failureThreshold: 3
-              liveness:
-                enabled: false
-                custom: true
-                spec:
-                  exec:
-                    command:
-                      - /scripts/healthcheck.sh
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  failureThreshold: 3
-            securityContext:
+              liveness: *probes
+            securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -144,11 +135,7 @@ spec:
                 enabled: true
               readiness:
                 enabled: false
-            securityContext:
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -172,11 +159,7 @@ spec:
                 enabled: false
               readiness:
                 enabled: false
-            securityContext:
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -193,11 +176,7 @@ spec:
               - --ref=latest-release
               - --period=86400s
               - --root=/addons
-            securityContext:
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m

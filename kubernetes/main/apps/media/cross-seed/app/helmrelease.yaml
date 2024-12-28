@@ -107,8 +107,8 @@ spec:
       qbittorrent:
         existingClaim: qbittorrent-config
         globalMounts:
-          - path: /qBittorrent
-            #subPath: qBittorrent/BT_backup
+          - path: /qBittorrent/BT_backup
+            subPath: qBittorrent/BT_backup
       media:
         type: nfs
         server: 192.168.91.40

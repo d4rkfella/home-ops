@@ -33,7 +33,7 @@ spec:
               tag: 6.5.2@sha256:d0a9e80d026e37806960ac3551e97b7cf75ae16470dbbf1df217a7aec86cf9c5
             args: ["daemon", "-v"]
             env:
-              TZ: *TZ
+              TZ: Europe/Sofia
             probes:
               liveness:
                 enabled: true

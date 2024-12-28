@@ -56,7 +56,7 @@ spec:
               VPN_PORT_FORWARDING: on
               VPN_PORT_FORWARDING_PROVIDER: protonvpn
               FIREWALL_INPUT_PORTS: 80
-              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16
+              FIREWALL_OUTBOUND_SUBNETS: 172.16.0.0/16,172.17.0.0/16,192.168.91.0/24
               WIREGUARD_ENDPOINT_IP:
                 valueFrom:
                   secretKeyRef:

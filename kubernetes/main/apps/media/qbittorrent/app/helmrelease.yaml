@@ -162,8 +162,8 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /config
 
       scripts:
@@ -171,8 +171,8 @@ spec:
         name: qbittorrent-scripts
         defaultMode: 0500
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - readOnly: true
 
       media:
@@ -180,16 +180,16 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
 
       addons:
         type: emptyDir
         advancedMounts:
-          torrenting:
-            qbittorrent:
+          qbittorrent:
+            app:
               - path: /addons
                 readOnly: true
             git-sync:
@@ -198,6 +198,6 @@ spec:
       tmp:
         type: emptyDir
         advancedMounts:
-          torrenting:
+          qbittorrent:
             git-sync:
               - path: /tmp

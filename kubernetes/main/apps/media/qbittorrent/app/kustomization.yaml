@@ -25,7 +25,7 @@ configMapGenerator:
       - config.yaml=./resources/gatus-ep.yaml
   - name: qbittorrent-dnsdist
     files:
-      - ./config/dnsdist.conf
+      - ./resources/dnsdist.conf
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

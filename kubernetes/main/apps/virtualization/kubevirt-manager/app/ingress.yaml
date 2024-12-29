@@ -8,6 +8,9 @@ metadata:
     cert-manager.io/private-key-rotation-policy: Always
     cert-manager.io/private-key-size: '384'
     external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
   name: kubevirt-manager
   namespace: kubevirt-manager
 spec:

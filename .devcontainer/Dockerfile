@@ -1,7 +1,7 @@
 FROM alpine:edge@sha256:f4b9f111e2c5290552a920590dd48dc58f5ea1cacda6e25b0a2718974d090cf0
 
 ARG USERNAME=vscode
-ARG USER_UID=1000
+ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 # renovate: depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.4.0
@@ -19,12 +19,6 @@ ARG TASK_VERSION=v3.40.1
 ARG TALOSCTL_VERSION=v1.10.0-alpha.0
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
-# renovate: depName=int128/kubelogin
-ARG KUBELOGIN_VERSION=v1.31.0
-# renovate: depName=cilium/hubble
-ARG HUBBLE_VERSION=v1.16.5
-# renovate: depName=cilium/cilium-cli
-ARG CILIUM_VERSION=v0.16.22
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
@@ -61,12 +55,6 @@ RUN apk update && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     mv ./kubectl /usr/local/bin/kubectl && \
-    curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/$CILIUM_VERSION/cilium-linux-amd64.tar.gz{,.sha256sum} && \
-    sha256sum --check --strict cilium-linux-amd64.tar.gz.sha256sum && \
-    tar xzvf cilium-linux-amd64.tar.gz -C /usr/local/bin && \
-    curl -L --fail --remote-name-all https://github.com/cilium/hubble/releases/download/$HUBBLE_VERSION/hubble-linux-amd64.tar.gz{,.sha256sum} && \
-    sha256sum --check --strict hubble-linux-amd64.tar.gz.sha256sum && \
-    tar xzvf hubble-linux-amd64.tar.gz -C /usr/local/bin && \
     curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION{,.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig} && \
     cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
@@ -87,10 +75,6 @@ RUN apk update && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
-    curl -fsSLO https://github.com/int128/kubelogin/releases/download/$KUBELOGIN_VERSION/kubelogin_linux_amd64.zip{,.sha256} && \
-    sha256sum --check --strict kubelogin_linux_amd64.zip.sha256 && \
-    unzip -n kubelogin_linux_amd64.zip && \
-    mv ./kubelogin /usr/local/bin/kubectl-oidc_login && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \

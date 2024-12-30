@@ -32,53 +32,6 @@ spec:
     controller:
       annotations:
         reloader.stakater.com/auto: "true"
-      extraVolumes:
-        - name: crowdsec-bouncer-plugin
-          emptyDir: {}
-      extraInitContainers:
-        - name: init-clone-crowdsec-bouncer
-          image: crowdsecurity/lua-bouncer-plugin:v1.0.5@sha256:90f5c611bebbbe89b8aef3218dad1df3bd9fbe51554024384b56026c69c55925
-          imagePullPolicy: IfNotPresent
-          command: ['sh', '-c', "sh /docker_start.sh; mkdir -p /lua_plugins/crowdsec/; cp -R /crowdsec/* /lua_plugins/crowdsec/"]
-          env:
-            - name: BOUNCER_CONFIG
-              value: "/crowdsec/crowdsec-bouncer.conf"
-            - name: API_URL
-              value: "http://crowdsec-service.network.svc.cluster.local:8080"
-            - name: BAN_TEMPLATE_PATH
-              value: "/etc/nginx/lua/plugins/crowdsec/templates/ban.html"
-            - name: UPDATE_FREQUENCY
-              value: "60"
-            - name: MODE
-              value: stream
-            - name: API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: nginx-external-secret
-                  key: BOUNCER_API_KEY
-            - name: APPSEC_URL
-              value: "http://crowdsec-appsec-service.network.svc.cluster.local:7422"
-            - name: SSL_VERIFY
-              value: "false"
-            - name: APPSEC_FAILURE_ACTION
-              value: deny
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            allowPrivilegeEscalation: false
-            runAsNonRoot: false
-            seccompProfile:
-              type: RuntimeDefault
-          volumeMounts:
-          - name: crowdsec-bouncer-plugin
-            mountPath: /lua_plugins
-      extraVolumeMounts:
-        - name: crowdsec-bouncer-plugin
-          mountPath: /etc/nginx/lua/plugins/crowdsec
-          subPath: crowdsec
-          readOnly: true
       replicaCount: 2
       service:
         annotations:
@@ -97,11 +50,7 @@ spec:
               values: ["external"]
       allowSnippetAnnotations: true
       config:
-        custom-http-errors: "504,503,500,429,410,404,403,401,400"
-        plugins: "crowdsec"
-        lua-shared-dicts: "crowdsec_cache: 100m"
-        server-snippet : |
-          lua_ssl_trusted_certificate "/etc/ssl/cert.pem";
+        #custom-http-errors: "504,503,500,429,410,404,403,401,400"
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
         client-body-buffer-size: 100M
         client-body-timeout: 120
@@ -139,7 +88,7 @@ spec:
         ssl-protocols: TLSv1.3
         ssl-ciphers: ECDHE+AESGCM:DHE+AESGCM
         ssl-dh-param: network/nginx-external-dhparam
-        use-geoip2: "false"
+        use-geoip2: "true"
         use-forwarded-headers: "true"
         proxy-real-ip-cidr: "103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,104.16.0.0/13,104.24.0.0/14,108.162.192.0/18,131.0.72.0/22,141.101.64.0/18,162.158.0.0/15,172.64.0.0/13,173.245.48.0/20,188.114.96.0/20,190.93.240.0/20,197.234.240.0/22,198.41.128.0/17,172.16.0.0/16"
       metrics:
@@ -166,8 +115,8 @@ spec:
         limits:
           memory: 5Gi
     defaultBackend:
-      enabled: true
-      image:
-        registry: ghcr.io
-        image: d4rkfella/custom-error-pages
-        tag: v1.0.5@sha256:9bcb25b28c0bc5f3434845fa43e3ffe3f6a34c6a1c4da416298c916f5939c969
+      enabled: false
+      #image:
+        #registry: ghcr.io
+        #image: d4rkfella/custom-error-pages
+        #tag: v1.0.5@sha256:9bcb25b28c0bc5f3434845fa43e3ffe3f6a34c6a1c4da416298c916f5939c969

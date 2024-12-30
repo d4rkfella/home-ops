@@ -92,7 +92,7 @@ spec:
       extraArgs:
         default-ssl-certificate: network/darkfellanet-tls
         publish-status-address: *hostname
-      terminationGracePeriodSeconds: 60
+      terminationGracePeriodSeconds: 120
       topologySpreadConstraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname

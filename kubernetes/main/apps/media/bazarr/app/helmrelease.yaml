@@ -215,6 +215,20 @@ spec:
             app:
               - path: /config
 
+      log:
+        type: emptyDir
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /config/log
+
+      cache:
+        type: emptyDir
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /config/cache
+
       media:
         type: nfs
         server: 192.168.91.40

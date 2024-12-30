@@ -88,7 +88,7 @@ spec:
                     name: *secret
                     key: REDIS_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
-              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/5
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -135,10 +135,6 @@ spec:
                   failureThreshold: 3
               readiness: *probes
             securityContext: *securityContext
-            lifecycle:
-              postStart:
-                exec:
-                  command: ["/bin/sh", "-c", "mkdir -p /config/config & cp /secret/config.yaml /config/config/config.yaml"]
             resources:
               requests:
                 cpu: 10m
@@ -201,32 +197,43 @@ spec:
     persistence:
       add-ons:
         type: emptyDir
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /add-ons
+            subcleaner:
+              - path: /add-ons
 
       config:
-        type: emptyDir
-
-      secret-file:
-        type: secret
-        name: *secret
-        globalMounts:
-          - readOnly: true
-            path: /secret/config.yaml
-            subPath: config.yaml
+        enabled: true
+        type: persistentVolumeClaim
+        size: 5Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /config
 
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data/media
-            subPath: media
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /data/media
+                subPath: media
 
       scripts:
         type: configMap
         name: bazarr-scripts
         defaultMode: 0775
-        globalMounts:
-          - readOnly: true
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /scripts
+                readOnly: true
 
       tmp:
         type: emptyDir

@@ -78,7 +78,7 @@ spec:
                     key: COOKIE_SECRET
                     name: alertmanager-oauth-secret
               - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
-                value: redis://redis-master.database.svc.cluster.local:6379/5
+                value: redis://redis-master.database.svc.cluster.local:6379
               - name: OAUTH2_PROXY_REDIS_PASSWORD
                 valueFrom:
                   secretKeyRef:

@@ -84,7 +84,7 @@ spec:
                     name: *secret
                     key: REDIS_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
-              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379/5
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

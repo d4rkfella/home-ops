@@ -21,3 +21,5 @@ configMapGenerator:
       - oauth2-proxy.cfg=./resources/oauth2-proxy.cfg
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+      kustomize.toolkit.fluxcd.io/substitute: disabled

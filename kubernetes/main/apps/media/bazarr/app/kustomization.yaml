@@ -9,11 +9,10 @@ configMapGenerator:
   - name: bazarr-scripts
     files:
       - subcleaner.sh=./resources/subcleaner.sh
-  - name: connectionpool
-    files:
-      - connectionpool.py=./resources/connectionpool.py
   - name: bazarr-oauth2-proxy-config
     files:
       - oauth2-proxy.cfg=./resources/oauth2-proxy.cfg
 generatorOptions:
   disableNameSuffixHash: true
+  annotations:
+      kustomize.toolkit.fluxcd.io/substitute: disabled

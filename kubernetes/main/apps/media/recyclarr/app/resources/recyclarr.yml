@@ -37,7 +37,6 @@ radarr:
 
       # Unwanted
       - trash_ids:
-          # Uncomment the next six lines to block all x265 HD releases
           - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
         assign_scores_to:
           - name: SQP-3
@@ -85,8 +84,16 @@ sonarr:
 
     include:
       - template: sonarr-quality-definition-series
+      # 1080p
+      - template: sonarr-v4-quality-profile-web-1080p
+      - template: sonarr-v4-custom-formats-web-1080p
+      # 2160p
       - template: sonarr-v4-quality-profile-web-2160p
       - template: sonarr-v4-custom-formats-web-2160p
+
+    quality_profiles:
+      - name: WEB-1080p
+      - name: WEB-2160p
 
     custom_formats:
       # HDR Formats
@@ -98,6 +105,7 @@ sonarr:
           - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10+ Boost
         assign_scores_to:
           - name: WEB-2160p
+          - name: WEB-1080p
 
       # Optional
       - trash_ids:
@@ -107,24 +115,5 @@ sonarr:
           - 06d66ab109d4d2eddb2794d21526d140 # Retags
           - 1b3994c551cbb92a2c781af061f4ab44 # Scene
         assign_scores_to:
-          - name: WEB-2160p
-
-      - trash_ids:
-          # Uncomment the next six lines to allow x265 HD releases with HDR/DV
-          # - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
-        # assign_scores_to:
-          # - name: WEB-2160p
-            # score: 0
-      # - trash_ids:
-          # - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
-        assign_scores_to:
-          - name: WEB-2160p
-
-      # Optional SDR
-      # Only ever use ONE of the following custom formats:
-      # SDR - block ALL SDR releases
-      # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB
-      - trash_ids:
-          - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
-        assign_scores_to:
+          - name: WEB-1080p
           - name: WEB-2160p

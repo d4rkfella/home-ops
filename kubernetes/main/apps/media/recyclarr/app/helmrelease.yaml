@@ -66,7 +66,11 @@ spec:
 
     persistence:
       config:
-        existingClaim: recyclarr-config
+        enabled: true
+        type: persistentVolumeClaim
+        size: 5Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
         advancedMounts:
           recyclarr:
             app:

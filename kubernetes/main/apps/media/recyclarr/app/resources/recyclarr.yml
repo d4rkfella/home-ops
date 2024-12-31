@@ -3,7 +3,7 @@
 radarr:
   sqp-3:
     base_url: https://radarr.darkfellanetwork.com
-    api_key: ${RADARR_API_KEY}
+    api_key: !env_var RADARR_API_KEY
 
     delete_old_custom_formats: true
     replace_existing_custom_formats: true

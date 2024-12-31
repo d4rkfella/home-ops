@@ -36,18 +36,11 @@ radarr:
             score: 0
 
       # Unwanted
-      #- trash_ids:
-          #- 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
-          #- 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
-          #- ed38b889b31be83fda192888e2286d83 # BR-DISK
-          #- 90a6f9a284dff5103f6346090e6280c8 # LQ
-          #- e204b80c87be9497a8a6eaff48f72905 # LQ (Release Title)
-          #- b8cd450cbfa689c0259a01d9e29ba3d6 # 3D
-          #- bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
-          #- 0a3f082873eb454bde444150b70253cc # Extras
-        #assign_scores_to:
-          #- name: SQP-3
-            #score: -10000
+      - trash_ids:
+          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
+        assign_scores_to:
+          - name: SQP-3
+            score: -10000
 
       # Optional
       - trash_ids:

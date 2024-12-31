@@ -25,6 +25,13 @@ spec:
       qbitmanage:
         annotations:
           secret.reloader.stakater.com/reload: qbitmanage-secret
+        type: cronjob
+        cronjob:
+          schedule: "*/30 * * * *"
+          timeZone: Europe/Sofia
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
 
         containers:
           app:
@@ -33,16 +40,11 @@ spec:
               tag: v4.1.14@sha256:a64f0781aabe3e66a261c8b21b7192555bc785f178cae40c6e8b88bf9b853c16
             env:
               TZ: Europe/Sofia
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: false
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 8Gi
+                memory: 1Gi
             lifecycle:
               postStart:
                 exec:

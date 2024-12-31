@@ -38,12 +38,12 @@ radarr:
       # Unwanted
       - trash_ids:
           # Uncomment the next six lines to block all x265 HD releases
-          # - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
-        # assign_scores_to:
-          # - name: SQP-3
-            # score: 0
-      # - trash_ids:
-          # - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
+          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
+        assign_scores_to:
+          - name: SQP-3
+            score: 0
+      - trash_ids:
+          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         assign_scores_to:
           - name: SQP-3
 

@@ -29,7 +29,7 @@ spec:
               - name: share
                 mountPath: "/share"
           - name: snapshotupload
-            image: amazon/aws-cli:2.22.23@sha256:1216b6a7beefc53b7de49cb7c01a8eb64fc1769be2b4a11a6361956d8996c46d
+            image: amazon/aws-cli:2.22.26@sha256:7dc852f736125f72459e9e743be75ec4b252fa33dce403169840c9a393787c74
             imagePullPolicy: IfNotPresent
             env:
               - name: AWS_ACCESS_KEY_ID

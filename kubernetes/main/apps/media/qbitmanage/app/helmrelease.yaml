@@ -89,7 +89,7 @@ spec:
           - path: /app/config
           - path: /config
       config-file:
-        type: secret
+        type: configMap
         name: qbitmanage-config
         globalMounts:
           - path: /mnt/config.yml

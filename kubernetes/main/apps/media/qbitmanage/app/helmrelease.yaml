@@ -40,6 +40,24 @@ spec:
               tag: v4.1.14@sha256:a64f0781aabe3e66a261c8b21b7192555bc785f178cae40c6e8b88bf9b853c16
             env:
               TZ: Europe/Sofia
+              QBT_CONFIG: "/config/config.yml"
+              QBT_CROSS_SEED: false
+              QBT_DRY_RUN: true
+              QBT_LOG_LEVEL: INFO
+              QBT_RECHECK: true
+              QBT_REM_ORPHANED: true
+              QBT_REM_UNREGISTERED: true
+              QBT_RUN: true
+              QBT_SHARE_LIMITS: true
+              QBT_SKIP_CLEANUP: false
+              QBT_SKIP_QB_VERSION_CHECK: true
+              QBT_TAG_NOHARDLINKS: true
+              QBT_TAG_TRACKER_ERROR: true
+              QBT_TAG_UPDATE: true
+              QBT_WIDTH: 100
+            envFrom:
+              - secretRef:
+                  name: qbitmanage-secret
             resources:
               requests:
                 cpu: 10m
@@ -48,7 +66,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
+                  command: ["/bin/sh", "-c", "cp /mnt/config.yml /config/config.yml"]
             securityContext:
               privileged: false
               allowPrivilegeEscalation: false
@@ -72,10 +90,9 @@ spec:
           - path: /config
       config-file:
         type: secret
-        name: qbitmanage-secret
-        defaultMode: 0600
+        name: qbitmanage-config
         globalMounts:
-          - path: /secret/config.yml
+          - path: /mnt/config.yml
             subPath: config.yml
             readOnly: true
       qbittorrent:

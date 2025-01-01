@@ -66,7 +66,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /mnt/config.yml /config/config.yml"]
+                  command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
             securityContext:
               privileged: false
               allowPrivilegeEscalation: false
@@ -89,10 +89,10 @@ spec:
           - path: /app/config
           - path: /config
       config-file:
-        type: configMap
-        name: qbitmanage-config
+        type: secret
+        name: qbitmanage-secret
         globalMounts:
-          - path: /mnt/config.yml
+          - path: /secret/config.yml
             subPath: config.yml
             readOnly: true
       qbittorrent:

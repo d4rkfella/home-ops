@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: qbitmanage-config
-    files:
-      - ./config/config.yml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-      kustomize.toolkit.fluxcd.io/substitute: disabled

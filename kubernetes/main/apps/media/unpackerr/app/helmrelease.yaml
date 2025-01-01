@@ -42,9 +42,9 @@ spec:
               UN_WEBSERVER_LOG_FILE: /logs/webserver.log
               UN_ACTIVITY: true
               UN_SONARR_0_URL: https://sonarr.darkfellanetwork.com
-              UN_SONARR_0_PATHS_0: /data/downloads/torrents/complete/tv
+              UN_SONARR_0_PATHS_0: /data/downloads/torrents/tv
               UN_RADARR_0_URL: https://radarr.darkfellanetwork.com
-              UN_RADARR_0_PATHS_0: /data/downloads/torrents/complete/movies
+              UN_RADARR_0_PATHS_0: /data/downloads/torrents/movies
             envFrom:
               - secretRef:
                   name: unpackerr-secret
@@ -98,5 +98,5 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/downloads/torrents/complete
-            subPath: downloads/torrents/complete
+          - path: /data/downloads/torrents
+            subPath: downloads/torrents

@@ -54,6 +54,11 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: INIT_POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
         containers:
           oauth2-proxy:
@@ -85,12 +90,7 @@ spec:
                     key: REDIS_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
               OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-              runAsUser: 3000
-              runAsGroup: 3000
+            securityContext: *securityContext
 
           app:
             image:
@@ -147,10 +147,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 100m

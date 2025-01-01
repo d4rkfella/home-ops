@@ -49,7 +49,7 @@ spec:
               operator: In
               values: ["external"]
       config:
-        #custom-http-errors: "504,503,500,429,410,404,403,401,400"
+        custom-http-errors: "504,503,502,500,429,410,404,403,401,400"
         block-user-agents: "AdsBot-Google,Amazonbot,anthropic-ai,Applebot-Extended,Bytespider,CCBot,ChatGPT-User,ClaudeBot,Claude-Web,cohere-ai,Diffbot,FacebookBot,FriendlyCrawler,Google-Extended,GoogleOther,GPTBot,img2dataset,omgili,omgilibot,peer39_crawler,peer39_crawler/1.0,PerplexityBot,YouBot," # taken from https://github.com/ai-robots-txt/ai.robots.txt
         allow-snippet-annotations: true
         annotations-risk-level: Critical

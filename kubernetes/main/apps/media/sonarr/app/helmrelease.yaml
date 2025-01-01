@@ -203,30 +203,33 @@ spec:
         size: 15Gi
         storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /config
 
       scripts:
         type: configMap
         name: sonarr-configmap
         defaultMode: 0775
-        globalMounts:
-          - path: /scripts/pushover-notify.sh
-            subPath: pushover-notify.sh
-            readOnly: true
-          - path: /scripts/refresh-series.sh
-            subPath: refresh-series.sh
-            readOnly: true
-      tmp:
-        type: emptyDir
-        medium: Memory
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /scripts/pushover-notify.sh
+                subPath: pushover-notify.sh
+                readOnly: true
+              - path: /scripts/refresh-series.sh
+                subPath: refresh-series.sh
+                readOnly: true
 
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /data
 
       oauth2-proxy-config:
         type: configMap

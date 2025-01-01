@@ -1,7 +1,7 @@
 qbt:
   host: https://qbittorrent.darkfellanetwork.com
-  user: $QBITTORRENT_USERNAME
-  pass: $QBITTORRENT_PASSWORD
+  user: $(QBITTORRENT_USERNAME)
+  pass: $(QBITTORRENT_PASSWORD)
 
 settings:
   force_auto_tmm: true

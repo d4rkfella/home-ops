@@ -25,6 +25,8 @@ spec:
   values:
     fullnameOverride: nginx-internal
     controller:
+      annotations:
+        reloader.stakater.com/auto: "true"
       replicaCount: 2
       service:
         annotations:

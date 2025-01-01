@@ -114,5 +114,5 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         globalMounts:
-          - path: /data/downloads/torrents/complete
-            subPath: downloads/torrents/complete
+          - path: /data/downloads/torrents
+            subPath: downloads/torrents

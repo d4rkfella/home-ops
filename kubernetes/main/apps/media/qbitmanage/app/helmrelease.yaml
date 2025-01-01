@@ -55,9 +55,6 @@ spec:
               QBT_TAG_TRACKER_ERROR: true
               QBT_TAG_UPDATE: true
               QBT_WIDTH: 100
-            envFrom:
-              - secretRef:
-                  name: qbitmanage-secret
             resources:
               requests:
                 cpu: 10m

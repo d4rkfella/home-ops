@@ -42,6 +42,7 @@ spec:
               operator: In
               values: ["internal"]
       config:
+        custom-http-errors: "504,503,502,500,429,410,404,403,401,400"
         allow-snippet-annotations: true
         annotations-risk-level: Critical
         block-user-agents: "AdsBot-Google,Amazonbot,anthropic-ai,Applebot-Extended,Bytespider,CCBot,ChatGPT-User,ClaudeBot,Claude-Web,cohere-ai,Diffbot,FacebookBot,FriendlyCrawler,Google-Extended,GoogleOther,GPTBot,img2dataset,omgili,omgilibot,peer39_crawler,peer39_crawler/1.0,PerplexityBot,YouBot," # taken from https://github.com/ai-robots-txt/ai.robots.txt
@@ -89,4 +90,16 @@ spec:
         limits:
           memory: 5Gi
     defaultBackend:
-      enabled: false
+      enabled: true
+      image:
+        repository: ghcr.io/tarampampam/error-pages
+        tag: 3.3.1@sha256:8aa49143d301a8e43fb38578a21450567169c32068db7c43a05a67ac9f9283c8
+      extraEnvs:
+        - { name: TEMPLATE_NAME, value: connection }
+        - { name: SHOW_DETAILS, value: "false" }
+      resources:
+        requests:
+          memory: 250Mi
+          cpu: 25m
+        limits:
+          memory: 350Mi

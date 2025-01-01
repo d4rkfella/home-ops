@@ -125,6 +125,16 @@ spec:
                     name: *secret
                     key: INIT_POSTGRES_PASS
               RADARR__POSTGRES__MAINDB: *dbName
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -214,7 +224,6 @@ spec:
 
       tmp:
         type: emptyDir
-        medium: Memory
 
       media:
         type: nfs

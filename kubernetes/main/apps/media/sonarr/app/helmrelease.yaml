@@ -36,9 +36,24 @@ spec:
             image:
               repository: ghcr.io/buroa/postgres-init
               tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
-            envFrom: &envFrom
-              - secretRef:
-                  name: &secret sonarr-secret
+            env:
+              INIT_POSTGRES_DBNAME: &dbName sonarr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret sonarr-secret
+                    key: INIT_POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_SUPER_PASS
 
         containers:
           oauth2-proxy:
@@ -82,6 +97,7 @@ spec:
               repository: ghcr.io/onedr0p/sonarr-develop
               tag: 4.0.11.2815@sha256:ac6fdfaa7056044d6131f6dbeec93542585ca3b9c76f4ebd3362864c70547e6b
             env:
+              TZ: Europe/Sofia
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
               SONARR__AUTH__METHOD: External
@@ -91,8 +107,34 @@ spec:
               SONARR__SERVER__PORT: &port 80
               SONARR__SERVER__BINDADDRESS  : 127.0.0.1
               SONARR__UPDATE__BRANCH: develop
-              TZ: Europe/Sofia
-            envFrom: *envFrom
+              SONARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: SONARR__AUTH__APIKEY
+              SONARR__POSTGRES__HOST: *dbHost
+              SONARR__POSTGRES__PORT: 5432
+              SONARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              SONARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              SONARR__POSTGRES__MAINDB: *dbName
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true

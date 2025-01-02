@@ -185,10 +185,9 @@ spec:
       media:
         type: nfs
         server: 192.168.91.40
-        path: /mnt/exos20/data
+        path: /mnt/exos20/data/downloads/usenet
         globalMounts:
           - path: /data/downloads/usenet
-            subPath: downloads/usenet
 
       oauth2-proxy-config:
         type: configMap

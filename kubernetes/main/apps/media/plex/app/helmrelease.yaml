@@ -121,9 +121,10 @@ spec:
       media:
         type: nfs
         server: 192.168.91.40
-        path: /mnt/exos20/data/media
+        path: /mnt/exos20/data
         globalMounts:
           - path: /data/media
+            subPath: media
             readOnly: true
       ssl:
         type: emptyDir

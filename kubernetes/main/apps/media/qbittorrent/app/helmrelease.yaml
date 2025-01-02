@@ -235,7 +235,7 @@ spec:
           qbittorrent:
             app:
               - path: /data/downloads/torrents
-                subPath: downloads/torrents
+                #subPath: downloads/torrents
 
       addons:
         type: emptyDir

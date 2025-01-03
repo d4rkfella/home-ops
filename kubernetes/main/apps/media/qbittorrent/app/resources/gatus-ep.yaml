@@ -9,6 +9,6 @@ endpoints:
     client:
       dns-resolver: tcp://172.17.0.10:53
     conditions:
-      - "[STATUS] == 403"
+      - "[STATUS] == 200"
     alerts:
       - type: pushover

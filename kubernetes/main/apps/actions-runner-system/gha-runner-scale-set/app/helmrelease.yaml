@@ -58,7 +58,7 @@ spec:
                   fieldRef:
                     fieldPath: metadata.name
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "true"
+                value: "false"
               - name: NODE_IP
                 valueFrom:
                   fieldRef:

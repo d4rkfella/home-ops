@@ -5,3 +5,12 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+configMapGenerator:
+  - name: cross-seed-loki-rules
+    files:
+      - cross-seed.yaml=./resources/lokirule.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true

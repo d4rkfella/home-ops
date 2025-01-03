@@ -30,8 +30,8 @@ spec:
     - name: zfs-localpv
       namespace: kube-system
   values:
-    nameOverride: gha-runner-scale-set
-    runnerScaleSetName: gha-runner-scale-set
+    nameOverride: gha-runner-scale-set-new
+    runnerScaleSetName: gha-runner-scale-set-new
     githubConfigUrl: https://github.com/d4rkfella/home-ops
     githubConfigSecret: gha-runner-scale-set-gha-rs-github-secret
     minRunners: 1

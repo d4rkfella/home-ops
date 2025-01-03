@@ -33,7 +33,7 @@ spec:
     nameOverride: gha-runner-scale-set
     runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/d4rkfella/home-ops
-    githubConfigSecret: actions-runner-controller-auth-secret
+    githubConfigSecret: actions-runner-system/actions-runner-controller-auth-secret
     minRunners: 1
     maxRunners: 3
     containerMode:

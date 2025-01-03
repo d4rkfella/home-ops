@@ -29,23 +29,11 @@ spec:
       namespace: actions-runner-system
     - name: zfs-localpv
       namespace: kube-system
-  valuesFrom:
-    - targetPath: githubConfigSecret.github_app_id
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
-    - targetPath: githubConfigSecret.github_app_installation_id
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
-    - targetPath: githubConfigSecret.github_app_private_key
-      kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
     nameOverride: gha-runner-scale-set
     runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/d4rkfella/home-ops
+    githubConfigSecret: actions-runner-controller-auth-secret
     minRunners: 1
     maxRunners: 3
     containerMode:

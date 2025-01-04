@@ -42,7 +42,7 @@ spec:
                 bus: sata
               name: windows-server-os-disk
         machine:
-          type: pc-q35-9.2.0
+          type: q35
         resources:
           requests:
             memory: 4G

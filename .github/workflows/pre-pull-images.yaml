@@ -3,11 +3,10 @@
 name: "Pre-pull Images"
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - kubernetes/main/apps/**
-      - kubernetes/main/flux/**
+  workflow_run:
+    workflows: ["Image Test"]
+    types:
+      - completed
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -20,6 +19,7 @@ jobs:
   extract-images:
     name: Extract Images
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Ensure the previous workflow was successful
     strategy:
       matrix:
         branches: ["default", "pull"]

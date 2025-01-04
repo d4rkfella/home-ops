@@ -4,7 +4,7 @@ name: "Pre-pull Images"
 
 on:
   workflow_run:
-    workflows: ["Image Test"]
+    workflows: ["Flux Image Test"]
     types:
       - completed
 

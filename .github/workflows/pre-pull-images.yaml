@@ -19,7 +19,7 @@ jobs:
   extract-images:
     name: Extract Images
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Ensure the previous workflow was successful
+    #if: ${{ github.event.workflow_run.conclusion == 'success' }}  # Ensure the previous workflow was successful
     strategy:
       matrix:
         branches: ["default", "pull"]

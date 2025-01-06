@@ -105,7 +105,7 @@ spec:
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 80
-              SONARR__SERVER__BINDADDRESS  : 0.0.0.0
+              SONARR__SERVER__BINDADDRESS  : 127.0.0.1
               SONARR__UPDATE__BRANCH: develop
               SONARR__AUTH__APIKEY:
                 valueFrom:
@@ -169,7 +169,7 @@ spec:
         controller: sonarr
         ports:
           http:
-            port: 80
+            port: 4180
 
     ingress:
       app:

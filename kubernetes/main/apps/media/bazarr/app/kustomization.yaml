@@ -12,9 +12,6 @@ configMapGenerator:
   - name: bazarr-oauth2-proxy-config
     files:
       - oauth2-proxy.cfg=./resources/oauth2-proxy.cfg
-  - name: connectionpool
-    files:
-      - connectionpool.py=./resources/connectionpool.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

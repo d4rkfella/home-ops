@@ -261,13 +261,3 @@ spec:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-
-      connectionpool:
-        type: configMap
-        name: connectionpool
-        advancedMounts:
-          bazarr:
-            app:
-              - readOnly: true
-                path: /app/bin/libs/urllib3/connectionpool.py
-                subPath: connectionpool.py

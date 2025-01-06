@@ -1,0 +1,14 @@
+endpoints:
+  - name: "qBittorrent"
+    group: guarded
+    url: "https://qbittorrent.darkfellanetwork.com/api/v2/app/version"
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions:
+      - "[STATUS] == 403"
+    alerts:
+      - type: pushover

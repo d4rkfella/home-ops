@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.ok8.sh/external-secrets.io/externalsecret_v1beta1.json
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: &secret sabnzbd-volsync-secret
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: vault-backend
+  target:
+    name: *secret
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      data:
+        RESTIC_REPOSITORY: '{{ .RESTIC_REPOSITORY }}/sabnzbd/volsync/config-volsync-config'
+        RESTIC_PASSWORD: '{{ .ENCRYPTION_KEY }}'
+        AWS_ACCESS_KEY_ID: '{{ .CF_ACCESS_KEY_ID }}'
+        AWS_SECRET_ACCESS_KEY: '{{ .CF_SECRET_ACCESS_KEY }}'
+  dataFrom:
+    - extract:
+        key: secrets/volsync
+    - extract:
+        key: secrets/cloudflare
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.ok8.sh/volsync.backube/replicationsource_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: sabnzbd
+spec:
+  sourcePVC: sabnzbd-config
+  trigger:
+    schedule: "0 7 * * *"
+  restic:
+    copyMethod: Clone
+    storageClassName: openebs-zfs-128k
+    pruneIntervalDays: 7
+    repository: sabnzbd-volsync-secret
+    cacheCapacity: 2Gi
+    moverSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+    retain:
+      daily: 7
+      within: 3d

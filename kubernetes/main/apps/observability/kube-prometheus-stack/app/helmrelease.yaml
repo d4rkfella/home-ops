@@ -1,0 +1,217 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 30m
+  timeout: 15m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      version: 67.8.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  install:
+    crds: Skip
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: Skip
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: prometheus-operator-crds
+      namespace: observability
+  values:
+    crds:
+      enabled: false
+    cleanPrometheusOperatorObjectNames: true
+    alertmanager:
+      service:
+        port: 9093
+        additionalPorts:
+          - name: oauth-proxy
+            port: 4180
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        ingressClassName: internal
+        tls:
+          - hosts: &host ["alertmanager.darkfellanetwork.com"]
+            secretName: alertmanager-tls
+        hosts: *host
+        pathType: Prefix
+      alertmanagerSpec:
+        listenLocal: false
+        containers:
+          - name: oauth2-proxy
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
+            args: ["--config=/etc/oauth2-proxy.cfg"]
+            ports:
+              - containerPort: 4180
+                name: oauth-proxy
+            env:
+              - name: OAUTH2_PROXY_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    key: CLIENT_ID
+                    name: alertmanager-oauth-secret
+              - name: OAUTH2_PROXY_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    key: CLIENT_SECRET
+                    name: alertmanager-oauth-secret
+              - name: OAUTH2_PROXY_COOKIE_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    key: COOKIE_SECRET
+                    name: alertmanager-oauth-secret
+              - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
+                value: redis://redis-master.database.svc.cluster.local:6379
+              - name: OAUTH2_PROXY_REDIS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    key: REDIS_PASSWORD
+                    name: alertmanager-oauth-secret
+              - name: OAUTH2_PROXY_SESSION_STORE_TYPE
+                value: redis
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
+              runAsGroup: 2000
+              runAsUser: 2000
+            volumeMounts:
+              - mountPath: /etc/oauth2-proxy.cfg
+                name: oauth2-proxy-config
+                readOnly: true
+                subPath: oauth2-proxy.cfg
+        volumes:
+          - configMap:
+              defaultMode: 420
+              name: alertmanager-oauth2-proxy-config
+            name: oauth2-proxy-config
+        useExistingSecret: true
+        configSecret: alertmanager-secret
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-zfs-128k
+              resources:
+                requests:
+                  storage: 1Gi
+    kubeApiServer:
+      serviceMonitor:
+        selector:
+          k8s-app: kube-apiserver
+    kubeScheduler:
+      service:
+        selector:
+          k8s-app: kube-scheduler
+    kubeControllerManager: &kubeControllerManager
+      service:
+        selector:
+          k8s-app: kube-controller-manager
+    kubeEtcd:
+      enabled: true
+      service:
+        selector:
+          k8s-app: kube-controller-manager
+      serviceMonitor:
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_node_name]
+            separator: ;
+            regex: ^(.*)$
+            targetLabel: nodename
+            replacement: $1
+            action: replace
+        metricRelabelings:
+          - action: labeldrop
+            regex: pod
+    kubeProxy:
+      enabled: false
+    prometheus:
+      ingress:
+        enabled: true
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        ingressClassName: internal
+        tls:
+          - hosts: &host ["prometheus.darkfellanetwork.com"]
+            secretName: prometheus-tls
+        hosts: *host
+        pathType: Prefix
+      prometheusSpec:
+        scrapeInterval: 1m
+        podMonitorSelector: &selector
+          matchLabels: null
+        probeSelector: *selector
+        ruleSelector: *selector
+        scrapeConfigSelector: *selector
+        serviceMonitorSelector: *selector
+        enableAdminAPI: true
+        walCompression: true
+        enableFeatures:
+          - auto-gomemlimit
+          - memory-snapshot-on-shutdown
+          - new-service-discovery-manager
+        retention: 14d
+        retentionSize: 70GB
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 1500Mi
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-zfs-128k
+              resources:
+                requests:
+                  storage: 75Gi
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+      metricLabelsAllowlist:
+        - pods=[*]
+        - deployments=[*]
+        - persistentvolumeclaims=[*]
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
+    grafana:
+      enabled: false
+      forceDeployDashboards: true

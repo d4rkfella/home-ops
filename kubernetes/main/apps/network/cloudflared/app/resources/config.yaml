@@ -1,0 +1,10 @@
+---
+originRequest:
+  originServerName: external.darkfellanetwork.com
+
+ingress:
+  - hostname: darkfellanetwork.com
+    service: https://nginx-external-controller.network.svc.cluster.local:443
+  - hostname: "*.darkfellanetwork.com"
+    service: https://nginx-external-controller.network.svc.cluster.local:443
+  - service: http_status:404

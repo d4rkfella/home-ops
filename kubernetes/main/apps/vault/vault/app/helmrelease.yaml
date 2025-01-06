@@ -1,0 +1,308 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vault
+  namespace: vault
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: vault
+      version: 0.29.1
+      sourceRef:
+        kind: HelmRepository
+        name: vault
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+
+  values:
+
+    global:
+      enabled: true
+      tlsDisable: false
+      serverTelemetry:
+        prometheusOperator: false
+
+    injector:
+      enabled: false
+
+    server:
+      enabled: true
+      image:
+        repository: "hashicorp/vault"
+        tag: "1.18.3"
+        pullPolicy: IfNotPresent
+
+      updateStrategyType: "OnDelete"
+
+      logLevel: "info"
+      logFormat: "json"
+
+      resources: {}
+
+      authDelegator:
+        enabled: true
+
+      extraInitContainers: null
+
+      extraContainers: null
+
+      shareProcessNamespace: false
+
+      extraArgs: ""
+
+      readinessProbe:
+        enabled: true
+        port: 8200
+        failureThreshold: 2
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+      livenessProbe:
+        enabled: true
+        path: "/v1/sys/health?standbyok=true"
+        port: 8200
+        failureThreshold: 2
+        initialDelaySeconds: 60
+        periodSeconds: 5
+        successThreshold: 1
+        timeoutSeconds: 3
+
+      terminationGracePeriodSeconds: 10
+
+      preStopSleepSeconds: 5
+
+      extraEnvironmentVars:
+        VAULT_TLSCERT: /vault/tls/tls.crt
+        VAULT_TLSKEY: /vault/tls/tls.key
+
+      extraSecretEnvironmentVars: []
+
+      volumes:
+        - name: vault-tls
+          secret:
+            defaultMode: 420
+            secretName: vault-tls
+
+      volumeMounts:
+        - mountPath: /vault/tls
+          name: vault-tls
+          readOnly: true
+
+      affinity: |
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: {{ template "vault.name" . }}
+                  app.kubernetes.io/instance: "{{ .Release.Name }}"
+                  component: server
+              topologyKey: kubernetes.io/hostname
+
+      networkPolicy:
+        enabled: false
+        egress: []
+        ingress:
+          - from:
+            - namespaceSelector: {}
+            ports:
+            - port: 8200
+              protocol: TCP
+            - port: 8201
+              protocol: TCP
+
+      includeConfigAnnotation: false
+
+      service:
+        enabled: false
+        active:
+          enabled: false
+        standby:
+          enabled: false
+        instanceSelector:
+          enabled: true
+        publishNotReadyAddresses: true
+        externalTrafficPolicy: Cluster
+        port: 8200
+        targetPort: 8200
+        annotations: {}
+
+      dataStorage:
+        enabled: true
+        size: 20Gi
+        mountPath: "/vault/data"
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+
+      persistentVolumeClaimRetentionPolicy:
+        whenDeleted: Retain
+        whenScaled: Retain
+
+      auditStorage:
+        enabled: true
+        size: 10Gi
+        mountPath: "/vault/audit"
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+
+      standalone:
+        enabled: false
+
+      ha:
+        enabled: true
+        replicas: 1
+        raft:
+          enabled: true
+          setNodeId: false
+          config: |
+
+            seal "awskms" {
+              region = "us-east-1"
+              access_key = "${AWS_ACCESS_KEY}"
+              secret_key = "${AWS_SECRET_KEY}"
+              kms_key_id = "${AWS_KEY_ID}"
+            }
+
+            ui = true
+            api_addr = "https://vault.darkfellanetwork.com:8200"
+            cluster_addr = "https://vault.darkfellanetwork.com:8201"
+
+            listener "tcp" {
+              tls_disable = 0
+              address = "0.0.0.0:8200"
+              cluster_address = "0.0.0.0:8201"
+              tls_cert_file = "/vault/tls/tls.crt"
+              tls_key_file = "/vault/tls/tls.key"
+              tls_min_version = "tls13"
+
+              # Enable unauthenticated metrics access (necessary for Prometheus Operator)
+              #telemetry {
+              #  unauthenticated_metrics_access = "true"
+              #}
+            }
+
+            storage "raft" {
+              path = "/vault/data"
+            }
+
+            service_registration "kubernetes" {}
+
+        disruptionBudget:
+          enabled: true
+          maxUnavailable: null
+
+      serviceAccount:
+        create: true
+        name: ""
+        createSecret: false
+        serviceDiscovery:
+          enabled: true
+
+      statefulSet:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        securityContext:
+          pod: {}
+          container: {}
+
+      hostNetwork: false
+
+    ui:
+      enabled: true
+      publishNotReadyAddresses: true
+      activeVaultPodOnly: false
+      serviceType: "LoadBalancer"
+      serviceNodePort: null
+      externalPort: 8200
+      targetPort: 8200
+      externalTrafficPolicy: Cluster
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com
+        lbipam.cilium.io/ips: 192.168.91.96
+
+    serverTelemetry:
+      # Enable support for the Prometheus Operator. If authorization is not set for authenticating
+      # to Vault's metrics endpoint, the following Vault server `telemetry{}` config must be included
+      # in the `listener "tcp"{}` stanza
+      #  telemetry {
+      #    unauthenticated_metrics_access = "true"
+      #  }
+      #
+      # See the `standalone.config` for a more complete example of this.
+      #
+      # In addition, a top level `telemetry{}` stanza must also be included in the Vault configuration:
+      #
+      # example:
+      #  telemetry {
+      #    prometheus_retention_time = "30s"
+      #    disable_hostname = true
+      #  }
+      #
+      # Configuration for monitoring the Vault server.
+      serviceMonitor:
+        enabled: false
+        selectors: {}
+        interval: 30s
+        scrapeTimeout: 10s
+
+        # tlsConfig used for scraping the Vault metrics API.
+        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.TLSConfig
+        # example:
+        # tlsConfig:
+        #   ca:
+        #     secret:
+        #       name: vault-metrics-client
+        #       key: ca.crt
+        tlsConfig: {}
+
+        # authorization used for scraping the Vault metrics API.
+        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.SafeAuthorization
+        # example:
+        # authorization:
+        #   credentials:
+        #     name: vault-metrics-client
+        #     key: token
+        authorization: {}
+
+      prometheusRules:
+          # The Prometheus operator *must* be installed before enabling this feature,
+          # if not the chart will fail to install due to missing CustomResourceDefinitions
+          # provided by the operator.
+
+          # Deploy the PrometheusRule custom resource for AlertManager based alerts.
+          # Requires that AlertManager is properly deployed.
+          enabled: false
+
+          # Selector labels to add to the PrometheusRules.
+          # When empty, defaults to:
+          #  release: prometheus
+          selectors: {}
+
+          # Some example rules.
+          rules: []
+          #  - alert: vault-HighResponseTime
+          #    annotations:
+          #      message: The response time of Vault is over 500ms on average over the last 5 minutes.
+          #    expr: vault_core_handle_request{quantile="0.5", namespace="mynamespace"} > 500
+          #    for: 5m
+          #    labels:
+          #      severity: warning
+          #  - alert: vault-HighResponseTime
+          #    annotations:
+          #      message: The response time of Vault is over 1s on average over the last 5 minutes.
+          #    expr: vault_core_handle_request{quantile="0.5", namespace="mynamespace"} > 1000
+          #    for: 5m
+          #    labels:
+          #      severity: critical

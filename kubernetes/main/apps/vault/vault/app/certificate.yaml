@@ -1,0 +1,20 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-tls
+spec:
+  dnsNames:
+    - vault.darkfellanetwork.com
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: zerossl-prod
+  privateKey:
+    algorithm: ECDSA
+    rotationPolicy: Always
+    size: 384
+  secretName: vault-tls
+  usages:
+    - digital signature
+    - key encipherment

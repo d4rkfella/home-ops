@@ -1,0 +1,94 @@
+---
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  unsupported:
+    podTemplate:
+      spec:
+        containers:
+          - securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+
+        initContainers:
+          - name: init-db
+            image: "ghcr.io/buroa/postgres-init:17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: &dbHost postgres17-rw.database.svc.cluster.local
+              - name: INIT_POSTGRES_PORT
+                value: '5432'
+              - name: INIT_POSTGRES_DBNAME
+                value: &dbName keycloak
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret keycloak-secret
+                    key: POSTGRES_SUPER_PASS
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
+            securityContext:
+              runAsUser: 65534
+              runAsGroup: 65534
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile: { type: RuntimeDefault }
+
+  db:
+    vendor: postgres
+    usernameSecret:
+      name: *secret
+      key: POSTGRES_USER
+    passwordSecret:
+      name: *secret
+      key: POSTGRES_PASS
+    host: *dbHost
+    database: *dbName
+    port: 5432
+    schema: public
+
+  instances: 1
+
+  image: ghcr.io/d4rkfella/keycloak:26.0.7@sha256:41e7234b3f3a6850b8389d6f3f93896b0c2a5208e4c8b6afa6d16f6a612d096a
+
+  startOptimized: true
+
+  additionalOptions:
+    - name: https-protocols
+      value: "TLSv1.3"
+
+  bootstrapAdmin:
+    user:
+      secret: *secret
+
+  proxy:
+    headers: xforwarded
+
+  hostname:
+    hostname: https://accounts.darkfellanetwork.com
+
+  http:
+    httpEnabled: false
+    httpsPort: 443
+    tlsSecret: keycloak-tls
+
+  ingress:
+    enabled: false

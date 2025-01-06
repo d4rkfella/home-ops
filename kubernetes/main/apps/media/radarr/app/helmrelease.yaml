@@ -1,0 +1,252 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app radarr
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
+            env:
+              INIT_POSTGRES_DBNAME: &dbName radarr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret radarr-secret
+                    key: INIT_POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_SUPER_PASS
+            securityContext:
+              runAsUser: 65534
+              runAsGroup: 65534
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: REDIS_PASSWORD
+              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
+              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+              runAsUser: 3000
+              runAsGroup: 3000
+
+          app:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.17.2.9580@sha256:67f345c91d1e0eab27f73044702892b01228b2425562de6110777a7ea4712e34
+            env:
+              TZ: Europe/Sofia
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: &port 80
+              RADARR__SERVER__BINDADDRESS: 127.0.0.1
+              RADARR__UPDATE__BRANCH: develop
+              RADARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: RADARR__AUTH__APIKEY
+              RADARR__POSTGRES__HOST: *dbHost
+              RADARR__POSTGRES__PORT: 5432
+              RADARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_USER
+              RADARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: INIT_POSTGRES_PASS
+              RADARR__POSTGRES__MAINDB: *dbName
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["/bin/sh", "-c", "curl -s http://localhost/ping | jq -e '.status == \"OK\"' > /dev/null"]
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 4180
+
+    ingress:
+      app:
+        annotations:
+          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>';
+            sub_filter_once on;
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: radarr-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: 4180
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 15Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          radarr:
+            app:
+              - path: /config
+
+      scripts:
+        type: configMap
+        name: radarr-configmap
+        defaultMode: 0550
+        advancedMounts:
+          radarr:
+            app:
+              - path: /scripts/pushover-notify.sh
+                subPath: pushover-notify.sh
+                readOnly: true
+
+      tmp:
+        type: emptyDir
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        advancedMounts:
+          radarr:
+            app:
+              - path: /data
+
+      oauth2-proxy-config:
+        type: configMap
+        name: radarr-oauth2-proxy-config
+        advancedMounts:
+          radarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true

@@ -41,8 +41,8 @@ spec:
                     name: *secret
                     key: POSTGRES_PASS
             securityContext:
-              runAsUser: 10002
-              runAsGroup: 10002
+              runAsUser: 65534
+              runAsGroup: 65534
               privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

@@ -102,20 +102,20 @@ spec:
               tag: 1.5.1@sha256:4f3f5f42e552979d75cf2f168d9f053134eefa11e9e42b4878bded3bb69978d4
             env:
               TZ: Europe/Sofia
-              POSTGRES_ENABLED: "true"
-              POSTGRES_HOST: *dbHost
-              POSTGRES_PORT: *dbPort
-              POSTGRES_DATABASE: *dbName
-              POSTGRES_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_USER
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASS
+              #POSTGRES_ENABLED: "true"
+              #POSTGRES_HOST: *dbHost
+              #POSTGRES_PORT: *dbPort
+              #POSTGRES_DATABASE: *dbName
+              #POSTGRES_USERNAME:
+                #valueFrom:
+                  #secretKeyRef:
+                    #name: *secret
+                    #key: POSTGRES_USER
+              #POSTGRES_PASSWORD:
+                #valueFrom:
+                  #secretKeyRef:
+                    #name: *secret
+                    #key: POSTGRES_PASS
               PLEX_TOKEN:
                 valueFrom:
                   secretKeyRef:

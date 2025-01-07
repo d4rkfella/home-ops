@@ -34,7 +34,7 @@ servers:
       - name: cache
         parameters: 30
       - name: rewrite
-        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
+        parameters: name exact pgsql-cluster-rw.test.com postgres17-rw.database.svc.cluster.local
       - name: loop
       - name: reload
       - name: loadbalance

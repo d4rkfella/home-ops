@@ -25,7 +25,7 @@ servers:
       - name: prometheus
         parameters: 0.0.0.0:9153
       - name: kubernetes
-        parameters: cluster.local in-addr.arpa ip6.arpa
+        parameters: cluster.local in-addr.arpa ip6.arpa pgsql-cluster-rw.darkfellanetwork.com
         configBlock: |-
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
@@ -59,10 +59,6 @@ servers:
       - name: log
         configBlock: |-
           class error
-      - name: rewrite
-        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
-      - name: fallthrough
-        parameters: true
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:

@@ -29,12 +29,12 @@ servers:
         configBlock: |-
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
+      - name: rewrite
+        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
       - name: forward
         parameters: . /etc/resolv.conf
       - name: cache
         parameters: 30
-      - name: block
-        parameters: pgsql-cluster-rw.darkfellanetwork.com
       - name: loop
       - name: reload
       - name: loadbalance
@@ -49,8 +49,6 @@ servers:
         parameters: . 192.168.91.41
       - name: cache
         parameters: 86400
-      - name: rewrite
-        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
       - name: loop
       - name: reload
       - name: loadbalance

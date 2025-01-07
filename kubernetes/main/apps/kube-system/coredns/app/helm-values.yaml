@@ -33,6 +33,8 @@ servers:
         parameters: . /etc/resolv.conf
       - name: cache
         parameters: 30
+      - name: rewrite
+        parameters: pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
       - name: loop
       - name: reload
       - name: loadbalance

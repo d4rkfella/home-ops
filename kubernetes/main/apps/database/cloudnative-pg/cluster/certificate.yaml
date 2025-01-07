@@ -1,0 +1,22 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pgsql-tls
+spec:
+  dnsNames:
+    - pgsql-cluster-rw.darkfellanetwork.com
+    - pgsql-cluster-ro.darkfellanetwork.com
+    - pgsql-cluster-r.darkfellanetwork.com
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: zerossl-prod
+  privateKey:
+    algorithm: ECDSA
+    rotationPolicy: Always
+    size: 384
+  secretName: pgsql-tls
+  usages:
+    - digital signature
+    - key encipherment

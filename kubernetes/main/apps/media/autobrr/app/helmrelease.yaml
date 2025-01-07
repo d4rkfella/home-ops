@@ -138,6 +138,8 @@ spec:
         runAsNonRoot: true
         runAsUser: 65534
         runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -178,6 +180,7 @@ spec:
       cnpg-ca-cert:
         type: secret
         name: cnpg-ca-cert
+        defaultMode: 0400
         globalMounts:
           - path: /etc/ssl/certs
             readOnly: true

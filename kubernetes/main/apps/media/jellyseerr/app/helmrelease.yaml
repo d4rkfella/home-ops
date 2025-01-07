@@ -91,6 +91,7 @@ spec:
               DB_USE_SSL: "true"
               DB_SSL_CA_FILE: "/etc/ssl/cnpg-ca.crt"
               DB_LOG_QUERIES: "true"
+              DB_SSL_REJECT_UNAUTHORIZED: "false"
             probes:
               liveness: &probes
                 enabled: true

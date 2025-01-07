@@ -88,6 +88,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: INIT_POSTGRES_PASS
+              DB_USE_SSL: "true"
             probes:
               liveness: &probes
                 enabled: true

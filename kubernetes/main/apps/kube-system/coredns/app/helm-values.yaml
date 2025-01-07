@@ -59,6 +59,10 @@ servers:
       - name: log
         configBlock: |-
           class error
+      - name: rewrite
+        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
+      - name: fallthrough
+        parameters: true
 affinity:
   nodeAffinity:
     requiredDuringSchedulingIgnoredDuringExecution:

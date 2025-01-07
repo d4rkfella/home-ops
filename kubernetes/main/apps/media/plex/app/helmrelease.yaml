@@ -58,10 +58,10 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            lifecycle:
-              postStart:
-                exec:
-                  command: ["/bin/sh", "-c", "mkdir -p /ssl/certs && openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passin pass: -passout pass: || exit 1"]
+            #lifecycle:
+              #postStart:
+                #exec:
+                  #command: ["/bin/sh", "-c", "mkdir -p /ssl/certs && openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passin pass: -passout pass: || exit 1"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

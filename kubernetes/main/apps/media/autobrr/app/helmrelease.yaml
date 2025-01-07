@@ -76,6 +76,8 @@ spec:
               AUTOBRR__POSTGRES_DATABASE: *dbName
               AUTOBRR__POSTGRES_HOST: *dbHost
               AUTOBRR__POSTGRES_PORT: 5432
+              AUTOBRR__POSTGRES_SSLMODE: verify-full
+              AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/pgsql-ca.crt"
               AUTOBRR__SESSION_SECRET:
                 valueFrom:
                   secretKeyRef:
@@ -172,3 +174,11 @@ spec:
 
       tmp:
         type: emptyDir
+
+      cnpg-ca-cert:
+        type: secret
+        name: cnpg-ca-cert
+        defaultMode: 0400
+        globalMounts:
+          - path: /etc/ssl/certs
+            readOnly: true

@@ -89,7 +89,7 @@ spec:
                     name: *secret
                     key: INIT_POSTGRES_PASS
               DB_USE_SSL: "true"
-              DB_SSL_CA_FILE: /etc/ssl/cnpg-ca.crt
+              DB_SSL_CA_FILE: /etc/ssl/certs/cnpg-ca.crt
               DB_LOG_QUERIES: "true"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
             probes:
@@ -181,5 +181,5 @@ spec:
         name: cnpg-ca-cert
         defaultMode: 0400
         globalMounts:
-          - path: /etc/ssl
+          - path: /etc/ssl/certs
             readOnly: true

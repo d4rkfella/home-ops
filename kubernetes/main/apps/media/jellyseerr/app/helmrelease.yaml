@@ -181,6 +181,6 @@ spec:
         name: cnpg-ca-cert
         defaultMode: 0400
         globalMounts:
-          - path: /etc/ssl/certs
+          - path: /etc/ssl/certs/cnpg-ca.crt
             subPath: cnpg-ca.crt
             readOnly: true

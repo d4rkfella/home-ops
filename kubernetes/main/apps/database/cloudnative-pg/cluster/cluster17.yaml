@@ -4,6 +4,8 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: postgres17
+  labels:
+    cnpg.io/reload: ""
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
@@ -36,6 +38,10 @@ spec:
     parameters:
       max_connections: "400"
       shared_buffers: 256MB
+    pg_hba:
+      - hostssl all all 172.16.0.0/16 scram-sha-256
+      - hostssl all all 127.0.0.1/32 scram-sha-256
+      - host all all all reject
   nodeMaintenanceWindow:
     inProgress: false
     reusePVC: true

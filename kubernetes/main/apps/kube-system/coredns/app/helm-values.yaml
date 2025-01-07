@@ -32,7 +32,7 @@ servers:
       - name: rewrite
         parameters: name exact pgsql-cluster-rw.k8s.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
       - name: forward
-        parameters: . /etc/resolv.conf
+        parameters: . 192.168.91.41
       - name: cache
         parameters: 30
       - name: loop

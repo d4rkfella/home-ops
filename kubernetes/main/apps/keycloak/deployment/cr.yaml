@@ -4,10 +4,22 @@ kind: Keycloak
 metadata:
   name: keycloak
 spec:
+  additionalOptions:
+    - name: db-url-properties
+      value: sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.cert
   unsupported:
     podTemplate:
       spec:
+        volumes:
+          - name: cnpg-ca-cert
+            secret:
+              secretName: cnpg-ca-cert
         containers:
+          - volumeMounts:
+              - name: cnpg-ca-cert
+                mountPath: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true
           - securityContext:
               privileged: false
               allowPrivilegeEscalation: false
@@ -62,6 +74,7 @@ spec:
       key: POSTGRES_PASS
     host: *dbHost
     database: *dbName
+    properties: sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.cert
     port: 5432
     schema: public
 

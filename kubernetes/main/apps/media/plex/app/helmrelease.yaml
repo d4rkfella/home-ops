@@ -32,13 +32,12 @@ spec:
         initContainers:
           cert:
             image:
-              repository: alpine
-              tag: 3.21@sha256:21dc6063fd678b478f57c0e13f47560d0ea4eeba26dfc947b2a4f81f686b9f45
+              repository: alpine/openssl
+              tag: latest@sha256:dbc93b5afe2c6b486d56e351338dcc8f2ed53460c950443481f7534d8cf70d2f
             command:
               - "/bin/sh"
               - "-c"
               - |
-                apk add --no-cache openssl && \
                 mkdir -p /ssl/certs && \
                 openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passin pass: -passout pass: || exit 1
             securityContext: &securityContext

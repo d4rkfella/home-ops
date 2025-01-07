@@ -71,7 +71,6 @@ spec:
       key: POSTGRES_PASS
     host: *dbHost
     database: *dbName
-    properties: sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.cert
     port: 5432
     schema: public
 

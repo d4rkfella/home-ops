@@ -4,9 +4,6 @@ kind: Keycloak
 metadata:
   name: keycloak
 spec:
-  additionalOptions:
-    - name: db-url-properties
-      value: sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.cert
   unsupported:
     podTemplate:
       spec:

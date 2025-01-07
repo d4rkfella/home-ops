@@ -25,7 +25,7 @@ servers:
       - name: prometheus
         parameters: 0.0.0.0:9153
       - name: kubernetes
-        parameters: cluster.local in-addr.arpa ip6.arpa pgsql-cluster-rw.darkfellanetwork.com
+        parameters: cluster.local in-addr.arpa ip6.arpa
         configBlock: |-
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
@@ -39,7 +39,7 @@ servers:
       - name: reload
       - name: loadbalance
   - zones:
-      - zone: darkfellanetwork.com
+      - zone: "*.darkfellanetwork.com"
         scheme: dns://
         use_tcp: true
     port: 53

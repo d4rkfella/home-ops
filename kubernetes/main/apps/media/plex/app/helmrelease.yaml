@@ -29,6 +29,22 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
+        initContainers:
+          cert:
+            image:
+              repository: alpine
+              tag: 3.21@sha256:21dc6063fd678b478f57c0e13f47560d0ea4eeba26dfc947b2a4f81f686b9f45
+            command:
+              - "/bin/sh"
+              - "-c"
+              - |
+                apk add --no-cache openssl && \
+                mkdir -p /ssl/certs && \
+                openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passin pass: -passout pass: || exit 1
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
@@ -37,8 +53,6 @@ spec:
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:32400
-              #PLEX_UID: 2000
-              #PLEX_GID: 2000
               NVIDIA_VISIBLE_DEVICES: all
               NVIDIA_DRIVER_CAPABILITIES: all
             probes:
@@ -62,10 +76,7 @@ spec:
               #postStart:
                 #exec:
                   #command: ["/bin/sh", "-c", "mkdir -p /ssl/certs && openssl pkcs12 -export -out /ssl/certs/certificate.p12 -inkey /etc/secret/tls.key -in /etc/secret/tls.crt -passin pass: -passout pass: || exit 1"]
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 100m
@@ -128,8 +139,13 @@ spec:
             readOnly: true
       ssl:
         type: emptyDir
-        globalMounts:
-          - path: /ssl
+        advancedMounts:
+          plex:
+            app:
+              - path: /ssl
+                readOnly: true
+            cert:
+              - path: /ssl
       cert:
         type: secret
         name: plex-tls

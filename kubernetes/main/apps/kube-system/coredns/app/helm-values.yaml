@@ -30,7 +30,7 @@ servers:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: rewrite
-        parameters: name exact pgsql-cluster-rw.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
+        parameters: name exact pgsql-cluster-rw.k8s.darkfellanetwork.com postgres17-rw.database.svc.cluster.local
       - name: forward
         parameters: . /etc/resolv.conf
       - name: cache

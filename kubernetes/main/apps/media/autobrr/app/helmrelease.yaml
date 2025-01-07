@@ -77,7 +77,7 @@ spec:
               AUTOBRR__POSTGRES_HOST: *dbHost
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_SSLMODE: verify-full
-              AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/pgsql-ca.crt"
+              AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
               AUTOBRR__SESSION_SECRET:
                 valueFrom:
                   secretKeyRef:

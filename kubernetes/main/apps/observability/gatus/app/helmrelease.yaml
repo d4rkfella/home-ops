@@ -149,7 +149,7 @@ spec:
       cnpg-ca-cert:
         type: secret
         name: cnpg-ca-cert
-        defaultMode: 0400
+        defaultMode: 0444
         globalMounts:
           - path: /etc/ssl/certs/cnpg-ca.crt
             subPath: cnpg-ca.crt

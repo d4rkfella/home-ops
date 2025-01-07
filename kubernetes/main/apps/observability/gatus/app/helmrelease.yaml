@@ -137,10 +137,20 @@ spec:
     persistence:
       config:
         type: emptyDir
+
       config-file:
         type: configMap
         name: gatus-configmap
         globalMounts:
           - path: /config/config.yaml
             subPath: config.yaml
+            readOnly: true
+
+      cnpg-ca-cert:
+        type: secret
+        name: cnpg-ca-cert
+        defaultMode: 0400
+        globalMounts:
+          - path: /etc/ssl/certs/cnpg-ca.crt
+            subPath: cnpg-ca.crt
             readOnly: true

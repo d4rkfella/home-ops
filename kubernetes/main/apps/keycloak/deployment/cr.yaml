@@ -12,7 +12,7 @@ spec:
             secret:
               secretName: cnpg-ca-cert
         containers:
-            volumeMounts:
+            - volumeMounts:
               - name: cnpg-ca-cert
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: cnpg-ca.crt

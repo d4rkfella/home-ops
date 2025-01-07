@@ -7,12 +7,16 @@ spec:
   unsupported:
     podTemplate:
       spec:
+        volumes:
+          - name: cnpg-ca-cert
+            secret:
+              secretName: cnpg-ca-cert
         containers:
-          - securityContext:
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
-              capabilities: { drop: ["ALL"] }
+            volumeMounts:
+              - name: cnpg-ca-cert
+                mountPath: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true
 
         initContainers:
           - name: init-db

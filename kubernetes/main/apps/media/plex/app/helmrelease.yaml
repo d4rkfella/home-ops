@@ -90,7 +90,7 @@ spec:
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -111,13 +111,17 @@ spec:
         size: 50Gi
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-1m
-        globalMounts:
-          - path: /config/Library/Application Support/Plex Media Server
+        advancedMounts:
+          plex:
+            app:
+              - path: /config/Library/Application Support/Plex Media Server
 
       logs:
         type: emptyDir
-        globalMounts:
-          - path: /config/Library/Application Support/Plex Media Server/Logs
+        advancedMounts:
+          plex:
+            app:
+              - path: /config/Library/Application Support/Plex Media Server/Logs
 
       tmp:
         type: emptyDir
@@ -128,15 +132,21 @@ spec:
         size: 150Gi
         storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
+        advancedMounts:
+          plex:
+            app:
+              - path: /transcode
 
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data/media
-            subPath: media
-            readOnly: true
+        advancedMounts:
+          plex:
+            app:
+              - path: /data/media
+                subPath: media
+                readOnly: true
       ssl:
         type: emptyDir
         advancedMounts:

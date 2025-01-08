@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: dragonfly-operator
+  name: dragonfly-operator-controller-manager
 spec:
   interval: 30m
   chart:

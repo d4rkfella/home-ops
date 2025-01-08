@@ -12,6 +12,10 @@ spec:
             defaultMode: 420
             name: kubevirt-manager-oauth2-proxy-config
           name: oauth2-proxy-config
+        - secret:
+            defaultMode: 420
+            name: kubevirt-manager-oauth-secret
+          name: dragonfly-ca-cert
       containers:
         - name: oauth2-proxy
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.7.1-amd64@sha256:95f2002754cb0f1c1553aed56f4d6564a5b860e01baccb4e1b8311ffa25c167c
@@ -40,7 +44,7 @@ spec:
             - name: OAUTH2_PROXY_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  key: REDIS_PASSWORD
+                  key: DRAGONFLY_PASSWORD
                   name: *secret
             - name: OAUTH2_PROXY_SESSION_STORE_TYPE
               value: redis
@@ -50,10 +54,14 @@ spec:
               drop:
                 - ALL
             readOnlyRootFilesystem: true
-            runAsGroup: 2000
-            runAsUser: 2000
+            runAsGroup: 65534
+            runAsUser: 65534
           volumeMounts:
             - mountPath: /etc/oauth2-proxy.cfg
               name: oauth2-proxy-config
               readOnly: true
               subPath: oauth2-proxy.cfg
+            - mountPath: /etc/ssl/certs/dragonfly-ca.crt
+              name: dragonfly-ca-cert
+              readOnly: true
+              subPath: dragonfly-ca.crt

@@ -54,7 +54,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: INIT_POSTGRES_SUPER_PASS
-            securityContext:
+            securityContext: &securityContext
               runAsUser: 65534
               runAsGroup: 65534
               privileged: false
@@ -89,15 +89,9 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: REDIS_PASSWORD
+                    key: DRAGONFLY_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
-              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-              runAsUser: 3000
-              runAsGroup: 3000
+            securityContext: *securityContext
 
           app:
             image:
@@ -231,6 +225,10 @@ spec:
 
       tmp:
         type: emptyDir
+        advancedMounts:
+          radarr:
+            app:
+              - path: /tmp
 
       media:
         type: nfs
@@ -249,4 +247,14 @@ spec:
             oauth2-proxy:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      dragonfly-ca-cert:
+        type: secret
+        name: *secret
+        advancedMounts:
+          radarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/dragonfly-ca.crt
+                subPath: dragonfly-ca.crt
                 readOnly: true

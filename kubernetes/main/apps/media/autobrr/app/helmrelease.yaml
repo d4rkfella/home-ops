@@ -188,7 +188,6 @@ spec:
       cnpg-ca-cert:
         type: secret
         name: *secret
-        defaultMode: 0400
         advancedMounts:
           autobrr:
             app:

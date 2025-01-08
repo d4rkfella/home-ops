@@ -6,3 +6,4 @@ resources:
   # Pre Flux-Kustomizations
   - ./rbac.yaml
   - ./helmrelease.yaml
+  - https://raw.githubusercontent.com/dragonflydb/dragonfly-operator/v1.1.8/manifests/crd.yaml

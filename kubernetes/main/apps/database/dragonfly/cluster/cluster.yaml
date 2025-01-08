@@ -9,6 +9,7 @@ metadata:
     app.kubernetes.io/created-by: dragonfly-operator
   name: dragonfly-cluster
 spec:
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.26.0@sha256:b4e8651a30f3126b67f65d923657d9fb2438003cdae816c0b41dd5b8e28dd7f2
   replicas: 2
   resources:
     requests:

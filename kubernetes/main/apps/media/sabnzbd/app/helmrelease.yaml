@@ -61,15 +61,14 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: REDIS_PASSWORD
+                    key: DRAGONFLY_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
-              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-              runAsUser: 3000
-              runAsGroup: 3000
+              runAsUser: 65534
+              runAsGroup: 65534
 
           app:
             image:
@@ -165,15 +164,24 @@ spec:
         size: 2Gi
         storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /config
 
       logs:
         type: emptyDir
-        globalMounts:
-          - path: /config/logs
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /config/logs
 
       tmp:
         type: emptyDir
-        medium: Memory
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /tmp
 
       scripts:
         type: configMap
@@ -186,9 +194,11 @@ spec:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data
-        globalMounts:
-          - path: /data/downloads/usenet
-            subPath: downloads/usenet
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /data/downloads/usenet
+                subPath: downloads/usenet
 
       oauth2-proxy-config:
         type: configMap
@@ -198,4 +208,14 @@ spec:
             oauth2-proxy:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      dragonfly-ca-cert:
+        type: secret
+        name: *secret
+        advancedMounts:
+          sabnzbd:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/dragonfly-ca.crt
+                subPath: dragonfly-ca.crt
                 readOnly: true

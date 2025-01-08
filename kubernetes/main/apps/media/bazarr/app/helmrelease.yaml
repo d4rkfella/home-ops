@@ -269,7 +269,7 @@ spec:
 
       dragonfly-ca-cert:
         type: secret
-        name: dragonfly-ca-secret
+        name: *secret
         advancedMounts:
           bazarr:
             oauth2-proxy:

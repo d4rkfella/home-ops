@@ -33,6 +33,6 @@ spec:
       name: dragonfly-secret
       key: DRAGONFLY__PASSWORD
       optional: false
-  #tlsSecretRef:
-    #name: asd
-    #namespace: asd
+  tlsSecretRef:
+    name: dragonfly-cluster-tls
+    namespace: database

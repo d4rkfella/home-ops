@@ -267,12 +267,12 @@ spec:
                 subPath: oauth2-proxy.cfg
                 readOnly: true
 
-      dragonfly-ca-cert:
-        type: secret
-        name: dragonfly-ca-secret
-        advancedMounts:
-          bazarr:
-            oauth2-proxy:
-              - path: /etc/ssl/certs/dragonfly-ca.crt
-                subPath: dragonfly-ca.crt
-                readOnly: true
+      #dragonfly-ca-cert:
+        #type: secret
+        #name: dragonfly-ca-secret
+        #advancedMounts:
+          #bazarr:
+            #oauth2-proxy:
+              #- path: /etc/ssl/certs/dragonfly-ca.crt
+                #subPath: dragonfly-ca.crt
+                #readOnly: true

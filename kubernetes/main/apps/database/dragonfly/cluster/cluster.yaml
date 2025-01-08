@@ -10,6 +10,16 @@ metadata:
   name: dragonfly-cluster
 spec:
   image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.26.0@sha256:b4e8651a30f3126b67f65d923657d9fb2438003cdae816c0b41dd5b8e28dd7f2
+  env:
+    - name: MAX_MEMORY
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.memory
+          divisor: 1Mi
+  args:
+    - --maxmemory=$(MAX_MEMORY)Mi
+    - --proactor_threads=2
+    - --cluster_mode=emulated
   replicas: 2
   resources:
     requests:

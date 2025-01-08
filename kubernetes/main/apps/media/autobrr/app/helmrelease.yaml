@@ -173,15 +173,25 @@ spec:
     persistence:
       config:
         type: emptyDir
+        advancedMounts:
+          autobrr:
+            app:
+              - path: /config
 
       tmp:
         type: emptyDir
+        advancedMounts:
+          autobrr:
+            app:
+              - path: /tmp
 
       cnpg-ca-cert:
         type: secret
-        name: cnpg-ca-cert
+        name: *secret
         defaultMode: 0400
-        globalMounts:
-          - path: /etc/ssl/certs/cnpg-ca.crt
-            subPath: cnpg-ca.crt
-            readOnly: true
+        advancedMounts:
+          autobrr:
+            app:
+              - path: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true

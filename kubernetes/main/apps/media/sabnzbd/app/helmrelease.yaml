@@ -187,8 +187,11 @@ spec:
         type: configMap
         name: sabnzbd-scripts
         defaultMode: 0550
-        globalMounts:
-          - readOnly: true
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /scripts
+                readOnly: true
 
       media:
         type: nfs

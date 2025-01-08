@@ -195,7 +195,7 @@ spec:
 
       cnpg-ca-cert:
         type: secret
-        name: cnpg-ca-cert
+        name: *secret
         advancedMounts:
           gatus:
             app:

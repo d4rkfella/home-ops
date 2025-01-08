@@ -45,17 +45,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret vaultwarden-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
@@ -89,9 +89,8 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: REDIS_PASSWORD
+                    key: DRAGONFLY_PASSWORD
               OAUTH2_PROXY_SESSION_STORE_TYPE: redis
-              OAUTH2_PROXY_REDIS_CONNECTION_URL: redis://redis-master.database.svc.cluster.local:6379
             securityContext: *securityContext
 
           app:
@@ -229,9 +228,20 @@ spec:
 
       cnpg-ca-cert:
         type: secret
-        name: cnpg-ca-cert
-        defaultMode: 0400
-        globalMounts:
-          - path: /etc/ssl/certs/cnpg-ca.crt
-            subPath: cnpg-ca.crt
-            readOnly: true
+        name: *secret
+        advancedMounts:
+          vaultwarden:
+            app:
+              - path: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true
+
+      dragonfly-ca-cert:
+        type: secret
+        name: *secret
+        advancedMounts:
+          vaultwarden:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/dragonfly-ca.crt
+                subPath: dragonfly-ca.crt
+                readOnly: true

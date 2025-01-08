@@ -39,8 +39,6 @@ spec:
                 secretKeyRef:
                   key: COOKIE_SECRET
                   name: *secret
-            - name: OAUTH2_PROXY_REDIS_CONNECTION_URL
-              value: redis://redis-master.database.svc.cluster.local:6379
             - name: OAUTH2_PROXY_REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:

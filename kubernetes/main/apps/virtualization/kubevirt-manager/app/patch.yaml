@@ -14,7 +14,7 @@ spec:
           name: oauth2-proxy-config
         - secret:
             defaultMode: 420
-            name: kubevirt-manager-oauth-secret
+            secretName: kubevirt-manager-oauth-secret
           name: dragonfly-ca-cert
       containers:
         - name: oauth2-proxy

@@ -20,6 +20,15 @@ spec:
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
     - --cluster_mode=emulated
+    - --dbfilename=dragonfly-dump-{timestamp}
+  snapshot:
+    cron: "*/5 * * * *"
+    persistentVolumeClaimSpec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
   replicas: 2
   resources:
     requests:

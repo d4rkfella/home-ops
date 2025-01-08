@@ -57,9 +57,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: INIT_POSTGRES_SUPER_PASS
-            securityContext:
-              runAsUser: 65534
-              runAsGroup: 65534
+            securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -90,7 +88,7 @@ spec:
                     key: INIT_POSTGRES_PASS
               DB_USE_SSL: "true"
               DB_SSL_CA_FILE: /etc/ssl/certs/cnpg-ca.crt
-              DB_LOG_QUERIES: "true"
+              DB_LOG_QUERIES: "false"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
             probes:
               liveness: &probes
@@ -105,10 +103,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -165,21 +160,31 @@ spec:
         size: 20Gi
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
-        globalMounts:
-          - path: /app/config
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config
 
       logs:
         type: emptyDir
-        globalMounts:
-          - path: /app/config/logs
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config/logs
 
       tmp:
         type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /tmp
 
       cnpg-ca-cert:
         type: secret
         name: *secret
-        globalMounts:
-          - path: /etc/ssl/certs/cnpg-ca.crt
-            subPath: cnpg-ca.crt
-            readOnly: true
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true

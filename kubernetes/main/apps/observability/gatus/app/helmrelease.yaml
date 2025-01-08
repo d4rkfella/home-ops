@@ -32,9 +32,25 @@ spec:
             image:
               repository: ghcr.io/buroa/postgres-init
               tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
-            envFrom: &envFrom
-              - secretRef:
-                  name: gatus-secret
+            env:
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_PORT: &dbPort 5432
+              INIT_POSTGRES_DBNAME: &dbName gatus
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret gatus-secret
+                    key: POSTGRES_SUPER_PASS
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
             securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
@@ -69,7 +85,29 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
               WEB_PORT: &port 80
-            envFrom: *envFrom
+              POSTGRES_HOST: *dbHost
+              POSTGRES_PORT: *dbPort
+              POSTGRES_DBNAME: *dbName
+              POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              POSTGRES_ENCODED_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_ENCODED_PASS
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
             probes:
               liveness: &probes
                 enabled: true
@@ -134,23 +172,33 @@ spec:
     serviceAccount:
       create: true
       name: gatus
+
     persistence:
       config:
         type: emptyDir
+        advancedMounts:
+          gatus:
+            app:
+              - path: /config
+            init-config:
+              - path: /config
 
       config-file:
         type: configMap
         name: gatus-configmap
-        globalMounts:
-          - path: /config/config.yaml
-            subPath: config.yaml
-            readOnly: true
+        advancedMounts:
+          gatus:
+            app:
+              - path: /config/config.yaml
+                subPath: config.yaml
+                readOnly: true
 
       cnpg-ca-cert:
         type: secret
         name: cnpg-ca-cert
-        defaultMode: 0444
-        globalMounts:
-          - path: /etc/ssl/certs/cnpg-ca.crt
-            subPath: cnpg-ca.crt
-            readOnly: true
+        advancedMounts:
+          gatus:
+            app:
+              - path: /etc/ssl/certs/cnpg-ca.crt
+                subPath: cnpg-ca.crt
+                readOnly: true

@@ -28,6 +28,9 @@ ENV EDITOR=/usr/bin/nano
 
 WORKDIR /tmp
 
+FROM hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 AS source
+COPY --from=source /usr/local/bin/vault /usr/local/bin/vault
+
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \

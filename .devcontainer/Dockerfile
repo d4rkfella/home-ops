@@ -1,5 +1,3 @@
-FROM hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 AS source
-
 FROM alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8
 
 ARG USERNAME=vscode
@@ -28,7 +26,7 @@ ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=source /usr/local/bin/vault /usr/local/bin/vault
+COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /usr/local/bin/vault /usr/local/bin/vault
 
 WORKDIR /tmp
 

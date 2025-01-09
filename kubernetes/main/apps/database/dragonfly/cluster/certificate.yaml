@@ -1,12 +1,5 @@
 ---
 apiVersion: cert-manager.io/v1
-kind: Issuer
-metadata:
-  name: ca-issuer
-spec:
-  selfSigned: {}
----
-apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: dragonfly-cluster
@@ -18,12 +11,13 @@ spec:
     organizations:
       - dragonfly-cluster
   privateKey:
-    algorithm: RSA
-    encoding: PKCS1
-    size: 2048
+    algorithm: EC
+    encoding: PKCS8
+    size: 384
+    ecdsaCurve: P384
   dnsNames:
     - dragonfly-cluster.database.svc.cluster.local
   issuerRef:
-    name: ca-issuer
-    kind: Issuer
+    name: vault-issuer
+    kind: ClusterIssuer
     group: cert-manager.io

@@ -11,10 +11,9 @@ spec:
     organizations:
       - dragonfly-cluster
   privateKey:
-    algorithm: EC
+    algorithm: ECDSA
     encoding: PKCS8
     size: 384
-    ecdsaCurve: P384
   dnsNames:
     - dragonfly-cluster.database.svc.cluster.local
   issuerRef:

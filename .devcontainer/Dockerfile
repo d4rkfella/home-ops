@@ -26,7 +26,7 @@ ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /usr/local/bin/vault /usr/local/bin/vault
+COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /bin/vault /usr/local/bin/vault
 
 WORKDIR /tmp
 

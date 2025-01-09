@@ -19,6 +19,8 @@ ARG TASK_VERSION=v3.40.1
 ARG TALOSCTL_VERSION=v1.9.1
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
+# renovate: depName=square/certstrap
+ARG CERTSTRAP_VERSION=v1.3.0
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
@@ -33,7 +35,6 @@ RUN apk update && \
     curl \
     cosign \
     jq \
-    certstrap \
     nano \
     bash \
     bash-completion \
@@ -76,6 +77,8 @@ RUN apk update && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    curl -fsSLO https://github.com/square/certstrap/releases/download/$CERTSTRAP_VERSION/certstrap-linux-amd64 && \
+    mv ./certstrap-linux-amd64 /usr/local/bin/certstrap && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \

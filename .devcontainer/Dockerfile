@@ -33,6 +33,7 @@ RUN apk update && \
     curl \
     cosign \
     jq \
+    certstrap \
     nano \
     bash \
     bash-completion \

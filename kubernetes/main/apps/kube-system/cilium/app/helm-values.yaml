@@ -22,7 +22,7 @@ cluster:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
+  enabled: true
 hubble:
   enabled: false
 ipam:

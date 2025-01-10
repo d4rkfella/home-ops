@@ -36,121 +36,211 @@ spec:
             - port: "443"
     - toCIDRSet:
         - cidr: 103.21.244.0/22
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 103.22.200.0/22
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 103.31.4.0/22
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 104.16.0.0/13
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 104.24.0.0/14
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 108.162.192.0/18
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 131.0.72.0/22
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 141.101.64.0/18
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 162.158.0.0/15
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 172.64.0.0/13
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 173.245.48.0/20
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 188.114.96.0/20
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 190.93.240.0/20
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 197.234.240.0/22
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP
     - toCIDRSet:
         - cidr: 198.41.128.0/17
+      icmps:
+        - fields:
+            - family: IPv4
+              type: 3
+            - family: IPv4
+              type: 8
+            - family: IPv4
+              type: 11
       toPorts:
         - ports:
             - port: "7844"
               protocol: UDP
-            - port: "0"
-              protocol: ICMP

@@ -18,10 +18,6 @@
       "matchDataSources": ["docker"],
       "matchPackagePatterns": ["postgresql", "aws-cli"],
       "schedule": ["on the first day of the month"]
-    },
-    {
-      "matchFiles": ["k8s-0.secret.sops.yaml"],
-      "enabled": false
     }
   ]
 }

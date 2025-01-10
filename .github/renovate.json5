@@ -24,7 +24,7 @@
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "onboarding": false,
   "requireConfig": "ignored",
-  "ignorePaths": ["**/*.sops.*", "**/.archive/**", "**/resources/**", "kubernetes/main/bootstrap/talos"],
+  "ignorePaths": ["**/*.sops.*", "**/.archive/**", "**/resources/**"],
   "flux": {
     "fileMatch": [
       "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"

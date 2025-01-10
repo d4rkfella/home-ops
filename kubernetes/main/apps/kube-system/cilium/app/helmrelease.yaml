@@ -54,7 +54,7 @@ spec:
 
       ui:
         enabled: true
-        rollOutPods: false
+        rollOutPods: true
         ingress:
           enabled: true
           annotations:

@@ -25,9 +25,16 @@ spec:
         - ports:
             - port: "53"
               protocol: UDP
-          rules:
-            dns:
-              - matchPattern: "*"
+            - port: "53"
+              protocol: TCP
+    - toCIDRSet:
+        - cidr: 1.1.1.1/32
+      toPorts:
+        - ports:
+            - port: "853"
+              protocol: UDP
+            - port: "853"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             app.kubernetes.io/name: ingress-nginx
@@ -74,12 +81,64 @@ spec:
       icmps:
         - fields:
             - family: IPv4
-              type: 3
+              type: EchoReply
             - family: IPv4
-              type: 8
+              type: DestinationUnreachable
             - family: IPv4
-              type: 11
+              type: Redirect
             - family: IPv4
-              type: 5
+              type: Echo
             - family: IPv4
-              type: 0
+              type: RouterAdvertisement
+            - family: IPv4
+              type: RouterSelection
+            - family: IPv4
+              type: TimeExceeded
+            - family: IPv4
+              type: ParameterProblem
+            - family: IPv4
+              type: Timestamp
+            - family: IPv4
+              type: TimestampReply
+            - family: IPv4
+              type: Photuris
+            - family: IPv4
+              type: ExtendedEchoRequest
+            - family: IPv4
+              type: PacketTooBig
+            - family: IPv4
+              type: MulticastListenerQuery
+            - family: IPv4
+              type: MulticastListenerReport
+            - family: IPv4
+              type: MulticastListenerDone
+            - family: IPv4
+              type: RouterSolicitation
+            - family: IPv4
+              type: NeighborSolicitation
+            - family: IPv4
+              type: NeighborAdvertisement
+            - family: IPv4
+              type: RedirectMessage
+            - family: IPv4
+              type: RouterRenumbering
+            - family: IPv4
+              type: ICMPNodeInformationQuery
+            - family: IPv4
+              type: ICMPNodeInformationResponse
+            - family: IPv4
+              type: InverseNeighborDiscoverySolicitation
+            - family: IPv4
+              type: InverseNeighborDiscoveryAdvertisement
+            - family: IPv4
+              type: HomeAgentAddressDiscoveryRequest
+            - family: IPv4
+              type: HomeAgentAddressDiscoveryReply
+            - family: IPv4
+              type: MobilePrefixSolicitation
+            - family: IPv4
+              type: MobilePrefixAdvertisement
+            - family: IPv4
+              type: DuplicateAddressRequestCodeSuffix
+            - family: IPv4
+              type: DuplicateAddressConfirmationCodeSuffix

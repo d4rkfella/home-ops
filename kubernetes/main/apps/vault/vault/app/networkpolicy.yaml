@@ -26,7 +26,7 @@ spec:
             io.kubernetes.pod.namespace: observability
       toPorts:
         - ports:
-            - port: "8200"
+            - port: "8202"
   egress:
     - toEndpoints:
         - matchLabels:

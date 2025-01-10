@@ -10,7 +10,7 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: kube-prometheus-stack-prometheus-operator
+            app.kubernetes.io/name: prometheus
             io.kubernetes.pod.namespace: observability
       toPorts:
         - ports:

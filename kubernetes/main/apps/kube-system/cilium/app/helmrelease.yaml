@@ -29,7 +29,7 @@ spec:
 
   values:
     hubble:
-      enabled: false
+      enabled: true
       metrics:
         enabled:
           - dns:query
@@ -40,23 +40,23 @@ spec:
           - icmp
           - http
         serviceMonitor:
-          enabled: false
+          enabled: true
         dashboards:
-          enabled: false
+          enabled: true
           annotations:
             grafana_folder: Cilium
       relay:
-        enabled: false
-        rollOutPods: false
+        enabled: true
+        rollOutPods: true
         prometheus:
           serviceMonitor:
-            enabled: false
+            enabled: true
 
       ui:
-        enabled: false
+        enabled: true
         rollOutPods: false
         ingress:
-          enabled: false
+          enabled: true
           annotations:
             external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
             cert-manager.io/cluster-issuer: zerossl-prod

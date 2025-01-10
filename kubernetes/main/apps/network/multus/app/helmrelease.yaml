@@ -60,7 +60,7 @@ spec:
           cni-plugins-install:
             image:
               repository: ghcr.io/d4rkfella/install-cni-bundle
-              tag: v1.6.2@sha256:e9f4cb5dee7a448b4367b513056be784fed5751cc36fb7a677aa140b320afb6c
+              tag: v1.6.2@sha256:5af6c4b1a271c9824b0e79c1a0a3e5d9fa4691d3a5b4ab08989a38915c1590ae
 
         containers:
           multus:

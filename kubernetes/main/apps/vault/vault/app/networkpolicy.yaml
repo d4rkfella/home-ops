@@ -20,13 +20,6 @@ spec:
       toPorts:
         - ports:
             - port: "8200"
-    - fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: gatus
-            io.kubernetes.pod.namespace: observability
-      toPorts:
-        - ports:
-            - port: "8202"
   egress:
     - toEndpoints:
         - matchLabels:

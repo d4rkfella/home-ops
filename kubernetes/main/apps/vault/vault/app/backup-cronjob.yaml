@@ -1,10 +1,13 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: vault-snapshot-cronjob
+  name: &app vault-snapshot-cronjob
 spec:
   schedule: "0 */6 * * *"
   jobTemplate:
+    metadata:
+      labels:
+        app.kubernetes.io/name: *app
     spec:
      template:
         spec:

@@ -16,6 +16,10 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+          rules:
+            http:
+            - method: "GET"
+              path: "/metrics"
   egress:
     - toEndpoints:
         - matchLabels:
@@ -63,45 +67,7 @@ spec:
         - ports:
             - port: "7844"
               protocol: UDP
-    - toCIDRSet:
-        - cidr: 103.21.244.0/22
-        - cidr: 103.22.200.0/22
-        - cidr: 103.31.4.0/22
-        - cidr: 104.16.0.0/13
-        - cidr: 104.24.0.0/14
-        - cidr: 108.162.192.0/18
-        - cidr: 131.0.72.0/22
-        - cidr: 141.101.64.0/18
-        - cidr: 162.158.0.0/15
-        - cidr: 172.64.0.0/13
-        - cidr: 173.245.48.0/20
-        - cidr: 188.114.96.0/20
-        - cidr: 190.93.240.0/20
-        - cidr: 197.234.240.0/22
-        - cidr: 198.41.128.0/17
-      icmps:
+    - icmps:
         - fields:
-            - family: IPv4
-              type: EchoReply
-            - family: IPv4
-              type: DestinationUnreachable
-            - family: IPv4
-              type: Redirect
-            - family: IPv4
-              type: Echo
-            - family: IPv4
-              type: RouterAdvertisement
-            - family: IPv4
-              type: RouterSelection
-            - family: IPv4
-              type: TimeExceeded
-            - family: IPv4
-              type: ParameterProblem
-            - family: IPv4
-              type: Timestamp
-            - family: IPv4
-              type: TimestampReply
-            - family: IPv4
-              type: Photuris
-            - family: IPv4
-              type: ExtendedEchoRequest
+            - type: EchoRequest
+              family: IPv4

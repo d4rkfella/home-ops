@@ -26,6 +26,9 @@ spec:
     - name: nginx-external
       namespace: network
   values:
+    defaultPodOptions:
+      annotations:
+        io.cilium.proxy-visibility: "<Ingress/8080/TCP/HTTP>"
     controllers:
       cloudflared:
         replicas: 2

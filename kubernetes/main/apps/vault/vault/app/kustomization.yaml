@@ -8,7 +8,7 @@ resources:
   - ./secret.yaml
   - ./serviceaccount.yaml
   - ./backup-cronjob.yaml
-  - ./networkpolicy.yaml
+  #- ./networkpolicy.yaml
   - ./volsync-src.yaml
 configMapGenerator:
   - name: vault-gatus-ep

@@ -7,7 +7,7 @@ bandwidthManager:
   enabled: true
   bbr: true
 bpf:
-  masquerade: true
+  masquerade: false
   preallocateMaps: true
   tproxy: true
   datapathMode: netkit

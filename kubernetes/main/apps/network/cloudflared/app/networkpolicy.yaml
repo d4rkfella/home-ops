@@ -106,8 +106,6 @@ spec:
             - family: IPv4
               type: ExtendedEchoRequest
             - family: IPv4
-              type: InverseNeighborDiscoverySolicitation
-            - family: IPv4
               type: InverseNeighborDiscoveryAdvertisement
             - family: IPv4
               type: HomeAgentAddressDiscoveryRequest

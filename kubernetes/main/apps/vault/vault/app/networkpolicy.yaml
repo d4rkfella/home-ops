@@ -27,6 +27,12 @@ spec:
       toPorts:
         - ports:
             - port: "8200"
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: vault-snapshot-cronjob
+      toPorts:
+        - ports:
+            - port: "8200"
   egress:
     - toEndpoints:
         - matchLabels:

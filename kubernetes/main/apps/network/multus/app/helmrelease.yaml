@@ -96,7 +96,7 @@ spec:
           cni-plugins-installer:
             image:
               repository: ghcr.io/d4rkfella/install-cni-bundle
-              tag: v1.6.2@sha256:5af6c4b1a271c9824b0e79c1a0a3e5d9fa4691d3a5b4ab08989a38915c1590ae
+              tag: v1.6.2@sha256:22f1e3a1c51bef859abeb12e04f64d3220da3bcda65c8faed61f6fdd110654c9
             resources:
               requests:
                 cpu: "10m"

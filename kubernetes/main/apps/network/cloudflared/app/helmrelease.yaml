@@ -50,7 +50,8 @@ spec:
                     name: cloudflared-tunnel-secret
                     key: CF_TUNNEL_ID
             args:
-              - --edge-ip-version 4
+              - --edge-ip-version
+              - "4"
               - tunnel
               - --config
               - /etc/cloudflared/config/config.yaml

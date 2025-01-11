@@ -106,8 +106,6 @@ spec:
             - family: IPv4
               type: ExtendedEchoRequest
             - family: IPv4
-              type: MobilePrefixAdvertisement
-            - family: IPv4
               type: DuplicateAddressRequestCodeSuffix
             - family: IPv4
               type: DuplicateAddressConfirmationCodeSuffix

@@ -106,8 +106,6 @@ spec:
             - family: IPv4
               type: ExtendedEchoRequest
             - family: IPv4
-              type: RouterSolicitation
-            - family: IPv4
               type: NeighborSolicitation
             - family: IPv4
               type: NeighborAdvertisement

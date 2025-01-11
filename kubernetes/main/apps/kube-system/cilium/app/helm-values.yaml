@@ -59,6 +59,7 @@ securityContext:
       - FOWNER
       - SETGID
       - SETUID
+      - NET_BIND_SERVICE
     cleanCiliumState:
       - NET_ADMIN
       - SYS_ADMIN

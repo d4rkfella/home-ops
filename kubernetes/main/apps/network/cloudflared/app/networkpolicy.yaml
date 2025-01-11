@@ -106,10 +106,6 @@ spec:
             - family: IPv4
               type: ExtendedEchoRequest
             - family: IPv4
-              type: HomeAgentAddressDiscoveryRequest
-            - family: IPv4
-              type: HomeAgentAddressDiscoveryReply
-            - family: IPv4
               type: MobilePrefixSolicitation
             - family: IPv4
               type: MobilePrefixAdvertisement

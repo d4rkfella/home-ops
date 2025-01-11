@@ -17,9 +17,6 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: external-secrets
             io.kubernetes.pod.namespace: external-secrets
-      toPorts:
-        - ports:
-            - port: "8200"
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: gatus
@@ -42,10 +39,12 @@ spec:
         - ports:
             - port: "53"
               protocol: UDP
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            app.kubernetes.io/name: kube-apiserver
+    - toEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+          - port: "6443"
+            protocol: TCP
     - toCIDRSet:
         - cidr: 15.230.221.0/24
         - cidr: 52.94.152.9/32

@@ -33,7 +33,7 @@ spec:
           cert:
             image:
               repository: alpine/openssl
-              tag: latest@sha256:dbc93b5afe2c6b486d56e351338dcc8f2ed53460c950443481f7534d8cf70d2f
+              tag: latest@sha256:f9d029454db886212f12c3aae905934dd791b362b32ad191ddd9ac7fd3747c9e
             command:
               - "/bin/sh"
               - "-c"

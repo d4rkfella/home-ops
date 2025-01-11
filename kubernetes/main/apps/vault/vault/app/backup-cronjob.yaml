@@ -5,11 +5,11 @@ metadata:
 spec:
   schedule: "0 */6 * * *"
   jobTemplate:
-    metadata:
-      labels:
-        app.kubernetes.io/name: *app
     spec:
      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: *app
         spec:
           serviceAccountName: vault-snapshotter
           volumes:

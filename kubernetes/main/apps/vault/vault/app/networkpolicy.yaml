@@ -42,6 +42,10 @@ spec:
         - ports:
             - port: "53"
               protocol: UDP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: kube-system
+            app.kubernetes.io/name: kube-apiserver
     - toCIDRSet:
         - cidr: 15.230.221.0/24
         - cidr: 52.94.152.9/32

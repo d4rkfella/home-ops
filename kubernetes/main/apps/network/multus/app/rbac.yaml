@@ -9,7 +9,7 @@ rules:
     verbs: ["*"]
   - apiGroups: [""]
     resources: ["pods", "pods/status"]
-    verbs: ["get", "update"]
+    verbs: ["*"]
   - apiGroups: ["", "events.k8s.io"]
     resources: ["events"]
     verbs: ["create", "patch", "update"]

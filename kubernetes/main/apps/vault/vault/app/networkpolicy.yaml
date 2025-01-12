@@ -26,6 +26,13 @@ spec:
             - port: "8200"
     - fromEndpoints:
         - matchLabels:
+            app.kubernetes.io/name: cert-manager
+            io.kubernetes.pod.namespace: cert-manager
+      toPorts:
+        - ports:
+            - port: "8200"
+    - fromEndpoints:
+        - matchLabels:
             app.kubernetes.io/name: vault-snapshot-cronjob
       toPorts:
         - ports:

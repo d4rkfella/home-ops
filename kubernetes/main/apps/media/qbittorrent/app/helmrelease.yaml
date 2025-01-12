@@ -65,7 +65,7 @@ spec:
                     key: PUSHOVER_USER_KEY
             probes:
               readiness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   exec:

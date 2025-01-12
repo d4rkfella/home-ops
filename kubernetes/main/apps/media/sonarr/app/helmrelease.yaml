@@ -90,7 +90,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
-              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
             securityContext: *securityContext
 
           app:
@@ -141,9 +140,10 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  exec:
-                    command: ["/bin/sh", "-c", "curl -s http://127.0.0.1/ping | jq -e '.status == \"OK\"' > /dev/null"]
-                  initialDelaySeconds: 10
+                  httpGet:
+                    path: /ping
+                    port: 4180
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

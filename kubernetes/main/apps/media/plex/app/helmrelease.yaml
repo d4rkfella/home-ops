@@ -59,9 +59,10 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  exec:
-                    command: ["/bin/sh", "-c", "curl -s http://localhost:32400/identity | grep -q 'MediaContainer'"]
-                  initialDelaySeconds: 1
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

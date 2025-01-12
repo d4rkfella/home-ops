@@ -60,7 +60,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    scheme: https
+                    scheme: HTTPS
                     path: /identity
                     port: 32400
                   initialDelaySeconds: 0

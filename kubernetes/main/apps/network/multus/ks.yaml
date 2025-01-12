@@ -10,7 +10,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *appname
-  interval: 31m
+  interval: 30m
   timeout: 5m
   path: "./kubernetes/main/apps/network/multus/app"
   prune: true

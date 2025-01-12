@@ -75,6 +75,11 @@ spec:
                   periodSeconds: 10
                   failureThreshold: 3
               liveness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false

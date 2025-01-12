@@ -56,10 +56,11 @@ spec:
               NVIDIA_DRIVER_CAPABILITIES: all
             probes:
               liveness: &probes
-                enabled: false
+                enabled: true
                 custom: true
                 spec:
                   httpGet:
+                    scheme: https
                     path: /identity
                     port: 32400
                   initialDelaySeconds: 0

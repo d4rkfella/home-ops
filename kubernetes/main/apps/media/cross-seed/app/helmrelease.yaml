@@ -41,7 +41,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/ping
-                    port: *port
+                    port: 2468
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

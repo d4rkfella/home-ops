@@ -149,7 +149,6 @@ spec:
           multus:
             cni-plugins-installer:
               - path: /host/opt/cni/bin
-                mountPropagation: Bidirectional
             multus-shim-installer:
               - path: /host/opt/cni/bin
             multus-daemon:

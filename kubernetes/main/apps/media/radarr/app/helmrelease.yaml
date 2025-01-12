@@ -143,7 +143,7 @@ spec:
                 spec:
                   httpGet:
                     path: /ping
-                    port: *port
+                    port: 4180
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

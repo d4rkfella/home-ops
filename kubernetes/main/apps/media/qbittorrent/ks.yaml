@@ -16,7 +16,7 @@ spec:
     kind: GitRepository
     name: home-kubernetes
   wait: false
-  interval: 31m
+  interval: 30m
   timeout: 5m
   dependsOn:
     - name: external-secrets-stores

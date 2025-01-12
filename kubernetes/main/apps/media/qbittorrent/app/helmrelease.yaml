@@ -166,21 +166,9 @@ spec:
     service:
       app:
         controller: qbittorrent
-        type: LoadBalancer
-        allocateLoadBalancerNodePorts: false
-        annotations:
-          lbipam.cilium.io/ips: 192.168.91.82
         ports:
           http:
             port: *port
-          bittorrent-tcp:
-            enabled: true
-            port: *torrentPort
-            protocol: TCP
-          bittorrent-udp:
-            enabled: true
-            port: *torrentPort
-            protocol: UDP
 
     ingress:
       app:

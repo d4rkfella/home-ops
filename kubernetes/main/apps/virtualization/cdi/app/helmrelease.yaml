@@ -666,11 +666,11 @@ spec:
           roleRef:
             identifier: cluster
           subjects:
-            - identifier: cdi-operator
+            - identifier: default
         namespaced:
           enabled: true
           type: RoleBinding
           roleRef:
             identifier: namespaced
           subjects:
-            - identifier: cdi-operator
+            - identifier: default

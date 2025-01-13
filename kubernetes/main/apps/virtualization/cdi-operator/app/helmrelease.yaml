@@ -66,6 +66,9 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
+              runAsNonRoot: true
+              seccompProfile:
+                type: RuntimeDefault
 
     defaultPodOptions:
       nodeSelector:
@@ -87,7 +90,6 @@ spec:
           operator: Exists
       securityContext:
         runAsNonRoot: true
-        seccompProfile: { type: RuntimeDefault }
 
     rbac:
       roles:

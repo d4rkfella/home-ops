@@ -14,7 +14,7 @@ spec:
     - name: kubevirt
     - name: cdi
   path: ./kubernetes/main/apps/virtualization/kubevirt-manager/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

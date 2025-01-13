@@ -664,9 +664,7 @@ spec:
           enabled: true
           type: ClusterRoleBinding
           roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: cdi-operator-cluster
+            identifier: cluster
           subjects:
           - kind: ServiceAccount
             name: cdi-operator

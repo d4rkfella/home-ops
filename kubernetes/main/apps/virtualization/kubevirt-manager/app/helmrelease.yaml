@@ -161,6 +161,8 @@ spec:
         enabled: true
         apiVersion: scheduling.k8s.io/v1
         kind: PriorityClass
+        labels:
+          kubevirt-manager.io/managed: "true"
         spec:
           preemptionPolicy: Never
           value: 999999999
@@ -169,6 +171,8 @@ spec:
         enabled: true
         apiVersion: scheduling.k8s.io/v1
         kind: PriorityClass
+        labels:
+          kubevirt-manager.io/managed: "true"
         spec:
           preemptionPolicy: PreemptLowerPriority
           value: 1000000

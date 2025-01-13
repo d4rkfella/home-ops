@@ -109,7 +109,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/healthz/liveness
-                    port: 4180
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -120,7 +120,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/healthz/readiness
-                    port: 4180
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1

@@ -29,18 +29,18 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    global:
+      propagateGlobalMetadataToPods: true
     serviceAccount:
       create: true
       name: *app
     controllers:
       cdi-operator:
-        annotations:
-          reloader.stakater.com/auto: "true"
         labels:
           cdi.kubevirt.io: cdi-operator
           operator.cdi.kubevirt.io: ""
           prometheus.cdi.kubevirt.io: "true"
-
+          name: cdi-operator
         containers:
           cdi-operator:
             image:

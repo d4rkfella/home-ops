@@ -90,7 +90,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
-              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
             securityContext: *securityContext
 
           app:

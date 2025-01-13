@@ -133,7 +133,7 @@ spec:
         type: configMap
         name: kubevirt-manager-oauth2-proxy-config
         advancedMounts:
-          sonarr:
+          kubevirt-manager:
             oauth2-proxy:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
@@ -143,7 +143,7 @@ spec:
         type: secret
         name: *secret
         advancedMounts:
-          sonarr:
+          kubevirt-manager:
             oauth2-proxy:
               - path: /etc/ssl/certs/dragonfly-ca.crt
                 subPath: dragonfly-ca.crt

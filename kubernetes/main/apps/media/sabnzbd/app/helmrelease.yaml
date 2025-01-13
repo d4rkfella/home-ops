@@ -62,7 +62,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
-              OAUTH2_PROXY_SESSION_STORE_TYPE: redis
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -98,9 +97,10 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  exec:
-                    command: ["/bin/sh", "-c", "curl -s http://localhost/api?mode=version | jq -e '.version' > /dev/null"]
-                  initialDelaySeconds: 10
+                  httpGet:
+                    path: /api?mode=version
+                    port: *port
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

@@ -129,6 +129,27 @@ spec:
             app:
               - path: /var/run
 
+      oauth2-proxy-config:
+        type: configMap
+        name: kubevirt-manager-oauth2-proxy-config
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      dragonfly-ca-cert:
+        type: secret
+        name: *secret
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/dragonfly-ca.crt
+                subPath: dragonfly-ca.crt
+                readOnly: true
+
+
     rawResources:
       vm-standard:
         enabled: true

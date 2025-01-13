@@ -3,14 +3,14 @@ kind: Namespace
 metadata:
   labels:
     cdi.kubevirt.io: ""
-  name: cdi-operator
+  name: cdi
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/notification.toolkit.fluxcd.io/provider_v1beta3.json
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
 metadata:
   name: alert-manager
-  namespace: cdi-operator
+  namespace: cdi
 spec:
   type: alertmanager
   address: http://alertmanager-operated.observability.svc.cluster.local:9093/api/v2/alerts/
@@ -20,7 +20,7 @@ apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
   name: alert-manager
-  namespace: cdi-operator
+  namespace: cdi
 spec:
   providerRef:
     name: alert-manager

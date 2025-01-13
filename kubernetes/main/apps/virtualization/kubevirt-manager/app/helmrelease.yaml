@@ -31,7 +31,7 @@ spec:
   values:
     global:
       labels:
-        kubevirt-manager.io/version: "{{ .Values.controllers.kubevirt-manager.containers.app.tag }}"
+        kubevirt-manager.io/version: "{{ .Values.controllers.kubevirt-manager.containers.app.image.tag }}"
     serviceAccount:
       create: true
       name: *app

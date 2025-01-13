@@ -29,6 +29,9 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    global:
+      labels:
+        kubevirt-manager.io/version: "{{ .Values.controllers.kubevirt-manager.containers.app.tag }}"
     serviceAccount:
       create: true
       name: *app

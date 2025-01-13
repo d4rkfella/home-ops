@@ -319,7 +319,6 @@ spec:
             namespace: kubevirt-manager
         kccm:
           enabled: true
-          nameOverride: kubevirt-manager-kccm
           type: ClusterRoleBinding
           roleRef:
             apiGroup: rbac.authorization.k8s.io
@@ -331,7 +330,6 @@ spec:
             namespace: kubevirt-manager
         cas-workload:
           enabled: true
-          nameOverride: kubevirt-manager-cas-workload
           type: ClusterRoleBinding
           roleRef:
             apiGroup: rbac.authorization.k8s.io
@@ -343,7 +341,6 @@ spec:
             namespace: kubevirt-manager
         cas-management:
           enabled: true
-          nameOverride: kubevirt-manager-cas-management
           type: ClusterRoleBinding
           roleRef:
             apiGroup: rbac.authorization.k8s.io

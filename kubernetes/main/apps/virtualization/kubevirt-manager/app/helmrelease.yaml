@@ -74,8 +74,7 @@ spec:
             image:
               repository: kubevirtmanager/kubevirt-manager
               tag: 1.4.2@sha256:2cfa03ebb518225c21ee0d2dae64d58b16b8cb8976290c64f992b41924a1b466
-            securityContext: *securityContext
-
+            securityContext: &securityContext
 
     defaultPodOptions:
       securityContext:
@@ -314,9 +313,7 @@ spec:
             kind: ClusterRole
             name: kubevirt-manager
           subjects:
-          - kind: ServiceAccount
-            name: kubevirt-manager
-            namespace: kubevirt-manager
+            - identifier: default
         kccm:
           enabled: true
           type: ClusterRoleBinding
@@ -325,9 +322,7 @@ spec:
             kind: ClusterRole
             name: kubevirt-manager-kccm
           subjects:
-          - kind: ServiceAccount
-            name: kubevirt-manager
-            namespace: kubevirt-manager
+            - identifier: default
         cas-workload:
           enabled: true
           type: ClusterRoleBinding
@@ -336,9 +331,7 @@ spec:
             kind: ClusterRole
             name: kubevirt-manager-cas-workload
           subjects:
-          - kind: ServiceAccount
-            name: kubevirt-manager
-            namespace: kubevirt-manager
+            - identifier: default
         cas-management:
           enabled: true
           type: ClusterRoleBinding
@@ -347,6 +340,4 @@ spec:
             kind: ClusterRole
             name: kubevirt-manager-cas-management
           subjects:
-          - kind: ServiceAccount
-            name: kubevirt-manager
-            namespace: kubevirt-manager
+            - identifier: default

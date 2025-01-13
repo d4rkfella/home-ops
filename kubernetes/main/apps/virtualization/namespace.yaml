@@ -42,3 +42,10 @@ spec:
     - "dial.*tcp.*timeout"
     - "waiting.*socket"
   suspend: false
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cdi.kubevirt.io: ""
+  name: cdi

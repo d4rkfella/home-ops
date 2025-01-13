@@ -4,11 +4,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app vaultwarden
-  namespace: vaultwarden
 spec:
   interval: 30m
   chart:
     spec:
+      verify:
+        provider: cosign
       chart: app-template
       version: 3.6.1
       sourceRef:
@@ -152,9 +153,10 @@ spec:
                 enabled: true
                 custom: true
                 spec:
-                  exec:
-                    command: ["/bin/sh", "-c", "curl --fail --silent --show-error http://localhost/alive"]
-                  initialDelaySeconds: 10
+                  httpGet:
+                    path: /alive
+                    port: 4180
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

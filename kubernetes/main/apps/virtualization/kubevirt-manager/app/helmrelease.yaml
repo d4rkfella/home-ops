@@ -315,35 +315,27 @@ spec:
           enabled: true
           type: ClusterRoleBinding
           roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: kubevirt-manager
+            identifier: kubevirt-manager
           subjects:
             - identifier: default
         kccm:
           enabled: true
           type: ClusterRoleBinding
           roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: kubevirt-manager-kccm
+            identifier: kccm
           subjects:
             - identifier: default
         cas-workload:
           enabled: true
           type: ClusterRoleBinding
           roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: kubevirt-manager-cas-workload
+            identifier: cas-workload
           subjects:
             - identifier: default
         cas-management:
           enabled: true
           type: ClusterRoleBinding
           roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: kubevirt-manager-cas-management
+            identifier: cas-management
           subjects:
             - identifier: default

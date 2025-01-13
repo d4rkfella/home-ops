@@ -104,30 +104,6 @@ spec:
               limits:
                 cpu: "750m"
                 memory: "2Gi"
-      openebs-zfs-1m:
-        apiVersion: cdi.kubevirt.io/v1beta1
-        kind: StorageProfile
-        spec:
-          claimPropertySets:
-            - accessModes:
-                - ReadWriteOnce
-              volumeMode: Filesystem
-      openebs-zfs-128k:
-        apiVersion: cdi.kubevirt.io/v1beta1
-        kind: StorageProfile
-        spec:
-          claimPropertySets:
-            - accessModes:
-                - ReadWriteOnce
-              volumeMode: Filesystem
-      openebs-zfs-32k:
-        apiVersion: cdi.kubevirt.io/v1beta1
-        kind: StorageProfile
-        spec:
-          claimPropertySets:
-            - accessModes:
-                - ReadWriteOnce
-              volumeMode: Filesystem
 
     rbac:
       roles:

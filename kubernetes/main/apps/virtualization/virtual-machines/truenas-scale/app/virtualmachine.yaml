@@ -51,9 +51,6 @@ spec:
             - disk:
                 bus: virtio
               name: truenas-scale-os-disk
-            - cdrom:
-                bus: sata
-              name: truenas-scale-iso
         machine:
           type: q35
         resources:
@@ -63,6 +60,3 @@ spec:
       - name: truenas-scale-os-disk
         persistentVolumeClaim:
           claimName: truenas-scale-os-disk
-      - name: truenas-scale-iso
-        persistentVolumeClaim:
-          claimName: truenas-scale-iso

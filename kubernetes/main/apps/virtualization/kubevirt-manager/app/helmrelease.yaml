@@ -174,7 +174,6 @@ spec:
       roles:
         kubevirt-manager:
           enabled: true
-          nameOverride: kubevirt-manager
           type: ClusterRole
           rules:
             - apiGroups: [""]
@@ -246,9 +245,8 @@ spec:
             - apiGroups: ["kubevirt-manager.io"]
               resources: ["images"]
               verbs: ["*"]
-        kubevirt-manager-kccm:
+        kccm:
           enabled: true
-          nameOverride: kubevirt-manager-kccm
           type: ClusterRole
           rules:
             - apiGroups: ["kubevirt.io"]
@@ -263,9 +261,8 @@ spec:
             - apiGroups: [""]
               resources: ["services"]
               verbs: ["*"]
-        kubevirt-manager-cas-workload:
+        cas-workload:
           enabled: true
-          nameOverride: kubevirt-manager-cas-workload
           type: ClusterRole
           rules:
             - apiGroups: [""]
@@ -298,9 +295,8 @@ spec:
             - apiGroups: ["coordination.k8s.io"]
               resources: ["leases"]
               verbs: ["create", "get", "update"]
-        kubevirt-manager-cas-management:
+        cas-management:
           enabled: true
-          nameOverride: kubevirt-manager-cas-management
           type: ClusterRole
           rules:
             - apiGroups: ["cluster.x-k8s.io"]
@@ -312,7 +308,6 @@ spec:
       bindings:
         kubevirt-manager:
           enabled: true
-          nameOverride: kubevirt-manager
           type: ClusterRoleBinding
           roleRef:
             apiGroup: rbac.authorization.k8s.io
@@ -322,7 +317,7 @@ spec:
           - kind: ServiceAccount
             name: kubevirt-manager
             namespace: kubevirt-manager
-        kubevirt-manager-kccm:
+        kccm:
           enabled: true
           nameOverride: kubevirt-manager-kccm
           type: ClusterRoleBinding
@@ -334,7 +329,7 @@ spec:
           - kind: ServiceAccount
             name: kubevirt-manager
             namespace: kubevirt-manager
-        kubevirt-manager-cas-workload:
+        cas-workload:
           enabled: true
           nameOverride: kubevirt-manager-cas-workload
           type: ClusterRoleBinding
@@ -346,7 +341,7 @@ spec:
           - kind: ServiceAccount
             name: kubevirt-manager
             namespace: kubevirt-manager
-        kubevirt-manager-cas-management:
+        cas-management:
           enabled: true
           nameOverride: kubevirt-manager-cas-management
           type: ClusterRoleBinding

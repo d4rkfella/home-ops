@@ -9,7 +9,7 @@ spec:
   targetNamespace: virtualization
   dependsOn:
     - name: kubevirt
-    - name: cdi
+    - name: cdi-operator
   path: ./kubernetes/main/apps/virtualization/virtual-machines/windows-server/app
   prune: false
   sourceRef:

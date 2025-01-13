@@ -12,7 +12,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: kubevirt
-    - name: cdi
+    - name: cdi-operator
   path: ./kubernetes/main/apps/virtualization/kubevirt-manager/app
   prune: true
   sourceRef:

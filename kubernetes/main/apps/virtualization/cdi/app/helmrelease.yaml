@@ -666,15 +666,11 @@ spec:
           roleRef:
             identifier: cluster
           subjects:
-          - kind: ServiceAccount
-            name: cdi-operator
-            namespace: "{{ .Release.Namespace }}"
+            - identifier: cdi-operator
         namespaced:
           enabled: true
           type: RoleBinding
           roleRef:
             identifier: namespaced
           subjects:
-          - kind: ServiceAccount
-            name: cdi-operator
-            namespace: "{{ .Release.Namespace }}"
+            - identifier: cdi-operator

@@ -1,0 +1,13 @@
+
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: CDI
+spec:
+  config:
+    scratchSpaceStorageClass: openebs-zfs-1m
+    podResourceRequirements:
+      requests:
+        cpu: "100m"
+        memory: "60M"
+      limits:
+        cpu: "750m"
+        memory: "2Gi"

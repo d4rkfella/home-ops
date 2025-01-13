@@ -5,4 +5,3 @@ kind: Kustomization
 resources:
   - ./storageclass.yaml
   - ./snapshotclass.yaml
-  - ./rbac.yaml

@@ -160,6 +160,15 @@ spec:
           preemptionPolicy: Never
           value: 999999999
           description: Priority class for VMs which should not be preemtited.
+      vm-preemptible:
+        enabled: true
+        nameOverride: vm-preemptible
+        apiVersion: scheduling.k8s.io/v1
+        kind: PriorityClass
+        spec:
+          preemptionPolicy: PreemptLowerPriority
+          value: 1000000
+          description: Priority class for VMs which are allowed to be preemtited.
 
     rbac:
       roles:

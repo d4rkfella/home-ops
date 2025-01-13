@@ -30,6 +30,7 @@ spec:
     keepHistory: false
   values:
     global:
+      propagateGlobalMetadataToPods: true
       labels:
         kubevirt-manager.io/version: 1.4.2
     serviceAccount:
@@ -158,7 +159,6 @@ spec:
     rawResources:
       vm-standard:
         enabled: true
-        nameOverride: vm-standard
         apiVersion: scheduling.k8s.io/v1
         kind: PriorityClass
         spec:
@@ -167,7 +167,6 @@ spec:
           description: Priority class for VMs which should not be preemtited.
       vm-preemptible:
         enabled: true
-        nameOverride: vm-preemptible
         apiVersion: scheduling.k8s.io/v1
         kind: PriorityClass
         spec:

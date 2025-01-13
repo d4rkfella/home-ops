@@ -58,7 +58,7 @@ spec:
               UPLOAD_PROXY_IMAGE: quay.io/kubevirt/cdi-uploadproxy:v1.61.0
               VERBOSITY: "1"
               PULL_POLICY: IfNotPresent
-              MONITORING_NAMESPACE: ""
+              MONITORING_NAMESPACE: observability
             ports:
               - containerPort: 8080
                 name: metrics

@@ -10,7 +10,7 @@ spec:
   dependsOn:
     - name: kubevirt
   path: ./kubernetes/main/apps/virtualization/cdi/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
@@ -28,7 +28,7 @@ spec:
   dependsOn:
     - name: cdi
   path: ./kubernetes/main/apps/virtualization/cdi/config
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes

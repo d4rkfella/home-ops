@@ -174,7 +174,7 @@ spec:
       loki-rules:
         enabled: true
         data:
-          lokirule.yaml: |
+          cross-seed.yaml: |
             groups:
               - name: cross-seed
                 rules:

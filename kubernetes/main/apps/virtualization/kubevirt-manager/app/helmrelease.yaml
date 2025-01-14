@@ -202,7 +202,7 @@ spec:
               template:
                 engineVersion: v2
                 data:
-                  COOKIE_SECRET: {{ .COOKIE_SECRET }}
+                  COOKIE_SECRET: "{{{{ .COOKIE_SECRET }}}}"
                   CLIENT_SECRET: {{ .CLIENT_SECRET}}
                   CLIENT_ID: {{ .CLIENT_ID }}
                   DRAGONFLY_PASSWORD: {{ .DRAGONFLY__PASSWORD }}

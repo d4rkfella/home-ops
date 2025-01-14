@@ -196,3 +196,77 @@ spec:
               - path: /etc/ssl/certs/cnpg-ca.crt
                 subPath: cnpg-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+            kind: ClusterSecretStore
+            name: vault-backend
+          target:
+            name: *secret
+            template:
+              engineVersion: v2  '{{}}'
+              data:
+                AUTOBRR__SESSION_SECRET: '{{ "{{ .AUTOBRR_SESSION_SECRET }}" }}'
+                AUTOBRR_POSTGRESS_ENCODED_PASS: '{{ "{{ .AUTOBRR_POSTGRESS_ENCODED_PASS }}" }}'
+                INIT_POSTGRES_USER: '{{ "{{ .AUTOBRR_POSTGRES_USER }}" }}'
+                INIT_POSTGRES_PASS: '{{ "{{ .AUTOBRR_POSTGRES_PASS }}" }}'
+                INIT_POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                AUTOBRR__OIDC_CLIENT_SECRET: '{{ "{{ .AUTOBRR_CLIENT_SECRET }}" }}'
+                cnpg-ca.crt: '{{ "{{ .ca.crt }}" }}'
+          dataFrom:
+            - extract:
+                key: secrets/autobrr
+            - extract:
+                key: secrets/cloudnative-pg
+            - extract:
+                key: secrets/certificates/cnpg
+          data:
+            - secretKey: cnpg-ca.crt
+              remoteRef:
+                key: secrets/certificates/cnpg
+                property: ca.crt
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Autobrr"
+                group: guarded
+                url: "https://autobrr.darkfellanetwork.com/api/healthz/readiness"
+                interval: 1m
+                ui:
+                  hide-hostname: true
+                  hide-url: true
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY] == OK"
+                alerts:
+                  - type: pushover
+
+      loki-rules:
+        enabled: true
+        data:
+          autobrr.yaml: |
+            groups:
+              - name: autobrr
+                rules:
+                  - alert: AutobrrNetworkUnhealthy
+                    expr: |
+                      sum by (app) (count_over_time({app="autobrr"} |~ "(?i)network unhealthy"[2m])) > 0
+                    for: 2m
+                    labels:
+                      severity: critical
+                      category: logs
+                    annotations:
+                      app: "{{ $labels.app }}"
+                      summary: "{{ $labels.app }} has a unhealthy network"

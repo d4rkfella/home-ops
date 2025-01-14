@@ -299,7 +299,7 @@ spec:
                   CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
                   CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
                   DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  dragonfly-ca.crt: '{{ "{{ .ca.crt }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
             dataFrom:
               - extract:
                   key: secrets/plex
@@ -311,5 +311,8 @@ spec:
                   key: secrets/oauth2/bazarr
               - extract:
                   key: secrets/dragonfly
-              - extract:
+            data:
+              - secretKey: dragonfly-ca.crt
+                remoteRef:
                   key: secrets/certificates/dragonfly
+                  property: ca.crt

@@ -102,7 +102,7 @@ spec:
         type: emptyDir
       config-file:
         type: secret
-        name: &secret cross-seed-secret
+        name: *secret
         defaultMode: 0400
         globalMounts:
           - path: /config/config.js
@@ -132,7 +132,7 @@ spec:
               kind: ClusterSecretStore
               name: vault-backend
             target:
-              name: *secret
+              name: &secret cross-seed-secret
               template:
                 engineVersion: v2
                 data:

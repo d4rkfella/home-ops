@@ -196,5 +196,5 @@ spec:
                       severity: critical
                       category: logs
                     annotations:
-                      app: "{{ "{{ $labels.container }}" }}"
+                      app: {{ "{{ $labels.container }}" }}
                       summary: "{{ "{{ $labels.container }} failed to inject a torrent" }}"

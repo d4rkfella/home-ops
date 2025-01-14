@@ -235,6 +235,8 @@ spec:
     configMaps:
       gatus-ep:
         enabled: true
+        labels:
+          gatus.io/enabled: "true"
         data:
           config.yaml: |
             endpoints:
@@ -255,6 +257,8 @@ spec:
 
       loki-rules:
         enabled: true
+        labels:
+          loki_rule: "true"
         data:
           autobrr.yaml: |
             groups:

@@ -320,6 +320,8 @@ spec:
                   property: ca.crt
       gatus-ep:
         enabled: true
+        labels:
+          gatus.io/enabled: "true"
         apiVersion: external-secrets.io/v1beta1
         kind: ExternalSecret
         spec:

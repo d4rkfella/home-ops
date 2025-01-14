@@ -75,6 +75,8 @@ spec:
     configMaps:
       loki-rules:
         enabled: true
+        labels:
+          loki_rule: "true"
         data:
           cross-seed.yaml: |
             groups:

@@ -137,7 +137,7 @@ spec:
                 engineVersion: v2
                 data:
                   config.js: |
-                    {{`module.exports = {
+                    {{- `module.exports = {
                       action: "inject",
                       apiKey: "{{.CROSS_SEED_API_KEY}}",
                       delay: 30,
@@ -163,7 +163,7 @@ spec:
                           1, // SA
                           2, // TL
                       ].map(i => \`https://prowlarr.darkfellanetwork.com/\${i}/api?apikey={{ .PROWLARR_API_KEY }}\`),
-                    }`};
+                    }`}};
                   dataFrom:
                     - extract:
                         key: secrets/api-keys

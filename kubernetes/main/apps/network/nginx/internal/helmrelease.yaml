@@ -75,6 +75,7 @@ spec:
         ssl-ciphers: ECDHE+AESGCM:DHE+AESGCM
         ssl-dh-param: network/nginx-internal-dhparam
         use-forwarded-headers: "true"
+        use-http2: "true"
       metrics:
         enabled: true
         serviceMonitor:

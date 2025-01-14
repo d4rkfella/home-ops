@@ -100,7 +100,7 @@ spec:
         type: emptyDir
       config-file:
         type: secret
-        name: cross-seed-secret
+        name: &secret cross-seed-secret
         defaultMode: 0400
         globalMounts:
           - path: /config/config.js

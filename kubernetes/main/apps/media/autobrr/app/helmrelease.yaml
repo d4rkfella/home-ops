@@ -42,17 +42,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret autobrr-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext:
               runAsUser: 65534
               runAsGroup: 65534
@@ -82,17 +82,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: AUTOBRR__SESSION_SECRET
+                    key: SESSION_SECRET
               AUTOBRR__POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               AUTOBRR__POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: AUTOBRR_POSTGRESS_ENCODED_PASS
+                    key: POSTGRESS_ENCODED_PASS
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
@@ -100,7 +100,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: AUTOBRR__OIDC_CLIENT_SECRET
+                    key: OIDC_CLIENT_SECRET
               AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfellanetwork.com/api/auth/oidc/callback
             probes:
               liveness: &probes
@@ -205,19 +205,19 @@ spec:
         spec:
           spec:
             secretStoreRef:
-            kind: ClusterSecretStore
-            name: vault-backend
+              kind: ClusterSecretStore
+              name: vault-backend
             target:
               name: *secret
               template:
                 engineVersion: v2
                 data:
-                  AUTOBRR__SESSION_SECRET: '{{ "{{ .AUTOBRR_SESSION_SECRET }}" }}'
-                  AUTOBRR_POSTGRESS_ENCODED_PASS: '{{ "{{ .AUTOBRR_POSTGRESS_ENCODED_PASS }}" }}'
-                  INIT_POSTGRES_USER: '{{ "{{ .AUTOBRR_POSTGRES_USER }}" }}'
-                  INIT_POSTGRES_PASS: '{{ "{{ .AUTOBRR_POSTGRES_PASS }}" }}'
-                  INIT_POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  AUTOBRR__OIDC_CLIENT_SECRET: '{{ "{{ .AUTOBRR_CLIENT_SECRET }}" }}'
+                  SESSION_SECRET: '{{ "{{ .AUTOBRR_SESSION_SECRET }}" }}'
+                  POSTGRESS_ENCODED_PASS: '{{ "{{ .AUTOBRR_POSTGRESS_ENCODED_PASS }}" }}'
+                  POSTGRES_USER: '{{ "{{ .AUTOBRR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .AUTOBRR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  OIDC_CLIENT_SECRET: '{{ "{{ .AUTOBRR_CLIENT_SECRET }}" }}'
                   cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
             dataFrom:
               - extract:

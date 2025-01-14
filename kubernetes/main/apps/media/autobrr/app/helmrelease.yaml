@@ -218,7 +218,7 @@ spec:
                 INIT_POSTGRES_PASS: '{{ "{{ .AUTOBRR_POSTGRES_PASS }}" }}'
                 INIT_POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
                 AUTOBRR__OIDC_CLIENT_SECRET: '{{ "{{ .AUTOBRR_CLIENT_SECRET }}" }}'
-                cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
+                cnpg-ca.crt: '{{ "{{ index . "cnpg-ca.crt" }}" }}'
           dataFrom:
             - extract:
                 key: secrets/autobrr

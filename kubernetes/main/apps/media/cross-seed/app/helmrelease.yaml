@@ -152,15 +152,15 @@ spec:
                       outputDir: "/config",
                       port: 2468,
                       qbittorrentUrl: '{{ "https://{{ .QBITTORRENT_USERNAME }}:{{ .QBITTORRENT_PASSWORD }}@qbittorrent.darkfellanetwork.com" }}',
-                      radarr: '{{ ["https://radarr.darkfellanetwork.com/?apikey={{ .RADARR_API_KEY }}"] }}',
+                      radarr: '{{ "["https://radarr.darkfellanetwork.com/?apikey={{ .RADARR_API_KEY }}"]" }}',
                       skipRecheck: true,
-                      sonarr: '{{ ["https://sonarr.darkfellanetwork.com/?apikey={{ .SONARR_API_KEY }}"] }}',
+                      sonarr: '{{ "["https://sonarr.darkfellanetwork.com/?apikey={{ .SONARR_API_KEY }}"]" }}',
                       torrentDir: "/qBittorrent/BT_backup",
                       torznab: [
                           3, // IPT
                           1, // SA
                           2, // TL
-                      '{{ ].map(i => `https://prowlarr.darkfellanetwork.com/$${i}/api?apikey={{ .PROWLARR_API_KEY }}`) }}',
+                      '{{ "].map(i => `https://prowlarr.darkfellanetwork.com/$${i}/api?apikey={{ .PROWLARR_API_KEY }}`)" }}',
                     };
             dataFrom:
               - extract:

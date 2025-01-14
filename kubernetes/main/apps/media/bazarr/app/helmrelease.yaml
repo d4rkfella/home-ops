@@ -318,7 +318,44 @@ spec:
                 remoteRef:
                   key: secrets/certificates/dragonfly
                   property: ca.crt
-
+      gatus-ep:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                metadata:
+                  labels:
+                    gatus.io/enabled: "true"
+                engineVersion: v2
+                data:
+                  config.yaml: |
+                    endpoints:
+                      - name: "Bazarr"
+                        group: guarded
+                        url: "https://bazarr.darkfellanetwork.com/api/system/status"
+                        interval: 1m
+                        ui:
+                          hide-hostname: true
+                          hide-url: true
+                        client:
+                          dns-resolver: tcp://172.17.0.10:53
+                        conditions:
+                          - "[STATUS] == 200"
+                          - "[BODY].data.bazarr_directory == /app/bin"
+                        alerts:
+                          - type: pushover
+                        headers:
+                          X-API-KEY: '{{ {{ .BAZARR_API_KEY }} }}'
+            dataFrom:
+              - extract:
+                  key: secrets/api-keys
     configMaps:
       oauth2-proxy-config:
         enabled: true

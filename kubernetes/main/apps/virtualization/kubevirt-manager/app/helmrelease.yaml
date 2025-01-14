@@ -187,7 +187,7 @@ spec:
 
 
     rawResources:
-      secret-test:
+      secret:
         enabled: true
         apiVersion: external-secrets.io/v1beta1
         kind: ExternalSecret

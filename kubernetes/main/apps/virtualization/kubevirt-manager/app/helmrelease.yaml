@@ -163,7 +163,6 @@ spec:
         kind: ExternalSecret
         spec:
           spec:
-            refreshInterval: 5m
             secretStoreRef:
               kind: ClusterSecretStore
               name: vault-backend

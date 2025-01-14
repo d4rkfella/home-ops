@@ -347,7 +347,6 @@ spec:
             restic:
               repository: *volsync-secret
               copyMethod: Direct
-              storageClassName: *storageClass
               destinationPVC: *volsync-pvc
               enableFileDeletion: true
               moverSecurityContext: *moverSecurityContext

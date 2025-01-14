@@ -44,7 +44,7 @@ spec:
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: &secret radarr-secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
@@ -272,7 +272,7 @@ spec:
               kind: ClusterSecretStore
               name: vault-backend
             target:
-              name: *secret
+              name: "{{ .Release.Name }}-secret"
               template:
                 engineVersion: v2
                 data:

@@ -181,8 +181,10 @@ spec:
               size: 384
             secretName: plex-tls
             usages:
-              - digital signature
-              - key encipherment
+              - server auth
+            keystores:
+              pkcs12:
+                create: true
 
     configMaps:
       gatus-ep:

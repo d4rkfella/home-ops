@@ -4,6 +4,8 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app radarr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   interval: 30m
   chart:
@@ -43,17 +45,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret radarr-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               runAsUser: 65534
               runAsGroup: 65534
@@ -111,19 +113,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: RADARR__AUTH__APIKEY
+                    key: APIKEY
               RADARR__POSTGRES__HOST: *dbHost
               RADARR__POSTGRES__PORT: 5432
               RADARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               RADARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               RADARR__POSTGRES__MAINDB: *dbName
               PUSHOVER_USER_KEY:
                 valueFrom:
@@ -214,7 +216,7 @@ spec:
 
       scripts:
         type: configMap
-        name: radarr-configmap
+        name: radarr-scripts
         defaultMode: 0550
         advancedMounts:
           radarr:
@@ -258,3 +260,188 @@ spec:
               - path: /etc/ssl/certs/dragonfly-ca.crt
                 subPath: dragonfly-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  APIKEY: '{{ "{{ .RADARR_API_KEY }}" }}'
+                  PUSHOVER_TOKEN: '{{ "{{ .RADARR_PUSHOVER_TOKEN }}" }}'
+                  PUSHOVER_USER_KEY: '{{ "{{ .PUSHOVER_USER_KEY }}" }}'
+                  POSTGRES_USER: '{{ "{{ .RADARR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .RADARR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/cloudnative-pg
+              - extract:
+                  key: secrets/pushover
+              - extract:
+                  key: secrets/api-keys
+              - extract:
+                  key: secrets/oauth2/radarr
+              - extract:
+                  key: secrets/dragonfly
+            data:
+              - secretKey: dragonfly-ca.crt
+                remoteRef:
+                  key: secrets/certificates/dragonfly
+                  property: ca.crt
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Radarr"
+                group: guarded
+                url: "https://radarr.darkfellanetwork.com/ping"
+                interval: 1m
+                ui:
+                  hide-hostname: true
+                  hide-url: true
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY].status == OK"
+                alerts:
+                  - type: pushover
+      oauth2-proxy-config:
+        enabled: true
+        data:
+          oauth2-proxy.cfg: |
+            email_domains = [ "*" ]
+            upstreams = [ "http://127.0.0.1:80" ]
+            reverse_proxy = true
+            scope = "openid profile email"
+            cookie_secure = true
+            provider = "keycloak-oidc"
+            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            code_challenge_method = "S256"
+            cookie_domains = "radarr.darkfellanetwork.com"
+            whitelist_domains = "radarr.darkfellanetwork.com"
+            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+            skip_provider_button = true
+            cookie_expire = "30m"
+            cookie_refresh = "4m55s"
+            allowed_groups = [ "Admins" ]
+            redirect_url = "https://radarr.darkfellanetwork.com/oauth2/callback"
+            cookie_name = "__Secure-oauth2_proxy"
+            skip_auth_routes = [ "^/api(/|$)", "^/ping", "^/signalr(/|$)" ]
+            http_address = "0.0.0.0:4180"
+            cookie_csrf_per_request = true
+            cookie_csrf_expire = "5m"
+            ping_path = "/oauth2/ping"
+            ready_path = "/oauth2/ready"
+            cookie_samesite = "strict"
+            session_store_type = "redis"
+            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
+      scripts:
+        enabled: true
+        data:
+          pushover-notify.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+            set -euo pipefail
+
+            # User defined variables for pushover
+            PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-required}"
+            PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-required}"
+            PUSHOVER_PRIORITY="${PUSHOVER_PRIORITY:-"-2"}"
+
+            if [[ "${radarr_eventtype:-}" == "Test" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Test Notification"
+                printf -v PUSHOVER_MESSAGE \
+                    "Howdy this is a test notification from %s" \
+                        "${radarr_instancename:-Radarr}"
+                printf -v PUSHOVER_URL \
+                    "%s" \
+                        "${radarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "Open %s" \
+                        "${radarr_instancename:-Radarr}"
+            fi
+
+            if [[ "${radarr_eventtype:-}" == "Download" ]]; then
+                printf -v PUSHOVER_TITLE \
+                    "Movie %s" \
+                        "$( [[ "${radarr_isupgrade}" == "True" ]] && echo "Upgraded" || echo "Downloaded" )"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s (%s)</b><small>\n%s</small><small>\n\n<b>Client:</b> %s</small><small>\n<b>Quality:</b> %s</small><small>\n<b>Size:</b> %s</small>" \
+                        "${radarr_movie_title}" \
+                        "${radarr_movie_year}" \
+                        "${radarr_movie_overview}" \
+                        "${radarr_download_client:-Unknown}" \
+                        "${radarr_moviefile_quality:-Unknown}" \
+                        "$(numfmt --to iec --format "%8.2f" "${radarr_release_size:-0}")"
+                printf -v PUSHOVER_URL \
+                    "%s/movie/%s" \
+                        "${radarr_applicationurl:-localhost}" "${radarr_movie_tmdbid}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View movie in %s" \
+                        "${radarr_instancename:-Radarr}"
+            fi
+
+            if [[ "${radarr_eventtype:-}" == "ManualInteractionRequired" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Movie import requires intervention"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s (%s)</b><small>\n<b>Client:</b> %s</small>" \
+                        "${radarr_movie_title}" \
+                        "${radarr_movie_year}" \
+                        "${radarr_download_client:-Unknown}"
+                printf -v PUSHOVER_URL \
+                    "%s/activity/queue" \
+                        "${radarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View queue in %s" \
+                        "${radarr_instancename:-Radarr}"
+            fi
+
+            json_data=$(jo \
+                token="${PUSHOVER_TOKEN}" \
+                user="${PUSHOVER_USER_KEY}" \
+                title="${PUSHOVER_TITLE}" \
+                message="${PUSHOVER_MESSAGE}" \
+                url="${PUSHOVER_URL}" \
+                url_title="${PUSHOVER_URL_TITLE}" \
+                priority="${PUSHOVER_PRIORITY}" \
+                html="1"
+            )
+
+            status_code=$(curl \
+                --silent \
+                --write-out "%{http_code}" \
+                --output /dev/null \
+                --request POST  \
+                --header "Content-Type: application/json" \
+                --data-binary "${json_data}" \
+                "https://api.pushover.net/1/messages.json" \
+            )
+
+            printf "pushover notification returned with HTTP status code %s and payload: %s\n" \
+                "${status_code}" \
+                "$(echo "${json_data}" | jq --compact-output)" >&2

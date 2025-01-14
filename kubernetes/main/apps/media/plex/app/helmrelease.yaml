@@ -163,6 +163,25 @@ spec:
             readOnly: true
 
     rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: &secret "{{ .Release.Name }}-secret"
+              template:
+                engineVersion: v2
+                data:
+                  PKCS12_PASSWORD: '{{ {{ .PKCS12_PASSWORD }} }}'
+            dataFrom:
+              - extract:
+                  key: secrets/plex
+
       tls:
         enabled: true
         apiVersion: cert-manager.io/v1
@@ -185,6 +204,9 @@ spec:
             keystores:
               pkcs12:
                 create: true
+                passwordSecretRef:
+                  name: *secret
+                  key: PKCS12_PASSWORD
 
     configMaps:
       gatus-ep:

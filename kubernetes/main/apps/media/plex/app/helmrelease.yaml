@@ -177,7 +177,7 @@ spec:
               template:
                 engineVersion: v2
                 data:
-                  PKCS12_PASSWORD: '{{ {{ .PKCS12_PASSWORD }} }}'
+                  PKCS12_PASSWORD: '{{ "{{ .PKCS12_PASSWORD }}" }}'
             dataFrom:
               - extract:
                   key: secrets/plex

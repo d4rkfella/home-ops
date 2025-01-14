@@ -200,7 +200,8 @@ spec:
               size: 384
             secretName: plex-tls
             usages:
-              - server auth
+              - digital signature
+              - key encipherment
             keystores:
               pkcs12:
                 create: true

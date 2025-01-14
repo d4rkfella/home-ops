@@ -43,17 +43,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret prowlarr-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               runAsUser: 65534
               runAsGroup: 65534
@@ -111,19 +111,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: PROWLARR__AUTH__APIKEY
+                    key: APIKEY
               PROWLARR__POSTGRES__HOST: *dbHost
               PROWLARR__POSTGRES__PORT: "5432"
               PROWLARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               PROWLARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               PROWLARR__POSTGRES__MAINDB: *dbName
             probes:
               liveness: &probes
@@ -223,3 +223,95 @@ spec:
               - path: /etc/ssl/certs/dragonfly-ca.crt
                 subPath: dragonfly-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  APIKEY: '{{ "{{ .PROWLARR_API_KEY }}" }}'
+                  POSTGRES_USER: '{{ "{{ .PROWLARR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .PROWLARR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/api-keys
+              - extract:
+                  key: secrets/cloudnative-pg
+              - extract:
+                  key: secrets/oauth2/prowlarr
+              - extract:
+                  key: secrets/dragonfly
+            data:
+              - secretKey: dragonfly-ca.crt
+                remoteRef:
+                  key: secrets/certificates/dragonfly
+                  property: ca.crt
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Prowlarr"
+                group: guarded
+                url: "https://prowlarr.darkfellanetwork.com/ping"
+                interval: 1m
+                ui:
+                  hide-hostname: true
+                  hide-url: true
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY].status == OK"
+                alerts:
+                  - type: pushover
+      oauth2-proxy-config:
+        enabled: true
+        data:
+          oauth2-proxy.cfg: |
+            email_domains = [ "*" ]
+            upstreams = [ "http://127.0.0.1:80" ]
+            reverse_proxy = true
+            scope = "openid profile email"
+            cookie_secure = true
+            provider = "keycloak-oidc"
+            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            code_challenge_method = "S256"
+            cookie_domains = "prowlarr.darkfellanetwork.com"
+            whitelist_domains = "prowlarr.darkfellanetwork.com"
+            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+            skip_provider_button = true
+            cookie_expire = "30m"
+            cookie_refresh = "4m55s"
+            allowed_groups = [ "Admins" ]
+            redirect_url = "https://prowlarr.darkfellanetwork.com/oauth2/callback"
+            cookie_name = "__Secure-oauth2_proxy"
+            http_address = "0.0.0.0:4180"
+            cookie_csrf_per_request = true
+            cookie_csrf_expire = "5m"
+            skip_auth_routes = [ "(\\/|\\/([0-9]+)\\/)?api(\\/|$|[?])", "(\\/|\\/([0-9]+)\\/)?download(\\/|$|[?])", "^/ping", "^/signalr(/|$)" ]
+            ping_path = "/oauth2/ping"
+            ready_path = "/oauth2/ready"
+            cookie_samesite = "strict"
+            session_store_type = "redis"
+            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"

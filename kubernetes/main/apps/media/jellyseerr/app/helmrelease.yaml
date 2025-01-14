@@ -212,7 +212,7 @@ spec:
                   POSTGRES_USER: '{{ "{{ .JELLYSEERR_POSTGRES_USER }}" }}'
                   POSTGRES_PASS: '{{ "{{ .JELLYSEERR_POSTGRES_PASS }}" }}'
                   POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  cnpg-ca.crt: '{{ "{{ index . "cnpg-ca.crt" }}" }}'
+                  cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
             dataFrom:
               - extract:
                   key: secrets/cloudnative-pg

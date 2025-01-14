@@ -328,7 +328,7 @@ spec:
               kind: ClusterSecretStore
               name: vault-backend
             target:
-              name: *secret
+              name: bazarr-gatus-ep-secret
               template:
                 metadata:
                   labels:

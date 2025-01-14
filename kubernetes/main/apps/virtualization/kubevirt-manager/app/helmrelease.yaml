@@ -202,11 +202,11 @@ spec:
               template:
                 engineVersion: v2
                 data:
-                  COOKIE_SECRET: "{{{{ .COOKIE_SECRET }}}}"
-                  CLIENT_SECRET: {{ .CLIENT_SECRET | quote }}
-                  CLIENT_ID: {{ .CLIENT_ID | quote }}
-                  DRAGONFLY_PASSWORD: {{ .DRAGONFLY__PASSWORD | quote }}
-                  dragonfly-ca.crt: {{ index . "dragonfly-ca.crt" | quote }}
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY_PASSWORD }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
             dataFrom:
               - extract:
                   key: secrets/oauth2/kubevirt-manager

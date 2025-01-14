@@ -164,11 +164,6 @@ spec:
                           2, // TL
                       ].map(i => `https://prowlarr.darkfellanetwork.com/$${i}/api?apikey={{ .PROWLARR_API_KEY }}`),
                     };
-                  dataFrom:
-                    - extract:
-                        key: secrets/api-keys
-                    - extract:
-                        key: secrets/qbittorrent
             dataFrom:
               - extract:
                   key: secrets/api-keys

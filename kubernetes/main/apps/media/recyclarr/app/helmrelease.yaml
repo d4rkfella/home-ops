@@ -50,7 +50,7 @@ spec:
               COMPlus_EnableDiagnostics: "0"
             envFrom:
               - secretRef:
-                  name: recyclarr-secret
+                  name: &secret recyclarr-secret
             resources:
               requests:
                 cpu: 10m

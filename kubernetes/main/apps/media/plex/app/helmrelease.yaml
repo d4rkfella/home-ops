@@ -177,6 +177,7 @@ spec:
             keystores:
               pkcs12:
                 create: true
+                profile: Modern2023
                 passwordSecretRef:
                   name: *secret
                   key: PKCS12_PASSWORD

@@ -43,17 +43,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret sonarr-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               runAsUser: 65534
               runAsGroup: 65534
@@ -111,19 +111,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: SONARR__AUTH__APIKEY
+                    key: APIKEY
               SONARR__POSTGRES__HOST: *dbHost
               SONARR__POSTGRES__PORT: 5432
               SONARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               SONARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               SONARR__POSTGRES__MAINDB: *dbName
               PUSHOVER_USER_KEY:
                 valueFrom:
@@ -215,7 +215,7 @@ spec:
 
       scripts:
         type: configMap
-        name: sonarr-configmap
+        name: sonarr-scripts
         defaultMode: 0775
         advancedMounts:
           sonarr:
@@ -255,3 +255,210 @@ spec:
               - path: /etc/ssl/certs/dragonfly-ca.crt
                 subPath: dragonfly-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  APIKEY: '{{ "{{ .SONARR_API_KEY }}" }}'
+                  PUSHOVER_TOKEN: '{{ "{{ .SONARR_PUSHOVER_TOKEN }}" }}'
+                  PUSHOVER_USER_KEY: '{{ "{{ .PUSHOVER_USER_KEY }}" }}'
+                  POSTGRES_USER: '{{ "{{ .SONARR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .SONARR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/cloudnative-pg
+              - extract:
+                  key: secrets/pushover
+              - extract:
+                  key: secrets/api-keys
+              - extract:
+                  key: secrets/oauth2/sonarr
+              - extract:
+                  key: secrets/dragonfly
+            data:
+              - secretKey: dragonfly-ca.crt
+                remoteRef:
+                  key: secrets/certificates/dragonfly
+                  property: ca.crt
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Sonarr"
+                group: guarded
+                url: "https://sonarr.darkfellanetwork.com/ping"
+                interval: 1m
+                ui:
+                  hide-hostname: true
+                  hide-url: true
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY].status == OK"
+                alerts:
+                  - type: pushover
+      oauth2-proxy-config:
+        enabled: true
+        data:
+          oauth2-proxy.cfg: |
+            email_domains = [ "*" ]
+            upstreams = [ "http://127.0.0.1:80" ]
+            reverse_proxy = true
+            scope = "openid profile email"
+            cookie_secure = true
+            provider = "keycloak-oidc"
+            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            code_challenge_method = "S256"
+            cookie_domains = "sonarr.darkfellanetwork.com"
+            whitelist_domains = "sonarr.darkfellanetwork.com"
+            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+            skip_provider_button = true
+            cookie_expire = "30m"
+            cookie_refresh = "4m55s"
+            allowed_groups = [ "Admins" ]
+            redirect_url = "https://sonarr.darkfellanetwork.com/oauth2/callback"
+            cookie_name = "__Secure-oauth2_proxy"
+            skip_auth_routes = [ "^/api(/|$)", "^/ping", "^/signalr(/|$)" ]
+            http_address = "0.0.0.0:4180"
+            cookie_csrf_per_request = true
+            cookie_csrf_expire = "5m"
+            ping_path = "/oauth2/ping"
+            ready_path = "/oauth2/ready"
+            cookie_samesite = "strict"
+            session_store_type = "redis"
+            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
+      scripts:
+        enabled: true
+        data:
+          pushover-notify.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+            set -euo pipefail
+
+            # User defined variables for pushover
+            PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-required}"
+            PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-required}"
+            PUSHOVER_PRIORITY="${PUSHOVER_PRIORITY:-"-2"}"
+
+            if [[ "${sonarr_eventtype:-}" == "Test" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Test Notification"
+                printf -v PUSHOVER_MESSAGE \
+                    "Howdy this is a test notification from %s" \
+                        "${sonarr_instancename:-Sonarr}"
+                printf -v PUSHOVER_URL \
+                    "%s" \
+                        "${sonarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "Open %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            if [[ "${sonarr_eventtype:-}" == "Download" ]]; then
+                printf -v PUSHOVER_TITLE \
+                    "Episode %s" \
+                        "$( [[ "${sonarr_isupgrade}" == "True" ]] && echo "Upgraded" || echo "Downloaded" )"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s (S%02dE%02d)</b><small>\n%s</small><small>\n\n<b>Quality:</b> %s</small><small>\n<b>Client:</b> %s</small>" \
+                        "${sonarr_series_title}" \
+                        "${sonarr_episodefile_seasonnumber}" \
+                        "${sonarr_episodefile_episodenumbers}" \
+                        "${sonarr_episodefile_episodetitles}" \
+                        "${sonarr_episodefile_quality:-Unknown}" \
+                        "${sonarr_download_client:-Unknown}"
+                printf -v PUSHOVER_URL \
+                    "%s/series/%s" \
+                        "${sonarr_applicationurl:-localhost}" \
+                        "${sonarr_series_titleslug}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View series in %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            if [[ "${sonarr_eventtype:-}" == "ManualInteractionRequired" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Episode import requires intervention"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s</b><small>\n<b>Client:</b> %s</small>" \
+                        "${sonarr_series_title}" \
+                        "${sonarr_download_client:-Unknown}"
+                printf -v PUSHOVER_URL \
+                    "%s/activity/queue" \
+                        "${sonarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View queue in %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            json_data=$(jo \
+                token="${PUSHOVER_TOKEN}" \
+                user="${PUSHOVER_USER_KEY}" \
+                title="${PUSHOVER_TITLE}" \
+                message="${PUSHOVER_MESSAGE}" \
+                url="${PUSHOVER_URL}" \
+                url_title="${PUSHOVER_URL_TITLE}" \
+                priority="${PUSHOVER_PRIORITY}" \
+                html="1"
+            )
+
+            status_code=$(curl \
+                --silent \
+                --write-out "%{http_code}" \
+                --output /dev/null \
+                --request POST \
+                --header "Content-Type: application/json" \
+                --data-binary "${json_data}" \
+                "https://api.pushover.net/1/messages.json" \
+            )
+
+            printf "pushover notification returned with HTTP status code %s and payload: %s\n" \
+                "${status_code}" \
+                "$(echo "${json_data}" | jq --compact-output)" >&2
+          refresh-series.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+            set -euo pipefail
+
+            CURL_CMD=(curl -fsSL --header "X-Api-Key: ${SONARR__AUTH__APIKEY:-}")
+            SONARR_API_URL="http://localhost:${SONARR__SERVER__PORT:-}/api/v3"
+
+            if [[ "${sonarr_eventtype:-}" == "Grab" ]]; then
+                tba=$("${CURL_CMD[@]}" "${SONARR_API_URL}/episode?seriesId=${sonarr_series_id:-}" | jq --raw-output '
+                    [.[] | select((.title == "TBA") or (.title == "TBD"))] | length
+                ')
+
+                if (( tba > 0 )); then
+                    echo "INFO: Refreshing series ${sonarr_series_id:-} due to TBA/TBD episodes found"
+                    "${CURL_CMD[@]}" \
+                        --request POST \
+                        --header "Content-Type: application/json" \
+                        --data-binary '{"name": "RefreshSeries", "seriesId": '"${sonarr_series_id:-}"'}' \
+                        "${SONARR_API_URL}/command" &>/dev/null
+                fi
+            fi

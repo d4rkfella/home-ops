@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app bazarr
   namespace: flux-system
+  annotations:
+      kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   targetNamespace: media
   commonMetadata:

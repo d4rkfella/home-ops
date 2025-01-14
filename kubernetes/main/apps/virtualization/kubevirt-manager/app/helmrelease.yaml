@@ -187,6 +187,36 @@ spec:
 
 
     rawResources:
+      secret-test:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          refreshInterval: 5m
+          secretStoreRef:
+            kind: ClusterSecretStore
+            name: vault-backend
+          target:
+            name: *secret
+            template:
+              engineVersion: v2
+              data:
+                COOKIE_SECRET: "{{ .COOKIE_SECRET }}"
+                CLIENT_SECRET: "{{ .CLIENT_SECRET}}"
+                CLIENT_ID: "{{ .CLIENT_ID }}"
+                DRAGONFLY_PASSWORD: "{{ .DRAGONFLY__PASSWORD }}"
+                dragonfly-ca.crt: '{{ index . "dragonfly-ca.crt" }}'
+          dataFrom:
+            - extract:
+                key: secrets/oauth2/kubevirt-manager
+            - extract:
+                key: secrets/dragonfly
+          data:
+            - secretKey: dragonfly-ca.crt
+              remoteRef:
+                key: secrets/certificates/dragonfly
+                property: ca.crt
+
       vm-standard:
         enabled: true
         apiVersion: scheduling.k8s.io/v1
@@ -197,6 +227,7 @@ spec:
           preemptionPolicy: Never
           value: 999999999
           description: Priority class for VMs which should not be preemtited.
+
       vm-preemptible:
         enabled: true
         apiVersion: scheduling.k8s.io/v1

@@ -47,7 +47,7 @@ spec:
               UN_RADARR_0_PATHS_0: /data/downloads/torrents/movies
             envFrom:
               - secretRef:
-                  name: unpackerr-secret
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness:
                 enabled: true
@@ -100,3 +100,24 @@ spec:
         globalMounts:
           - path: /data/downloads/torrents
             subPath: downloads/torrents
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: "{{ .Release.Name }}-secret"
+              template:
+                engineVersion: v2
+                data:
+                  UN_RADARR_0_API_KEY: '{{ "{{ .RADARR_API_KEY }}" }}'
+                  UN_SONARR_0_API_KEY: '{{ "{{ .SONARR_API_KEY }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/api-keys

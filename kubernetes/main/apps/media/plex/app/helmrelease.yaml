@@ -60,7 +60,10 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m

@@ -352,7 +352,7 @@ spec:
                         alerts:
                           - type: pushover
                         headers:
-                          X-API-KEY: '{{ {{ .BAZARR_API_KEY }} }}'
+                          X-API-KEY: '{{ "{{ .BAZARR_API_KEY }}" }}'
             dataFrom:
               - extract:
                   key: secrets/api-keys

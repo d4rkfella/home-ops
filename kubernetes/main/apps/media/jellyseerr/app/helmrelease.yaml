@@ -46,17 +46,17 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret jellyseerr-secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_SUPER_PASS
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
@@ -80,12 +80,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_USER
+                    key: POSTGRES_USER
               DB_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: INIT_POSTGRES_PASS
+                    key: POSTGRES_PASS
               DB_USE_SSL: "true"
               DB_SSL_CA_FILE: /etc/ssl/certs/cnpg-ca.crt
               DB_LOG_QUERIES: "false"
@@ -193,3 +193,31 @@ spec:
               - path: /etc/ssl/certs/cnpg-ca.crt
                 subPath: cnpg-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  POSTGRES_USER: '{{ "{{ .JELLYSEERR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .JELLYSEERR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  cnpg-ca.crt: '{{ "{{ index . "cnpg-ca.crt" }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/cloudnative-pg
+            data:
+              - secretKey: cnpg-ca.crt
+                remoteRef:
+                  key: secrets/certificates/cnpg
+                  property: ca.crt

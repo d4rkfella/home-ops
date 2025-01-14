@@ -275,3 +275,41 @@ spec:
               - path: /etc/ssl/certs/dragonfly-ca.crt
                 subPath: dragonfly-ca.crt
                 readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  PLEX_TOKEN: '{{ "{{ .PLEX_TOKEN }}" }}'
+                  POSTGRES_USER: '{{ "{{ .BAZARR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .BAZARR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ .ca.crt }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/plex
+              - extract:
+                  key: secrets/cloudnative-pg
+              - extract:
+                  key: secrets/api-keys
+              - extract:
+                  key: secrets/oauth2/bazarr
+              - extract:
+                  key: secrets/dragonfly
+              - extract:
+                  key: secrets/certificates/dragonfly

@@ -36,36 +36,6 @@ spec:
     serviceAccount:
       create: true
       name: *app
-    configMaps:
-      oauth2-proxy-config:
-        enabled: true
-        data:
-          oauth2-proxy.cfg: |
-            email_domains = [ "*" ]
-            upstreams = [ "http://127.0.0.1:8080" ]
-            reverse_proxy = true
-            scope = "openid profile email"
-            cookie_secure = true
-            provider = "keycloak-oidc"
-            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-            code_challenge_method = "S256"
-            cookie_domains = "kubevirt-manager.darkfellanetwork.com"
-            whitelist_domains = "kubevirt-manager.darkfellanetwork.com"
-            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
-            skip_provider_button = true
-            cookie_expire = "30m"
-            cookie_refresh = "4m55s"
-            allowed_groups = [ "Admins" ]
-            redirect_url = "https://kubevirt-manager.darkfellanetwork.com/oauth2/callback"
-            cookie_name = "__Secure-oauth2_proxy"
-            http_address = "0.0.0.0:4180"
-            cookie_csrf_per_request = true
-            cookie_csrf_expire = "5m"
-            ping_path = "/oauth2/ping"
-            ready_path = "/oauth2/ready"
-            cookie_samesite = "strict"
-            session_store_type = "redis"
-            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
     controllers:
       kubevirt-manager:
         annotations:
@@ -239,6 +209,37 @@ spec:
           preemptionPolicy: PreemptLowerPriority
           value: 1000000
           description: Priority class for VMs which are allowed to be preemtited.
+
+    configMaps:
+      oauth2-proxy-config:
+        enabled: true
+        data:
+          oauth2-proxy.cfg: |
+            email_domains = [ "*" ]
+            upstreams = [ "http://127.0.0.1:8080" ]
+            reverse_proxy = true
+            scope = "openid profile email"
+            cookie_secure = true
+            provider = "keycloak-oidc"
+            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            code_challenge_method = "S256"
+            cookie_domains = "kubevirt-manager.darkfellanetwork.com"
+            whitelist_domains = "kubevirt-manager.darkfellanetwork.com"
+            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+            skip_provider_button = true
+            cookie_expire = "30m"
+            cookie_refresh = "4m55s"
+            allowed_groups = [ "Admins" ]
+            redirect_url = "https://kubevirt-manager.darkfellanetwork.com/oauth2/callback"
+            cookie_name = "__Secure-oauth2_proxy"
+            http_address = "0.0.0.0:4180"
+            cookie_csrf_per_request = true
+            cookie_csrf_expire = "5m"
+            ping_path = "/oauth2/ping"
+            ready_path = "/oauth2/ready"
+            cookie_samesite = "strict"
+            session_store_type = "redis"
+            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
 
     rbac:
       roles:

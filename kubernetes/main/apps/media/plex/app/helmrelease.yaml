@@ -159,3 +159,66 @@ spec:
         globalMounts:
           - path: /etc/secret
             readOnly: true
+
+    rawResources:
+      certificate:
+        enabled: true
+        apiVersion: cert-manager.io/v1
+        kind: Certificate
+        spec:
+          spec:
+            dnsNames:
+              - plex.darkfellanetwork.com
+            issuerRef:
+              group: cert-manager.io
+              kind: ClusterIssuer
+              name: zerossl-prod
+            privateKey:
+              algorithm: ECDSA
+              rotationPolicy: Always
+              size: 384
+            secretName: plex-tls
+            usages:
+              - digital signature
+              - key encipherment
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Plex Media Server"
+                group: external
+                url: "https://plex.darkfellanetwork.com:32400/identity"
+                interval: 1m
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY].MediaContainer.claimed == true"
+                alerts:
+                  - type: pushover
+                headers:
+                  Accept: "application/json"
+      loki-rules:
+        enabled: true
+        labels:
+          loki_rule: "true"
+        data:
+          plex.yaml: |
+            groups:
+              - name: plex
+                rules:
+                  - alert: PlexDatabaseBusy
+                    expr: |
+                      sum by (app) (count_over_time({app="plex"} |~ "(?i)retry busy DB"[2m])) > 0
+                    for: 2m
+                    labels:
+                      severity: critical
+                      category: logs
+                    annotations:
+                      app: "{{ "{{ $labels.app }}" }}"
+                      summary: "{{ "{{ $labels.app }} is experiencing database issues" }}"

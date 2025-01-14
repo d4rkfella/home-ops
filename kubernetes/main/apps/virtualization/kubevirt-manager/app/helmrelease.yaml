@@ -206,7 +206,7 @@ spec:
                   CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET }}" }}'
                   COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
                   DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY_PASSWORD }}" }}'
-                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
+                  dragonfly-ca.crt: '{{ "{{ index . dragonfly-ca.crt }}" }}'
             dataFrom:
               - extract:
                   key: secrets/oauth2/kubevirt-manager

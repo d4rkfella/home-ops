@@ -1,6 +1,7 @@
 ---
 originRequest:
   originServerName: external.darkfellanetwork.com
+  http2Origin: "true"
 
 ingress:
   - hostname: darkfellanetwork.com

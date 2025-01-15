@@ -107,7 +107,16 @@ spec:
           name: vault-internal-tls
           readOnly: true
 
-      podAntiAffinity: {}
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: vault
+                  app.kubernetes.io/name: vault
+                  component: server
+              topologyKey: kubernetes.io/hostname
 
       networkPolicy:
         enabled: false

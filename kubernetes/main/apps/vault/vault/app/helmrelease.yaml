@@ -122,10 +122,10 @@ spec:
         active:
           enabled: true
         standby:
-          enabled: true
+          enabled: false
         instanceSelector:
           enabled: true
-        publishNotReadyAddresses: true
+        publishNotReadyAddresses: false
         externalTrafficPolicy: Cluster
         port: 8200
         targetPort: 8200

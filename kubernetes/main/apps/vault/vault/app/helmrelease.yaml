@@ -224,7 +224,6 @@ spec:
             seccompProfile: { type: RuntimeDefault }
           container:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
             capabilities: { drop: ["ALL"] }
 
       hostNetwork: false

@@ -18,6 +18,8 @@ spec:
             app.kubernetes.io/name: external-secrets
             io.kubernetes.pod.namespace: external-secrets
     - fromEndpoints:
+        - {}
+    - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: gatus
             io.kubernetes.pod.namespace: observability

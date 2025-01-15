@@ -133,9 +133,9 @@ spec:
       includeConfigAnnotation: false
 
       service:
-        enabled: true
+        enabled: false
         active:
-          enabled: true
+          enabled: false
         standby:
           enabled: false
         instanceSelector:

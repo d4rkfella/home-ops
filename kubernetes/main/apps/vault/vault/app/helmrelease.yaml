@@ -173,7 +173,7 @@ spec:
             disable_mlock = false
 
             listener "tcp" {
-              tls_disable = 0
+              tls_disable = 1
               address = "0.0.0.0:8200"
               cluster_address = "0.0.0.0:8201"
               tls_cert_file = "/vault/tls/tls.crt"
@@ -194,7 +194,7 @@ spec:
 
         disruptionBudget:
           enabled: true
-          maxUnavailable: null
+          maxUnavailable: 1
 
       serviceAccount:
         create: true

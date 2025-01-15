@@ -31,7 +31,7 @@ spec:
       enabled: true
       tlsDisable: false
       serverTelemetry:
-        prometheusOperator: true
+        prometheusOperator: false
 
     injector:
       enabled: false

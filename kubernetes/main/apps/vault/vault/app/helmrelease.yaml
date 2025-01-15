@@ -221,9 +221,11 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: Always
+            seccompProfile: { type: RuntimeDefault }
           container:
-            capabilities:
-              add: ["IPC_LOCK"]
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
 
       hostNetwork: false
 

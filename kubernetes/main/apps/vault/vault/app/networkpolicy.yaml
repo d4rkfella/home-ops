@@ -41,6 +41,8 @@ spec:
             - port: "8200"
   egress:
     - toEndpoints:
+        - {}
+    - toEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: kube-system
             k8s-app: kube-dns

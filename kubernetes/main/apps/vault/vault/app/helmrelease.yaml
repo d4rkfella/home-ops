@@ -217,9 +217,9 @@ spec:
           pod:
             runAsNonRoot: true
             runAsUser: 1000
+          container:
             capabilities:
               add: ["IPC_LOCK"]
-          container: {}
 
       hostNetwork: false
 

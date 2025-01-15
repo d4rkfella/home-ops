@@ -192,6 +192,16 @@ spec:
               resources:
                 requests:
                   storage: 75Gi
+        additionalScrapeConfigs:
+          - job_name: vault
+            metrics_path: /v1/sys/metrics
+            params:
+              format: ['prometheus']
+            scheme: https
+            authorization:
+              credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            static_configs:
+              - targets: [vault.darkfellanetwork.com:8200]
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

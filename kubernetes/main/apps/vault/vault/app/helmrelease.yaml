@@ -27,7 +27,6 @@ spec:
     keepHistory: false
 
   values:
-
     global:
       enabled: true
       tlsDisable: false
@@ -163,11 +162,6 @@ spec:
               tls_cert_file = "/vault/tls/tls.crt"
               tls_key_file = "/vault/tls/tls.key"
               tls_min_version = "tls13"
-
-              # Enable unauthenticated metrics access (necessary for Prometheus Operator)
-              #telemetry {
-              #  unauthenticated_metrics_access = "true"
-              #}
             }
 
             storage "raft" {
@@ -191,6 +185,12 @@ spec:
                 leader_tls_servername = "vault.darkfellanetwork.com"
               }
             }
+
+            telemetry {
+              prometheus_retention_time = "24h"
+              disable_hostname = true
+            }
+
             service_registration "kubernetes" {}
 
         disruptionBudget:
@@ -234,49 +234,6 @@ spec:
         lbipam.cilium.io/ips: 192.168.91.96
 
     serverTelemetry:
-      # Enable support for the Prometheus Operator. If authorization is not set for authenticating
-      # to Vault's metrics endpoint, the following Vault server `telemetry{}` config must be included
-      # in the `listener "tcp"{}` stanza
-      #  telemetry {
-      #    unauthenticated_metrics_access = "true"
-      #  }
-      #
-      # See the `standalone.config` for a more complete example of this.
-      #
-      # In addition, a top level `telemetry{}` stanza must also be included in the Vault configuration:
-      #
-      # example:
-      #  telemetry {
-      #    prometheus_retention_time = "30s"
-      #    disable_hostname = true
-      #  }
-      #
-      # Configuration for monitoring the Vault server.
-      serviceMonitor:
-        enabled: false
-        selectors: {}
-        interval: 30s
-        scrapeTimeout: 10s
-
-        # tlsConfig used for scraping the Vault metrics API.
-        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.TLSConfig
-        # example:
-        # tlsConfig:
-        #   ca:
-        #     secret:
-        #       name: vault-metrics-client
-        #       key: ca.crt
-        tlsConfig: {}
-
-        # authorization used for scraping the Vault metrics API.
-        # See API reference: https://prometheus-operator.dev/docs/api-reference/api/#monitoring.coreos.com/v1.SafeAuthorization
-        # example:
-        # authorization:
-        #   credentials:
-        #     name: vault-metrics-client
-        #     key: token
-        authorization: {}
-
       prometheusRules:
           enabled: false
           selectors: {}

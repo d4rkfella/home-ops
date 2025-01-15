@@ -172,7 +172,7 @@ spec:
         replicas: 2
         raft:
           enabled: true
-          setNodeId: true
+          setNodeId: false
           config: |
 
             seal "awskms" {

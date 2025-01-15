@@ -203,10 +203,10 @@ spec:
             storage "raft" {
               path = "/vault/data"
               retry_join {
-                leader_api_addr = "https://vault.darkfellanetwork.com:8200"
+                leader_api_addr = "https://vault-0.vault-internal.vault.svc.cluster.local:8200"
               }
               retry_join {
-                leader_api_addr = "https://vault.darkfellanetwork.com:8200"
+                leader_api_addr = "https://vault-1.vault-internal.vault.svc.cluster.local:8200"
               }
             }
             service_registration "kubernetes" {}

@@ -109,8 +109,6 @@ spec:
 
       podAntiAffinity:
         preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
               labelSelector:
                 matchLabels:
                   app.kubernetes.io/instance: vault

@@ -190,8 +190,8 @@ spec:
               tls_disable = 0
               address = "0.0.0.0:8200"
               cluster_address = "0.0.0.0:8201"
-              tls_cert_file = "/vault/tls/tls.crt"
-              tls_key_file = "/vault/tls/tls.key"
+              tls_cert_file = "/vault/userconfig/tls-server/tls.crt"
+              tls_key_file = "/vault/userconfig/tls-server/tls.key"
               tls_min_version = "tls13"
 
               # Enable unauthenticated metrics access (necessary for Prometheus Operator)
@@ -204,9 +204,11 @@ spec:
               path = "/vault/data"
               retry_join {
                 leader_api_addr = "https://vault-0.vault-internal.vault.svc.cluster.local:8200"
+                leader_ca_cert_file = "/vault/userconfig/tls-ca/ca.crt"
               }
               retry_join {
                 leader_api_addr = "https://vault-1.vault-internal.vault.svc.cluster.local:8200"
+                leader_ca_cert_file = "/vault/userconfig/tls-ca/ca.crt"
               }
             }
             service_registration "kubernetes" {}

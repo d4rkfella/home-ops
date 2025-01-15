@@ -64,21 +64,11 @@ spec:
 
       readinessProbe:
         enabled: true
-        port: 8200
-        failureThreshold: 2
-        initialDelaySeconds: 5
-        periodSeconds: 5
-        successThreshold: 1
-        timeoutSeconds: 3
+        path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
       livenessProbe:
         enabled: true
         path: "/v1/sys/health?standbyok=true"
-        port: 8200
-        failureThreshold: 2
         initialDelaySeconds: 60
-        periodSeconds: 5
-        successThreshold: 1
-        timeoutSeconds: 3
 
       terminationGracePeriodSeconds: 10
 
@@ -95,10 +85,26 @@ spec:
           secret:
             defaultMode: 420
             secretName: vault-tls
+        - name: vault-internal-tls
+          secret:
+            defaultMode: 420
+            secretName: vault-internal-tls
 
       volumeMounts:
         - mountPath: /vault/tls
           name: vault-tls
+          readOnly: true
+        - mountPath: /vault/userconfig/tls-server/tls.crt
+          subPath: tls.crt
+          name: vault-internal-tls
+          readOnly: true
+        - mountPath: /vault/userconfig/tls-server/tls.key
+          subPath: tls.key
+          name: vault-internal-tls
+          readOnly: true
+        - mountPath: /vault/userconfig/tls-ca/ca.crt
+          subPath: ca.crt
+          name: vault-internal-tls
           readOnly: true
 
       podAntiAffinity: {}
@@ -157,7 +163,7 @@ spec:
         replicas: 2
         raft:
           enabled: true
-          setNodeId: false
+          setNodeId: true
           config: |
 
             seal "awskms" {
@@ -187,7 +193,18 @@ spec:
 
             storage "raft" {
               path = "/vault/data"
-            }
+              retry_join {
+                leader_api_addr = "https://vault-0.vault-internal.vault.svc.cluster.local:8200"
+                leader_ca_cert_file = "/vault/userconfig/tls-ca/ca.crt"
+                leader_client_cert_file = "/vault/userconfig/tls-server/tls.crt"
+                leader_client_key_file = "/vault/userconfig/tls-server/tls.key"
+              }
+              retry_join {
+                leader_api_addr = "https://vault-1.vault-internal.vault.svc.cluster.local:8200"
+                leader_ca_cert_file = "/vault/userconfig/tls-ca/ca.crt"
+                leader_client_cert_file = "/vault/userconfig/tls-server/tls.crt"
+                leader_client_key_file = "/vault/userconfig/tls-server/tls.key"
+              }
 
             service_registration "kubernetes" {}
 

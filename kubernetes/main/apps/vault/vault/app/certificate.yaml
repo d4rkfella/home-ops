@@ -41,6 +41,8 @@ spec:
   dnsNames:
     - vault-0.vault-internal.vault.svc.cluster.local
     - vault-1.vault-internal.vault.svc.cluster.local
+    - vault-0.vault-internal
+    - vault-1.vault-internal
     - vault.darkfellanetwork.com
   issuerRef:
     name: vault-issuer

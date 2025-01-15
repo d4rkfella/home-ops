@@ -35,7 +35,8 @@ spec:
             - port: "8200"
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: vault-snapshot-cronjob
+            app.kubernetes.io/name: prometheus
+            io.kubernetes.pod.namespace: observability
       toPorts:
         - ports:
             - port: "8200"

@@ -226,10 +226,10 @@ spec:
       publishNotReadyAddresses: false
       activeVaultPodOnly: true
       serviceType: "LoadBalancer"
-      serviceNodePort: null
       externalPort: 8200
       targetPort: 8200
       externalTrafficPolicy: Cluster
+      allocateLoadBalancerNodePorts: false
       annotations:
         external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.96

@@ -101,14 +101,7 @@ spec:
           name: vault-tls
           readOnly: true
 
-      #podAntiAffinity:
-          #requiredDuringSchedulingIgnoredDuringExecution:
-            #- labelSelector:
-                #matchLabels:
-                  #app.kubernetes.io/name: {{ template "vault.name" . }}
-                  #app.kubernetes.io/instance: "{{ .Release.Name }}"
-                  #component: server
-              #topologyKey: kubernetes.io/hostname
+      podAntiAffinity: {}
 
       networkPolicy:
         enabled: false

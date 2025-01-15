@@ -178,6 +178,7 @@ spec:
             ui = true
             api_addr = "https://vault.darkfellanetwork.com:8200"
             cluster_addr = "https://vault.darkfellanetwork.com:8201"
+            disable_mlock = false
 
             listener "tcp" {
               tls_disable = 0

@@ -118,11 +118,11 @@ spec:
       includeConfigAnnotation: false
 
       service:
-        enabled: false
+        enabled: true
         active:
-          enabled: false
+          enabled: true
         standby:
-          enabled: false
+          enabled: true
         instanceSelector:
           enabled: true
         publishNotReadyAddresses: true

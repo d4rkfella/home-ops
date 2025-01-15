@@ -39,8 +39,8 @@ spec:
     - digital signature
     - key encipherment
   dnsNames:
-    - vault0.vault-internal.vault.svc.cluster.local
-    - vault1.vault-internal.vault.svc.cluster.local
+    - vault-0.vault-internal.vault.svc.cluster.local
+    - vault-1.vault-internal.vault.svc.cluster.local
   issuerRef:
     name: vault-issuer
     kind: ClusterIssuer

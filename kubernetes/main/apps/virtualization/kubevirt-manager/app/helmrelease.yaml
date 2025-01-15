@@ -47,7 +47,7 @@ spec:
           oauth2-proxy:
             image:
               repository: quay.io/oauth2-proxy/oauth2-proxy
-              tag: v7.8.0-amd64@sha256:0a31a003b6bb23a059c46f1c3683aa112f1f8378b9d032664611fc812a8a53fe
+              tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
             env:

@@ -85,52 +85,24 @@ spec:
           secret:
             defaultMode: 420
             secretName: vault-tls
-        - name: vault-internal-tls
-          secret:
-            defaultMode: 420
-            secretName: vault-internal-tls
 
       volumeMounts:
         - mountPath: /vault/tls
           name: vault-tls
           readOnly: true
-        - mountPath: /vault/userconfig/tls-server/tls.crt
-          subPath: tls.crt
-          name: vault-internal-tls
-          readOnly: true
-        - mountPath: /vault/userconfig/tls-server/tls.key
-          subPath: tls.key
-          name: vault-internal-tls
-          readOnly: true
-        - mountPath: /vault/userconfig/tls-ca/ca.crt
-          subPath: ca.crt
-          name: vault-internal-tls
-          readOnly: true
 
-      podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
+      affinity: |
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
             podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
               labelSelector:
                 matchLabels:
-                  app.kubernetes.io/instance: vault
-                  app.kubernetes.io/name: vault
-                  component: server
-              topologyKey: kubernetes.io/hostname
+                  app: {{ template "vault.fullname" . }}
+                  release: {{ .Release.Name }}
 
-      networkPolicy:
-        enabled: false
-        egress: []
-        ingress:
-          - from:
-            - namespaceSelector: {}
-            ports:
-            - port: 8200
-              protocol: TCP
-            - port: 8201
-              protocol: TCP
-
-      includeConfigAnnotation: false
+      includeConfigAnnotation: true
 
       service:
         enabled: true
@@ -141,10 +113,8 @@ spec:
         instanceSelector:
           enabled: true
         publishNotReadyAddresses: false
-        externalTrafficPolicy: Cluster
         port: 8200
         targetPort: 8200
-        annotations: {}
 
       dataStorage:
         enabled: true
@@ -170,11 +140,13 @@ spec:
       ha:
         enabled: true
         replicas: 3
+
+        apiAddr: "https://vault.darkfellanetwork.com"
+
         raft:
           enabled: true
           setNodeId: false
           config: |
-
             seal "awskms" {
               region = "us-east-1"
               access_key = "${AWS_ACCESS_KEY}"
@@ -183,8 +155,6 @@ spec:
             }
 
             ui = true
-            api_addr = "https://vault.darkfellanetwork.com:8200"
-            cluster_addr = "https://vault.darkfellanetwork.com:8201"
 
             listener "tcp" {
               tls_disable = 0
@@ -203,10 +173,22 @@ spec:
             storage "raft" {
               path = "/vault/data"
               retry_join {
-                leader_api_addr = "https://vault.darkfellanetwork.com:8200"
+                leader_api_addr = "https://vault-0.vault-internal:8200"
+                leader_client_cert_file = "/vault/tls/tls.crt"
+                leader_client_key_file = "/vault/tls/tls.key"
+                leader_tls_servername = "vault.darkfellanetwork.com"
               }
               retry_join {
-                leader_api_addr = "https://vault.darkfellanetwork.com:8200"
+                leader_api_addr = "https://vault-1.vault-internal:8200"
+                leader_client_cert_file = "/vault/tls/tls.crt"
+                leader_client_key_file = "/vault/tls/tls.key"
+                leader_tls_servername = "vault.darkfellanetwork.com"
+              }
+              retry_join {
+                leader_api_addr = "https://vault-2.vault-internal:8200"
+                leader_client_cert_file = "/vault/tls/tls.crt"
+                leader_client_key_file = "/vault/tls/tls.key"
+                leader_tls_servername = "vault.darkfellanetwork.com"
               }
             }
             service_registration "kubernetes" {}
@@ -241,8 +223,8 @@ spec:
 
     ui:
       enabled: true
-      publishNotReadyAddresses: true
-      activeVaultPodOnly: false
+      publishNotReadyAddresses: false
+      activeVaultPodOnly: true
       serviceType: "LoadBalancer"
       serviceNodePort: null
       externalPort: 8200

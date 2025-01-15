@@ -48,7 +48,7 @@ spec:
           keycloak-operator:
             image:
               repository: quay.io/keycloak/keycloak-operator
-              tag: 26.0.8
+              tag: 26.1.0
               pullPolicy: Always
             ports:
               - containerPort: 8080

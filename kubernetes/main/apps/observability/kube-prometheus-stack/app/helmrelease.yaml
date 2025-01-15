@@ -198,9 +198,7 @@ spec:
             params:
               format: ['prometheus']
             scheme: https
-            authorization:
-              credentials:
-                bearer_token_file: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
             static_configs:
               - targets: [vault.darkfellanetwork.com:8200]
     prometheus-node-exporter:

@@ -228,7 +228,7 @@ spec:
       serviceType: "LoadBalancer"
       externalPort: 8200
       externalTrafficPolicy: Cluster
-      serviceNodePort: false
+      serviceNodePort: 0
       annotations:
         external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.96

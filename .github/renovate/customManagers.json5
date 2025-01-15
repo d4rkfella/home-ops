@@ -13,7 +13,7 @@
         // k3s_release_version: &version v1.29.0+k3s1
         // # renovate: datasource=helm depName=cilium repository=https://helm.cilium.io
         // version: 1.15.1
-        // # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
+         # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet,
         // KUBERNETES_VERSION=v1.31.1
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",
         // # renovate: datasource=github-releases depName=rancher/system-upgrade-controller

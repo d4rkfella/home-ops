@@ -214,7 +214,11 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         securityContext:
-          pod: {}
+          pod:
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              add: ["IPC_LOCK"]
           container: {}
 
       hostNetwork: false

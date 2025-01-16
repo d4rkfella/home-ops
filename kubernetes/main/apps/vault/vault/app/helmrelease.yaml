@@ -236,14 +236,6 @@ spec:
         lbipam.cilium.io/ips: 192.168.91.96
 
     serverTelemetry:
-      serviceMonitor:
-        enabled: true
-        selectors: {}
-        interval: 30s
-        scrapeTimeout: 10s
-        tlsConfig:
-          serverName: vault.darkfellanetwork.com
-
       prometheusRules:
           enabled: true
           selectors: {}

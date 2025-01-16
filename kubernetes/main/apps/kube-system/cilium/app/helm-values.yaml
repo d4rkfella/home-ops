@@ -37,6 +37,8 @@ l2announcements:
 loadBalancer:
   algorithm: maglev
   mode: dsr
+nodePort:
+  enabled: false
 socketLB:
   enabled: true
 localRedirectPolicy: false

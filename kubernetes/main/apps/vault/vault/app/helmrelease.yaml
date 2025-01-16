@@ -36,7 +36,7 @@ spec:
     injector:
       enabled: true
       extraEnvironmentVars:
-        AGENT_INJECT_VAULT_ADDR: "https://vault.darkfellanetwork.com:8200"
+        AGENT_INJECT_VAULT_ADDR: https://vault.darkfellanetwork.com:8200
 
     server:
       enabled: true

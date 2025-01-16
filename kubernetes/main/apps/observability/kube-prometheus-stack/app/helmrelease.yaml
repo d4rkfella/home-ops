@@ -33,6 +33,13 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
+      serviceMonitor:
+        selfMonitor: true
+        scheme: https
+        tlsConfig:
+          caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
+          serverName: "alertmanager-operated.observability.svc.cluster.local"
+        enableHttp2: true
       service:
         port: 9093
         additionalPorts:
@@ -54,7 +61,7 @@ spec:
         pathType: Prefix
       alertmanagerSpec:
         listenLocal: false
-        scheme: HTTPS
+        scheme: https
         containers:
           - name: oauth2-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
@@ -99,7 +106,7 @@ spec:
                 readOnly: true
                 subPath: oauth2-proxy.cfg
               - mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
-                name: darkfellanet-root-ca
+                name: alertmanager-oauth-secret
                 readOnly: true
                 subPath: darkfellanet-root-ca.crt
         volumes:
@@ -110,7 +117,12 @@ spec:
           - secret:
               defaultMode: 420
               secretName: alertmanager-oauth-secret
-            name: darkfellanet-root-ca
+            name: alertmanager-oauth-secret
+        volumeMounts:
+          - mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
+            name: alertmanager-oauth-secret
+            readOnly: true
+            subPath: darkfellanet-root-ca.crt
         web:
           tlsConfig:
             keySecret:

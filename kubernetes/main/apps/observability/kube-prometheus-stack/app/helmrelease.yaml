@@ -161,7 +161,8 @@ spec:
       enabled: false
     prometheus:
       serviceMonitor:
-        scheme: "HTTPS"
+        selfMonitor: true
+        scheme: HTTPS
       ingress:
         enabled: true
         annotations:

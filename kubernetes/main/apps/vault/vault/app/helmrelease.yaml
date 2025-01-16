@@ -35,7 +35,7 @@ spec:
         prometheusOperator: false
 
     injector:
-      enabled: "-"
+      enabled: false
 
     server:
       enabled: true

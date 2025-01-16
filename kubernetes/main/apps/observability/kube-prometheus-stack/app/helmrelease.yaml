@@ -186,9 +186,6 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          nginx.ingress.kubernetes.io/server-snippet: |
-            proxy_ssl_name          prometheus-operated.observability.svc.cluster.local;
-            proxy_ssl_session_reuse on;
         ingressClassName: internal
         tls:
           - hosts: &host ["prometheus.darkfellanetwork.com"]
@@ -212,10 +209,6 @@ spec:
             scheme: https
             pathPrefix: "/"
             apiVersion: v2
-            oauth2:
-              client_id: test
-              client_secret: test
-              token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
             tlsConfig:
               caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
               serverName: "alertmanager-operated.observability.svc.cluster.local"

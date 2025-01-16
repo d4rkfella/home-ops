@@ -173,7 +173,6 @@ spec:
             vault.hashicorp.com/role: "prometheus"
             vault.hashicorp.com/agent-run-as-user: "1000"
             vault.hashicorp.com/agent-run-as-group: "2000"
-            vault.hashicorp.com/agent-inject-command-${secret}: "chmod 400 ${secret_volume_path}/${secret}"
         scrapeInterval: 1m
         podMonitorSelector: &selector
           matchLabels: null

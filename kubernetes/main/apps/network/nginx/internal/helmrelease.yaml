@@ -43,12 +43,20 @@ spec:
             - key: ingress-class
               operator: In
               values: ["internal"]
+      extraVolumes:
+        - name: darkfellanet-ca
+          secret:
+            secretName: darkfellanet-ca-cert
+      extraVolumeMounts:
+        - name: darkfelalnet-ca
+          mountPath: /etc/nginx/darkfellanet-ca.crt
+          subPath: ca.crt
       config:
         http-snippet: |
           proxy_ssl_verify       on;
           proxy_ssl_verify_depth 5;
           proxy_ssl_protocols    TLSv1.2 TLSv1.3;
-          proxy_ssl_trusted_certificate /etc/nginx/ca-root-bundle.pem;
+          proxy_ssl_trusted_certificate /etc/nginx/darkfellanet-ca.crt;
         custom-http-errors: >-
           401,403,404,500,501,502,503,504
         allow-snippet-annotations: true

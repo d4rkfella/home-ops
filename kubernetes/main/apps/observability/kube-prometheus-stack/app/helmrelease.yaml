@@ -98,10 +98,10 @@ spec:
                 name: oauth2-proxy-config
                 readOnly: true
                 subPath: oauth2-proxy.cfg
-              - mountPath: /etc/ssl/certs/dragonfly-ca.crt
-                name: dragonfly-ca-cert
+              - mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
+                name: darkfellanet-root-ca
                 readOnly: true
-                subPath: dragonfly-ca.crt
+                subPath: darkfellanet-root-ca.crt
         volumes:
           - configMap:
               defaultMode: 420
@@ -110,7 +110,7 @@ spec:
           - secret:
               defaultMode: 420
               secretName: alertmanager-oauth-secret
-            name: dragonfly-ca-cert
+            name: darkfellanet-root-ca
         web:
           tlsConfig:
             keySecret:
@@ -251,11 +251,11 @@ spec:
                 name: prometheus-internal-tls
 
         volumes:
-          - name: root-ca
+          - name: darkfellanet-root-ca
             secret:
               secretName: prometheus-internal-tls
         volumeMounts:
-          - name: root-ca
+          - name: darkfellanet-root-ca
             mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
             subPath: ca.crt
             readOnly: true

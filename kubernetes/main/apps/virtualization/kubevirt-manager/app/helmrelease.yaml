@@ -146,14 +146,14 @@ spec:
                 subPath: oauth2-proxy.cfg
                 readOnly: true
 
-      dragonfly-ca-cert:
+      darkfellanet-root-ca:
         type: secret
         name: *secret
         advancedMounts:
           kubevirt-manager:
             oauth2-proxy:
-              - path: /etc/ssl/certs/dragonfly-ca.crt
-                subPath: dragonfly-ca.crt
+              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+                subPath: darkfellanet-root-ca.crt
                 readOnly: true
 
 
@@ -176,16 +176,16 @@ spec:
                   CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET }}" }}'
                   COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
                   DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  dragonfly-ca.crt: '{{ "{{ index . \"dragonfly-ca.crt\" }}" }}'
+                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
             dataFrom:
               - extract:
                   key: secrets/oauth2/kubevirt-manager
               - extract:
                   key: secrets/dragonfly
             data:
-              - secretKey: dragonfly-ca.crt
+              - secretKey: darkfellanet-root-ca.crt
                 remoteRef:
-                  key: secrets/certificates/dragonfly
+                  key: secrets/certificates/darkfellanet-internal
                   property: ca.crt
 
       vm-standard:

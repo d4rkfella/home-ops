@@ -241,10 +241,9 @@ spec:
         selectors: {}
         interval: 30s
         scrapeTimeout: 10s
+        bearerTokenFile: /vault/secrets/token
         tlsConfig:
           serverName: vault.darkfellanetwork.com
-        authorization:
-          bearerTokenFile: /vault/secrets/token
 
       prometheusRules:
           enabled: true

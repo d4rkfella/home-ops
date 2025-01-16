@@ -193,6 +193,9 @@ spec:
             scheme: https
             pathPrefix: "/"
             apiVersion: v2
+            tlsConfig:
+              caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
+              serverName: "alertmanager-operated.observability.svc.cluster.local"
         scrapeInterval: 1m
         podMonitorSelector: &selector
           matchLabels: null
@@ -239,6 +242,15 @@ spec:
               secret:
                 key: tls.crt
                 name: prometheus-internal-tls
+        volumes:
+          - name: root-ca
+            secret:
+              secretName: prometheus-internal-tls
+        volumeMounts:
+          - name: root-ca
+            mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
+            subPath: ca.crt
+            readOnly: true
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

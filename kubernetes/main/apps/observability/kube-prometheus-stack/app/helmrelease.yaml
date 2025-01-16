@@ -167,6 +167,7 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
+        externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"

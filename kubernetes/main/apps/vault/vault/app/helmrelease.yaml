@@ -34,9 +34,6 @@ spec:
       serverTelemetry:
         prometheusOperator: false
 
-    injector:
-      enabled: true
-
     server:
       enabled: true
       image:

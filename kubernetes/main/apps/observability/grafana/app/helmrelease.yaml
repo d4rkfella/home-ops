@@ -103,6 +103,9 @@ spec:
             url: https://prometheus-operated.observability.svc.cluster.local:9090
             jsonData:
               timeInterval: 1m
+              tlsAuthWithCACert: true
+            secureJsonData:
+              tlsCACertFile: /etc/ssl/certs/darkfellanet-ca.crt
             isDefault: true
           - name: Loki
             type: loki

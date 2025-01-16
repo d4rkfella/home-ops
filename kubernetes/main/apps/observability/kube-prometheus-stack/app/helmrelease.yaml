@@ -157,6 +157,7 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
         ingressClassName: internal
         tls:
           - hosts: &host ["prometheus.darkfellanetwork.com"]

@@ -160,6 +160,8 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
+      serviceMonitor:
+        scheme: "HTTPS"
       ingress:
         enabled: true
         annotations:

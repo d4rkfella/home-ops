@@ -186,11 +186,11 @@ spec:
             vault.hashicorp.com/agent-run-as-user: "1000"
             vault.hashicorp.com/agent-run-as-group: "2000"
         alertingEndpoints:
-          - name: "alertmanager"
-            namespace: "observability"
+          - name: ""
+            namespace: ""
             port: 9093
             scheme: https
-            pathPrefix: "/test"
+            pathPrefix: "/"
             apiVersion: v2
         scrapeInterval: 1m
         podMonitorSelector: &selector

@@ -48,7 +48,7 @@ spec:
           secret:
             secretName: darkfellanet-ca-cert
       extraVolumeMounts:
-        - name: darkfelalnet-ca
+        - name: darkfellanet-ca
           mountPath: /etc/nginx/darkfellanet-ca.crt
           subPath: ca.crt
       config:

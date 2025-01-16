@@ -2,7 +2,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prometheus-internal
+  name: prometheus-internal-tls
 spec:
   secretName: prometheus-internal-tls
   duration: 2160h
@@ -16,6 +16,28 @@ spec:
     size: 384
   dnsNames:
     - prometheus-operated.observability.svc.cluster.local
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alertmanager-internal-tls
+spec:
+  secretName: alertmanager-internal-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - DarkfellaNET
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS8
+    size: 384
+  dnsNames:
+    - alertmanager-operated.observability.svc.cluster.local
   issuerRef:
     name: vault-issuer
     kind: ClusterIssuer

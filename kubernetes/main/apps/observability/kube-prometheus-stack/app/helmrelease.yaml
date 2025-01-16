@@ -109,6 +109,15 @@ spec:
               defaultMode: 420
               secretName: alertmanager-oauth-secret
             name: dragonfly-ca-cert
+        web:
+          tlsConfig:
+            keySecret:
+              key: tls.key
+              name: alertmanager-internal-tls
+            cert:
+              secret:
+                key: tls.crt
+                name: alertmanager-internal-tls
         useExistingSecret: true
         configSecret: alertmanager-secret
         storage:
@@ -213,15 +222,6 @@ spec:
               credentials_file: /vault/secrets/token
             static_configs:
               - targets: ['vault.darkfellanetwork.com:8200']
-        volumes:
-          - secret:
-              defaultMode: 420
-              secretName: prometheus-internal-tls
-            name: prometheus-tls
-        volumeMounts:
-          - mountPath: /etc/ssl/server-certs
-            name: prometheus-tls
-            readOnly: true
         web:
           tlsConfig:
             keySecret:

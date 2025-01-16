@@ -104,7 +104,6 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA

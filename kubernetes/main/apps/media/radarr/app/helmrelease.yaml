@@ -180,7 +180,6 @@ spec:
     ingress:
       app:
         annotations:
-          external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
           nginx.ingress.kubernetes.io/configuration-snippet: |
             proxy_set_header Accept-Encoding "";
             sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/radarr/mind.css"></body>';

@@ -46,6 +46,7 @@ spec:
       - --rfc2136-kerberos-password=$(KERBEROS_PASSWORD)
       - --rfc2136-kerberos-realm=DARKFELLANETWORK.COM
       - --rfc2136-tsig-axfr
+    triggerLoopOnEvent: true
     policy: sync
     sources: ["ingress", "service"]
     txtOwnerId: default

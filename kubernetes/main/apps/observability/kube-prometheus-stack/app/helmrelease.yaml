@@ -183,7 +183,7 @@ spec:
         ruleSelector: *selector
         scrapeConfigSelector: *selector
         serviceMonitorSelector: *selector
-        enableAdminAPI: true
+        enableAdminAPI: false
         walCompression: true
         enableFeatures:
           - auto-gomemlimit

@@ -60,60 +60,8 @@ spec:
         hosts: *host
         pathType: Prefix
       alertmanagerSpec:
-        listenLocal: false
         scheme: https
-        containers:
-          - name: oauth2-proxy
-            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            args: ["--config=/etc/oauth2-proxy.cfg"]
-            ports:
-              - containerPort: 4180
-                name: oauth-proxy
-            env:
-              - name: OAUTH2_PROXY_CLIENT_ID
-                valueFrom:
-                  secretKeyRef:
-                    key: CLIENT_ID
-                    name: alertmanager-oauth-secret
-              - name: OAUTH2_PROXY_CLIENT_SECRET
-                valueFrom:
-                  secretKeyRef:
-                    key: CLIENT_SECRET
-                    name: alertmanager-oauth-secret
-              - name: OAUTH2_PROXY_COOKIE_SECRET
-                valueFrom:
-                  secretKeyRef:
-                    key: COOKIE_SECRET
-                    name: alertmanager-oauth-secret
-              - name: OAUTH2_PROXY_REDIS_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    key: DRAGONFLY_PASSWORD
-                    name: alertmanager-oauth-secret
-              - name: OAUTH2_PROXY_SESSION_STORE_TYPE
-                value: redis
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                  - ALL
-              readOnlyRootFilesystem: true
-              runAsGroup: 65534
-              runAsUser: 65534
-            volumeMounts:
-              - mountPath: /etc/oauth2-proxy.cfg
-                name: oauth2-proxy-config
-                readOnly: true
-                subPath: oauth2-proxy.cfg
-              - mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
-                name: alertmanager-oauth-secret
-                readOnly: true
-                subPath: darkfellanet-root-ca.crt
         volumes:
-          - configMap:
-              defaultMode: 420
-              name: alertmanager-oauth2-proxy-config
-            name: oauth2-proxy-config
           - secret:
               defaultMode: 420
               secretName: alertmanager-oauth-secret

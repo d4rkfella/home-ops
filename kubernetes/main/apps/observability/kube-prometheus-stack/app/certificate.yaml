@@ -1,0 +1,22 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus
+spec:
+  secretName: prometheus-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - DarkfellaNET
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS8
+    size: 384
+  dnsNames:
+    - prometheus-operated.observability.svc.cluster.local
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

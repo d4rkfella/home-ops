@@ -33,10 +33,10 @@ spec:
   dependsOn:
     - name: cert-manager
   path: ./kubernetes/main/apps/cert-manager/cert-manager/issuers
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  wait: true
+  wait: false
   interval: 30m
   timeout: 5m

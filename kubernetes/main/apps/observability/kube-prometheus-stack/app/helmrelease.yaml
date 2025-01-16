@@ -64,11 +64,11 @@ spec:
         volumes:
           - secret:
               defaultMode: 420
-              secretName: alertmanager-oauth-secret
-            name: alertmanager-oauth-secret
+              secretName: alertmanager-internal-tls
+            name: darkfellanet-root-ca
         volumeMounts:
           - mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
-            name: alertmanager-oauth-secret
+            name: darkfellanet-root-ca
             readOnly: true
             subPath: darkfellanet-root-ca.crt
         web:

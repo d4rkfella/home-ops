@@ -211,7 +211,7 @@ spec:
         volumes:
           - secret:
               defaultMode: 420
-              secretName: prometheus-tls
+              secretName: prometheus-internal-tls
             name: prometheus-tls
         volumeMounts:
           - mountPath: /etc/ssl/server-certs

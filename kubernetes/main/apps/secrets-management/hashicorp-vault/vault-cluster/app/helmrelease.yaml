@@ -77,7 +77,13 @@ spec:
         VAULT_TLSCERT: /vault/tls/tls.crt
         VAULT_TLSKEY: /vault/tls/tls.key
 
-      extraSecretEnvironmentVars: []
+      extraSecretEnvironmentVars:
+        - envName: AWS_ACCESS_KEY_ID
+          secretName: eks-creds
+          secretKey: AWS_ACCESS_KEY_ID
+        - envName: AWS_SECRET_ACCESS_KEY
+          secretName: eks-creds
+          secretKey: AWS_SECRET_ACCESS_KEY
 
       volumes:
         - name: vault-tls
@@ -148,9 +154,7 @@ spec:
           config: |
             seal "awskms" {
               region = "us-east-1"
-              access_key = "${AWS_ACCESS_KEY}"
-              secret_key = "${AWS_SECRET_KEY}"
-              kms_key_id = "${AWS_KEY_ID}"
+              kms_key_id = "arn:aws:kms:us-east-1:905418366675:key/6e4bfe89-d22a-41d7-8705-2729d0f3b099"
             }
 
             ui = true

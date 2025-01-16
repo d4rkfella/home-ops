@@ -156,7 +156,7 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/proxy-ssl-secret:
+          nginx.ingress.kubernetes.io/proxy-ssl-secret: network/darkfellanet-ca-cert
           nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
         ingressClassName: internal

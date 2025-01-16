@@ -36,7 +36,6 @@ spec:
             key: KERBEROS_PASSWORD
 
     extraArgs:
-      - --events
       - --ignore-ingress-tls-spec
       - --rfc2136-gss-tsig
       - --rfc2136-host=dc01.darkfellanetwork.com

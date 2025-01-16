@@ -16,6 +16,9 @@ spec:
     encoding: PKCS8
     size: 384
   dnsNames:
+    - dragonfly-cluster
+    - dragonfly-cluster.database
+    - dragonfly-cluster.database.svc
     - dragonfly-cluster.database.svc.cluster.local
   issuerRef:
     name: vault-issuer

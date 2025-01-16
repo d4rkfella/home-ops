@@ -75,10 +75,10 @@ spec:
 
       extraSecretEnvironmentVars:
         - envName: AWS_ACCESS_KEY_ID
-          secretName: eks-creds
+          secretName: vault-eks-secret
           secretKey: AWS_ACCESS_KEY_ID
         - envName: AWS_SECRET_ACCESS_KEY
-          secretName: eks-creds
+          secretName: vault-eks-secret
           secretKey: AWS_SECRET_ACCESS_KEY
 
       volumes:

@@ -191,7 +191,6 @@ spec:
             port: 9093
             scheme: https
             pathPrefix: "/test"
-            tlsConfig: {}
             apiVersion: v2
         scrapeInterval: 1m
         podMonitorSelector: &selector

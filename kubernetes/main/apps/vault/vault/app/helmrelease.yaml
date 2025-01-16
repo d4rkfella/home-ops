@@ -30,11 +30,12 @@ spec:
     global:
       enabled: true
       tlsDisable: false
+      externalVaultAddr: "https://vault.darkfellanetwork.com:8200"
       serverTelemetry:
         prometheusOperator: false
 
     injector:
-      enabled: false
+      enabled: true
 
     server:
       enabled: true

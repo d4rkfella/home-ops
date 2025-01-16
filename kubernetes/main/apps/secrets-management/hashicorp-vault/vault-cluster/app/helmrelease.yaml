@@ -210,7 +210,7 @@ spec:
         securityContext:
           pod:
             runAsNonRoot: true
-            runAsUser: 1000
+            runAsUser: 100
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: Always

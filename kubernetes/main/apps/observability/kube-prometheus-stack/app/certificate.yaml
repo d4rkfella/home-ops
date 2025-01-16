@@ -2,9 +2,9 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: prometheus
+  name: prometheus-internal
 spec:
-  secretName: prometheus-tls
+  secretName: prometheus-internal-tls
   duration: 2160h
   renewBefore: 360h
   subject:

@@ -54,6 +54,7 @@ spec:
         pathType: Prefix
       alertmanagerSpec:
         listenLocal: false
+        scheme: HTTPS
         containers:
           - name: oauth2-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
@@ -242,6 +243,7 @@ spec:
               secret:
                 key: tls.crt
                 name: prometheus-internal-tls
+
         volumes:
           - name: root-ca
             secret:

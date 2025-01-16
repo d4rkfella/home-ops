@@ -73,10 +73,6 @@ spec:
 
       preStopSleepSeconds: 5
 
-      extraEnvironmentVars:
-        VAULT_TLSCERT: /vault/tls/tls.crt
-        VAULT_TLSKEY: /vault/tls/tls.key
-
       extraSecretEnvironmentVars:
         - envName: AWS_ACCESS_KEY_ID
           secretName: eks-creds

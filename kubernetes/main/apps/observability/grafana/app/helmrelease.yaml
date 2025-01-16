@@ -104,9 +104,9 @@ spec:
             jsonData:
               timeInterval: 1m
               tlsAuthWithCACert: true
-              httpHeaders:
-                X-Forwarded-Host: prometheus.darkfellanetwork.com
+              httpHeaderName1: X-Forwarded-Host
             secureJsonData:
+              httpHeaderValue1: prometheus.darkfellanetwork.com
               tlsCACert: |
                 -----BEGIN CERTIFICATE-----
                 MIICUTCCAdegAwIBAgIUE7P4E59OdEcMJEVp9Qm4fbaX6gowCgYIKoZIzj0EAwMw

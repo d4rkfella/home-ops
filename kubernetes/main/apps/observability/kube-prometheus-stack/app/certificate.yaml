@@ -15,7 +15,14 @@ spec:
     encoding: PKCS8
     size: 384
   dnsNames:
+    - prometheus-operated
+    - prometheus-operated.observability
+    - prometheus-operated.observability.svc
     - prometheus-operated.observability.svc.cluster.local
+    - kube-prometheus-stack-prometheus
+    - kube-prometheus-stack-prometheus.observability
+    - kube-prometheus-stack-prometheus.observability.svc
+    - kube-prometheus-stack-prometheus.observability.svc.cluster.local
   issuerRef:
     name: vault-issuer
     kind: ClusterIssuer
@@ -37,7 +44,14 @@ spec:
     encoding: PKCS8
     size: 384
   dnsNames:
+    - alertmanager-operated
+    - alertmanager-operated.observability
+    - alertmanager-operated.observability.svc
     - alertmanager-operated.observability.svc.cluster.local
+    - kube-prometheus-stack-alertmanager
+    - kube-prometheus-stack-alertmanager.observability
+    - kube-prometheus-stack-alertmanager.observability.svc
+    - kube-prometheus-stack-alertmanager.observability.svc.cluster.local
   issuerRef:
     name: vault-issuer
     kind: ClusterIssuer

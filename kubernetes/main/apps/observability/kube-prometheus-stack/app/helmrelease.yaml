@@ -190,7 +190,7 @@ spec:
             namespace: "observability"
             port: 9093
             scheme: https
-            pathPrefix: "/"
+            pathPrefix: "/test"
             tlsConfig: {}
             apiVersion: v2
         scrapeInterval: 1m

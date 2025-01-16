@@ -140,7 +140,7 @@ spec:
         enabled: true
         replicas: 3
 
-        apiAddr: "https://vault.darkfellanetwork.com"
+        apiAddr: "https://vault.darkfellanetwork.com:8200"
 
         raft:
           enabled: true

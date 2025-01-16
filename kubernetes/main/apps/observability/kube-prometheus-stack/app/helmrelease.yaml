@@ -42,9 +42,6 @@ spec:
         enableHttp2: true
       service:
         port: 9093
-        additionalPorts:
-          - name: oauth-proxy
-            port: 4180
       ingress:
         enabled: true
         annotations:
@@ -53,6 +50,9 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          nginx.ingress.kubernetes.io/server-snippet: |
+            proxy_ssl_name          kube-prometheus-stack-alertmanager.observability.svc.cluster.local;
+            proxy_ssl_session_reuse on;
         ingressClassName: internal
         tls:
           - hosts: &host ["alertmanager.darkfellanetwork.com"]
@@ -134,6 +134,9 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          nginx.ingress.kubernetes.io/server-snippet: |
+            proxy_ssl_name          kube-prometheus-stack-prometheus.observability.svc.cluster.local;
+            proxy_ssl_session_reuse on;
         ingressClassName: internal
         tls:
           - hosts: &host ["prometheus.darkfellanetwork.com"]

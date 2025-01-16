@@ -44,19 +44,12 @@ spec:
               TUNNEL_ORIGIN_ENABLE_HTTP2: true
               TUNNEL_TRANSPORT_PROTOCOL: quic
               TUNNEL_POST_QUANTUM: true
-              TUNNEL_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: CF_TUNNEL_ID
             args:
-              - --edge-ip-version
-              - "4"
               - tunnel
               - --config
               - /etc/cloudflared/config/config.yaml
               - run
-              - $(TUNNEL_ID)
+              - ef313dd3-14c2-4703-aecf-6033c0a259dd
             probes:
               liveness: &probes
                 enabled: true
@@ -138,12 +131,11 @@ spec:
               template:
                 engineVersion: v2
                 data:
-                  CF_TUNNEL_ID: '{{ "{{ .CF_TUNNEL_ID }}" }}'
                   credentials.json: |
                     {
                       "AccountTag": "{{ "{{ .CF_ACCOUNT_TAG }}" }}",
                       "TunnelSecret": "{{ "{{ .CF_TUNNEL_SECRET }}" }}",
-                      "TunnelID": "{{ "{{ .CF_TUNNEL_ID }}" }}"
+                      "TunnelID": "ef313dd3-14c2-4703-aecf-6033c0a259dd"
                     }
             dataFrom:
               - extract:
@@ -158,7 +150,7 @@ spec:
             endpoints:
               - dnsName: external.darkfellanetwork.com
                 recordType: CNAME
-                targets: ["${CLUSTER_CLOUDFLARE_TUNNEL_ID}.cfargotunnel.com"]
+                targets: ["ef313dd3-14c2-4703-aecf-6033c0a259dd.cfargotunnel.com"]
 
       network-policy:
         enabled: true
@@ -256,7 +248,6 @@ spec:
           config.yaml: |
             originRequest:
               originServerName: external.darkfellanetwork.com
-              http2Origin: true
             ingress:
               - hostname: darkfellanetwork.com
                 service: https://nginx-external-controller.network.svc.cluster.local:443

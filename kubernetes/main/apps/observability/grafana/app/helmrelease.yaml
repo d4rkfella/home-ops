@@ -31,6 +31,12 @@ spec:
         defaultMode: 0440
         mountPath: /etc/secrets/oauth-client-credentials
         readOnly: true
+      - name: darkfellanet-ca
+        secretName: grafana-oauth-client-secret
+        defaultMode: 0440
+        mountPath: /etc/ssl/certs/darkfellanet-ca.crt
+        subPath: darkfellanet-ca.crt
+        readOnly: true
     deploymentStrategy:
       type: Recreate
     env:
@@ -94,7 +100,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: http://prometheus-operated.observability.svc.cluster.local:9090
+            url: https://prometheus-operated.observability.svc.cluster.local:9090
             jsonData:
               timeInterval: 1m
             isDefault: true

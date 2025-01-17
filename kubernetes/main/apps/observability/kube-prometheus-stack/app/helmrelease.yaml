@@ -74,8 +74,6 @@ spec:
             - containerPort: 8081
               name: oauth-proxy
               protocol: TCP
-            env:
-              - name:
             resources: {}
             volumeMounts:
               - name: 'alertmanager'

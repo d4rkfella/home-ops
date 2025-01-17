@@ -33,13 +33,13 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      serviceMonitor:
-        selfMonitor: true
-        scheme: https
-        tlsConfig:
-          caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
-          serverName: "alertmanager-operated.observability.svc.cluster.local"
-        enableHttp2: true
+      #serviceMonitor:
+        #selfMonitor: true
+        #scheme: https
+        #tlsConfig:
+          #caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
+          #serverName: "alertmanager-operated.observability.svc.cluster.local"
+        #enableHttp2: true
       service:
         port: 9093
       ingress:

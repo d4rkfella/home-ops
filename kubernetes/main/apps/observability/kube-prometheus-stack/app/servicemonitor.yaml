@@ -2,6 +2,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   name: kube-prometheus-stack-prometheus
+  namespace: observability
 spec:
   endpoints:
     - path: /metrics
@@ -9,11 +10,11 @@ spec:
       oauth2:
         clientId:
           secret:
-            name: test
-            key: test
+            name: prometheus-oauth2-credentials
+            key: client_id
         clientSecret:
-          name: test
-          key: test
+          name: prometheus-oauth2-credentials
+          key: client_secret
         tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         scopes: ["openid", "profile", "email"]
         endpointParams:

@@ -120,6 +120,8 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
+      service:
+        targetPort: 8081
       serviceMonitor:
         selfMonitor: true
         scheme: https
@@ -133,10 +135,6 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          nginx.ingress.kubernetes.io/server-snippet: |
-            proxy_ssl_name          kube-prometheus-stack-prometheus.observability.svc.cluster.local;
-            proxy_ssl_session_reuse on;
         ingressClassName: internal
         tls:
           - hosts: &host ["prometheus.darkfellanetwork.com"]
@@ -144,6 +142,7 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
+        listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:
           annotations:
@@ -200,25 +199,27 @@ spec:
               credentials_file: /vault/secrets/token
             static_configs:
               - targets: ['vault.darkfellanetwork.com:8200']
-        web:
-          tlsConfig:
-            keySecret:
-              key: tls.key
-              name: prometheus-internal-tls
-            cert:
-              secret:
-                key: tls.crt
-                name: prometheus-internal-tls
-
+        containers:
+          - name: oauth-proxy
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+            - --config=/etc/secrets-store/oauth2-proxy.cfg
+            ports:
+            - containerPort: 8081
+              name: oauth-proxy
+              protocol: TCP
+            resources: {}
+            volumeMounts:
+              - name: 'oauth-proxy-config'
+                mountPath: '/etc/secrets-store'
+                readOnly: true
         volumes:
-          - name: darkfellanet-root-ca
-            secret:
-              secretName: prometheus-internal-tls
-        volumeMounts:
-          - name: darkfellanet-root-ca
-            mountPath: /etc/ssl/certs/darkfellanet-root-ca.crt
-            subPath: ca.crt
-            readOnly: true
+          - name: oauth-proxy-config
+            csi:
+              driver: 'secrets-store.csi.k8s.io'
+              readOnly: true
+              volumeAttributes:
+                secretProviderClass: 'oauth-proxy-config'
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

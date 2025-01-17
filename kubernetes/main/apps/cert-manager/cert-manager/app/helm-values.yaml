@@ -15,7 +15,7 @@ prometheus:
         ca:
           secret:
             name: cert-manager-metrics-ca
-            key: "ca.crt"
+            key: "tls.crt"
 config:
   metricsTLSConfig:
     dynamic:

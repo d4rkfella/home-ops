@@ -33,8 +33,6 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      serviceMonitor:
-        selfMonitor: false
       service:
         targetPort: 8081
       ingress:
@@ -56,8 +54,6 @@ spec:
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         alertmanagerConfiguration:
           name: alertmanager
-          global:
-            resolveTimeout: 5m
         storage:
           volumeClaimTemplate:
             spec:

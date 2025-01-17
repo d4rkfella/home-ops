@@ -212,6 +212,11 @@ spec:
             volumeMounts:
               - name: 'oauth-proxy-config'
                 mountPath: '/etc/secrets-store'
+                subPath: 'oauth2-proxy.cfg'
+                readOnly: true
+              - name: 'oauth-proxy-config'
+                mountPath: '/etc/ssl/certs'
+                subPath: 'darkfellanet-internal-root-ca.crt'
                 readOnly: true
         volumes:
           - name: oauth-proxy-config

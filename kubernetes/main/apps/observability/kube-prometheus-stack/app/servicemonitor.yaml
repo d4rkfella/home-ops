@@ -4,19 +4,20 @@ metadata:
   name: kube-prometheus-stack-prometheus
 spec:
   endpoints:
-    - oauth2:
-      clientId:
-        secret:
-          name: prometheus-oauth2-credentials
-          key: client_id
-      clientSecret:
-        secret:
-          name: prometheus-oauth2-credentials
-          key: client_secret
-      tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
-      scopes: openid profile email
     - path: /metrics
       port: http-web
+      oauth2:
+        clientId:
+          secret:
+            name: test
+            key: test
+        clientSecret:
+          name: test
+          key: test
+        tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+        scopes: ["openid", "profile", "email"]
+        endpointParams:
+          grant_type: 'client_credentials'
     - path: /metrics
       port: reloader-web
   namespaceSelector:

@@ -23,27 +23,6 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    linux:
+    syncSecret:
       enabled: true
-      image:
-        repository: registry.k8s.io/csi-secrets-store/driver
-        tag: v1.4.7
-        #digest: sha256:
-        pullPolicy: IfNotPresent
-
-      crds:
-        enabled: true
-        image:
-          repository: registry.k8s.io/csi-secrets-store/driver-crds
-          tag: v1.4.7
-          pullPolicy: IfNotPresent
-        ## Optionally override resource limits for crd hooks(jobs)
-        resources: {}
-          # requests:
-          #   cpu: "100m"
-          #   memory: "128Mi"
-          # limits:
-          #   cpu: "500m"
-          #   memory: "512Mi"
-        annotations: {}
-        podLabels: {}
+    enableSecretRotation: true

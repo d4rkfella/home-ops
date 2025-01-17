@@ -124,10 +124,14 @@ spec:
         targetPort: 8081
       serviceMonitor:
         selfMonitor: true
-        #scheme: https
-        #tlsConfig:
-          #caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
-          #serverName: "prometheus-operated.observability.svc.cluster.local"
+        scheme: https
+        tlsConfig:
+          serverName: "prometheus.darkfellanetwork.com"
+        oauth2:
+          client_id: 'b257908e-34ad-4933-98a0-ca00ff6fcfdd'
+          client_secret_file: '/vault/secrets/client_secret'
+          token_url: 'https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token'
+          scopes: 'openid profile email'
       ingress:
         enabled: true
         annotations:
@@ -225,6 +229,11 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: 'oauth-proxy-config'
+        volumeMounts:
+          - name: oauth-proxy-config
+            mountPath: '/vault/secrets/client_secret'
+            readOnly: true
+            subPath: 'client_secret'
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

@@ -80,10 +80,10 @@ spec:
                 mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
                 subPath: 'oauth2-proxy.cfg'
                 readOnly: true
-              - name: 'alertmanager'
-                mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
-                subPath: 'darkfellanet-internal-root-ca.crt'
-                readOnly: true
+              #- name: 'alertmanager'
+                #mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
+                #subPath: 'darkfellanet-internal-root-ca.crt'
+                #readOnly: true
               - name: alertmanager-tls
                 mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
                 readOnly: true

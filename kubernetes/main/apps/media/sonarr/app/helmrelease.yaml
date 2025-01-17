@@ -247,7 +247,7 @@ spec:
                 subPath: oauth2-proxy.cfg
                 readOnly: true
 
-      darkfellanet-root-ca.crt:
+      darkfellanet-root-ca:
         type: secret
         name: *secret
         advancedMounts:

@@ -124,10 +124,10 @@ spec:
         targetPort: 8081
       serviceMonitor:
         selfMonitor: true
-        scheme: https
-        tlsConfig:
-          caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
-          serverName: "prometheus-operated.observability.svc.cluster.local"
+        #scheme: https
+        #tlsConfig:
+          #caFile: "/etc/ssl/certs/darkfellanet-root-ca.crt"
+          #serverName: "prometheus-operated.observability.svc.cluster.local"
       ingress:
         enabled: true
         annotations:

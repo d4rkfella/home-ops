@@ -100,7 +100,7 @@ spec:
             type: prometheus
             uid: prometheus
             #access: proxy
-            url: http://prometheus-operated.observability.svc.cluster.local:9090
+            url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
             jsonData:
               timeInterval: 1m
               oauthPassThru: true

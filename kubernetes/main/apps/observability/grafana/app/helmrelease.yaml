@@ -99,8 +99,8 @@ spec:
           - name: Prometheus
             type: prometheus
             uid: prometheus
-            #access: proxy
-            url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+            access: proxy
+            url: https://prometheus.darkfellanetwork.com
             jsonData:
               timeInterval: 1m
               oauthPassThru: true

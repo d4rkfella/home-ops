@@ -8,11 +8,11 @@ spec:
     matchLabels:
       app.kubernetes.io/name: vault
   ingress:
-    - fromCIDRSet:
-        - cidr: 192.168.91.0/24
-      toPorts:
-        - ports:
-            - port: "8200"
+    #- fromCIDRSet:
+        #- cidr: 192.168.91.0/24
+      #toPorts:
+        #- ports:
+            #- port: "8200"
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: external-secrets

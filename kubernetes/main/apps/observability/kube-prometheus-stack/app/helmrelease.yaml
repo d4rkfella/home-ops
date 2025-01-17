@@ -54,6 +54,8 @@ spec:
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         alertmanagerConfiguration:
           name: alertmanager
+          global:
+            resolveTimeout: 5m
         storage:
           volumeClaimTemplate:
             spec:

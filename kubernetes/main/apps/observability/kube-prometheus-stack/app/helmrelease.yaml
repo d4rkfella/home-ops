@@ -75,23 +75,23 @@ spec:
               name: oauth-proxy
               protocol: TCP
             resources: {}
-            volumeMounts:
-              - name: 'alertmanager'
-                mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
-                subPath: 'oauth2-proxy.cfg'
-                readOnly: true
-              - name: 'alertmanager'
-                mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
-                subPath: 'darkfellanet-internal-root-ca.crt'
-                readOnly: true
-              - name: 'alertmanager'
-                mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
-                subPath: 'tls.crt'
-                readOnly: true
-              - name: 'alertmanager'
-                mountPath: '/etc/ssl/oauth2-server-tls/tls.key'
-                subPath: 'tls.key'
-                readOnly: true
+            #volumeMounts:
+              #- #name: 'alertmanager'
+                #mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
+                #subPath: 'oauth2-proxy.cfg'
+                #readOnly: true
+              #- name: 'alertmanager'
+                #mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
+                #subPath: 'darkfellanet-internal-root-ca.crt'
+                #readOnly: true
+              #- name: 'alertmanager'
+                #mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
+                #subPath: 'tls.crt'
+                #readOnly: true
+              #- name: 'alertmanager'
+                #mountPath: '/etc/ssl/oauth2-server-tls/tls.key'
+                #subPath: 'tls.key'
+                #readOnly: true
         volumes:
           - name: alertmanager
             csi:

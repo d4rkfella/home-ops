@@ -246,11 +246,13 @@ spec:
         enabled: true
         data:
           config.yaml: |
-            originRequest:
-              originServerName: external.darkfellanetwork.com
             ingress:
               - hostname: darkfellanetwork.com
                 service: https://nginx-external-controller.network.svc.cluster.local:443
+                originRequest:
+                  originServerName: external.darkfellanetwork.com
               - hostname: "*.darkfellanetwork.com"
                 service: https://nginx-external-controller.network.svc.cluster.local:443
+                originRequest:
+                  originServerName: external.darkfellanetwork.com
               - service: http_status:404

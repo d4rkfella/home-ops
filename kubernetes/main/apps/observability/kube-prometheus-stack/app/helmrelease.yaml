@@ -124,9 +124,9 @@ spec:
         targetPort: 8081
       serviceMonitor:
         selfMonitor: true
-        scheme: https
-        tlsConfig:
-          serverName: "prometheus.darkfellanetwork.com"
+        #scheme: https
+        #tlsConfig:
+          #serverName: "prometheus.darkfellanetwork.com"
         oauth2:
           client_id: 'b257908e-34ad-4933-98a0-ca00ff6fcfdd'
           client_secret_file: '/vault/secrets/client_secret'

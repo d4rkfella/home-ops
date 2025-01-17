@@ -99,7 +99,7 @@ spec:
           - name: Prometheus
             type: prometheus
             uid: prometheus
-            access: proxy
+            #access: proxy
             url: https://prometheus.darkfellanetwork.com
             jsonData:
               timeInterval: 1m

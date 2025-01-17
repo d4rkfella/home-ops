@@ -100,7 +100,7 @@ spec:
             type: prometheus
             uid: prometheus
             #access: proxy
-            url: https://prometheus.darkfellanetwork.com
+            url: http://prometheus-operated.observability.svc.cluster.local
             jsonData:
               timeInterval: 1m
               oauthPassThru: true

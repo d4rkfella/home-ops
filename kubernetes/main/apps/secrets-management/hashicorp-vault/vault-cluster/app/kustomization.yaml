@@ -6,7 +6,7 @@ resources:
   - ./certificate.yaml
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
-  - ./volsync-src.yaml
+  #- ./volsync-src.yaml
   - ./vault.secret.sops.yaml
 configMapGenerator:
   - name: vault-gatus-ep

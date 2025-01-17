@@ -227,21 +227,21 @@ spec:
               protocol: TCP
             resources: {}
             volumeMounts:
-              - name: 'oauth-proxy-config'
+              - name: 'prometheus'
                 mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
                 subPath: 'oauth2-proxy.cfg'
                 readOnly: true
-              - name: 'oauth-proxy-config'
+              - name: 'prometheus'
                 mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
                 subPath: 'darkfellanet-internal-root-ca.crt'
                 readOnly: true
         volumes:
-          - name: oauth-proxy-config
+          - name: prometheus
             csi:
               driver: 'secrets-store.csi.k8s.io'
               readOnly: true
               volumeAttributes:
-                secretProviderClass: 'oauth-proxy-config'
+                secretProviderClass: 'prometheus'
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

@@ -60,7 +60,7 @@ spec:
           name_attribute_path: name
           client_id: "$__file{/etc/secrets/oauth-client-credentials/client_id}"
           client_secret: "$__file{/etc/secrets/oauth-client-credentials/client_secret}"
-          scopes: "openid email profile roles"
+          scopes: "openid email profile roles groups"
           auth_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
           token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
           api_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/userinfo"

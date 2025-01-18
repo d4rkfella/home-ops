@@ -169,11 +169,11 @@ spec:
               serverName: alertmanager.darkfellanetwork.com
             oauth2:
               clientId: b257908e-34ad-4933-98a0-ca00ff6fcfdd
-              clientSecretFile: /vault/secrets/client_secret
+              #clientSecretFile: /vault/secrets/client_secret
               tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
               scopes: ["openid", "profile", "email"]
               endpointParams:
-                grant_type: 'client_credentials'
+                grant_type: client_credentials
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

@@ -63,16 +63,15 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
-        #containers:
-          #- name: oauth-proxy
-            #image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            #args:
-            #- --config=/etc/secrets-store/oauth2-proxy.cfg
-            #ports:
-            #- containerPort: 8081
-              #name: oauth-proxy
-              #protocol: TCP
-            #resources: {}
+        containers:
+          - name: oauth-proxy
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+            - --config=/etc/secrets-store/oauth2-proxy.cfg
+            ports:
+            - containerPort: 8081
+              name: oauth-proxy
+              protocol: TCP
             #volumeMounts:
               #- name: 'alertmanager'
                 #mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
@@ -155,27 +154,27 @@ spec:
             vault.hashicorp.com/role: "prometheus"
             vault.hashicorp.com/agent-run-as-user: "1000"
             vault.hashicorp.com/agent-run-as-group: "2000"
-        alertingEndpoints:
-          - name: "alertmanager-operated"
-            namespace: "observability"
-            port: 9093
-            scheme: https
-            pathPrefix: "/"
-            apiVersion: v2
-            tlsConfig:
-              serverName: "alertmanager.darkfellanetwork.com"
-            oauth2:
-              clientId:
-                secret:
-                  name: prometheus-oauth2-credentials
-                  key: client_id
-              clientSecret:
-                name: prometheus-oauth2-credentials
-                key: client_secret
-              tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
-              scopes: ["openid", "profile", "email"]
-              endpointParams:
-                grant_type: 'client_credentials'
+        #alertingEndpoints:
+          #- name: "alertmanager-operated"
+            #namespace: "observability"
+            #port: 9093
+            #scheme: https
+            #pathPrefix: "/"
+            #apiVersion: v2
+            #tlsConfig:
+              #serverName: "alertmanager.darkfellanetwork.com"
+            #oauth2:
+              #clientId:
+                #secret:
+                  #name: prometheus-oauth2-credentials
+                  #key: client_id
+              #clientSecret:
+                #name: prometheus-oauth2-credentials
+                #key: client_secret
+              #tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+              #scopes: ["openid", "profile", "email"]
+              #endpointParams:
+                #grant_type: 'client_credentials'
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
@@ -184,9 +183,7 @@ spec:
         enableAdminAPI: false
         walCompression: true
         enableFeatures:
-          - auto-gomemlimit
           - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
         retention: 14d
         retentionSize: 70GB
         resources:

@@ -155,7 +155,7 @@ spec:
             vault.hashicorp.com/agent-run-as-group: "2000"
         additionalAlertManagerConfigs:
           - httpConfig:
-              oauth2:
+              - oauth2:
                 client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
                 client_secret_file: /vault/secrets/client-secret
                 token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token

@@ -93,7 +93,7 @@ spec:
                 mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
                 subPath: darkfellanet-internal-root-ca.crt
                 readOnly: true
-              - name: alertmanager-tls
+              - name: alertmanager-internal-tls
                 mountPath: /vault/secrets/tls
                 readOnly: true
         volumes:
@@ -103,9 +103,9 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: alertmanager
-          - name: alertmanager-tls
+          - name: alertmanager-internal-tls
             secret:
-              secretName: alertmanager-tls
+              secretName: alertmanager-internal-tls
               defaultMode: 256
     kubeApiServer:
       serviceMonitor:
@@ -177,9 +177,6 @@ spec:
             vault.hashicorp.com/agent-run-as-group: "2000"
         additionalAlertManagerConfigs:
           - scheme: https
-            tls_config:
-              server_name: alertmanager.darkfellanetwork.com
-              insecure_skip_verify: false
             follow_redirects: true
             enable_http2: true
             path_prefix: /
@@ -267,7 +264,7 @@ spec:
                 mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
                 subPath: darkfellanet-internal-root-ca.crt
                 readOnly: true
-              - name: prometheus-tls
+              - name: prometheus-internal-tls
                 mountPath: /vault/secrets/tls
                 readOnly: true
         volumes:
@@ -277,9 +274,9 @@ spec:
               readOnly: true
               volumeAttributes:
                 secretProviderClass: prometheus
-          - name: prometheus-tls
+          - name: prometheus-internal-tls
             secret:
-              secretName: prometheus-tls
+              secretName: prometheus-internal-tls
               defaultMode: 256
         volumeMounts:
           - name: prometheus

@@ -100,7 +100,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: https://prometheus.darkfellanetwork.com
+            url: http://prometheus-operated.observability.svc.cluster.local:8081
             jsonData:
               timeInterval: 1m
               oauthPassThru: true
@@ -116,9 +116,11 @@ spec:
             type: alertmanager
             uid: alertmanager
             access: proxy
-            url: http://alertmanager-operated.observability.svc.cluster.local:9093
+            url: https://alertmanager-operated.observability.svc.cluster.local:8081
             jsonData:
+              oauthPassThru: true
               implementation: prometheus
+              tlsSkipVerify: true
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1

@@ -153,27 +153,19 @@ spec:
             vault.hashicorp.com/role: "prometheus"
             vault.hashicorp.com/agent-run-as-user: "1000"
             vault.hashicorp.com/agent-run-as-group: "2000"
-        #alertingEndpoints:
-          #- name: "alertmanager-operated"
-            #namespace: "observability"
-            #port: 9093
-            #scheme: https
-            #pathPrefix: "/"
-            #apiVersion: v2
-            #tlsConfig:
-              #serverName: "alertmanager.darkfellanetwork.com"
-            #oauth2:
-              #clientId:
-                #secret:
-                  #name: prometheus-oauth2-credentials
-                  #key: client_id
-              #clientSecret:
-                #name: prometheus-oauth2-credentials
-                #key: client_secret
-              #tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
-              #scopes: ["openid", "profile", "email"]
-              #endpointParams:
-                #grant_type: 'client_credentials'
+        additionalAlertManagerConfigsSecret:
+          name: prometheus-oauth2-credentials
+          key: alertmanager-config.yaml
+          optional: false
+        alertingEndpoints:
+          - name: "alertmanager-operated"
+            namespace: "observability"
+            port: 9093
+            scheme: https
+            pathPrefix: "/"
+            apiVersion: v2
+            tlsConfig:
+              serverName: "alertmanager.darkfellanetwork.com"
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

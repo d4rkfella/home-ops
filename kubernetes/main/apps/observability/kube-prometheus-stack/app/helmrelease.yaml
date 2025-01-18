@@ -157,8 +157,8 @@ spec:
           - oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
               client_secret_ref:
-                name: prometheus-oauth2-credentials
-                key: client_secret
+                - name: prometheus-oauth2-credentials
+                  key: client_secret
               token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         alertingEndpoints:
           - name: alertmanager-operated

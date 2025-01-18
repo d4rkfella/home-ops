@@ -159,10 +159,7 @@ spec:
               client_secret_file: /vault/secrets/client_secret
               token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         alertingEndpoints:
-          - name: kube-prometheus-stack-alertmanager
-            namespace: observability
-            port: 9093
-            scheme: https
+          - scheme: https
             pathPrefix: "/"
             apiVersion: v2
             tlsConfig:

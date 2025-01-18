@@ -155,8 +155,6 @@ spec:
             vault.hashicorp.com/agent-run-as-group: "2000"
         additionalAlertManagerConfigs:
           - scheme: https
-            name: alertmanager-operated
-            port: 8081
             tls_config:
               server_name: alertmanager.darkfellanetwork.com
               insecure_skip_verify: false

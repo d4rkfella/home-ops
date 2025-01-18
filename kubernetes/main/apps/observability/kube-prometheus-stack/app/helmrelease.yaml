@@ -162,7 +162,7 @@ spec:
           - name: alertmanager-operated
             namespace: observability
             port: 9093
-            scheme: https
+            scheme: http
             pathPrefix: "/"
             apiVersion: v2
             tlsConfig:

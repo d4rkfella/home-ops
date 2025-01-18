@@ -33,6 +33,14 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
+      securityContext:
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
       service:
         targetPort: 8081
       ingress:
@@ -67,33 +75,38 @@ spec:
           - name: oauth-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
-            - --config=/etc/secrets-store/oauth2-proxy.cfg
+            - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
             - containerPort: 8081
               name: oauth-proxy
               protocol: TCP
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             volumeMounts:
-              - name: 'alertmanager'
-                mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
-                subPath: 'oauth2-proxy.cfg'
+              - name: alertmanager
+                mountPath: /vault/secrets/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: 'alertmanager'
-                mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
-                subPath: 'darkfellanet-internal-root-ca.crt'
+              - name: alertmanager
+                mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
+                subPath: darkfellanet-internal-root-ca.crt
                 readOnly: true
               - name: alertmanager-tls
-                mountPath: '/etc/ssl/oauth2-server-tls'
+                mountPath: /vault/secrets/tls
                 readOnly: true
         volumes:
           - name: alertmanager
             csi:
-              driver: 'secrets-store.csi.k8s.io'
+              driver: secrets-store.csi.k8s.io
               readOnly: true
               volumeAttributes:
-                secretProviderClass: 'alertmanager'
+                secretProviderClass: alertmanager
           - name: alertmanager-tls
             secret:
               secretName: alertmanager-tls
+              defaultMode: 256
     kubeApiServer:
       serviceMonitor:
         selector:
@@ -125,6 +138,14 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
+      securityContext:
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
       service:
         targetPort: 8081
       serviceMonitor:
@@ -180,9 +201,7 @@ spec:
               follow_redirects: true
               enable_http2: true
               namespaces:
-                own_namespace: false
-                names:
-                - observability
+                own_namespace: true
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
               client_secret_file: /vault/secrets/client_secret
@@ -228,28 +247,39 @@ spec:
           - name: oauth-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
-            - --config=/etc/secrets-store/oauth2-proxy.cfg
+            - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
             - containerPort: 8081
               name: oauth-proxy
               protocol: TCP
             resources: {}
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             volumeMounts:
-              - name: 'prometheus'
-                mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
-                subPath: 'oauth2-proxy.cfg'
+              - name: prometheus
+                mountPath: /vault/secrets/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: 'prometheus'
-                mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
-                subPath: 'darkfellanet-internal-root-ca.crt'
+              - name: prometheus
+                mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
+                subPath: darkfellanet-internal-root-ca.crt
+                readOnly: true
+              - name: prometheus-tls
+                mountPath: /vault/secrets/tls
                 readOnly: true
         volumes:
           - name: prometheus
             csi:
-              driver: 'secrets-store.csi.k8s.io'
+              driver: secrets-store.csi.k8s.io
               readOnly: true
               volumeAttributes:
-                secretProviderClass: 'prometheus'
+                secretProviderClass: prometheus
+          - name: prometheus-tls
+            secret:
+              secretName: prometheus-tls
+              defaultMode: 256
         volumeMounts:
           - name: prometheus
             mountPath: /vault/secrets/client_secret

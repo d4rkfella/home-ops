@@ -10,10 +10,10 @@ spec:
       oauth2:
         clientId:
           secret:
-            name: prometheus-oauth2-credentials
+            name: &secret prometheus-secret
             key: client_id
         clientSecret:
-          name: prometheus-oauth2-credentials
+          name: *secret
           key: client_secret
         tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         scopes: ["openid", "profile", "email"]

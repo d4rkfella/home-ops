@@ -82,7 +82,7 @@ spec:
                 subPath: 'darkfellanet-internal-root-ca.crt'
                 readOnly: true
               - name: alertmanager-tls
-                mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
+                mountPath: '/etc/ssl/oauth2-server-tls'
                 readOnly: true
         volumes:
           - name: alertmanager

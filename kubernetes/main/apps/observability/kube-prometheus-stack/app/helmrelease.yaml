@@ -173,8 +173,8 @@ spec:
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"
             vault.hashicorp.com/role: "prometheus"
-            vault.hashicorp.com/agent-run-as-user: "1000"
-            vault.hashicorp.com/agent-run-as-group: "2000"
+            vault.hashicorp.com/agent-run-as-user: "65534"
+            vault.hashicorp.com/agent-run-as-group: "65534"
         additionalAlertManagerConfigs:
           - scheme: https
             tls_config:

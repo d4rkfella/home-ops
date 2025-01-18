@@ -190,12 +190,7 @@ spec:
               scopes: ["openid", "profile", "email"]
               endpoint_params:
                 grant_type: client_credentials
-        alertingEndpoints:
-          - scheme: https
-            name: alertmanager-operated
-            port: 8081
-            tlsConfig:
-              serverName: alertmanager.darkfellanetwork.com
+        alertingEndpoints: {}
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

@@ -160,6 +160,8 @@ spec:
               token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         alertingEndpoints:
           - scheme: https
+            name: alertmanager-operated
+            port: 8081
             tlsConfig:
               serverName: alertmanager.darkfellanetwork.com
         podMonitorSelectorNilUsesHelmValues: false

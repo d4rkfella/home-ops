@@ -166,6 +166,11 @@ spec:
             apiVersion: v2
             tlsConfig:
               serverName: "alertmanager.darkfellanetwork.com"
+            oauth2:
+              client_id: test
+              client_secret: test
+              scopes: openid profile email
+              token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

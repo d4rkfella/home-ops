@@ -154,7 +154,7 @@ spec:
             vault.hashicorp.com/agent-run-as-user: "1000"
             vault.hashicorp.com/agent-run-as-group: "2000"
         additionalAlertManagerConfigs:
-          - httpConfig:
+          - http_config:
               - oauth2:
                 client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
                 client_secret_file: /vault/secrets/client-secret

@@ -63,39 +63,39 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
-        containers:
-          - name: oauth-proxy2
-            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            args:
-            - --config=/etc/secrets-store/oauth2-proxy.cfg
-            ports:
-            - containerPort: 8081
-              name: oauth-proxy
-              protocol: TCP
-            resources: {}
-            volumeMounts:
-              - name: 'alertmanager'
-                mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
-                subPath: 'oauth2-proxy.cfg'
-                readOnly: true
+        #containers:
+          #- name: oauth-proxy
+            #image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            #args:
+            #- --config=/etc/secrets-store/oauth2-proxy.cfg
+            #ports:
+            #- containerPort: 8081
+              #name: oauth-proxy
+              #protocol: TCP
+            #resources: {}
+            #volumeMounts:
+              #- name: 'alertmanager'
+                #mountPath: '/etc/secrets-store/oauth2-proxy.cfg'
+                #subPath: 'oauth2-proxy.cfg'
+                #readOnly: true
               #- name: 'alertmanager'
                 #mountPath: '/etc/ssl/certs/darkfellanet-internal-root-ca.crt'
                 #subPath: 'darkfellanet-internal-root-ca.crt'
                 #readOnly: true
-              - name: alertmanager-tls
-                mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
-                readOnly: true
-        volumes:
-          - name: alertmanager
-            csi:
-              driver: 'secrets-store.csi.k8s.io'
-              readOnly: true
-              volumeAttributes:
-                secretProviderClass: 'alertmanager'
-          - name: alertmanager-tls
-            secret:
-              secretName: alertmanager-tls
-              readOnly: true
+              #- name: alertmanager-tls
+                #mountPath: '/etc/ssl/oauth2-server-tls/tls.crt'
+                #readOnly: true
+        #volumes:
+          #- name: alertmanager
+            #csi:
+              #driver: 'secrets-store.csi.k8s.io'
+              #readOnly: true
+              #volumeAttributes:
+                #secretProviderClass: 'alertmanager'
+          #- name: alertmanager-tls
+            #secret:
+              #secretName: alertmanager-tls
+              #readOnly: true
     kubeApiServer:
       serviceMonitor:
         selector:

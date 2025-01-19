@@ -83,9 +83,9 @@ spec:
                 mountPath: /vault/secrets/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: alertmanager
+              - name: alertmanager-internal-tls
                 mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
-                subPath: darkfellanet-internal-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
               - name: alertmanager-internal-tls
                 mountPath: /vault/secrets/tls

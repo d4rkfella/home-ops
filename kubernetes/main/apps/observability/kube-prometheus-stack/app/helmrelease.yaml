@@ -184,6 +184,9 @@ spec:
             path_prefix: /
             timeout: 10s
             api_version: v2
+            tls_config:
+              server_name: alertmanager-operated
+              insecure_skip_verify: false
             relabel_configs:
             - source_labels: [__meta_kubernetes_service_name]
               separator: ;

@@ -288,6 +288,10 @@ spec:
             mountPath: /vault/secrets/client_secret
             subPath: client_secret
             readOnly: true
+          - name: prometheus-internal-tls
+            mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
+            subPath: darkfellanet-internal-root-ca.crt
+            readOnly: true
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

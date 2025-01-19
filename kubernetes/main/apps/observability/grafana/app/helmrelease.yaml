@@ -179,6 +179,12 @@ spec:
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/overview.json
           datasource: Prometheus
+        zfs:
+          # renovate: depName="ZFS"
+          gnetID: 7845
+          revision: 4
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457

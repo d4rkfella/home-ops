@@ -190,7 +190,7 @@ spec:
                 name: prometheus-internal-tls
             minVersion: TLS13
         additionalArgs:
-          - '--web.listen-address=127.0.0.1:9090'
+          - --web.listen-address=127.0.0.1:9090
         podMetadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"

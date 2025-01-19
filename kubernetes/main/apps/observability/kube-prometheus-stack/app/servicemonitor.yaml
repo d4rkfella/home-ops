@@ -8,6 +8,8 @@ spec:
     - path: /metrics
       port: http-web
       scheme: https
+      tlsConfig:
+        serverName: prometheus-operated
       oauth2:
         clientId:
           secret:

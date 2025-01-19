@@ -180,9 +180,7 @@ spec:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/overview.json
           datasource: Prometheus
         zfs:
-          # renovate: depName="ZFS"
-          gnetID: 7845
-          revision: 4
+          url: https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json
           datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"

@@ -60,7 +60,7 @@ spec:
         hosts: *host
         pathType: Prefix
       alertmanagerSpec:
-        listenLocal: false
+        listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         web:
           tlsConfig:
@@ -189,6 +189,8 @@ spec:
                 key: tls.crt
                 name: prometheus-internal-tls
             minVersion: TLS13
+        additionalArgs:
+          -
         podMetadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"

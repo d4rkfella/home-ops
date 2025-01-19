@@ -106,7 +106,7 @@ spec:
           runAsNonRoot: true
           runAsUser: 65534
           fsGroup: 65534
-          fsGroupChangePolicy: OnRootMismatch
+          fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
     kubeApiServer:
@@ -289,7 +289,7 @@ spec:
           runAsNonRoot: true
           runAsUser: 65534
           fsGroup: 65534
-          fsGroupChangePolicy: OnRootMismatch
+          fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
     prometheus-node-exporter:

@@ -258,7 +258,7 @@ spec:
                 readOnly: true
               - name: prometheus-internal-tls
                 mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
-                subPath: darkfellanet-internal-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
               - name: prometheus-internal-tls
                 mountPath: /vault/secrets/tls

@@ -71,7 +71,7 @@ spec:
               secret:
                 key: tls.crt
                 name: alertmanager-internal-tls
-            minVersion: TLS1.3
+            minVersion: TLS13
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -188,7 +188,7 @@ spec:
               secret:
                 key: tls.crt
                 name: prometheus-internal-tls
-            minVersion: TLS1.3
+            minVersion: TLS13
         podMetadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"

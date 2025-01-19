@@ -79,7 +79,7 @@ spec:
             args:
             - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
-            - containerPort: 8080
+            - containerPort: 8082
               name: oauth-proxy
               protocol: TCP
             securityContext:
@@ -192,7 +192,7 @@ spec:
               action: keep
             - source_labels: [__meta_kubernetes_pod_container_port_number]
               separator: ;
-              regex: "8080"
+              regex: "8082"
               replacement: $1
               action: keep
             kubernetes_sd_configs:
@@ -249,7 +249,7 @@ spec:
             args:
             - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
-            - containerPort: 8080
+            - containerPort: 8082
               name: oauth-proxy
               protocol: TCP
             resources: {}

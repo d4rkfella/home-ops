@@ -100,7 +100,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: https://prometheus-operated.observability.svc.cluster.local:8080
+            url: https://prometheus-operated.observability.svc.cluster.local:8082
             jsonData:
               timeInterval: 1m
               oauthPassThru: true
@@ -134,7 +134,7 @@ spec:
             type: alertmanager
             uid: alertmanager
             access: proxy
-            url: https://alertmanager-operated.observability.svc.cluster.local:8080
+            url: https://alertmanager-operated.observability.svc.cluster.local:8082
             jsonData:
               oauthPassThru: true
               implementation: prometheus

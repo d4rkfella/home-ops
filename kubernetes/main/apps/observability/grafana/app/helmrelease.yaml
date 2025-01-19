@@ -183,8 +183,7 @@ spec:
           # renovate: depName="ZFS"
           gnetID: 7845
           revision: 4
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
+          datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457

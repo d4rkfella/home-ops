@@ -62,6 +62,16 @@ spec:
       alertmanagerSpec:
         listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
+        web:
+          tlsConfig:
+            keySecret:
+              key: tls.key
+              name: alertmanager-internal-tls
+            cert:
+              secret:
+                key: tls.crt
+                name: alertmanager-internal-tls
+            minVersion: TLS1.3
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -169,6 +179,16 @@ spec:
       prometheusSpec:
         listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"
+        web:
+          tlsConfig:
+            keySecret:
+              key: tls.key
+              name: prometheus-internal-tls
+            cert:
+              secret:
+                key: tls.crt
+                name: prometheus-internal-tls
+            minVersion: TLS1.3
         podMetadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"

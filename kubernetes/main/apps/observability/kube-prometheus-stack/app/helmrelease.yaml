@@ -42,7 +42,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       service:
-        targetPort: 8081
+        targetPort: oauth-proxy
       serviceMonitor:
         selfMonitor: false
       ingress:
@@ -79,7 +79,7 @@ spec:
             args:
             - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
-            - containerPort: 8081
+            - containerPort: 8080
               name: oauth-proxy
               protocol: TCP
             securityContext:
@@ -149,7 +149,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       service:
-        targetPort: 8081
+        targetPort: oauth-proxy
       serviceMonitor:
         selfMonitor: false
       ingress:
@@ -192,7 +192,7 @@ spec:
               action: keep
             - source_labels: [__meta_kubernetes_pod_container_port_number]
               separator: ;
-              regex: "8081"
+              regex: "8080"
               replacement: $1
               action: keep
             kubernetes_sd_configs:
@@ -249,7 +249,7 @@ spec:
             args:
             - --config=/vault/secrets/oauth2-proxy.cfg
             ports:
-            - containerPort: 8081
+            - containerPort: 8080
               name: oauth-proxy
               protocol: TCP
             resources: {}

@@ -60,7 +60,7 @@ spec:
         hosts: *host
         pathType: Prefix
       alertmanagerSpec:
-        listenLocal: true
+        listenLocal: false
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         web:
           tlsConfig:
@@ -177,7 +177,7 @@ spec:
         hosts: *host
         pathType: Prefix
       prometheusSpec:
-        listenLocal: true
+        listenLocal: false
         externalUrl: "https://prometheus.darkfellanetwork.com"
         web:
           tlsConfig:

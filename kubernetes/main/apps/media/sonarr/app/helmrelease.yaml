@@ -1,0 +1,465 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sonarr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      sonarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
+            env:
+              INIT_POSTGRES_DBNAME: &dbName sonarr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret sonarr-secret
+                    key: POSTGRES_USER
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              runAsUser: 65534
+              runAsGroup: 65534
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_CLIENT_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_ID
+              OAUTH2_PROXY_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: CLIENT_SECRET
+              OAUTH2_PROXY_COOKIE_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: COOKIE_SECRET
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: *securityContext
+
+          app:
+            image:
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.12.2866@sha256:8690925866b385cbce810ae83151b0151fc3fe3579c21cd8410f081ff140c798
+            env:
+              TZ: Europe/Sofia
+              SONARR__APP__INSTANCENAME: Sonarr
+              SONARR__APP__THEME: dark
+              SONARR__AUTH__METHOD: External
+              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__LOG__DBENABLED: "False"
+              SONARR__LOG__LEVEL: info
+              SONARR__SERVER__PORT: &port 80
+              SONARR__SERVER__BINDADDRESS  : 127.0.0.1
+              SONARR__UPDATE__BRANCH: develop
+              SONARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: APIKEY
+              SONARR__POSTGRES__HOST: *dbHost
+              SONARR__POSTGRES__PORT: 5432
+              SONARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USER
+              SONARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASS
+              SONARR__POSTGRES__MAINDB: *dbName
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: 4180
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: sonarr
+        ports:
+          http:
+            port: 4180
+
+    ingress:
+      app:
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/sonarr/mind.css"></body>';
+            sub_filter_once on;
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: sonarr-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 15Gi
+        storageClass: openebs-zfs-128k
+        accessMode: ReadWriteOnce
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /config
+
+      scripts:
+        type: configMap
+        name: sonarr-scripts
+        defaultMode: 0775
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /scripts/pushover-notify.sh
+                subPath: pushover-notify.sh
+                readOnly: true
+              - path: /scripts/refresh-series.sh
+                subPath: refresh-series.sh
+                readOnly: true
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /data
+
+      oauth2-proxy-config:
+        type: configMap
+        name: sonarr-oauth2-proxy-config
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      darkfellanet-root-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+                subPath: darkfellanet-root-ca.crt
+                readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: *secret
+              template:
+                engineVersion: v2
+                data:
+                  APIKEY: '{{ "{{ .SONARR_API_KEY }}" }}'
+                  PUSHOVER_TOKEN: '{{ "{{ .SONARR_PUSHOVER_TOKEN }}" }}'
+                  PUSHOVER_USER_KEY: '{{ "{{ .PUSHOVER_USER_KEY }}" }}'
+                  POSTGRES_USER: '{{ "{{ .SONARR_POSTGRES_USER }}" }}'
+                  POSTGRES_PASS: '{{ "{{ .SONARR_POSTGRES_PASS }}" }}'
+                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
+                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
+                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
+                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
+                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
+                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
+            dataFrom:
+              - extract:
+                  key: secrets/cloudnative-pg
+              - extract:
+                  key: secrets/pushover
+              - extract:
+                  key: secrets/api-keys
+              - extract:
+                  key: secrets/oauth2/sonarr
+              - extract:
+                  key: secrets/dragonfly
+            data:
+              - secretKey: darkfellanet-root-ca.crt
+                remoteRef:
+                  key: secrets/certificates/darkfellanet-internal
+                  property: ca.crt
+
+    configMaps:
+      gatus-ep:
+        enabled: true
+        labels:
+          gatus.io/enabled: "true"
+        data:
+          config.yaml: |
+            endpoints:
+              - name: "Sonarr"
+                group: guarded
+                url: "https://sonarr.darkfellanetwork.com/ping"
+                interval: 1m
+                ui:
+                  hide-hostname: true
+                  hide-url: true
+                client:
+                  dns-resolver: tcp://172.17.0.10:53
+                conditions:
+                  - "[STATUS] == 200"
+                  - "[BODY].status == OK"
+                alerts:
+                  - type: pushover
+      oauth2-proxy-config:
+        enabled: true
+        data:
+          oauth2-proxy.cfg: |
+            email_domains = [ "*" ]
+            upstreams = [ "http://127.0.0.1:80" ]
+            reverse_proxy = true
+            scope = "openid profile email"
+            cookie_secure = true
+            provider = "keycloak-oidc"
+            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            code_challenge_method = "S256"
+            cookie_domains = "sonarr.darkfellanetwork.com"
+            whitelist_domains = "sonarr.darkfellanetwork.com"
+            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
+            skip_provider_button = true
+            cookie_expire = "30m"
+            cookie_refresh = "4m55s"
+            allowed_groups = [ "Admins" ]
+            redirect_url = "https://sonarr.darkfellanetwork.com/oauth2/callback"
+            cookie_name = "__Secure-oauth2_proxy"
+            skip_auth_routes = [ "^/api(/|$)", "^/ping", "^/signalr(/|$)" ]
+            http_address = "0.0.0.0:4180"
+            cookie_csrf_per_request = true
+            cookie_csrf_expire = "5m"
+            ping_path = "/oauth2/ping"
+            ready_path = "/oauth2/ready"
+            cookie_samesite = "strict"
+            session_store_type = "redis"
+            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
+      scripts:
+        enabled: true
+        data:
+          pushover-notify.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+            set -euo pipefail
+
+            # User defined variables for pushover
+            PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-required}"
+            PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-required}"
+            PUSHOVER_PRIORITY="${PUSHOVER_PRIORITY:-"-2"}"
+
+            if [[ "${sonarr_eventtype:-}" == "Test" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Test Notification"
+                printf -v PUSHOVER_MESSAGE \
+                    "Howdy this is a test notification from %s" \
+                        "${sonarr_instancename:-Sonarr}"
+                printf -v PUSHOVER_URL \
+                    "%s" \
+                        "${sonarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "Open %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            if [[ "${sonarr_eventtype:-}" == "Download" ]]; then
+                printf -v PUSHOVER_TITLE \
+                    "Episode %s" \
+                        "$( [[ "${sonarr_isupgrade}" == "True" ]] && echo "Upgraded" || echo "Downloaded" )"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s (S%02dE%02d)</b><small>\n%s</small><small>\n\n<b>Quality:</b> %s</small><small>\n<b>Client:</b> %s</small>" \
+                        "${sonarr_series_title}" \
+                        "${sonarr_episodefile_seasonnumber}" \
+                        "${sonarr_episodefile_episodenumbers}" \
+                        "${sonarr_episodefile_episodetitles}" \
+                        "${sonarr_episodefile_quality:-Unknown}" \
+                        "${sonarr_download_client:-Unknown}"
+                printf -v PUSHOVER_URL \
+                    "%s/series/%s" \
+                        "${sonarr_applicationurl:-localhost}" \
+                        "${sonarr_series_titleslug}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View series in %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            if [[ "${sonarr_eventtype:-}" == "ManualInteractionRequired" ]]; then
+                PUSHOVER_PRIORITY="1"
+                printf -v PUSHOVER_TITLE \
+                    "Episode import requires intervention"
+                printf -v PUSHOVER_MESSAGE \
+                    "<b>%s</b><small>\n<b>Client:</b> %s</small>" \
+                        "${sonarr_series_title}" \
+                        "${sonarr_download_client:-Unknown}"
+                printf -v PUSHOVER_URL \
+                    "%s/activity/queue" \
+                        "${sonarr_applicationurl:-localhost}"
+                printf -v PUSHOVER_URL_TITLE \
+                    "View queue in %s" \
+                        "${sonarr_instancename:-Sonarr}"
+            fi
+
+            json_data=$(jo \
+                token="${PUSHOVER_TOKEN}" \
+                user="${PUSHOVER_USER_KEY}" \
+                title="${PUSHOVER_TITLE}" \
+                message="${PUSHOVER_MESSAGE}" \
+                url="${PUSHOVER_URL}" \
+                url_title="${PUSHOVER_URL_TITLE}" \
+                priority="${PUSHOVER_PRIORITY}" \
+                html="1"
+            )
+
+            status_code=$(curl \
+                --silent \
+                --write-out "%{http_code}" \
+                --output /dev/null \
+                --request POST \
+                --header "Content-Type: application/json" \
+                --data-binary "${json_data}" \
+                "https://api.pushover.net/1/messages.json" \
+            )
+
+            printf "pushover notification returned with HTTP status code %s and payload: %s\n" \
+                "${status_code}" \
+                "$(echo "${json_data}" | jq --compact-output)" >&2
+          refresh-series.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+            set -euo pipefail
+
+            CURL_CMD=(curl -fsSL --header "X-Api-Key: ${SONARR__AUTH__APIKEY:-}")
+            SONARR_API_URL="http://localhost:${SONARR__SERVER__PORT:-}/api/v3"
+
+            if [[ "${sonarr_eventtype:-}" == "Grab" ]]; then
+                tba=$("${CURL_CMD[@]}" "${SONARR_API_URL}/episode?seriesId=${sonarr_series_id:-}" | jq --raw-output '
+                    [.[] | select((.title == "TBA") or (.title == "TBD"))] | length
+                ')
+
+                if (( tba > 0 )); then
+                    echo "INFO: Refreshing series ${sonarr_series_id:-} due to TBA/TBD episodes found"
+                    "${CURL_CMD[@]}" \
+                        --request POST \
+                        --header "Content-Type: application/json" \
+                        --data-binary '{"name": "RefreshSeries", "seriesId": '"${sonarr_series_id:-}"'}' \
+                        "${SONARR_API_URL}/command" &>/dev/null
+                fi
+            fi

@@ -1,0 +1,52 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: windows-server-2022
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: windows-server-2022
+    spec:
+      networks:
+        - name: bridge
+          multus:
+            default: true
+            networkName: network/bridge-windows-server
+      domain:
+        clock:
+          timezone: Europe/Sofia
+          timer: {}
+        cpu:
+          cores: 2
+          model: host-passthrough
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+          uuid: 43a838b8-9c2f-41ef-84b0-2370fd097a97
+        devices:
+          interfaces:
+            - name: bridge
+              bridge: {}
+              model: virtio
+              macAddress: 52:54:00:ab:cd:ef
+          tpm: {}
+          disks:
+            - disk:
+                bus: sata
+              name: windows-server-os-disk
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 4G
+      volumes:
+      - name: windows-server-os-disk
+        persistentVolumeClaim:
+          claimName: windows-server-os-disk

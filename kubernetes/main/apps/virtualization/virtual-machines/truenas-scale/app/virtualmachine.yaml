@@ -1,0 +1,62 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: truenas-scale
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: truenas-scale
+    spec:
+      networks:
+        - name: bridge-1
+          multus:
+            default: true
+            networkName: network/bridge-truenas-1
+        - name: bridge-2
+          multus:
+            networkName: network/bridge-truenas-2
+      domain:
+        clock:
+          utc: {}
+        cpu:
+          cores: 4
+          model: host-passthrough
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: false
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: false
+        devices:
+          hostDevices:
+            - deviceName: devices.kubevirt.io/nvme
+              name: intel-optane
+            - deviceName: devices.kubevirt.io/sas
+              name: sas
+          interfaces:
+            - name: bridge-1
+              bridge: {}
+              model: virtio
+              macAddress: 00:16:3e:bc:da:12
+            - name: bridge-2
+              bridge: {}
+              model: virtio
+              macAddress: 52:54:00:fa:3d:88
+          disks:
+            - disk:
+                bus: virtio
+              name: truenas-scale-os-disk
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 48G
+      volumes:
+      - name: truenas-scale-os-disk
+        persistentVolumeClaim:
+          claimName: truenas-scale-os-disk

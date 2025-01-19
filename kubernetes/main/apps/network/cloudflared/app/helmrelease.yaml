@@ -1,0 +1,258 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app cloudflared
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: nginx-external
+      namespace: network
+  values:
+    controllers:
+      cloudflared:
+        replicas: 2
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/cloudflare/cloudflared
+              tag: 2025.1.0@sha256:3247f3ef49eda23244b8aa5583f82b7c3880b0d057e1172d0e818f5e678d9f27
+            env:
+              NO_AUTOUPDATE: true
+              TUNNEL_CRED_FILE: /etc/cloudflared/creds/credentials.json
+              TUNNEL_METRICS: 0.0.0.0:8080
+              TUNNEL_ORIGIN_ENABLE_HTTP2: true
+              TUNNEL_TRANSPORT_PROTOCOL: quic
+              TUNNEL_POST_QUANTUM: true
+            args:
+              - tunnel
+              - --config
+              - /etc/cloudflared/config/config.yaml
+              - run
+              - ef313dd3-14c2-4703-aecf-6033c0a259dd
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: { type: RuntimeDefault }
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: *app
+    service:
+      app:
+        controller: cloudflared
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        serviceName: cloudflared
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+    persistence:
+      config:
+        type: configMap
+        name: "{{ .Release.Name }}-config"
+        globalMounts:
+          - path: /etc/cloudflared/config/config.yaml
+            subPath: config.yaml
+            readOnly: true
+      creds:
+        type: secret
+        name: "{{ .Release.Name }}-secret"
+        globalMounts:
+          - path: /etc/cloudflared/creds/credentials.json
+            subPath: credentials.json
+            readOnly: true
+
+    rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: "{{ .Release.Name }}-secret"
+              template:
+                engineVersion: v2
+                data:
+                  credentials.json: |
+                    {
+                      "AccountTag": "{{ "{{ .CF_ACCOUNT_TAG }}" }}",
+                      "TunnelSecret": "{{ "{{ .CF_TUNNEL_SECRET }}" }}",
+                      "TunnelID": "ef313dd3-14c2-4703-aecf-6033c0a259dd"
+                    }
+            dataFrom:
+              - extract:
+                  key: cloudflare
+
+      dns-endpoint:
+        enabled: true
+        apiVersion: externaldns.k8s.io/v1alpha1
+        kind: DNSEndpoint
+        spec:
+          spec:
+            endpoints:
+              - dnsName: external.darkfellanetwork.com
+                recordType: CNAME
+                targets: ["ef313dd3-14c2-4703-aecf-6033c0a259dd.cfargotunnel.com"]
+
+      network-policy:
+        enabled: true
+        apiVersion: cilium.io/v2
+        kind: CiliumNetworkPolicy
+        spec:
+          spec:
+            endpointSelector:
+              matchLabels:
+                app.kubernetes.io/name: *app
+            ingress:
+              - fromEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: prometheus
+                      io.kubernetes.pod.namespace: observability
+                toPorts:
+                  - ports:
+                      - port: "8080"
+                        protocol: TCP
+            egress:
+              - toEndpoints:
+                  - matchLabels:
+                      io.kubernetes.pod.namespace: kube-system
+                      k8s-app: kube-dns
+                toPorts:
+                  - ports:
+                      - port: "53"
+                        protocol: UDP
+                      - port: "53"
+                        protocol: TCP
+              - toCIDRSet:
+                  - cidr: 1.1.1.1/32
+                toPorts:
+                  - ports:
+                      - port: "853"
+                        protocol: UDP
+                      - port: "853"
+                        protocol: TCP
+              - toEndpoints:
+                  - matchLabels:
+                      app.kubernetes.io/name: ingress-nginx
+                      app.kubernetes.io/instance: nginx-external
+                toPorts:
+                  - ports:
+                      - port: "443"
+                        protocol: TCP
+
+              - toCIDRSet:
+                  - cidr: 103.21.244.0/22
+                  - cidr: 103.22.200.0/22
+                  - cidr: 103.31.4.0/22
+                  - cidr: 104.16.0.0/13
+                  - cidr: 104.24.0.0/14
+                  - cidr: 108.162.192.0/18
+                  - cidr: 131.0.72.0/22
+                  - cidr: 141.101.64.0/18
+                  - cidr: 162.158.0.0/15
+                  - cidr: 172.64.0.0/13
+                  - cidr: 173.245.48.0/20
+                  - cidr: 188.114.96.0/20
+                  - cidr: 190.93.240.0/20
+                  - cidr: 197.234.240.0/22
+                  - cidr: 198.41.128.0/17
+                toPorts:
+                  - ports:
+                      - port: "7844"
+                        protocol: UDP
+              - toCIDRSet:
+                  - cidr: 103.21.244.0/22
+                  - cidr: 103.22.200.0/22
+                  - cidr: 103.31.4.0/22
+                  - cidr: 104.16.0.0/13
+                  - cidr: 104.24.0.0/14
+                  - cidr: 108.162.192.0/18
+                  - cidr: 131.0.72.0/22
+                  - cidr: 141.101.64.0/18
+                  - cidr: 162.158.0.0/15
+                  - cidr: 172.64.0.0/13
+                  - cidr: 173.245.48.0/20
+                  - cidr: 188.114.96.0/20
+                  - cidr: 190.93.240.0/20
+                  - cidr: 197.234.240.0/22
+                  - cidr: 198.41.128.0/17
+                icmps:
+                  - fields:
+                      - type: 8
+                        family: IPv4
+                      - type: 3
+                        family: IPv4
+
+    configMaps:
+      config:
+        enabled: true
+        data:
+          config.yaml: |
+            ingress:
+              - hostname: darkfellanetwork.com
+                service: https://nginx-external-controller.network.svc.cluster.local:443
+                originRequest:
+                  originServerName: external.darkfellanetwork.com
+              - hostname: "*.darkfellanetwork.com"
+                service: https://nginx-external-controller.network.svc.cluster.local:443
+                originRequest:
+                  originServerName: external.darkfellanetwork.com
+              - service: http_status:404

@@ -43,6 +43,8 @@ spec:
           type: RuntimeDefault
       service:
         targetPort: 8081
+      serviceMonitor:
+        selfMonitor: false
       ingress:
         enabled: true
         annotations:

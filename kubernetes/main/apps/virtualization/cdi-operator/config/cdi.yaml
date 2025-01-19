@@ -4,6 +4,7 @@ kind: CDI
 metadata:
   name: cdi
 spec:
+  cloneStrategyOverride: snapshot
   imagePullPolicy: IfNotPresent
   infra:
     nodeSelector:

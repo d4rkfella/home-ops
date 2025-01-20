@@ -55,7 +55,6 @@ spec:
               limits:
                 memory: 512Mi
             securityContext:
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -66,7 +65,7 @@ spec:
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -99,6 +98,7 @@ spec:
     persistence:
       config:
         type: emptyDir
+
       config-file:
         type: secret
         name: "{{ .Release.Name }}-secret"
@@ -107,6 +107,7 @@ spec:
           - path: /config/config.js
             subPath: config.js
             readOnly: true
+
       media:
         type: nfs
         server: 192.168.91.40
@@ -127,41 +128,11 @@ spec:
               name: vault-backend
             target:
               name: "{{ .Release.Name }}-secret"
-              template:
-                engineVersion: v2
-                data:
-                  config.js: |
-                    module.exports = {
-                      action: "inject",
-                      apiKey: "{{ "{{ .CROSS_SEED_API_KEY }}" }}",
-                      delay: 30,
-                      duplicateCategories: false,
-                      flatLinking: false,
-                      includeNonVideos: true,
-                      includeSingleEpisodes: false,
-                      linkCategory: "cross-seed",
-                      linkDir: "/data/downloads/torrents/cross-seed",
-                      linkType: "hardlink",
-                      matchMode: "partial",
-                      seasonFromEpisodes: 0.8,
-                      outputDir: "/config",
-                      port: 2468,
-                      qbittorrentUrl: "https://{{ "{{ .QBITTORRENT_USERNAME }}" }}:{{ "{{ .QBITTORRENT_PASSWORD }}" }}@qbittorrent.darkfellanetwork.com",
-                      radarr: ["https://radarr.darkfellanetwork.com/?apikey={{ "{{ .RADARR_API_KEY }}" }}"],
-                      skipRecheck: true,
-                      sonarr: ["https://sonarr.darkfellanetwork.com/?apikey={{ "{{ .SONARR_API_KEY }}" }}"],
-                      useClientTorrents: true,
-                      torznab: [
-                        3, // IPT
-                        1, // SA
-                        2, // TL
-                      ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey={{ "{{ .PROWLARR_API_KEY }}" }}`),
-                    };
-            dataFrom:
-              - extract:
-                  key: secrets/api-keys
-              - extract:
-                  key: secrets/qbittorrent
+            data:
+              - secretKey: &key config.js
+                remoteRef:
+                  key: secrets/cross-seed
+                  property: *key
 
     configMaps:
       loki-rules:

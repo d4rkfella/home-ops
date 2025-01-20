@@ -427,7 +427,7 @@ spec:
                     --silent \
                     --output /dev/null \
                     --write-out "%{http_code}" \
-                    --request POST \
+                    --request XPOST \
                     --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
                     --data-urlencode "includeSingleEpisodes=true" \
                     --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \

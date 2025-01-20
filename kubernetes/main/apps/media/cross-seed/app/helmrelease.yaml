@@ -166,6 +166,7 @@ spec:
         enabled: true
         data:
           config.js: |
+            console.log('QBIT_USERNAME:', process.env.QBIT_USERNAME);
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,

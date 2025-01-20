@@ -182,9 +182,9 @@ spec:
               outputDir: "/config",
               port: 2468,
               qbittorrentUrl: "https://process.env.QBIT_USERNAME:process.env.QBIT_PASS@qbittorrent.darkfellanetwork.com",
-              radarr: ["https://radarr.darkfellanetwork.com/?apikey=process.env.SONARR_API_KEY"],
+              radarr: ["https://radarr.darkfellanetwork.com/?apikey=process.env.RADARR_API_KEY"],
               skipRecheck: true,
-              sonarr: ["https://sonarr.darkfellanetwork.com/?apikey=process.env.SONARR_API_KEY],
+              sonarr: ["https://sonarr.darkfellanetwork.com/?apikey=process.env.SONARR_API_KEY"],
               useClientTorrents: true,
               torznab: [
                 3, // IPT

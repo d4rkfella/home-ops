@@ -47,24 +47,8 @@ spec:
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: true
-              CROSS_SEED_HOST: cross-seed.darkfellanetwork.com
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
-              CROSS_SEED_API_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: CROSS_SEED_API_KEY
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_TOKEN
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_USER_KEY
             probes:
               readiness: &probes
                 enabled: true
@@ -83,7 +67,6 @@ spec:
                   failureThreshold: 30
                   periodSeconds: 10
             securityContext: &securityContext
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -215,31 +198,6 @@ spec:
               - path: /tmp
 
     rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-              template:
-                engineVersion: v2
-                data:
-                  CROSS_SEED_API_KEY: '{{ "{{ .CROSS_SEED_API_KEY }}" }}'
-                  PUSHOVER_TOKEN: '{{ "{{ .QBITTORRENT_PUSHOVER_TOKEN }}" }}'
-                  PUSHOVER_USER_KEY: '{{ "{{ .PUSHOVER_USER_KEY }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/api-keys
-              - extract:
-                  key: secrets/pushover
-              - extract:
-                  key: secrets/qbittorrent
-
       volsync-secret:
         enabled: true
         apiVersion: external-secrets.io/v1beta1
@@ -251,18 +209,8 @@ spec:
               name: vault-backend
             target:
               name: &volsync-secret "{{ .Release.Name }}-volsync-secret"
-              template:
-                engineVersion: v2
-                data:
-                  RESTIC_REPOSITORY: '{{ "{{ .RESTIC_REPOSITORY }}" }}/{{ .Release.Name }}/volsync/config-volsync-config'
-                  RESTIC_PASSWORD: '{{ "{{ .ENCRYPTION_KEY }}" }}'
-                  AWS_ACCESS_KEY_ID: '{{ "{{ .CF_ACCESS_KEY_ID }}" }}'
-                  AWS_SECRET_ACCESS_KEY: '{{ "{{ .CF_SECRET_ACCESS_KEY }}" }}'
             dataFrom:
-              - extract:
-                  key: secrets/volsync
-              - extract:
-                  key: secrets/cloudflare
+              key: secrets/volsync/qbittorrent
 
       volsync-src:
         enabled: true
@@ -359,106 +307,3 @@ spec:
             fi
 
             exit 0
-          post-process.sh: |
-            #!/usr/bin/env bash
-            # shellcheck disable=SC2154
-
-            set -euo pipefail
-
-            # User-defined variables
-            CROSS_SEED_ENABLED="${CROSS_SEED_ENABLED:-false}"
-            CROSS_SEED_HOST="${CROSS_SEED_HOST:-required}"
-            CROSS_SEED_API_KEY="${CROSS_SEED_API_KEY:-required}"
-            CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
-            PUSHOVER_ENABLED="${PUSHOVER_ENABLED:-false}"
-            PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-required}"
-            PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-required}"
-
-            # Function to set release variables from qBittorrent
-            set_qb_vars() {
-                RELEASE_NAME="$1"      # %N
-                RELEASE_INFOHASH="$2"  # %I
-                RELEASE_CAT="$3"       # %L
-                RELEASE_SIZE="$4"      # %Z
-                RELEASE_INDEXER="$5"   # %T
-                RELEASE_STATUS=0       # Always 0 for qBittorrent
-                RELEASE_TYPE="Torrent"
-            }
-
-            # Function to send pushover notification
-            send_pushover_notification() {
-                local pushover_message status_code json_data
-                printf -v pushover_message \
-                    "<b>%s</b><small>\n<b>Category:</b> %s</small><small>\n<b>Indexer:</b> %s</small><small>\n<b>Size:</b> %s</small>" \
-                        "${RELEASE_NAME%.*}" \
-                        "${RELEASE_CAT}" \
-                        "$(trurl --url "${RELEASE_INDEXER}" --get '{idn:host}')" \
-                        "$(numfmt --to iec --format "%8.2f" "${RELEASE_SIZE}")"
-
-                json_data=$(jo \
-                    token="${PUSHOVER_TOKEN}" \
-                    user="${PUSHOVER_USER_KEY}" \
-                    title="${RELEASE_TYPE} Downloaded" \
-                    message="${pushover_message}" \
-                    priority="-2" \
-                    html="1"
-                )
-
-                status_code=$(curl \
-                    --silent \
-                    --write-out "%{http_code}" \
-                    --output /dev/null \
-                    --request POST  \
-                    --header "Content-Type: application/json" \
-                    --data-binary "${json_data}" \
-                    "https://api.pushover.net/1/messages.json"
-                )
-
-                printf "pushover notification returned with HTTP status code %s and payload: %s\n" \
-                    "${status_code}" \
-                    "$(echo "${json_data}" | jq --compact-output)" >&2
-            }
-
-            # Function to search for cross-seed
-            search_cross_seed() {
-                local status_code
-                status_code=$(curl \
-                    --silent \
-                    --output /dev/null \
-                    --write-out "%{http_code}" \
-                    --request POST \
-                    --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
-                    --data-urlencode "includeSingleEpisodes=true" \
-                    --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
-                    "https://${CROSS_SEED_HOST}/api/webhook"
-                )
-
-                printf "cross-seed search returned with HTTP status code %s and path %s\n" \
-                    "${status_code}" \
-                    "${RELEASE_NAME}" >&2
-
-                sleep "${CROSS_SEED_SLEEP_INTERVAL}"
-            }
-
-            main() {
-                set_qb_vars "$@"
-
-                # Check if post-processing was successful
-                if [[ "${RELEASE_STATUS}" -ne 0 ]]; then
-                    printf "post-processing failed with sabnzbd status code %s\n" \
-                        "${RELEASE_STATUS}" >&2
-                    exit 1
-                fi
-
-                # Send pushover notification
-                if [[ "${PUSHOVER_ENABLED}" == "true" ]]; then
-                    send_pushover_notification
-                fi
-
-                # Search for cross-seed
-                if [[ "${CROSS_SEED_ENABLED}" == "true" ]]; then
-                    search_cross_seed
-                fi
-            }
-
-            main "$@"

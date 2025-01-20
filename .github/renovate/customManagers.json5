@@ -6,7 +6,7 @@
       "description": ["Process YAML custom dependencies"],
       "fileMatch": [
         "(^|/)kubernetes/.+\\.env$",
-        "(^|/)kubernetes/.+\\.ya?ml$"
+        "(^|/)kubernetes/.+\\.ya?ml$",
         "/.devcontainer/Dockerfile"
       ],
       "matchStrings": [

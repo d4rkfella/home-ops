@@ -32,7 +32,7 @@ spec:
 
   values:
     controllers:
-      {{ .Release.Name }}:
+      '{{ .Release.Name }}':
         annotations:
           reloader.stakater.com/auto: "true"
 

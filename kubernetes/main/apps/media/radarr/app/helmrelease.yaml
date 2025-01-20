@@ -413,7 +413,7 @@ spec:
                         "${radarr_download_client:-Unknown}"
                 printf -v PUSHOVER_URL \
                     "%s/activity/queue" \
-                        "${radarr_applicationurl:-https://radarr.darkfellanetwork.com}"
+                        "${radarr_applicationurl:-localhost}"
                 printf -v PUSHOVER_URL_TITLE \
                     "View queue in %s" \
                         "${radarr_instancename:-Radarr}"

@@ -71,27 +71,6 @@ spec:
               tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_ID
-              OAUTH2_PROXY_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_SECRET
-              OAUTH2_PROXY_COOKIE_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: COOKIE_SECRET
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: DRAGONFLY_PASSWORD
             securityContext: *securityContext
 
           app:
@@ -127,16 +106,6 @@ spec:
                     name: *secret
                     key: POSTGRES_PASS
               SONARR__POSTGRES__MAINDB: *dbName
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_USER_KEY
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -238,8 +207,8 @@ spec:
               - path: /data
 
       oauth2-proxy-config:
-        type: configMap
-        name: sonarr-oauth2-proxy-config
+        type: secret
+        name: *secret
         advancedMounts:
           sonarr:
             oauth2-proxy:
@@ -273,16 +242,10 @@ spec:
                 engineVersion: v2
                 data:
                   APIKEY: '{{ "{{ .SONARR_API_KEY }}" }}'
-                  PUSHOVER_TOKEN: '{{ "{{ .SONARR_PUSHOVER_TOKEN }}" }}'
-                  PUSHOVER_USER_KEY: '{{ "{{ .PUSHOVER_USER_KEY }}" }}'
                   POSTGRES_USER: '{{ "{{ .SONARR_POSTGRES_USER }}" }}'
                   POSTGRES_PASS: '{{ "{{ .SONARR_POSTGRES_PASS }}" }}'
                   POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
-                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
-                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
-                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
+                  #darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
             dataFrom:
               - extract:
                   key: secrets/cloudnative-pg
@@ -299,7 +262,10 @@ spec:
                 remoteRef:
                   key: secrets/certificates/darkfellanet-internal
                   property: ca.crt
-
+              - secretKey: oauth2-proxy.cfg
+                remoteRef:
+                  key: secrets/oauth2/sonarr
+                  property: oauth2-proxy.cfg
     configMaps:
       gatus-ep:
         enabled: true
@@ -322,36 +288,6 @@ spec:
                   - "[BODY].status == OK"
                 alerts:
                   - type: pushover
-      oauth2-proxy-config:
-        enabled: true
-        data:
-          oauth2-proxy.cfg: |
-            email_domains = [ "*" ]
-            upstreams = [ "http://127.0.0.1:80" ]
-            reverse_proxy = true
-            scope = "openid profile email"
-            cookie_secure = true
-            provider = "keycloak-oidc"
-            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-            code_challenge_method = "S256"
-            cookie_domains = "sonarr.darkfellanetwork.com"
-            whitelist_domains = "sonarr.darkfellanetwork.com"
-            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
-            skip_provider_button = true
-            cookie_expire = "30m"
-            cookie_refresh = "4m55s"
-            allowed_groups = [ "Admins" ]
-            redirect_url = "https://sonarr.darkfellanetwork.com/oauth2/callback"
-            cookie_name = "__Secure-oauth2_proxy"
-            skip_auth_routes = [ "^/api(/|$)", "^/ping", "^/signalr(/|$)" ]
-            http_address = "0.0.0.0:4180"
-            cookie_csrf_per_request = true
-            cookie_csrf_expire = "5m"
-            ping_path = "/oauth2/ping"
-            ready_path = "/oauth2/ready"
-            cookie_samesite = "strict"
-            session_store_type = "redis"
-            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
       scripts:
         enabled: true
         data:

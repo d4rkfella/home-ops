@@ -44,7 +44,7 @@ spec:
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: &secret sonarr-secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
@@ -237,7 +237,7 @@ spec:
               kind: ClusterSecretStore
               name: vault-backend
             target:
-              name: *secret
+              name: "{{ .Release.Name }}-secret"
             data:
               - secretKey: &key ca.crt
                 remoteRef:

@@ -161,7 +161,7 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          "{{ .Release.Name }}":
+          {{ .Release.Name }}:
             app:
               - path: /config
 
@@ -170,7 +170,7 @@ spec:
         name: "{{ .Release.Name }}-scripts"
         defaultMode: 0550
         advancedMounts:
-          "{{ .Release.Name }}":
+          {{ .Release.Name }}:
             app:
               - readOnly: true
 
@@ -179,7 +179,7 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          "{{ .Release.Name }}":
+          {{ .Release.Name }}:
             app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
@@ -187,7 +187,7 @@ spec:
       addons:
         type: emptyDir
         advancedMounts:
-          "{{ .Release.Name }}":
+          {{ .Release.Name }}:
             app:
               - path: /addons
                 readOnly: true
@@ -197,7 +197,7 @@ spec:
       tmp:
         type: emptyDir
         advancedMounts:
-          "{{ .Release.Name }}":
+          {{ .Release.Name }}:
             git-sync:
               - path: /tmp
 

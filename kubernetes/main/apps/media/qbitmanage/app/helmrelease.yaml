@@ -44,7 +44,7 @@ spec:
               TZ: Europe/Sofia
               QBT_CONFIG: "/config/config.yml"
               QBT_CROSS_SEED: false
-              QBT_DRY_RUN: false
+              QBT_DRY_RUN: true
               QBT_LOG_LEVEL: INFO
               QBT_RECHECK: true
               QBT_REM_ORPHANED: true

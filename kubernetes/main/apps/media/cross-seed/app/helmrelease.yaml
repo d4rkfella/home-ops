@@ -168,6 +168,11 @@ spec:
         data:
           config.js: |
             const PROWLARR_API_KEY = process.env.PROWLARR_API_KEY;
+            const torznabUrls = [
+              3, // IPT
+              1, // SA
+              2, // TL
+            ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`);
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,
@@ -188,11 +193,7 @@ spec:
               skipRecheck: true,
               sonarr: [`https://sonarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}`],
               useClientTorrents: true,
-              torznab: [
-                3, // IPT
-                1, // SA
-                2, // TL
-              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`),
+              torznab: torznabUrls
             };
       loki-rules:
         enabled: true

@@ -191,10 +191,7 @@ spec:
                 3, // IPT
                 1, // SA
                 2, // TL
-              ].map(i => {
-                // Ensure the URL is being correctly constructed with the API key
-                const url = `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`;
-              }),
+              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`),
             };
       loki-rules:
         enabled: true

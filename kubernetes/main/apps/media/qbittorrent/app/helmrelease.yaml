@@ -427,7 +427,7 @@ spec:
                     --silent \
                     --output /dev/null \
                     --write-out "%{http_code}" \
-                    --request XPOST \
+                    --request POST \
                     --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
                     --data-urlencode "includeSingleEpisodes=true" \
                     --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
@@ -436,7 +436,7 @@ spec:
 
                 printf "cross-seed search returned with HTTP status code %s and path %s\n" \
                     "${status_code}" \
-                    "${RELEASE_DIR}" >&2
+                    "${RELEASE_INFOHASH}" >&2
 
                 sleep "${CROSS_SEED_SLEEP_INTERVAL}"
             }

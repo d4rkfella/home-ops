@@ -16,7 +16,7 @@ ARG HELM_VERSION=v3.17.0
 # renovate: depName=go-task/task
 ARG TASK_VERSION=v3.41.0
 # renovate: depName=siderolabs/talos
-ARG TALOSCTL_VERSION=v1.9.1
+ARG TALOSCTL_VERSION=v1.9.2
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
 

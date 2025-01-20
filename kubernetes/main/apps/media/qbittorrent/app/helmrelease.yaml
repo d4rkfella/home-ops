@@ -107,13 +107,13 @@ spec:
 
     service:
       app:
-        controller: '{{ .Release.Name }}'
+        controller: *app
         primary: true
         ports:
           http:
             port: *port
       upload:
-        controller: '{{ .Release.Name }}'
+        controller: *app
         primary: false
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false

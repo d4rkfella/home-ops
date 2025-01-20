@@ -7,6 +7,7 @@
       "fileMatch": [
         "(^|/)kubernetes/.+\\.env$",
         "(^|/)kubernetes/.+\\.ya?ml$"
+        "/.devcontainer/Dockerfile"
       ],
       "matchStrings": [
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",

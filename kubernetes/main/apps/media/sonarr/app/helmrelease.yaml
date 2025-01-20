@@ -92,7 +92,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: APIKEY
+                    key: API_KEY
               SONARR__POSTGRES__HOST: *dbHost
               SONARR__POSTGRES__PORT: 5432
               SONARR__POSTGRES__USER:

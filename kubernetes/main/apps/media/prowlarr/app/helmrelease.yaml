@@ -44,7 +44,7 @@ spec:
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: &secret prowlarr-secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
@@ -57,9 +57,6 @@ spec:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              runAsUser: 65534
-              runAsGroup: 65534
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -71,27 +68,6 @@ spec:
               tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_ID
-              OAUTH2_PROXY_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_SECRET
-              OAUTH2_PROXY_COOKIE_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: COOKIE_SECRET
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: DRAGONFLY_PASSWORD
             securityContext: *securityContext
 
           app:
@@ -113,9 +89,9 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: APIKEY
+                    key: API_KEY
               PROWLARR__POSTGRES__HOST: *dbHost
-              PROWLARR__POSTGRES__PORT: "5432"
+              PROWLARR__POSTGRES__MAINDB: *dbName
               PROWLARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
@@ -126,7 +102,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASS
-              PROWLARR__POSTGRES__MAINDB: *dbName
             probes:
               liveness: &probes
                 enabled: true
@@ -140,15 +115,12 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
               limits:
                 memory: 1Gi
+            securityContext: *securityContext
 
     defaultPodOptions:
       securityContext:
@@ -156,7 +128,7 @@ spec:
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -206,8 +178,9 @@ spec:
               - path: /tmp
 
       oauth2-proxy-config:
-        type: configMap
-        name: prowlarr-oauth2-proxy-config
+        type: secret
+        name: *secret
+        defaultMode: 0440
         advancedMounts:
           prowlarr:
             oauth2-proxy:
@@ -218,11 +191,12 @@ spec:
       darkfellanet-root-ca:
         type: secret
         name: *secret
+        defaultMode: 0440
         advancedMounts:
           prowlarr:
             oauth2-proxy:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                subPath: darkfellanet-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
 
     rawResources:
@@ -236,33 +210,32 @@ spec:
               kind: ClusterSecretStore
               name: vault-backend
             target:
-              name: *secret
-              template:
-                engineVersion: v2
-                data:
-                  APIKEY: '{{ "{{ .PROWLARR_API_KEY }}" }}'
-                  POSTGRES_USER: '{{ "{{ .PROWLARR_POSTGRES_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .PROWLARR_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
-                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
-                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
-                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/api-keys
-              - extract:
-                  key: secrets/cloudnative-pg
-              - extract:
-                  key: secrets/oauth2/prowlarr
-              - extract:
-                  key: secrets/dragonfly
+              name: "{{ .Release.Name }}-secret"
             data:
-              - secretKey: darkfellanet-root-ca.crt
+              - secretKey: &key ca.crt
                 remoteRef:
                   key: secrets/certificates/darkfellanet-internal
-                  property: ca.crt
+                  property: *key
+              - secretKey: &key POSTGRES_SUPER_PASS
+                remoteRef:
+                  key: secrets/cloudnative-pg
+                  property: *key
+              - secretKey: &key oauth2-proxy.cfg
+                remoteRef:
+                  key: &path secrets/prowlarr
+                  property: *key
+              - secretKey: &key API_KEY
+                remoteRef:
+                  key: *path
+                  property: *key
+              - secretKey: &key POSTGRES_USER
+                remoteRef:
+                  key: *path
+                  property: *key
+              - secretKey: &key POSTGRES_PASS
+                remoteRef:
+                  key: *path
+                  property: *key
 
     configMaps:
       gatus-ep:
@@ -286,33 +259,3 @@ spec:
                   - "[BODY].status == OK"
                 alerts:
                   - type: pushover
-      oauth2-proxy-config:
-        enabled: true
-        data:
-          oauth2-proxy.cfg: |
-            email_domains = [ "*" ]
-            upstreams = [ "http://127.0.0.1:80" ]
-            reverse_proxy = true
-            scope = "openid profile email"
-            cookie_secure = true
-            provider = "keycloak-oidc"
-            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-            code_challenge_method = "S256"
-            cookie_domains = "prowlarr.darkfellanetwork.com"
-            whitelist_domains = "prowlarr.darkfellanetwork.com"
-            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
-            skip_provider_button = true
-            cookie_expire = "30m"
-            cookie_refresh = "4m55s"
-            allowed_groups = [ "Admins" ]
-            redirect_url = "https://prowlarr.darkfellanetwork.com/oauth2/callback"
-            cookie_name = "__Secure-oauth2_proxy"
-            http_address = "0.0.0.0:4180"
-            cookie_csrf_per_request = true
-            cookie_csrf_expire = "5m"
-            skip_auth_routes = [ "(\\/|\\/([0-9]+)\\/)?api(\\/|$|[?])", "(\\/|\\/([0-9]+)\\/)?download(\\/|$|[?])", "^/ping", "^/signalr(/|$)" ]
-            ping_path = "/oauth2/ping"
-            ready_path = "/oauth2/ready"
-            cookie_samesite = "strict"
-            session_store_type = "redis"
-            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"

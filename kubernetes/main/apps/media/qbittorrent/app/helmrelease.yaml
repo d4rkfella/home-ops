@@ -429,7 +429,7 @@ spec:
                     --write-out "%{http_code}" \
                     --request POST \
                     --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
-                    --data-urlencode "includeSingleEpisodes=true"
+                    --data-urlencode "includeSingleEpisodes=true" \
                     --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
                     "https://${CROSS_SEED_HOST}/api/webhook"
                 )

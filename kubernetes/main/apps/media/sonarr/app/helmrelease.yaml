@@ -238,32 +238,32 @@ spec:
               name: vault-backend
             target:
               name: *secret
-              template:
-                engineVersion: v2
-                data:
-                  APIKEY: '{{ "{{ .SONARR_API_KEY }}" }}'
-                  POSTGRES_USER: '{{ "{{ .SONARR_POSTGRES_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .SONARR_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  #darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/cloudnative-pg
-              - extract:
-                  key: secrets/pushover
-              - extract:
-                  key: secrets/api-keys
-              - extract:
-                  key: secrets/dragonfly
             data:
-              - secretKey: darkfellanet-root-ca.crt
+              - secretKey: &key ca.crt
                 remoteRef:
                   key: secrets/certificates/darkfellanet-internal
-                  property: ca.crt
-              - secretKey: oauth2-proxy.cfg
+                  property: *key
+              - secretKey: &key POSTGRES_SUPER_PASS
                 remoteRef:
-                  key: secrets/sonarr
-                  property: oauth2-proxy.cfg
+                  key: secrets/cloudnative-pg
+                  property: *key
+              - secretKey: &key oauth2-proxy.cfg
+                remoteRef:
+                  key: &path secrets/sonarr
+                  property: *key
+              - secretKey: &key API_KEY
+                remoteRef:
+                  key: *path
+                  property: *key
+              - secretKey: &key POSTGRES_USER
+                remoteRef:
+                  key: *path
+                  property: *key
+              - secretKey: &key POSTGRES_PASS
+                remoteRef:
+                  key: *path
+                  property: *key
+
     configMaps:
       gatus-ep:
         enabled: true

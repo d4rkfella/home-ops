@@ -223,7 +223,7 @@ spec:
           sonarr:
             oauth2-proxy:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                subPath: darkfellanet-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
 
     rawResources:

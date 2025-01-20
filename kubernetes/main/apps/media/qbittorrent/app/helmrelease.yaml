@@ -377,6 +377,7 @@ spec:
             # Function to set release variables from qBittorrent
             set_qb_vars() {
                 RELEASE_NAME="$1"      # %N
+                RELEASE_INFOHASH="$2"  # %I
                 RELEASE_DIR="$2"       # %F
                 RELEASE_CAT="$3"       # %L
                 RELEASE_SIZE="$4"      # %Z
@@ -427,6 +428,8 @@ spec:
                     --output /dev/null \
                     --write-out "%{http_code}" \
                     --request POST \
+                    --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
+                    --data-urlencode "includeSingleEpisodes=true"
                     --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
                     "https://${CROSS_SEED_HOST}/api/webhook"
                 )

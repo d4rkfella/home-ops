@@ -210,7 +210,7 @@ spec:
             target:
               name: &volsync-secret "{{ .Release.Name }}-volsync-secret"
             dataFrom:
-              key: secrets/volsync/qbittorrent
+              - key: secrets/volsync/qbittorrent
 
       volsync-src:
         enabled: true

@@ -166,6 +166,7 @@ spec:
         enabled: true
         data:
           config.js: |
+            const PROWLARR_API_KEY = process.env.PROWLARR_API_KEY;
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,

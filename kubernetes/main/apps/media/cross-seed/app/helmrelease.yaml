@@ -36,6 +36,9 @@ spec:
             args: ["daemon", "-v"]
             env:
               TZ: Europe/Sofia
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness: &probes
                 enabled: true
@@ -100,8 +103,8 @@ spec:
         type: emptyDir
 
       config-file:
-        type: secret
-        name: "{{ .Release.Name }}-secret"
+        type: configMap
+        name: "{{ .Release.Name }}-config"
         defaultMode: 0440
         globalMounts:
           - path: /config/config.js
@@ -128,13 +131,67 @@ spec:
               name: vault-backend
             target:
               name: "{{ .Release.Name }}-secret"
+              template:
+                engineVersion: v2
+                data:
+                  RADARR_API_KEY: "{{ `{{ .RADARR_API_KEY }}` }}"
+                  SONARR_API_KEY: "{{ `{{ .SONARR_API_KEY }}` }}"
+                  PROWLARR_API_KEY: "{{ `{{ .SONARR_API_KEY }}` }}"
+                  CROSS_SEED_API_KEY: "{{ `{{ .API_KEY }}` }}"
+                  QBIT_USER: "{{ `{{ .USER }}` }}"
+                  QBIT_PASS: "{{ `{{ .PASS }}` }}"
             data:
-              - secretKey: &key config.js
+              - secretKey: API_KEY
                 remoteRef:
                   key: secrets/cross-seed
-                  property: *key
-
+                  property: API_KEY
+              - secretKey: USER
+                remoteRef:
+                  key: secrets/qbittorrent
+                  property: USER
+              - secretKey: PASS
+                remoteRef:
+                  key: secrets/qbittorrent
+                  property: PASS
+              - secretKey: RADARR_API_KEY
+                remoteRef:
+                  key: secrets/radarr
+                  property: API_KEY
+              - secretKey: SONARR_API_KEY
+                remoteRef:
+                  key: secrets/sonarr
+                  property: API_KEY
     configMaps:
+      config:
+        enabled: true
+        data:
+          config.js: |
+            module.exports = {
+              action: "inject",
+              apiKey: process.env.CROSS_SEED_API_KEY,
+              delay: 30,
+              duplicateCategories: false,
+              flatLinking: false,
+              includeNonVideos: true,
+              includeSingleEpisodes: false,
+              linkCategory: "cross-seed",
+              linkDir: "/data/downloads/torrents/cross-seed",
+              linkType: "hardlink",
+              matchMode: "partial",
+              seasonFromEpisodes: 0.8,
+              outputDir: "/config",
+              port: 2468,
+              qbittorrentUrl: "https://${process.env.QBIT_USERNAME}:${process.env.QBIT_PASS}@qbittorrent.darkfellanetwork.com",
+              radarr: ["https://radarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}"],
+              skipRecheck: true,
+              sonarr: ["https://sonarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}"],
+              useClientTorrents: true,
+              torznab: [
+                3, // IPT
+                1, // SA
+                2, // TL
+              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${process.env.PROWLARR_API_KEY}`),
+            };
       loki-rules:
         enabled: true
         labels:

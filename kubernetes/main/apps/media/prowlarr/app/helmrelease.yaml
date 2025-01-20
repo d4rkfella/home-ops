@@ -217,6 +217,9 @@ spec:
               name: vault-backend
             target:
               name: "{{ .Release.Name }}-secret"
+            dataFrom:
+              - extract:
+                  key: secrets/prowlarr
             data:
               - secretKey: &key DRAGONFLY_PASSWORD
                 remoteRef:
@@ -229,22 +232,6 @@ spec:
               - secretKey: &key POSTGRES_SUPER_PASS
                 remoteRef:
                   key: secrets/cloudnative-pg
-                  property: *key
-              - secretKey: &key oauth2-proxy.cfg
-                remoteRef:
-                  key: &path secrets/prowlarr
-                  property: *key
-              - secretKey: &key API_KEY
-                remoteRef:
-                  key: *path
-                  property: *key
-              - secretKey: &key POSTGRES_USER
-                remoteRef:
-                  key: *path
-                  property: *key
-              - secretKey: &key POSTGRES_PASS
-                remoteRef:
-                  key: *path
                   property: *key
 
     configMaps:

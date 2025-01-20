@@ -32,7 +32,7 @@ spec:
 
   values:
     controllers:
-      {{ .Release.Name }}:
+      qbittorrent:
         annotations:
           reloader.stakater.com/auto: "true"
 

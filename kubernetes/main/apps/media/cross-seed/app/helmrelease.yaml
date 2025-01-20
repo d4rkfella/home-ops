@@ -107,11 +107,6 @@ spec:
           - path: /config/config.js
             subPath: config.js
             readOnly: true
-      qbittorrent:
-        existingClaim: qbittorrent-config
-        globalMounts:
-          - path: /qBittorrent/BT_backup
-            subPath: qBittorrent/BT_backup
       media:
         type: nfs
         server: 192.168.91.40

@@ -57,8 +57,6 @@ spec:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              runAsUser: 65532
-              runAsGroup: 65532
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -133,7 +131,7 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000
-        runAsGroup: 2001
+        runAsGroup: 2000
         fsGroup: 2000
         fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
@@ -204,7 +202,7 @@ spec:
       oauth2-proxy-config:
         type: secret
         name: *secret
-        defaultMode: 0400
+        defaultMode: 0440
         advancedMounts:
           sonarr:
             oauth2-proxy:

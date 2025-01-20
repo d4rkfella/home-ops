@@ -57,8 +57,6 @@ spec:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              runAsUser: 65534
-              runAsGroup: 65534
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -93,7 +91,7 @@ spec:
                     name: *secret
                     key: API_KEY
               RADARR__POSTGRES__HOST: *dbHost
-              RADARR__POSTGRES__PORT: 5432
+              #RADARR__POSTGRES__PORT: 5432
               RADARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
@@ -118,10 +116,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 100m

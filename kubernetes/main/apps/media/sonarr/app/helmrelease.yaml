@@ -206,7 +206,7 @@ spec:
       oauth2-proxy-config:
         type: secret
         name: *secret
-        defaultMode: 0440
+        defaultMode: 0400
         advancedMounts:
           sonarr:
             oauth2-proxy:

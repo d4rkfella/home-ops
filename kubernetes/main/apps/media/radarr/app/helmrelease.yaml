@@ -108,7 +108,6 @@ spec:
               RADARR__SERVER__PORT: &port 80
               RADARR__SERVER__BINDADDRESS: 127.0.0.1
               RADARR__UPDATE__BRANCH: develop
-              RADARR__APP__URL: https://radarr.darkfellanetwork.com
               RADARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:

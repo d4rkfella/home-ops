@@ -160,14 +160,14 @@ spec:
         tls:
           - hosts:
               - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: radarr-tls
+            secretName: "{{ .Release.Name }}-tls"
         hosts:
           - host: *host
             paths:
               - path: /
                 service:
                   identifier: app
-                  port: 4180
+                  port: http
 
     persistence:
       config:

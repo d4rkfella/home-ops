@@ -186,13 +186,10 @@ spec:
       scripts:
         type: configMap
         name: sonarr-scripts
-        defaultMode: 0775
+        defaultMode: 0550
         advancedMounts:
           sonarr:
             app:
-              - path: /scripts/pushover-notify.sh
-                subPath: pushover-notify.sh
-                readOnly: true
               - path: /scripts/refresh-series.sh
                 subPath: refresh-series.sh
                 readOnly: true

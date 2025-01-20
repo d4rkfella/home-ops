@@ -137,7 +137,7 @@ spec:
                 data:
                   RADARR_API_KEY: "{{ `{{ .RADARR_API_KEY }}` }}"
                   SONARR_API_KEY: "{{ `{{ .SONARR_API_KEY }}` }}"
-                  PROWLARR_API_KEY: "{{ `{{ .SONARR_API_KEY }}` }}"
+                  PROWLARR_API_KEY: "{{ `{{ .PROWLARR_API_KEY }}` }}"
                   CROSS_SEED_API_KEY: "{{ `{{ .API_KEY }}` }}"
                   QBIT_USER: "{{ `{{ .USER }}` }}"
                   QBIT_PASS: "{{ `{{ .PASS }}` }}"
@@ -162,17 +162,15 @@ spec:
                 remoteRef:
                   key: secrets/sonarr
                   property: API_KEY
+              - secretKey: PROWLARR_API_KEY
+                remoteRef:
+                  key: secrets/prowlarr
+                  property: API_KEY
     configMaps:
       config:
         enabled: true
         data:
           config.js: |
-            const PROWLARR_API_KEY = process.env.PROWLARR_API_KEY;
-            const torznabUrls = [
-              3, // IPT
-              1, // SA
-              2, // TL
-            ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`);
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,
@@ -193,7 +191,11 @@ spec:
               skipRecheck: true,
               sonarr: [`https://sonarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}`],
               useClientTorrents: true,
-              torznab: torznabUrls
+              torznab: [
+                3, // IPT
+                1, // SA
+                2, // TL
+              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${process.env.PROWLARR_API_KEY}`),
             };
       loki-rules:
         enabled: true

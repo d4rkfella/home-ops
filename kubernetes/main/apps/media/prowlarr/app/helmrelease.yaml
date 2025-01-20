@@ -68,6 +68,12 @@ spec:
               tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
             securityContext: *securityContext
 
           app:
@@ -212,6 +218,10 @@ spec:
             target:
               name: "{{ .Release.Name }}-secret"
             data:
+              - secretKey: &key DRAGONFLY_PASSWORD
+                remoteRef:
+                  key: secrets/dragonfly
+                  property: *key
               - secretKey: &key ca.crt
                 remoteRef:
                   key: secrets/certificates/darkfellanet-internal

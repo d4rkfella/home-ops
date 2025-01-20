@@ -166,7 +166,7 @@ spec:
         enabled: true
         data:
           config.js: |
-            console.log('QBIT_USERNAME:', process.env.QBIT_USER);
+            const prowlarrApiKey = process.env.PROWLARR_API_KEY;
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,
@@ -191,7 +191,12 @@ spec:
                 3, // IPT
                 1, // SA
                 2, // TL
-              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${process.env.PROWLARR_API_KEY}`),
+              ].map(i => {
+                // Ensure the URL is being correctly constructed with the API key
+                const url = `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${prowlarrApiKey}`;
+                console.log('Generated URL:', url);  // Debug output
+                return url;
+              }),
             };
       loki-rules:
         enabled: true

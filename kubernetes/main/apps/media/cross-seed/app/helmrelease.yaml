@@ -166,7 +166,6 @@ spec:
         enabled: true
         data:
           config.js: |
-            const prowlarrApiKey = process.env.PROWLARR_API_KEY;
             module.exports = {
               action: "inject",
               apiKey: process.env.CROSS_SEED_API_KEY,
@@ -193,9 +192,7 @@ spec:
                 2, // TL
               ].map(i => {
                 // Ensure the URL is being correctly constructed with the API key
-                const url = `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${prowlarrApiKey}`;
-                console.log('Generated URL:', url);  // Debug output
-                return url;
+                const url = `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`;
               }),
             };
       loki-rules:

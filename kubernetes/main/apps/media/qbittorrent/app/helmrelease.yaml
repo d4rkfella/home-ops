@@ -46,8 +46,6 @@ spec:
               TZ: &TZ Europe/Sofia
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
-              QBITTORRENTAPI_USERNAME: test
-              QBITTORRENTAPI_PASSWORD: test
               CROSS_SEED_ENABLED: true
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true

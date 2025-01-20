@@ -181,16 +181,16 @@ spec:
               seasonFromEpisodes: 0.8,
               outputDir: "/config",
               port: 2468,
-              qbittorrentUrl: "https://process.env.QBIT_USERNAME:process.env.QBIT_PASS@qbittorrent.darkfellanetwork.com",
-              radarr: ["https://radarr.darkfellanetwork.com/?apikey=process.env.RADARR_API_KEY"],
+              qbittorrentUrl: `https://process.env.QBIT_USERNAME:process.env.QBIT_PASS@qbittorrent.darkfellanetwork.com`,
+              radarr: [`https://radarr.darkfellanetwork.com/?apikey=${process.env.RADARR_API_KEY}`],
               skipRecheck: true,
-              sonarr: ["https://sonarr.darkfellanetwork.com/?apikey=process.env.SONARR_API_KEY"],
+              sonarr: [`https://sonarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}`],
               useClientTorrents: true,
               torznab: [
                 3, // IPT
                 1, // SA
                 2, // TL
-              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=process.env.PROWLARR_API_KEY`),
+              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${process.env.PROWLARR_API_KEY}`),
             };
       loki-rules:
         enabled: true

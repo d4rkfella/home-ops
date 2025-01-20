@@ -264,7 +264,7 @@ spec:
                   property: ca.crt
               - secretKey: oauth2-proxy.cfg
                 remoteRef:
-                  key: secrets/oauth2/sonarr
+                  key: secrets/sonarr
                   property: oauth2-proxy.cfg
     configMaps:
       gatus-ep:

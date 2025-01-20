@@ -254,8 +254,6 @@ spec:
               - extract:
                   key: secrets/api-keys
               - extract:
-                  key: secrets/oauth2/sonarr
-              - extract:
                   key: secrets/dragonfly
             data:
               - secretKey: darkfellanet-root-ca.crt

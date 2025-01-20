@@ -438,7 +438,6 @@ spec:
                     --output /dev/null \
                     --write-out "%{http_code}" \
                     --request POST \
-                    --data-urlencode "path=${RELEASE_DIR}" \
                     --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
                     "https://${CROSS_SEED_HOST}/api/webhook"
                 )

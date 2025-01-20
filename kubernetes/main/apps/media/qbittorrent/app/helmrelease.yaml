@@ -31,6 +31,7 @@ spec:
       namespace: volsync-system
 
   values:
+    releaseName: {{ .Release.Name }}
     controllers:
       qbittorrent:
         annotations:
@@ -161,7 +162,7 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          {{ .Release.Name }}:
+          {{ .Values.releaseName }}:
             app:
               - path: /config
 
@@ -170,7 +171,7 @@ spec:
         name: "{{ .Release.Name }}-scripts"
         defaultMode: 0550
         advancedMounts:
-          {{ .Release.Name }}:
+          {{ .Values.releaseName }}:
             app:
               - readOnly: true
 
@@ -179,7 +180,7 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          {{ .Release.Name }}:
+          {{ .Values.releaseName }}:
             app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
@@ -187,7 +188,7 @@ spec:
       addons:
         type: emptyDir
         advancedMounts:
-          {{ .Release.Name }}:
+          {{ .Values.releaseName }}:
             app:
               - path: /addons
                 readOnly: true
@@ -197,7 +198,7 @@ spec:
       tmp:
         type: emptyDir
         advancedMounts:
-          {{ .Release.Name }}:
+          {{ .Values.releaseName }}:
             git-sync:
               - path: /tmp
 

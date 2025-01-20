@@ -206,6 +206,7 @@ spec:
       oauth2-proxy-config:
         type: secret
         name: *secret
+        defaultMode: 0440
         advancedMounts:
           sonarr:
             oauth2-proxy:
@@ -216,6 +217,7 @@ spec:
       darkfellanet-root-ca:
         type: secret
         name: *secret
+        defaultMode: 0440
         advancedMounts:
           sonarr:
             oauth2-proxy:

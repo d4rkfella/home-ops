@@ -212,6 +212,10 @@ spec:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
+            app:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
 
       darkfellanet-root-ca:
         type: secret

@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: qbittorrent
+  name: &app qbittorrent
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
@@ -32,7 +32,7 @@ spec:
 
   values:
     controllers:
-      qbittorrent:
+      {{ .Release.Name }}:
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -43,10 +43,11 @@ spec:
               tag: 5.0.3@sha256:19597e4a5c5e52702ff6b4ea5c4b5f9f42433d6c2f1ef1d2db5964938bf44557
             env:
               UMASK: "022"
-              TZ: &TZ Europe/Sofia
+              TZ: Europe/Sofia
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: true
+              CROSS_SEED_URL: https://cross-seed.darkfellanetwork.com
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
             probes:
@@ -103,13 +104,13 @@ spec:
 
     service:
       app:
-        controller: qbittorrent
+        controller: "{{ .Release.Name }}"
         primary: true
         ports:
           http:
             port: *port
       upload:
-        controller: qbittorrent
+        controller: "{{ .Release.Name }}"
         primary: false
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
@@ -140,7 +141,7 @@ spec:
         tls:
           - hosts:
               - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: qbittorrent-tls
+            secretName: "{{ .Release.Name }}-tls"
         hosts:
           - host: *host
             paths:
@@ -157,16 +158,16 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          qbittorrent:
+          {{ .Release.Name }}:
             app:
               - path: /config
 
       scripts:
         type: configMap
-        name: qbittorrent-scripts
+        name: "{{ .Release.Name }}-scripts"
         defaultMode: 0550
         advancedMounts:
-          qbittorrent:
+          {{ .Release.Name }}:
             app:
               - readOnly: true
 
@@ -175,7 +176,7 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          qbittorrent:
+          {{ .Release.Name }}:
             app:
               - path: /data/downloads/torrents
                 subPath: downloads/torrents
@@ -183,7 +184,7 @@ spec:
       addons:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
+          {{ .Release.Name }}:
             app:
               - path: /addons
                 readOnly: true
@@ -193,11 +194,35 @@ spec:
       tmp:
         type: emptyDir
         advancedMounts:
-          qbittorrent:
+          {{ .Release.Name }}:
             git-sync:
               - path: /tmp
 
     rawResources:
+      secret:
+        enabled: true
+        apiVersion: external-secrets.io/v1beta1
+        kind: ExternalSecret
+        spec:
+          spec:
+            secretStoreRef:
+              kind: ClusterSecretStore
+              name: vault-backend
+            target:
+              name: "{{ .Release.Name }}-secret"
+            data:
+              - secretKey: CROSS_SEED_API_KEY
+                remoteRef:
+                  key: secrets/cross-seed
+                  property: API_KEY
+              - secretKey: &key PUSHOVER_USER_KEY
+                remoteRef:
+                  key: secrets/pushover
+                  property: *key
+              - secretKey: PUSHOVER_TOKEN
+                remoteRef:
+                  key: secrets/pushover
+                  property: QBITTORRENT_PUSHOVER_TOKEN
       volsync-secret:
         enabled: true
         apiVersion: external-secrets.io/v1beta1
@@ -224,7 +249,7 @@ spec:
               schedule: "0 7 * * *"
             restic:
               copyMethod: Clone
-              storageClassName: &storageClass openebs-zfs-128k
+              storageClassName: openebs-zfs-128k
               pruneIntervalDays: 7
               repository: *volsync-secret
               cacheCapacity: 2Gi
@@ -252,6 +277,116 @@ spec:
               moverSecurityContext: *moverSecurityContext
 
     configMaps:
+      scripts:
+        enabled: true
+        data:
+          post-process.sh: |
+            #!/usr/bin/env bash
+            # shellcheck disable=SC2154
+
+            set -euo pipefail
+
+            # User-defined variables
+            CROSS_SEED_ENABLED="${CROSS_SEED_ENABLED:-false}"
+            CROSS_SEED_URL="${CROSS_SEED_URL:-required}"
+            CROSS_SEED_API_KEY="${CROSS_SEED_API_KEY:-required}"
+            CROSS_SEED_SLEEP_INTERVAL="${CROSS_SEED_SLEEP_INTERVAL:-30}"
+            PUSHOVER_ENABLED="${PUSHOVER_ENABLED:-false}"
+            PUSHOVER_USER_KEY="${PUSHOVER_USER_KEY:-required}"
+            PUSHOVER_TOKEN="${PUSHOVER_TOKEN:-required}"
+
+            # Function to set release variables from qBittorrent
+            set_qb_vars() {
+                RELEASE_NAME="$1"      # %N
+                RELEASE_INFOHASH="$2"  # %I
+                RELEASE_CAT="$3"       # %L
+                RELEASE_SIZE="$4"      # %Z
+                RELEASE_INDEXER="$5"   # %T
+                RELEASE_TYPE="Torrent"
+            }
+
+            # Function to send pushover notification
+            send_pushover_notification() {
+                local pushover_message status_code json_data
+                printf -v pushover_message \
+                    "<b>%s</b><small>\n<b>Category:</b> %s</small><small>\n<b>Indexer:</b> %s</small><small>\n<b>Size:</b> %s</small>" \
+                        "${RELEASE_NAME%.*}" \
+                        "${RELEASE_CAT}" \
+                        "$(trurl --url "${RELEASE_INDEXER}" --get '{idn:host}')" \
+                        "$(numfmt --to iec --format "%8.2f" "${RELEASE_SIZE}")"
+
+                json_data=$(jo \
+                    token="${PUSHOVER_TOKEN}" \
+                    user="${PUSHOVER_USER_KEY}" \
+                    title="${RELEASE_TYPE} Downloaded" \
+                    message="${pushover_message}" \
+                    priority="-2" \
+                    html="1"
+                )
+
+                status_code=$(curl \
+                    --silent \
+                    --write-out "%{http_code}" \
+                    --output /dev/null \
+                    --request POST  \
+                    --header "Content-Type: application/json" \
+                    --data-binary "${json_data}" \
+                    "https://api.pushover.net/1/messages.json"
+                )
+
+                printf "pushover notification returned with HTTP status code %s and payload: %s\n" \
+                    "${status_code}" \
+                    "$(echo "${json_data}" | jq --compact-output)" >&2
+            }
+
+            # Function to search for cross-seed
+            search_cross_seed() {
+                local status_code
+                status_code=$(curl \
+                    --silent \
+                    --output /dev/null \
+                    --write-out "%{http_code}" \
+                    --request POST \
+                    --data-urlencode "infoHash=${RELEASE_INFOHASH}" \
+                    --data-urlencode "includeSingleEpisodes=true" \
+                    --header "X-Api-Key: ${CROSS_SEED_API_KEY}" \
+                    "${CROSS_SEED_URL}/api/webhook"
+                )
+
+                printf "cross-seed search returned with HTTP status code %s and path %s\n" \
+                    "${status_code}" \
+                    "${RELEASE_NAME}" >&2
+
+                sleep "${CROSS_SEED_SLEEP_INTERVAL}"
+            }
+
+            main() {
+                    set_qb_vars "$@"
+
+                # Send pushover notification
+                if [[ "${PUSHOVER_ENABLED}" == "true" ]]; then
+                    send_pushover_notification
+                fi
+
+                # Search for cross-seed
+                if [[ "${CROSS_SEED_ENABLED}" == "true" ]]; then
+                    search_cross_seed
+                fi
+            }
+
+            main "$@"
+          healthcheck.sh: |
+            #!/bin/bash
+
+            http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:80/api/v2/app/version)
+            if [[ $http_code != 200 ]]; then
+                log "App status: not up yet, did you enable \"Bypass authentication for clients on localhost\" in the Web UI options?"
+                exit 1
+            else
+                log "App status: up and running"
+            fi
+
+            exit 0
       gatus-ep:
         enabled: true
         labels:
@@ -292,19 +427,3 @@ spec:
                     annotations:
                       app: "{{ "{{ $labels.container }}" }}"
                       summary: "{{ "{{ $labels.container }} has a torrent with fast resume rejected" }}"
-
-      scripts:
-        enabled: true
-        data:
-          healthcheck.sh: |
-            #!/bin/bash
-
-            http_code=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:80/api/v2/app/version)
-            if [[ $http_code != 200 ]]; then
-                log "App status: not up yet, did you enable \"Bypass authentication for clients on localhost\" in the Web UI options?"
-                exit 1
-            else
-                log "App status: up and running"
-            fi
-
-            exit 0

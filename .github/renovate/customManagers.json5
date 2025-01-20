@@ -27,19 +27,6 @@
     },
     {
       "customType": "regex",
-      "description": ["Process ARG versions in Dockerfile"],
-      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
-      "matchStrings": [
-        "# renovate: depName=(?<depName>\\S+)\\s*\\nARG (?<argName>\\S+)=v(?<currentValue>\\S+)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "versioningTemplate": "semver",
-      "depNameTemplate": "{{depName}}",
-      "packageNameTemplate": "{{depName}}",
-      "lookupNameTemplate": "{{depName}}"
-    },
-    {
-      "customType": "regex",
       "description": ["Process CloudnativePG Postgresql version"],
       "fileMatch": ["(^|/)kubernetes/.+\\.ya?ml$"],
       "matchStrings": ["imageName: (?<depName>[^\\s:]+):(?<currentValue>\\S+)(@(?<currentDigest>sha256:\\S+)?)"],

@@ -378,10 +378,9 @@ spec:
             set_qb_vars() {
                 RELEASE_NAME="$1"      # %N
                 RELEASE_INFOHASH="$2"  # %I
-                RELEASE_DIR="$3"       # %F
-                RELEASE_CAT="$4"       # %L
-                RELEASE_SIZE="$5"      # %Z
-                RELEASE_INDEXER="$6"   # %T
+                RELEASE_CAT="$3"       # %L
+                RELEASE_SIZE="$4"      # %Z
+                RELEASE_INDEXER="$5"   # %T
                 RELEASE_STATUS=0       # Always 0 for qBittorrent
                 RELEASE_TYPE="Torrent"
             }

@@ -50,6 +50,9 @@ spec:
               CROSS_SEED_URL: https://cross-seed.darkfellanetwork.com
               CROSS_SEED_SLEEP_INTERVAL: 15
               PUSHOVER_ENABLED: true
+            envFrom:
+            - secretRef:
+                name: "{{ .Release.Name }}-secret"
             probes:
               readiness: &probes
                 enabled: true

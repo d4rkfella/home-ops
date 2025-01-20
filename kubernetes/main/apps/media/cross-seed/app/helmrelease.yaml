@@ -157,6 +157,7 @@ spec:
                       skipRecheck: true,
                       sonarr: ["https://sonarr.darkfellanetwork.com/?apikey={{ "{{ .SONARR_API_KEY }}" }}"],
                       useClientTorrents: true,
+                      torrentDir: "null",
                       torznab: [
                         3, // IPT
                         1, // SA

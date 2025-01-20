@@ -67,7 +67,6 @@ spec:
                 exec:
                   command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
             securityContext:
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }

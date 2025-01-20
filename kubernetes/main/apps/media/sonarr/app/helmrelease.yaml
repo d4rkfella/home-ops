@@ -57,9 +57,8 @@ spec:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              runAsUser: 65534
-              runAsGroup: 65534
-              privileged: false
+              runAsUser: 65532
+              runAsGroup: 65532
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }

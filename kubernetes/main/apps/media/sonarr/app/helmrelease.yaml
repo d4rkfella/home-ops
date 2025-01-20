@@ -82,7 +82,7 @@ spec:
               SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 80
+              SONARR__SERVER__PORT: 80
               SONARR__SERVER__BINDADDRESS  : 127.0.0.1
               SONARR__UPDATE__BRANCH: develop
               SONARR__AUTH__APIKEY:
@@ -91,7 +91,7 @@ spec:
                     name: *secret
                     key: API_KEY
               SONARR__POSTGRES__HOST: *dbHost
-              SONARR__POSTGRES__PORT: 5432
+              SONARR__POSTGRES__MAINDB: *dbName
               SONARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
@@ -102,7 +102,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASS
-              SONARR__POSTGRES__MAINDB: *dbName
             probes:
               liveness: &probes
                 enabled: true

@@ -82,7 +82,7 @@ spec:
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
-              RADARR__SERVER__PORT: &port 80
+              RADARR__SERVER__PORT: 80
               RADARR__SERVER__BINDADDRESS: 127.0.0.1
               RADARR__UPDATE__BRANCH: develop
               RADARR__AUTH__APIKEY:
@@ -91,7 +91,7 @@ spec:
                     name: *secret
                     key: API_KEY
               RADARR__POSTGRES__HOST: *dbHost
-              #RADARR__POSTGRES__PORT: 5432
+              RADARR__POSTGRES__MAINDB: *dbName
               RADARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
@@ -102,7 +102,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASS
-              RADARR__POSTGRES__MAINDB: *dbName
             probes:
               liveness: &probes
                 enabled: true

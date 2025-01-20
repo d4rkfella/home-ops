@@ -142,7 +142,7 @@ spec:
                       includeSingleEpisodes: true,
                       linkCategory: "cross-seed",
                       linkDir: "/data/downloads/torrents/cross-seed",
-                      linkType: "reflink",
+                      linkType: "hardlink",
                       matchMode: "partial",
                       seasonFromEpisodes: 0.8,
                       outputDir: "/config",

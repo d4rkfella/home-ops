@@ -40,7 +40,7 @@ spec:
   authentication:
     passwordFromSecret:
       name: dragonfly-secret
-      key: DRAGONFLY__PASSWORD
+      key: DRAGONFLY_PASSWORD
       optional: false
   tlsSecretRef:
     name: dragonfly-cluster-tls

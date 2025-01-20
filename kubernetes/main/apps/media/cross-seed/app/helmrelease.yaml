@@ -192,7 +192,7 @@ spec:
                 3, // IPT
                 1, // SA
                 2, // TL
-              ].map(i => `https://prowlarr.darkfellanetwork.com/$${i}/api?apikey=${PROWLARR_API_KEY}`),
+              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${PROWLARR_API_KEY}`),
             };
       loki-rules:
         enabled: true

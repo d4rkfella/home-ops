@@ -5,3 +5,18 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
+configMapGenerator:
+  - name: sonarr-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - resources/gatus-ep.yaml
+  - name: sonarr-scripts
+    files:
+      - resources/refresh-series.sh
+      - resources/pushover-notifier.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

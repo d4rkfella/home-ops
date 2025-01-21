@@ -68,6 +68,12 @@ spec:
               tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
             securityContext: *securityContext
 
           app:
@@ -102,6 +108,16 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASSWORD
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -185,9 +201,7 @@ spec:
         advancedMounts:
           sonarr:
             app:
-              - path: /scripts/refresh-series.sh
-                subPath: refresh-series.sh
-                readOnly: true
+              - readOnly: true
 
       media:
         type: nfs
@@ -219,50 +233,3 @@ spec:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
                 subPath: ca.crt
                 readOnly: true
-    configMaps:
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Sonarr"
-                group: guarded
-                url: "https://sonarr.darkfellanetwork.com/ping"
-                interval: 1m
-                ui:
-                  hide-hostname: true
-                  hide-url: true
-                client:
-                  dns-resolver: tcp://172.17.0.10:53
-                conditions:
-                  - "[STATUS] == 200"
-                  - "[BODY].status == OK"
-                alerts:
-                  - type: pushover
-      scripts:
-        enabled: true
-        data:
-          refresh-series.sh: |
-            #!/usr/bin/env bash
-            # shellcheck disable=SC2154
-            set -euo pipefail
-
-            CURL_CMD=(curl -fsSL --header "X-Api-Key: ${SONARR__AUTH__APIKEY:-}")
-            SONARR_API_URL="http://localhost:${SONARR__SERVER__PORT:-}/api/v3"
-
-            if [[ "${sonarr_eventtype:-}" == "Grab" ]]; then
-                tba=$("${CURL_CMD[@]}" "${SONARR_API_URL}/episode?seriesId=${sonarr_series_id:-}" | jq --raw-output '
-                    [.[] | select((.title == "TBA") or (.title == "TBD"))] | length
-                ')
-
-                if (( tba > 0 )); then
-                    echo "INFO: Refreshing series ${sonarr_series_id:-} due to TBA/TBD episodes found"
-                    "${CURL_CMD[@]}" \
-                        --request POST \
-                        --header "Content-Type: application/json" \
-                        --data-binary '{"name": "RefreshSeries", "seriesId": '"${sonarr_series_id:-}"'}' \
-                        "${SONARR_API_URL}/command" &>/dev/null
-                fi
-            fi

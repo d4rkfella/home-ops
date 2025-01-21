@@ -243,6 +243,7 @@ spec:
                         - key: POSTGRES_USERNAME
                         - key: POSTGRES_PASSWORD
                         - key: DRAGONFLY_PASSWORD
+                        - key: ca.crt
             dataFrom:
               - extract:
                   key: secrets/sonarr
@@ -259,7 +260,7 @@ spec:
               - secretKey: POSTGRES_PASSWORD
                 remoteRef:
                   key: secrets/sonarr
-              - secretKey: CA
+              - secretKey: ca.crt
                 remoteRef:
                   key: secrets/darkfellanet-internal
     configMaps:

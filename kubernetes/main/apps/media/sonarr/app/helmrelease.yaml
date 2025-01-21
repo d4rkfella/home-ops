@@ -244,6 +244,8 @@ spec:
                   key: secrets/sonarr
               - extract:
                   key: secrets/certificates/darkfellanet-internal
+              - extract:
+                  key: secrets/dragonfly
             data:
               - secretKey: &key POSTGRES_SUPER_PASS
                 remoteRef:

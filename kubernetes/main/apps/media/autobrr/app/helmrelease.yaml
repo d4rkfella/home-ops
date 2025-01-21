@@ -44,7 +44,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
-                    key: &pgUser POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:

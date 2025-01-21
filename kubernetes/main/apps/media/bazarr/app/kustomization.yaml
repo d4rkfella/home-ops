@@ -13,7 +13,7 @@ configMapGenerator:
       - resources/gatus-ep.yaml
   - name: bazarr-configmap
     files:
-      - resources/pushover-notifier.sh
+      - resources/subcleaner.sh
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

@@ -14,7 +14,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-  interval: 30m
+  interval: 31m
   path: ./kubernetes/apps/network/internal/external-dns
   prune: false
   sourceRef:
@@ -40,7 +40,7 @@ spec:
   dependsOn:
     - name: cert-manager-certificates
       namespace: cert-manager
-  interval: 30m
+  interval: 31m
   path: ./kubernetes/apps/network/internal/ingress-nginx
   prune: false
   sourceRef:

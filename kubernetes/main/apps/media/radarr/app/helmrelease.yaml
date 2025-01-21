@@ -95,7 +95,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: API_KEY
+                    key: RADARR_API_KEY
               RADARR__POSTGRES__HOST: *dbHost
               RADARR__POSTGRES__MAINDB: *dbName
               RADARR__POSTGRES__USER:

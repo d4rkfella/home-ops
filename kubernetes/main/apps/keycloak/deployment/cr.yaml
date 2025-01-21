@@ -60,10 +60,10 @@ spec:
     vendor: postgres
     usernameSecret:
       name: *secret
-      key: POSTGRES_USER
+      key: POSTGRES_USERNAME
     passwordSecret:
       name: *secret
-      key: POSTGRES_PASS
+      key: POSTGRES_PASSWORD
     host: *dbHost
     database: *dbName
     port: 5432

@@ -5,6 +5,7 @@ kind: Kustomization
 metadata:
   name: &app vaultwarden
   namespace: &ns vaultwarden
+spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets

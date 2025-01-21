@@ -121,36 +121,6 @@ spec:
           - path: /data/downloads/torrents
             subPath: downloads/torrents
 
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-              template:
-                templateFrom:
-                  - configMap:
-                      name: "{{ .Release.Name }}-configmap"
-                      items:
-                        - key: config.js
-            dataFrom:
-              - extract:
-                  key: secrets/qbittorrent
-              - extract:
-                  key: secrets/prowlarr
-              - extract:
-                  key: secrets/radarr
-              - extract:
-                  key: secrets/sonarr
-              - extract:
-                  key: secrets/cross-seed
-
     configMaps:
       loki-rules:
         enabled: true

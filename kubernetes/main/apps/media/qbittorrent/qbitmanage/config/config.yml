@@ -1,0 +1,182 @@
+---
+commands:
+  dry_run: True
+  cross_seed: False
+  recheck: False
+  cat_update: True
+  tag_update: True
+  rem_unregistered: True
+  tag_tracker_error: True
+  rem_orphaned: True
+  tag_nohardlinks: True
+  share_limits: True
+  skip_qb_version_check: True
+  skip_cleanup: False
+
+qbt:
+  host: https://qbittorrent.darkfellanetwork.com
+  user: "{{ .QBITTORRENT_USERNAME }}"
+  pass: "{{ .QBITTORRENT_PASSWORD }}"
+
+settings:
+  force_auto_tmm: true
+  force_auto_tmm_ignore_tags: cross-seed
+  tracker_error_tag: issue
+  nohardlinks_tag: noHL
+  share_limits_tag: ~share_limit
+  share_limits_min_seeding_time_tag: MinSeedTimeNotReached
+  share_limits_min_num_seeds_tag: MinSeedsNotMet
+  share_limits_last_active_tag: LastActiveLimitNotReached
+  cross_seed_tag: cross-seed
+  cat_filter_completed: true
+  share_limits_filter_completed: true
+  tag_nohardlinks_filter_completed: true
+  cat_update_all: true
+  disable_qbt_default_share_limits: true
+
+directory:
+  root_dir: /data/downloads/torrents
+  recycle_bin: /data/downloads/torrents/.RecycleBin
+  orphaned_dir: /data/downloads/torrents/orphaned_data
+
+cat:
+  manual: /data/downloads/torrents/manual
+
+tracker:
+  torrentleech|tleechreload:
+    tag: TorrentLeech
+    notifiarr: torrentleech
+  stackoverflow|empirehost|bgp:
+    tag: IPTorrents
+    notifiarr: iptorrents
+  speedapp:
+    tag: speedapp.io
+    notifiarr: speedapp.io
+  other:
+    tag: other
+
+nohardlinks:
+  movies:
+    ignore_root_dir: true
+  movies-imported:
+    ignore_root_dir: true
+  tv:
+    ignore_root_dir: true
+  tv-imported:
+    ignore_root_dir: true
+  cross-seed:
+    ignore_root_dir: false
+
+share_limits:
+  noHL_cross-seed:
+    priority: 1
+    include_all_tags:
+    - noHL
+    - cross-seed
+    categories:
+    - cross-seed
+    max_seeding_time: 1m
+    cleanup: true
+
+  noHL_TorrentLeech:
+    priority: 2
+    include_all_tags:
+    - noHL
+    - TorrentLeech
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 10d
+    cleanup: true
+
+  noHL_speedapp.io:
+    priority: 3
+    include_all_tags:
+    - noHL
+    - speedapp.io
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 3d
+    cleanup: true
+
+  noHL_IPTorrents:
+    priority: 4
+    include_all_tags:
+    - noHL
+    - IPTorrents
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 16d
+    cleanup: true
+
+  TorrentLeech:
+    priority: 5
+    include_all_tags:
+    - TorrentLeech
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 30d
+    cleanup: true
+
+  IPTorrents:
+    priority: 6
+    include_all_tags:
+    - IPTorrents
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 30d
+    cleanup: true
+
+  speedapp.io:
+    priority: 7
+    include_all_tags:
+    - speedapp.io
+    categories:
+    - movies
+    - movies-imported
+    - tv
+    - tv-imported
+    max_seeding_time: 30d
+    cleanup: true
+
+  manual:
+    priority: 8
+    include_any_tags:
+    - speedapp.io
+    - IPTorrents
+    - TorrentLeech
+    categories:
+    - manual
+    max_seeding_time: 30d
+    cleanup: false
+
+recyclebin:
+  enabled: true
+  empty_after_x_days: 3
+  save_torrents: false
+  split_by_category: false
+
+orphaned:
+  empty_after_x_days: 3
+  exclude_patterns:
+  - '**/.DS_Store'
+  - '**/Thumbs.db'
+  - '**/@eaDir'
+  - '**/*.!qB'
+  - '**/*_unpackerred'
+  - '**/manual/*'
+  max_orphaned_files_to_delete: 50

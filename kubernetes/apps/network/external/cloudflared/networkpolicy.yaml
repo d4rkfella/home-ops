@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: cloudflared
+  name: &app cloudflared
 spec:
   endpointSelector:
     matchLabels:

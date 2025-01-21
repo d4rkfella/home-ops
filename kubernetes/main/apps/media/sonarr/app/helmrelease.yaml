@@ -235,6 +235,8 @@ spec:
               template:
                 engineVersion: v2
                 templateFrom:
+                  - data:
+                      - key: DRAGONFLY_PASSWORD
                   - configMap:
                       name: "{{ .Release.Name }}-configmap"
                       items:

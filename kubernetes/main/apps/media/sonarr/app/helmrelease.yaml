@@ -45,12 +45,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USER
+                    key: POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
@@ -68,12 +68,6 @@ spec:
               tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
               - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: DRAGONFLY_PASSWORD
             securityContext: *securityContext
 
           app:
@@ -95,19 +89,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: API_KEY
+                    key: SONARR_API_KEY
               SONARR__POSTGRES__HOST: *dbHost
               SONARR__POSTGRES__MAINDB: *dbName
               SONARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: POSTGRES_USERNAME
               SONARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: POSTGRES_PASSWORD
             probes:
               liveness: &probes
                 enabled: true
@@ -238,22 +232,19 @@ spec:
               name: vault-backend
             target:
               name: "{{ .Release.Name }}-secret"
+              template:
+                engineVersion: v2
+                templateFrom:
+                  - configMap:
+                      name: "{{ .Release.Name }}-configmap"
+                      items:
+                        - key: oauth2-proxy.cfg
             dataFrom:
               - extract:
                   key: secrets/sonarr
-            data:
-              - secretKey: &key DRAGONFLY_PASSWORD
-                remoteRef:
-                  key: secrets/dragonfly
-                  property: *key
-              - secretKey: &key ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
-                  property: *key
-              - secretKey: &key POSTGRES_SUPER_PASS
-                remoteRef:
+              - extract:
                   key: secrets/cloudnative-pg
-                  property: *key
+                  property: POSTGRES_SUPER_PASS
 
     configMaps:
       gatus-ep:

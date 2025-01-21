@@ -104,7 +104,7 @@ spec:
                 engineVersion: v2
                 templateFrom:
                   - configMap:
-                      name: qbitmanage-configmap
+                      name: "{{ .Release.Name }}-configmap"
                       items:
                         - key: config.yml
             dataFrom:

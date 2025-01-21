@@ -219,52 +219,6 @@ spec:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
                 subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-              template:
-                engineVersion: v2
-                templateFrom:
-                  - data:
-                      - key: DRAGONFLY_PASSWORD
-                  - configMap:
-                      name: "{{ .Release.Name }}-configmap"
-                      items:
-                        - key: oauth2-proxy.cfg
-                        - key: POSTGRES_SUPER_PASS
-                        - key: POSTGRES_USERNAME
-                        - key: POSTGRES_PASSWORD
-                        - key: DRAGONFLY_PASSWORD
-                        - key: ca.crt
-            dataFrom:
-              - extract:
-                  key: secrets/sonarr
-            data:
-              - secretKey: DRAGONFLY_PASSWORD
-                remoteRef:
-                  key: secrets/dragonfly
-              - secretKey: POSTGRES_SUPER_PASS
-                remoteRef:
-                  key: secrets/cloudnative-pg
-              - secretKey: POSTGRES_USERNAME
-                remoteRef:
-                  key: secrets/sonarr
-              - secretKey: POSTGRES_PASSWORD
-                remoteRef:
-                  key: secrets/sonarr
-              - secretKey: ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
     configMaps:
       gatus-ep:
         enabled: true

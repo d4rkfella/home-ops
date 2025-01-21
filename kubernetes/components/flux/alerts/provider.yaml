@@ -7,3 +7,27 @@ metadata:
 spec:
   type: alertmanager
   address: https://alertmanager-operated.observability.svc.cluster.local:8082/api/v2/alerts/
+  certSecretRef:
+    name: internal-ca-crt
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: internal-ca-crt
+stringData:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIICUTCCAdegAwIBAgIUE7P4E59OdEcMJEVp9Qm4fbaX6gowCgYIKoZIzj0EAwMw
+    VjELMAkGA1UEBhMCQkcxDjAMBgNVBAcTBVNvZmlhMRUwEwYDVQQKEwxEYXJrZmVs
+    bGFORVQxIDAeBgNVBAMTF0RhcmtmZWxsYU5FVCBSb290IENBIHYxMB4XDTI1MDEx
+    MDAwMjYzMVoXDTMwMDEwOTAwMjcwMVowVjELMAkGA1UEBhMCQkcxDjAMBgNVBAcT
+    BVNvZmlhMRUwEwYDVQQKEwxEYXJrZmVsbGFORVQxIDAeBgNVBAMTF0RhcmtmZWxs
+    YU5FVCBSb290IENBIHYxMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8I307BqjSGaN
+    lDGaJ8P3hvpC5zBwhT5GP/+YxCmZyLvQ0bIAecIYrudPVeAUocYPzwWqovulRfSp
+    RnSgWQD18xNn44QBbOTQcVE8G4l2YXLJQi2H1yAZHuLQTWLa3CTro2YwZDAOBgNV
+    HQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBAjAdBgNVHQ4EFgQUSqgM6nPf
+    0ufnX6aUTvrwnyb0YVQwHwYDVR0jBBgwFoAUSqgM6nPf0ufnX6aUTvrwnyb0YVQw
+    CgYIKoZIzj0EAwMDaAAwZQIxALIJT48CUff3FlRYrJmGQIF5E3JyaqKkV4MwrXTo
+    ceAm/PH74nvayKoJifGs5UojrgIwWp4rCZDuYApWJi8P5ZDZKH3SEgTPnFPCCGHi
+    vHiKndDK4f74QgHWZzfHmYHu3wFx
+    -----END CERTIFICATE-----

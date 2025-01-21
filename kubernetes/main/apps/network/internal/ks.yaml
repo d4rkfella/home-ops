@@ -5,6 +5,8 @@ kind: Kustomization
 metadata:
   name: &app internal-external-dns
   namespace: network
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   commonMetadata:
     labels:
@@ -29,6 +31,8 @@ kind: Kustomization
 metadata:
   name: &app internal-ingress-nginx
   namespace: network
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
   commonMetadata:
     labels:

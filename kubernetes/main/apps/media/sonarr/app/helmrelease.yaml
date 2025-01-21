@@ -239,7 +239,6 @@ spec:
                       name: "{{ .Release.Name }}-configmap"
                       items:
                         - key: oauth2-proxy.cfg
-                        - key: ca.crt
                         - key: POSTGRES_SUPER_PASS
                           templateAs: KeysAndValues
                         - key: POSTGRES_USERNAME

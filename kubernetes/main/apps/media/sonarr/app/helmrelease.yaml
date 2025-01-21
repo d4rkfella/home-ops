@@ -235,10 +235,10 @@ spec:
               template:
                 engineVersion: v2
                 data:
-                  POSTGRES_SUPER_PASS: {{ '{{ . POSTGRES_SUPER_PASS }}' }}
-                  POSTGRES_USERNAME: {{ '{{ . POSTGRES_USERNAME }}' }}
-                  POSTGRES_PASSWORD: {{ '{{ . POSTGRES_PASSWORD }}' }}
-                  SONARR_API_KEY: {{ '{{ . SONARR_API_KEY }}'}}
+                  POSTGRES_SUPER_PASS: {{ '{{ .POSTGRES_SUPER_PASS }}' }}
+                  POSTGRES_USERNAME: {{ '{{ .POSTGRES_USERNAME }}' }}
+                  POSTGRES_PASSWORD: {{ '{{ .POSTGRES_PASSWORD }}' }}
+                  SONARR_API_KEY: {{ '{{ .SONARR_API_KEY }}' }}
                 templateFrom:
                   - configMap:
                       name: "{{ .Release.Name }}-configmap"
@@ -251,12 +251,8 @@ spec:
                   key: secrets/certificates/darkfellanet-internal
               - extract:
                   key: secrets/dragonfly
-            data:
-              - secretKey: &key POSTGRES_SUPER_PASS
-                remoteRef:
+              - extract:
                   key: secrets/cloudnative-pg
-                  property: *key
-
     configMaps:
       gatus-ep:
         enabled: true

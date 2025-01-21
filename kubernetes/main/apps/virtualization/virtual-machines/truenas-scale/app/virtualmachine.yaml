@@ -13,10 +13,10 @@ spec:
         - name: bridge-1
           multus:
             default: true
-            networkName: network/bridge-truenas-1
+            networkName: kube-system/bridge-truenas-1
         - name: bridge-2
           multus:
-            networkName: network/bridge-truenas-2
+            networkName: kube-system/bridge-truenas-2
       domain:
         clock:
           utc: {}

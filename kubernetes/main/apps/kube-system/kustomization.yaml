@@ -15,3 +15,4 @@ resources:
   - ./zfs-localpv/ks.yaml
   - ./vfio-binding.yaml
   - ./secrets-store-csi-driver/ks.yaml
+  - ./multus/ks.yaml

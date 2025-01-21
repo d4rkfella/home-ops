@@ -242,8 +242,8 @@ spec:
                         - key: POSTGRES_SUPER_PASS
                         - key: POSTGRES_USERNAME
                         - key: POSTGRES_PASSWORD
-                        - key: DRAGONFLY_PASSWORD
-                        - key: ca.crt
+                        #- key: DRAGONFLY_PASSWORD
+                        #- key: ca.crt
             dataFrom:
               - extract:
                   key: secrets/sonarr

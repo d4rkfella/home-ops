@@ -39,11 +39,11 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_USER
-              - name: INIT_POSTGRES_PASSWORD
+              - name: INIT_POSTGRES_PASS
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: POSTGRES_PASSWORD
             securityContext:
               runAsUser: 65534
               runAsGroup: 65534

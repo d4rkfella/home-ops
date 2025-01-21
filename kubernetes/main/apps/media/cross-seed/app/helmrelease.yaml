@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: cross-seed
+  name: &app cross-seed
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
@@ -74,7 +74,7 @@ spec:
 
     service:
       app:
-        controller: "{{ .Release.Name }}"
+        controller: *app
         ports:
           http:
             port: *port

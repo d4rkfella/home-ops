@@ -10,7 +10,7 @@ spec:
         volumes:
           - name: cnpg-ca-cert
             secret:
-              secretName: cnpg-ca-cert
+              secretName: &secret keycloak-secret
         containers:
             - volumeMounts:
               - name: cnpg-ca-cert
@@ -32,14 +32,14 @@ spec:
               - name: INIT_POSTGRES_SUPER_PASS
                 valueFrom:
                   secretKeyRef:
-                    name: &secret keycloak-secret
+                    name: *secret
                     key: POSTGRES_SUPER_PASS
-              - name: INIT_POSTGRES_USER
+              - name: INIT_POSTGRES_USERNAME
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_USER
-              - name: INIT_POSTGRES_PASS
+              - name: INIT_POSTGRES_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     name: *secret

@@ -242,9 +242,11 @@ spec:
             dataFrom:
               - extract:
                   key: secrets/sonarr
-              - extract:
+            data:
+              - secretKey: &key POSTGRES_SUPER_PASS
+                remoteRef:
                   key: secrets/cloudnative-pg
-                  property: POSTGRES_SUPER_PASS
+                  property: *key
 
     configMaps:
       gatus-ep:

@@ -1,0 +1,12 @@
+endpoints:
+  - name: "Jellyseerr"
+    group: external
+    url: "https://requests.darkfellanetwork.com/api/v1/status"
+    interval: 1m
+    client:
+      dns-resolver: tcp://1.1.1.1:53
+    conditions:
+      - "[STATUS] == 200"
+      - "has([BODY].version) == true"
+    alerts:
+      - type: pushover

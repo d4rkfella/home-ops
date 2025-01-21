@@ -48,19 +48,18 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret jellyseerr-secret
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -76,18 +75,17 @@ spec:
               PORT: &port 80
               DB_TYPE: postgres
               DB_HOST: *dbHost
-              DB_PORT: 5432
               DB_NAME: *dbName
               DB_USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: *pgUser
               DB_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: *pgPass
               DB_USE_SSL: "true"
               DB_SSL_CA_FILE: /etc/ssl/certs/cnpg-ca.crt
               DB_LOG_QUERIES: "false"
@@ -192,53 +190,5 @@ spec:
           jellyseerr:
             app:
               - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+                subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: *secret
-              template:
-                engineVersion: v2
-                data:
-                  POSTGRES_USER: '{{ "{{ .JELLYSEERR_POSTGRES_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .JELLYSEERR_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/cloudnative-pg
-            data:
-              - secretKey: cnpg-ca.crt
-                remoteRef:
-                  key: secrets/certificates/cnpg
-                  property: ca.crt
-
-    configMaps:
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Jellyseerr"
-                group: external
-                url: "https://requests.darkfellanetwork.com/api/v1/status"
-                interval: 1m
-                client:
-                  dns-resolver: tcp://1.1.1.1:53
-                conditions:
-                  - "[STATUS] == 200"
-                  - "has([BODY].version) == true"
-                alerts:
-                  - type: pushover

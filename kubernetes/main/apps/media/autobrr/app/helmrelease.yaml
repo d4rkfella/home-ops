@@ -44,21 +44,18 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USER
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
-            securityContext:
-              runAsUser: 65534
-              runAsGroup: 65534
-              privileged: false
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -89,12 +86,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: *pgUser
               AUTOBRR__POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRESS_ENCODED_PASS
+                    key: *pgPass
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
@@ -102,7 +99,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: OIDC_CLIENT_SECRET
+                    key: CLIENT_SECRET
               AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfellanetwork.com/api/auth/oidc/callback
             probes:
               liveness: &probes
@@ -127,10 +124,7 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -164,7 +158,7 @@ spec:
         tls:
           - hosts:
               - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: autobrr-tls
+            secretName: "{{ .Release.Name }}-tls"
         hosts:
           - host: *host
             paths:
@@ -195,81 +189,5 @@ spec:
           autobrr:
             app:
               - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+                subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-              template:
-                engineVersion: v2
-                data:
-                  SESSION_SECRET: '{{ "{{ .AUTOBRR_SESSION_SECRET }}" }}'
-                  POSTGRESS_ENCODED_PASS: '{{ "{{ .AUTOBRR_POSTGRESS_ENCODED_PASS }}" }}'
-                  POSTGRES_USER: '{{ "{{ .AUTOBRR_POSTGRES_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .AUTOBRR_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  OIDC_CLIENT_SECRET: '{{ "{{ .AUTOBRR_CLIENT_SECRET }}" }}'
-                  cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/autobrr
-              - extract:
-                  key: secrets/cloudnative-pg
-            data:
-              - secretKey: cnpg-ca.crt
-                remoteRef:
-                  key: secrets/certificates/cnpg
-                  property: ca.crt
-
-    configMaps:
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Autobrr"
-                group: guarded
-                url: "https://autobrr.darkfellanetwork.com/api/healthz/readiness"
-                interval: 1m
-                ui:
-                  hide-hostname: true
-                  hide-url: true
-                client:
-                  dns-resolver: tcp://172.17.0.10:53
-                conditions:
-                  - "[STATUS] == 200"
-                  - "[BODY] == OK"
-                alerts:
-                  - type: pushover
-
-      loki-rules:
-        enabled: true
-        labels:
-          loki_rule: "true"
-        data:
-          autobrr.yaml: |
-            groups:
-              - name: autobrr
-                rules:
-                  - alert: AutobrrNetworkUnhealthy
-                    expr: |
-                      sum by (app) (count_over_time({app="autobrr"} |~ "(?i)network unhealthy"[2m])) > 0
-                    for: 2m
-                    labels:
-                      severity: critical
-                      category: logs
-                    annotations:
-                      app: "{{ "{{ $labels.app }}" }}"
-                      summary: "{{ "{{ $labels.app }} has a unhealthy network" }}"

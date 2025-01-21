@@ -105,8 +105,8 @@ spec:
         medium: Memory
 
       config-file:
-        type: configMap
-        name: "{{ .Release.Name }}-config"
+        type: secret
+        name: "{{ .Release.Name }}-secret"
         defaultMode: 0440
         globalMounts:
           - path: /config/config.js

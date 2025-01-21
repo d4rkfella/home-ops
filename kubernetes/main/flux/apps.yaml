@@ -6,12 +6,15 @@ metadata:
   name: cluster-apps
   namespace: flux-system
 spec:
-  interval: 10m
+  interval: 30m
+  timeout: 5m
+  wait: false
   path: ./kubernetes/main/apps
   prune: true
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
+    namespace: flux-system
   decryption:
     provider: sops
     secretRef:

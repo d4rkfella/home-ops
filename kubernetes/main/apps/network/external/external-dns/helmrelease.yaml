@@ -32,7 +32,7 @@ spec:
       - name: &name CF_API_EMAIL
         valueFrom:
           secretKeyRef:
-            name: &secret external-dns-cloudflare-secret
+            name: &secret external-external-dns-secret
             key: *name
       - name: &name CF_API_TOKEN
         valueFrom:

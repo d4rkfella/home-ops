@@ -32,7 +32,7 @@ spec:
       - name: KERBEROS_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: external-dns-secret
+            name: internal-external-dns-secret
             key: KERBEROS_PASSWORD
 
     extraArgs:

@@ -15,6 +15,7 @@ apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
   name: darkfellanet-ca
+  namespace: network
 spec:
   secretStoreRef:
     kind: ClusterSecretStore

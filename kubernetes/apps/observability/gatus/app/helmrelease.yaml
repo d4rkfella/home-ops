@@ -108,11 +108,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: PUSHOVER_USER_KEY
-              OIDC_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: OIDC_CLIENT_ID
               OIDC_CLIENT_SECRET:
                 valueFrom:
                   secretKeyRef:

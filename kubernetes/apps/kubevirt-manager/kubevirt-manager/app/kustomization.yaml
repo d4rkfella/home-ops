@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - https://raw.githubusercontent.com/kubevirt-manager/kubevirt-manager/main/kubernetes/crd.yaml
   - ./helmrelease.yaml
+  - ./externalsecret.yaml

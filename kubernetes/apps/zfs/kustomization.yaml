@@ -5,8 +5,8 @@ namespace: zfs
 resources:
   - ./zfs-scrubber/ks.yaml
 components:
-  - ../../components/alerts
-  - ../../components/sops
+  - ../../components/flux/alerts
+  - ../../components/flux/sops
   - ../../components/namespace
 patches:
   - patch: |

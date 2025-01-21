@@ -45,12 +45,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
@@ -102,12 +102,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: *pgUser
               RADARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: *pgPass
               PUSHOVER_USER_KEY:
                 valueFrom:
                   secretKeyRef:

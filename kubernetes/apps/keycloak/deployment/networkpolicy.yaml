@@ -10,7 +10,7 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/instance: nginx-external
+            app.kubernetes.io/instance: external-ingress-nginx
             io.kubernetes.pod.namespace: network
       toPorts:
         - ports:

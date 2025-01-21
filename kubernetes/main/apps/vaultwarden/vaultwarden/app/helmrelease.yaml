@@ -60,7 +60,6 @@ spec:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -73,21 +72,6 @@ spec:
             args:
               - --config=/etc/oauth2-proxy.cfg
             env:
-              OAUTH2_PROXY_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_ID
-              OAUTH2_PROXY_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_SECRET
-              OAUTH2_PROXY_COOKIE_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: COOKIE_SECRET
               OAUTH2_PROXY_REDIS_PASSWORD:
                 valueFrom:
                   secretKeyRef:
@@ -219,8 +203,8 @@ spec:
               - path: /data
 
       oauth2-proxy-config:
-        type: configMap
-        name: vaultwarden-oauth2-proxy-config
+        type: secret
+        name: *secret
         advancedMounts:
           vaultwarden:
             oauth2-proxy:
@@ -235,7 +219,7 @@ spec:
           vaultwarden:
             app:
               - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+                subPath: ca.crt
                 readOnly: true
 
       darkfellanet-root-ca:
@@ -245,106 +229,5 @@ spec:
           vaultwarden:
             oauth2-proxy:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                subPath: darkfellanet-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: *secret
-              template:
-                engineVersion: v2
-                data:
-                  ADMIN_TOKEN: '{{ "{{ .VAULTWARDEN_ADMIN_TOKEN }}" }}'
-                  DATABASE_URL: '{{ "{{ .VAULTWARDEN_DATABASE_URI }}" }}'
-                  SMTP_USERNAME: '{{ "{{ .SMTP_USERNAME }}" }}'
-                  SMTP_PASSWORD: '{{ "{{ .SMTP_VAULTWARDEN_PASS }}" }}'
-                  SMTP_SENDER: '{{ "{{ .SMTP_SENDER }}" }}'
-                  POSTGRES_USER: '{{ "{{ .VAULTWARDEN_POSTGRESS_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .VAULTWARDEN_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  PUSH_INSTALLATION_ID: '{{ "{{ .VAULTWARDEN_INSTALLATION_ID }}" }}'
-                  PUSH_INSTALLATION_KEY: '{{ "{{ .VAULTWARDEN_INSTALLATION_KEY }}" }}'
-                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
-                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
-                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
-                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
-                  cnpg-ca.crt: '{{ "{{ index . \"cnpg-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/vaultwarden
-              - extract:
-                  key: secrets/Brevo
-              - extract:
-                  key: secrets/cloudnative-pg
-              - extract:
-                  key: secrets/oauth2/vaultwarden
-              - extract:
-                  key: secrets/dragonfly
-            data:
-              - secretKey: cnpg-ca.crt
-                remoteRef:
-                  key: secrets/certificates/cnpg
-                  property: ca.crt
-              - secretKey: darkfellanet-root-ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
-                  property: ca.crt
-
-    configMaps:
-      oauth2-proxy-config:
-        enabled: true
-        data:
-          oauth2-proxy.cfg: |
-            email_domains = [ "*" ]
-            upstreams = [ "http://127.0.0.1:80" ]
-            reverse_proxy = true
-            scope = "openid profile email"
-            cookie_secure = true
-            provider = "keycloak-oidc"
-            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-            code_challenge_method = "S256"
-            cookie_domains = "vaultwarden.darkfellanetwork.com"
-            whitelist_domains = "vaultwarden.darkfellanetwork.com"
-            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
-            skip_provider_button = true
-            cookie_expire = "30m"
-            cookie_refresh = "4m55s"
-            allowed_groups = [ "Admins" ]
-            redirect_url = "https://vaultwarden.darkfellanetwork.com/oauth2/callback"
-            cookie_name = "__Secure-oauth2_proxy"
-            skip_auth_routes = [ "^/$", "^/.*\\.js", "^/#/.*", "^/#/login", "^/#/2fa", "^/#/vault", "^/api/.*", "^/images/.*", "^/identity/.*", "^/app/.*", "^/locales/.*", "^/alive", "^/notifications(/|$)", "^/icons(/|$)" ]
-            http_address = "0.0.0.0:4180"
-            cookie_csrf_per_request = true
-            cookie_csrf_expire = "5m"
-            ping_path = "/oauth2/ping"
-            ready_path = "/oauth2/ready"
-            cookie_samesite = "strict"
-            session_store_type = "redis"
-            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Vaultwarden"
-                group: external
-                url: "https://vaultwarden.darkfellanetwork.com/alive"
-                interval: 1m
-                client:
-                  dns-resolver: tcp://1.1.1.1:53
-                conditions:
-                  - "[STATUS] == 200"
-                alerts:
-                  - type: pushover

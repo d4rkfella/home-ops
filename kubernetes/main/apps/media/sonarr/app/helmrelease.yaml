@@ -262,7 +262,7 @@ spec:
                   key: secrets/sonarr
               - secretKey: ca.crt
                 remoteRef:
-                  key: secrets/darkfellanet-internal
+                  key: secrets/certificates/darkfellanet-internal
     configMaps:
       gatus-ep:
         enabled: true

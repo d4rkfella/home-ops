@@ -7,9 +7,6 @@ resources:
   - ./externalsecret.yaml
 configMapGenerator:
   - name: bazarr-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
     files:
       - resources/gatus-ep.yaml
   - name: bazarr-configmap

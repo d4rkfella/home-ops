@@ -50,16 +50,13 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
             securityContext: &securityContext
-              runAsUser: 65534
-              runAsGroup: 65534
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -72,21 +69,6 @@ spec:
             args:
               - --config=/etc/oauth2-proxy.cfg
             env:
-              OAUTH2_PROXY_CLIENT_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_ID
-              OAUTH2_PROXY_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: CLIENT_SECRET
-              OAUTH2_PROXY_COOKIE_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: COOKIE_SECRET
               OAUTH2_PROXY_REDIS_PASSWORD:
                 valueFrom:
                   secretKeyRef:
@@ -108,12 +90,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: *pgUser
               POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: *pgPass
               PLEX_TOKEN:
                 valueFrom:
                   secretKeyRef:
@@ -132,11 +114,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: &securityContext2
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -157,7 +135,7 @@ spec:
                 cpu: 10m
               limits:
                 memory: 128Mi
-            securityContext: *securityContext2
+            securityContext: *securityContext
 
     defaultPodOptions:
       securityContext:
@@ -198,7 +176,7 @@ spec:
         tls:
           - hosts:
               - *host
-            secretName: bazarr-tls
+            secretName: "{{ .Release.Name }}-tls"
 
     persistence:
       add-ons:
@@ -247,7 +225,7 @@ spec:
 
       scripts:
         type: configMap
-        name: bazarr-scripts
+        name: "{{ .Release.Name }}-configmap"
         defaultMode: 0775
         advancedMounts:
           bazarr:
@@ -263,8 +241,8 @@ spec:
               - path: /tmp
 
       oauth2-proxy-config:
-        type: configMap
-        name: bazarr-oauth2-proxy-config
+        type: secret
+        name: *secret
         advancedMounts:
           bazarr:
             oauth2-proxy:
@@ -279,139 +257,5 @@ spec:
           bazarr:
             oauth2-proxy:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                subPath: darkfellanet-root-ca.crt
+                subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-              template:
-                engineVersion: v2
-                data:
-                  PLEX_TOKEN: '{{ "{{ .PLEX_TOKEN }}" }}'
-                  POSTGRES_USER: '{{ "{{ .BAZARR_POSTGRES_USER }}" }}'
-                  POSTGRES_PASS: '{{ "{{ .BAZARR_POSTGRES_PASS }}" }}'
-                  POSTGRES_SUPER_PASS: '{{ "{{ .POSTGRES_SUPER_PASS }}" }}'
-                  COOKIE_SECRET: '{{ "{{ .COOKIE_SECRET }}" }}'
-                  CLIENT_SECRET: '{{ "{{ .CLIENT_SECRET}}" }}'
-                  CLIENT_ID: '{{ "{{ .CLIENT_ID }}" }}'
-                  DRAGONFLY_PASSWORD: '{{ "{{ .DRAGONFLY__PASSWORD }}" }}'
-                  darkfellanet-root-ca.crt: '{{ "{{ index . \"darkfellanet-root-ca.crt\" }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/plex
-              - extract:
-                  key: secrets/cloudnative-pg
-              - extract:
-                  key: secrets/api-keys
-              - extract:
-                  key: secrets/oauth2/bazarr
-              - extract:
-                  key: secrets/dragonfly
-            data:
-              - secretKey: darkfellanet-root-ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
-                  property: ca.crt
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: bazarr-gatus-ep-secret
-              template:
-                metadata:
-                  labels:
-                    gatus.io/enabled: "true"
-                engineVersion: v2
-                data:
-                  config.yaml: |
-                    endpoints:
-                      - name: "Bazarr"
-                        group: guarded
-                        url: "https://bazarr.darkfellanetwork.com/api/system/status"
-                        interval: 1m
-                        ui:
-                          hide-hostname: true
-                          hide-url: true
-                        client:
-                          dns-resolver: tcp://172.17.0.10:53
-                        conditions:
-                          - "[STATUS] == 200"
-                          - "[BODY].data.bazarr_directory == /app/bin"
-                        alerts:
-                          - type: pushover
-                        headers:
-                          X-API-KEY: '{{ "{{ .BAZARR_API_KEY }}" }}'
-            dataFrom:
-              - extract:
-                  key: secrets/api-keys
-    configMaps:
-      oauth2-proxy-config:
-        enabled: true
-        data:
-          oauth2-proxy.cfg: |
-            email_domains = [ "*" ]
-            upstreams = [ "http://127.0.0.1:6767" ]
-            reverse_proxy = true
-            scope = "openid profile email"
-            cookie_secure = true
-            provider = "keycloak-oidc"
-            oidc_issuer_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-            code_challenge_method = "S256"
-            cookie_domains = "bazarr.darkfellanetwork.com"
-            whitelist_domains = "bazarr.darkfellanetwork.com"
-            backend_logout_url = "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?id_token_hint={id_token}"
-            skip_provider_button = true
-            cookie_expire = "30m"
-            cookie_refresh = "4m55s"
-            allowed_groups = [ "Admins" ]
-            redirect_url = "https://bazarr.darkfellanetwork.com/oauth2/callback"
-            cookie_name = "__Secure-oauth2_proxy"
-            http_address = "0.0.0.0:4180"
-            cookie_csrf_per_request = true
-            cookie_csrf_expire = "5m"
-            ping_path = "/oauth2/ping"
-            ready_path = "/oauth2/ready"
-            cookie_samesite = "strict"
-            skip_auth_routes = [ "^/api(/|$)" ]
-            session_store_type = "redis"
-            redis_connection_url = "rediss://dragonfly-cluster.database.svc.cluster.local:6379"
-      scripts:
-        enabled: true
-        data:
-          subcleaner.sh: |
-            #!/usr/bin/env bash
-
-            printf "Cleaning subtitles for '%s' ...\n" "$1"
-            python3 /add-ons/subcleaner/subcleaner.py "$1" -s
-
-            case $1 in
-                *movies*) section="1";;
-                *shows*) section="2";;
-            esac
-
-            if [[ -n "$section" ]]; then
-                printf "Refreshing Plex section '%s' for '%s' ...\n" "$section" "$(dirname "$1")"
-                /usr/bin/curl -I -X GET -G \
-                    --data-urlencode "path=$(dirname "$1")" \
-                    --data-urlencode "X-Plex-Token=${PLEX_TOKEN}" \
-                    --no-progress-meter \
-                        "https://plex.darkfellanetwork.com:32400/library/sections/${section}/refresh"
-            fi

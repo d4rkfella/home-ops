@@ -9,11 +9,11 @@ configMapGenerator:
     files:
       - config/oauth2-proxy.cfg
     literals:
-      - POSTGRES_SUPER_PASS={{ .POSTGRES_SUPER_PASS }}
-      - POSTGRES_USERNAME={{ .POSTGRES_USERNAME }}
-      - POSTGRES_PASSWORD={{ .POSTGRES_PASSWORD }}
-      - SONARR_API_KEY={{ .SONARR_API_KEY }}
-      - DRAGONFLY_PASSWORD={{ .DRAGONFLY_PASSWORD }}
+      - POSTGRES_SUPER_PASS="{{ .POSTGRES_SUPER_PASS }}"
+      - POSTGRES_USERNAME="{{ .POSTGRES_USERNAME }}"
+      - POSTGRES_PASSWORD="{{ .POSTGRES_PASSWORD }}"
+      - SONARR_API_KEY="{{ .SONARR_API_KEY }}"
+      - DRAGONFLY_PASSWORD="{{ .DRAGONFLY_PASSWORD }}"
       - ca.crt={{ .ca.crt }}
 generatorOptions:
   disableNameSuffixHash: true

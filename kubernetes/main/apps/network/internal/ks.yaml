@@ -16,7 +16,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
     namespace: flux-system
   targetNamespace: network
   timeout: 5m
@@ -39,7 +39,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
     namespace: flux-system
   targetNamespace: network
   timeout: 5m

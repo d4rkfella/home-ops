@@ -8,5 +8,5 @@ resources:
   # Flux-Kustomizations
   - ./external/ks.yaml
   - ./internal/ks.yaml
-components:
-  - ../../flux/components/alerts
+#components:
+  #- ../../flux/components/alerts

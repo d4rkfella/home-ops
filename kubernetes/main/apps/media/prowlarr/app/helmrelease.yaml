@@ -45,12 +45,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
@@ -95,19 +95,19 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: API_KEY
+                    key: PROWLARR_API_KEY
               PROWLARR__POSTGRES__HOST: *dbHost
               PROWLARR__POSTGRES__MAINDB: *dbName
               PROWLARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: *pgUser
               PROWLARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: *pgPass
             probes:
               liveness: &probes
                 enabled: true
@@ -204,55 +204,3 @@ spec:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
                 subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-            dataFrom:
-              - extract:
-                  key: secrets/prowlarr
-            data:
-              - secretKey: &key DRAGONFLY_PASSWORD
-                remoteRef:
-                  key: secrets/dragonfly
-                  property: *key
-              - secretKey: &key ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
-                  property: *key
-              - secretKey: &key POSTGRES_SUPER_PASS
-                remoteRef:
-                  key: secrets/cloudnative-pg
-                  property: *key
-
-    configMaps:
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Prowlarr"
-                group: guarded
-                url: "https://prowlarr.darkfellanetwork.com/ping"
-                interval: 1m
-                ui:
-                  hide-hostname: true
-                  hide-url: true
-                client:
-                  dns-resolver: tcp://172.17.0.10:53
-                conditions:
-                  - "[STATUS] == 200"
-                  - "[BODY].status == OK"
-                alerts:
-                  - type: pushover

@@ -45,12 +45,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: &pgUser POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: &pgPass POSTGRES_PASSWORD
             securityContext: &securityContext
               privileged: false
               allowPrivilegeEscalation: false
@@ -88,16 +88,16 @@ spec:
               POSTGRES_HOST: *dbHost
               POSTGRES_PORT: *dbPort
               POSTGRES_DBNAME: *dbName
-              POSTGRES_USER:
+              POSTGRES_USERNAME:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
-              POSTGRES_ENCODED_PASS:
+                    key: *pgUser
+              POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_ENCODED_PASS
+                    key: *pgPass
               PUSHOVER_TOKEN:
                 valueFrom:
                   secretKeyRef:

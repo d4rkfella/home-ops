@@ -219,7 +219,7 @@ spec:
           vaultwarden:
             app:
               - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: ca.crt
+                subPath: cnpg-ca.crt
                 readOnly: true
 
       darkfellanet-root-ca:

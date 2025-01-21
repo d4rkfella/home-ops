@@ -15,7 +15,7 @@ spec:
             - volumeMounts:
               - name: cnpg-ca-cert
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+                subPath: ca.crt
                 readOnly: true
 
         initContainers:

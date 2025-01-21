@@ -255,9 +255,9 @@ spec:
               - secretKey: POSTGRES_PASSWORD
                 remoteRef:
                   key: secrets/sonarr
-              - secretKey: ca.crt
-                remoteRef:
-                  key: secrets/darkfellanet-internal
+              #- secretKey: ca.crt
+                #remoteRef:
+                  #key: secrets/darkfellanet-internal
     configMaps:
       gatus-ep:
         enabled: true

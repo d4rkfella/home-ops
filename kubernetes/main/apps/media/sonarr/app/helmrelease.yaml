@@ -242,6 +242,8 @@ spec:
             dataFrom:
               - extract:
                   key: secrets/sonarr
+              - extract:
+                  key: secrets/certificates/darkfellanet-internal
             data:
               - secretKey: &key POSTGRES_SUPER_PASS
                 remoteRef:

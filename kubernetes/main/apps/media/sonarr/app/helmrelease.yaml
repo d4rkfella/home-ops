@@ -234,6 +234,11 @@ spec:
               name: "{{ .Release.Name }}-secret"
               template:
                 engineVersion: v2
+                data:
+                  POSTGRES_SUPER_PASS: {{ '{{ . POSTGRES_SUPER_PASS }}' }}
+                  POSTGRES_USERNAME: {{ '{{ . POSTGRES_USERNAME }}' }}
+                  POSTGRES_PASSWORD: {{ '{{ . POSTGRES_PASSWORD }}' }}
+                  SONARR_API_KEY: {{ '{{ . SONARR_API_KEY }}'}}
                 templateFrom:
                   - configMap:
                       name: "{{ .Release.Name }}-configmap"

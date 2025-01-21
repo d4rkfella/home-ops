@@ -34,11 +34,11 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
-              - name: INIT_POSTGRES_USERNAME
+              - name: INIT_POSTGRES_USER
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_USER
+                    key: POSTGRES_USERNAME
               - name: INIT_POSTGRES_PASS
                 valueFrom:
                   secretKeyRef:

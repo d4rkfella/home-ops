@@ -11,7 +11,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 30m
-  path: ./kubernetes/flux/components/meta
+  path: ./kubernetes/flux/meta
   prune: false
   sourceRef:
     kind: GitRepository

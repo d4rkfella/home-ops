@@ -22,5 +22,5 @@ spec:
       create: true
       profile: Modern2023
       passwordSecretRef:
-        name: *secret
+        name: plex-secret
         key: PKCS12_PASSWORD

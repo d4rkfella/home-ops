@@ -26,7 +26,7 @@ spec:
     controllers:
       cross-seed:
         annotations:
-          secret.reloader.stakater.com/reload: cross-seed-secret
+          secret.reloader.stakater.com/reload: "{{ .Release.Name }}-secret"
 
         containers:
           app:
@@ -74,7 +74,7 @@ spec:
 
     service:
       app:
-        controller: cross-seed
+        controller: "{{ .Release.Name }}"
         ports:
           http:
             port: *port
@@ -90,7 +90,7 @@ spec:
         tls:
           - hosts:
               - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: cross-seed-tls
+            secretName: "{{ .Release.Name }}-tls"
         hosts:
           - host: *host
             paths:
@@ -102,6 +102,7 @@ spec:
     persistence:
       config:
         type: emptyDir
+        medium: Memory
 
       config-file:
         type: configMap
@@ -133,70 +134,24 @@ spec:
             target:
               name: "{{ .Release.Name }}-secret"
               template:
-                engineVersion: v2
-                data:
-                  RADARR_API_KEY: "{{ `{{ .RADARR_API_KEY }}` }}"
-                  SONARR_API_KEY: "{{ `{{ .SONARR_API_KEY }}` }}"
-                  PROWLARR_API_KEY: "{{ `{{ .PROWLARR_API_KEY }}` }}"
-                  CROSS_SEED_API_KEY: "{{ `{{ .API_KEY }}` }}"
-                  QBIT_USER: "{{ `{{ .USER }}` }}"
-                  QBIT_PASS: "{{ `{{ .PASS }}` }}"
-            data:
-              - secretKey: API_KEY
-                remoteRef:
-                  key: secrets/cross-seed
-                  property: API_KEY
-              - secretKey: USER
-                remoteRef:
+                templateFrom:
+                  - configMap:
+                      name: "{{ .Release.Name }}-configmap"
+                      items:
+                        - key: config.js
+            dataFrom:
+              - extract:
                   key: secrets/qbittorrent
-                  property: USER
-              - secretKey: PASS
-                remoteRef:
-                  key: secrets/qbittorrent
-                  property: PASS
-              - secretKey: RADARR_API_KEY
-                remoteRef:
-                  key: secrets/radarr
-                  property: API_KEY
-              - secretKey: SONARR_API_KEY
-                remoteRef:
-                  key: secrets/sonarr
-                  property: API_KEY
-              - secretKey: PROWLARR_API_KEY
-                remoteRef:
+              - extract:
                   key: secrets/prowlarr
-                  property: API_KEY
+              - extract:
+                  key: secrets/radarr
+              - extract:
+                  key: secrets/sonarr
+              - extract:
+                  key: secrets/cross-seed
+
     configMaps:
-      config:
-        enabled: true
-        data:
-          config.js: |
-            module.exports = {
-              action: "inject",
-              apiKey: process.env.CROSS_SEED_API_KEY,
-              delay: 30,
-              duplicateCategories: false,
-              flatLinking: false,
-              includeNonVideos: true,
-              includeSingleEpisodes: false,
-              linkCategory: "cross-seed",
-              linkDir: "/data/downloads/torrents/cross-seed",
-              linkType: "hardlink",
-              matchMode: "partial",
-              seasonFromEpisodes: 0.8,
-              outputDir: "/config",
-              port: Number(process.env.CROSS_SEED_PORT),
-              qbittorrentUrl: `https://${process.env.QBIT_USER}:${process.env.QBIT_PASS}@qbittorrent.darkfellanetwork.com`,
-              radarr: [`https://radarr.darkfellanetwork.com/?apikey=${process.env.RADARR_API_KEY}`],
-              skipRecheck: true,
-              sonarr: [`https://sonarr.darkfellanetwork.com/?apikey=${process.env.SONARR_API_KEY}`],
-              useClientTorrents: true,
-              torznab: [
-                3, // IPT
-                1, // SA
-                2, // TL
-              ].map(i => `https://prowlarr.darkfellanetwork.com/${i}/api?apikey=${process.env.PROWLARR_API_KEY}`),
-            };
       loki-rules:
         enabled: true
         labels:

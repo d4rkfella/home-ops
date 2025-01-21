@@ -48,12 +48,12 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: &secret vaultwarden-secret
-                    key: POSTGRES_USER
+                    key: POSTGRES_USERNAME
               INIT_POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: POSTGRES_PASS
+                    key: POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:

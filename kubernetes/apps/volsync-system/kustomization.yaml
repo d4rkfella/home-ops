@@ -5,9 +5,9 @@ kind: Kustomization
 resources:
   - ./volsync/ks.yaml
 components:
-  - ../../flux/components/alerts
-  - ../../flux/components/sops
-  - ../../flux/components/namespace
+  - ../../components/alerts
+  - ../../components/sops
+  - ../../components/namespace
 patches:
   - patch: |
       - op: add

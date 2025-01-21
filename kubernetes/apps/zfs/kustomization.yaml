@@ -4,9 +4,9 @@ kind: Kustomization
 resources:
   - ./zfs-scrubber/ks.yaml
 components:
-  - ../../flux/components/alerts
-  - ../../flux/components/sops
-  - ../../flux/components/namespace
+  - ../../components/alerts
+  - ../../components/sops
+  - ../../components/namespace
 patches:
   - patch: |
       - op: add

@@ -16,9 +16,8 @@ resources:
   - ./cross-seed/ks.yaml
   - ./recyclarr/ks.yaml
 components:
-  - ../../flux/components/alerts
-  - ../../flux/components/sops
-  - ../../flux/components/namespace
+  - ../../components/namespace
+  - ../../components/flux/alerts
 patches:
   - patch: |
       - op: add

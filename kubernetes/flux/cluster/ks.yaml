@@ -1,26 +1,19 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: cluster-meta
   namespace: flux-system
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  targetNamespace: flux-system
   interval: 30m
   path: ./kubernetes/flux/meta
   prune: false
+  wait: false
   sourceRef:
     kind: GitRepository
     name: flux-system
-    namespace: flux-system
-  # Flux repositories under this need flux-system hardcoded as namespace for Renovate lookups
-  targetNamespace: flux-system
-  timeout: 5m
-  wait: true
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -45,14 +38,3 @@ spec:
     namespace: flux-system
   timeout: 5m
   wait: false
-  patches:
-    - patch: |
-        - op: add
-          path: /spec/decryption
-          value:
-            provider: sops
-            secretRef:
-              name: sops-age
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        kind: Kustomization

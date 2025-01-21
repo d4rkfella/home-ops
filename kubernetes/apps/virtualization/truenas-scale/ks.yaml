@@ -3,10 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: kubevirt
-  namespace: &ns kubevirt
+  name: truenas-scale
+  namespace: &ns virtualization
 spec:
-  path: ./kubernetes/apps/virtualization/kubevirt/app
+  dependsOn:
+    - name: kubevirt
+      namespace: kubevirt
+    - name: cdi-operator
+      namespace: cdi
+  path: ./kubernetes/apps/virtualization/truenas-scale/app
   prune: false
   sourceRef:
     kind: GitRepository

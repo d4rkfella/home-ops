@@ -14,7 +14,7 @@ configMapGenerator:
       - POSTGRES_PASSWORD="{{ .POSTGRES_PASSWORD }}"
       - SONARR_API_KEY="{{ .SONARR_API_KEY }}"
       - DRAGONFLY_PASSWORD="{{ .DRAGONFLY_PASSWORD }}"
-      - ca.crt={{ .ca.crt }}
+      - ca.crt={{ .ca\.crt }}
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

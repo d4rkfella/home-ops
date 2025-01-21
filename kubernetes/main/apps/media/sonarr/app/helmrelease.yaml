@@ -249,19 +249,19 @@ spec:
             data:
               - secretKey: DRAGONFLY_PASSWORD
                 remoteRef:
-                  key: /secrets/dragonfly
+                  key: secrets/dragonfly
               - secretKey: POSTGRES_SUPER_PASS
                 remoteRef:
-                  key: /secrets/cloudnative-pg
+                  key: secrets/cloudnative-pg
               - secretKey: POSTGRES_USERNAME
                 remoteRef:
-                  key: /secrets/sonarr
+                  key: secrets/sonarr
               - secretKey: POSTGRES_PASSWORD
                 remoteRef:
-                  key: /secrets/sonarr
+                  key: secrets/sonarr
               - secretKey: CA
                 remoteRef:
-                  key: /secrets/darkfellanet-internal
+                  key: secrets/darkfellanet-internal
     configMaps:
       gatus-ep:
         enabled: true

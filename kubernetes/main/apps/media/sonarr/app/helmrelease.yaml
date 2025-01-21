@@ -234,6 +234,8 @@ spec:
               name: "{{ .Release.Name }}-secret"
               template:
                 engineVersion: v2
+                data:
+                  DRAGONFLY_PASSWORD: '{{ {{ .DRAGONFLY_PASSWORD }} }}'
                 templateFrom:
                   - configMap:
                       name: "{{ .Release.Name }}-configmap"

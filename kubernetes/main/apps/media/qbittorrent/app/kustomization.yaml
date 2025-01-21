@@ -17,7 +17,6 @@ configMapGenerator:
   - name: qbittorrent-scripts
     files:
       - resources/post-process.sh
-      - resources/healthcheck.sh
   - name: qbittorrent-loki-rules
     options:
       labels:

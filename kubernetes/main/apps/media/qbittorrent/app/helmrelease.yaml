@@ -56,11 +56,7 @@ spec:
             probes:
               readiness: &probes
                 enabled: true
-                custom: true
                 spec:
-                  exec:
-                    command:
-                      - /scripts/healthcheck.sh
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   failureThreshold: 3

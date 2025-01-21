@@ -208,6 +208,6 @@ spec:
         advancedMounts:
           gatus:
             app:
-              - path: /etc/ssl/certs/cnpg-ca.crt
+              - path: /etc/ssl/certs/ca.crt
                 subPath: ca.crt
                 readOnly: true

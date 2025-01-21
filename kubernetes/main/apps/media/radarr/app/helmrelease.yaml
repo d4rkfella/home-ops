@@ -108,6 +108,16 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASS
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -188,6 +198,17 @@ spec:
             app:
               - path: /tmp
 
+      scripts:
+        type: configMap
+        name: radarr-configmap
+        defaultMode: 0550
+        advancedMounts:
+          radarr:
+            app:
+              - path: /scripts/pushover-notifier.sh
+                subPath: pushover-notifier.sh
+                readOnly: true
+
       media:
         type: nfs
         server: 192.168.91.40
@@ -218,55 +239,3 @@ spec:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
                 subPath: ca.crt
                 readOnly: true
-
-    rawResources:
-      secret:
-        enabled: true
-        apiVersion: external-secrets.io/v1beta1
-        kind: ExternalSecret
-        spec:
-          spec:
-            secretStoreRef:
-              kind: ClusterSecretStore
-              name: vault-backend
-            target:
-              name: "{{ .Release.Name }}-secret"
-            dataFrom:
-              - extract:
-                  key: secrets/radarr
-            data:
-              - secretKey: &key DRAGONFLY_PASSWORD
-                remoteRef:
-                  key: secrets/dragonfly
-                  property: *key
-              - secretKey: &key ca.crt
-                remoteRef:
-                  key: secrets/certificates/darkfellanet-internal
-                  property: *key
-              - secretKey: &key POSTGRES_SUPER_PASS
-                remoteRef:
-                  key: secrets/cloudnative-pg
-                  property: *key
-
-    configMaps:
-      gatus-ep:
-        enabled: true
-        labels:
-          gatus.io/enabled: "true"
-        data:
-          config.yaml: |
-            endpoints:
-              - name: "Radarr"
-                group: guarded
-                url: "https://radarr.darkfellanetwork.com/ping"
-                interval: 1m
-                ui:
-                  hide-hostname: true
-                  hide-url: true
-                client:
-                  dns-resolver: tcp://172.17.0.10:53
-                conditions:
-                  - "[STATUS] == 200"
-                  - "[BODY].status == OK"
-                alerts:
-                  - type: pushover

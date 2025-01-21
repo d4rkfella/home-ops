@@ -239,10 +239,6 @@ spec:
                       name: "{{ .Release.Name }}-configmap"
                       items:
                         - key: oauth2-proxy.cfg
-                        #- key: POSTGRES_SUPER_PASS
-                        #- key: POSTGRES_USERNAME
-                        #- key: POSTGRES_PASSWORD
-                        #- key: DRAGONFLY_PASSWORD
             dataFrom:
               - extract:
                   key: secrets/sonarr
@@ -259,6 +255,9 @@ spec:
               - secretKey: POSTGRES_PASSWORD
                 remoteRef:
                   key: /secrets/sonarr
+              - secretKey: ca.crt
+                remoteRef:
+                  key: /secrets/darkfellanet-internal
     configMaps:
       gatus-ep:
         enabled: true

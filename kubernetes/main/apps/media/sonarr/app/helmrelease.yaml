@@ -239,9 +239,15 @@ spec:
                       name: "{{ .Release.Name }}-configmap"
                       items:
                         - key: oauth2-proxy.cfg
-                  - configMap:
-                      name: "{{ .Release.Name }}-configmap"
-                      items:
+                        - key: ca.crt
+                        - key: POSTGRES_SUPER_PASS
+                          templateAs: KeysAndValues
+                        - key: POSTGRES_USERNAME
+                          templateAs: KeysAndValues
+                        - key: POSTGRES_PASSWORD
+                          templateAs: KeysAndValues
+                        - key: DRAGONFLY_PASSWORD
+                          templateAs: KeysAndValues
             dataFrom:
               - extract:
                   key: secrets/sonarr

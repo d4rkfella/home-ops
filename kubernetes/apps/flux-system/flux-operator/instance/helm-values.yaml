@@ -12,7 +12,7 @@ instance:
     - notification-controller
   sync:
     kind: GitRepository
-    url: https://github.com/d4rkfella/home-ops
+    url: https://github.com/d4rkfella/home-ops.git
     ref: refs/heads/main
     path: kubernetes/flux/cluster
   commonMetadata:

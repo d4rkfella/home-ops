@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./external-secrets/ks.yaml
 components:
-  - ../../flux/components/alerts
+  #- ../../flux/components/alerts
   - ../../flux/components/sops
   - ../../flux/components/namespace
 patches:

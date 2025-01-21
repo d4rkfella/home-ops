@@ -209,5 +209,5 @@ spec:
           gatus:
             app:
               - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+                subPath: ca.crt
                 readOnly: true

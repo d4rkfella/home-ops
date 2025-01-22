@@ -146,7 +146,7 @@ spec:
 
         raft:
           enabled: true
-          setNodeId: false
+          setNodeId: true
           config: |
             ui = true
             api_addr = "https://vault.darkfellanetwork.com:8200"

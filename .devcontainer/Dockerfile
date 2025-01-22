@@ -41,12 +41,14 @@ RUN apk update && \
     openssl \
     ca-certificates \
     git \
+    yum \
     github-cli \
     libstdc++ \
     direnv \
     yq \
     aws-cli \
     unzip && \
+    yum install virt-viewer && \
     rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

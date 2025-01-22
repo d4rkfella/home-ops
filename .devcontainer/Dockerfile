@@ -18,7 +18,7 @@ ARG TASK_VERSION=v3.41.0
 # renovate: depName=siderolabs/talos
 ARG TALOSCTL_VERSION=v1.9.2
 # renovate: depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.5.0-beta.0
+ARG VIRTCTL_VERSION=v1.4.0
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash

@@ -10,13 +10,13 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/media/qbittorrent/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
-  wait: false
+  wait: true
   interval: 30m
   timeout: 5m
   dependsOn:
@@ -39,7 +39,7 @@ spec:
   interval: 30m
   timeout: 5m
   path: ./kubernetes/apps/media/qbittorrent/qbitmanage
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

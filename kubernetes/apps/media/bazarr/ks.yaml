@@ -12,8 +12,12 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
+    - name: cloudnative-pg-cluster
+      namespace: database
+    - name: keycloak
+      namespace: idp
   path: ./kubernetes/apps/media/bazarr/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

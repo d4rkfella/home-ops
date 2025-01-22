@@ -1,0 +1,52 @@
+feature:
+  storageCapacity: true
+
+zfsNode:
+  componentName: openebs-zfs-node
+  updateStrategy:
+    type: Recreate
+  kubeletDir: "/var/lib/kubelet/"
+  encrKeysDir: "/var/openebs/keys"
+  priorityClass:
+    create: true
+    name: zfs-csi-node-critical
+  allowedTopologyKeys: "All"
+
+zfsController:
+  componentName: openebs-zfs-controller
+  replicas: 1
+  updateStrategy:
+    type: Recreate
+  podLabels:
+    name: openebs-zfs-controller
+  priorityClass:
+    create: true
+    name: zfs-csi-controller-critical
+
+zfsPlugin:
+  name: "openebs-zfs-plugin"
+
+role: openebs-zfs
+
+serviceAccount:
+  zfsController:
+    create: true
+    name: openebs-zfs-controller-sa
+  zfsNode:
+    create: true
+    name: openebs-zfs-node-sa
+
+analytics:
+  enabled: true
+  installerType: "zfs-localpv-helm"
+zfs:
+  bin: zfs
+
+crds:
+  zfsLocalPv:
+    enabled: true
+  csi:
+    volumeSnapshots:
+      enabled: true
+
+enableHelmMetaLabels: true

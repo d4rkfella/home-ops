@@ -10,7 +10,6 @@ resources:
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
   - ./nvidia-device-plugin/ks.yaml
-  - ./zfs-localpv/ks.yaml
   - ./vfio-binding.yaml
   - ./secrets-store-csi-driver/ks.yaml
   - ./multus/ks.yaml

@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/external-secrets/external-secrets/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -32,8 +32,11 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets
+      namespace: external-secrets
+    - name: vault
+      namespace: vault
   path: ./kubernetes/apps/external-secrets/external-secrets/stores
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

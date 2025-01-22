@@ -9,18 +9,20 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: radarr
+      namespace: media
+    - name: sonarr
+      namespace: media
   interval: 30m
   timeout: 5m
   path: ./kubernetes/apps/media/recyclarr/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
   wait: false
-  dependsOn:
-    - name: volsync
-      namespace: volsync-system
-    - name: external-secrets-stores
-      namespace: external-secrets

@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: prometheus-operator-zfs-alertmanager.rules
+  name: zfs-alertmanager.rules
 spec:
   groups:
   - name: zfsalertmanager.rules

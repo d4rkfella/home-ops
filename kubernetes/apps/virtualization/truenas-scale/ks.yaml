@@ -11,6 +11,8 @@ spec:
       namespace: kubevirt
     - name: cdi-operator
       namespace: cdi
+    - name: multus-networks
+      namespace: kube-system
   path: ./kubernetes/apps/virtualization/truenas-scale/app
   prune: false
   sourceRef:

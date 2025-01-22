@@ -17,12 +17,12 @@ spec:
     - name: external-secrets-stores
       namespace: external-secrets
   path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
-  wait: true
+  wait: false
   interval: 30m
   timeout: 5m

@@ -9,13 +9,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: openebs-zfs-localpv-config
+      namespace: openebs-system
   path: ./kubernetes/apps/volsync-system/volsync/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
-  wait: false
+  wait: true
   interval: 30m
   timeout: 5m

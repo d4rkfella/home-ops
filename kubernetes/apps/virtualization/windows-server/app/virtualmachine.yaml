@@ -53,7 +53,7 @@ spec:
                 readonly: true
                 bus: sata
         machine:
-          type: q35
+          type: "pc-q35-rhel9.2.0"
         resources:
           requests:
             memory: 4G

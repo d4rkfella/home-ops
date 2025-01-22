@@ -40,13 +40,40 @@ spec:
           disks:
             - disk:
                 bus: sata
-              name: windows-server-os-disk
+              name: os-disk
+            - name: iso
+              cdrom:
+                readonly: true
+                bus: sata
         machine:
           type: q35
         resources:
           requests:
             memory: 4G
       volumes:
-      - name: windows-server-os-disk
-        persistentVolumeClaim:
-          claimName: windows-server-os-disk
+      - dataVolume:
+          name: windows-server-2022-iso
+        name: iso
+      - dataVolume:
+          name: windows-server-2022-os-disk
+        name: os-disk
+  dataVolumeTemplates:
+  - metadata:
+      name: windows-server-2022-iso
+    spec:
+      storage:
+        resources:
+          requests:
+            storage: 6Gi
+      source:
+        http:
+          url: "https://go.microsoft.com/fwlink/p/?LinkID=2195280&clcid=0x409&culture=en-us&country=US"
+  - metadata:
+      name: windows-server-2022-os-disk
+    spec:
+      storage:
+        resources:
+          requests:
+            storage: 64Gi
+      source:
+        blank: {}

@@ -63,11 +63,11 @@ spec:
   - metadata:
       name: windows-server-2022-iso
     spec:
+      storageClassName: openebs-zfs-1m
       storage:
         accessModes:
           - ReadWriteOnce
         resources:
-          storageClassName: openebs-zfs-1m
           requests:
             storage: 6Gi
       source:

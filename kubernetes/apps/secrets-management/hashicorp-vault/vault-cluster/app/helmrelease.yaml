@@ -164,7 +164,6 @@ spec:
               tls_key_file = "/vault/userconfig/tls-server/tls.key"
               tls_min_version = "tls13"
             }
-
             storage "raft" {
               path = "/vault/data"
               retry_join {

@@ -74,10 +74,10 @@ spec:
       name: truenas-scale-iso
     spec:
       storage:
+        storageClassName: openebs-zfs-1m
         accessModes:
           - ReadWriteOnce
         resources:
-          storageClassName: openebs-zfs-1m
           requests:
             storage: 3Gi
       source:

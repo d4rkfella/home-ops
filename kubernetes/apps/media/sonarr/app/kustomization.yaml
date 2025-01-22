@@ -12,7 +12,7 @@ configMapGenerator:
         gatus.io/enabled: "true"
     files:
       - resources/gatus-ep.yaml
-  - name: sonarr-scripts
+  - name: sonarr-configmap
     files:
       - resources/tba-refresher.sh
       - resources/pushover-notifier.sh

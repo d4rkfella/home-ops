@@ -196,7 +196,7 @@ spec:
 
       scripts:
         type: configMap
-        name: "{{ .Release.Name }}-scripts"
+        name: "{{ .Release.Name }}-configmap"
         defaultMode: 0550
         advancedMounts:
           sonarr:

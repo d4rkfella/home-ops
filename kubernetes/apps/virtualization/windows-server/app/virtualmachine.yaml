@@ -41,7 +41,14 @@ spec:
             - disk:
                 bus: sata
               name: os-disk
+              bootOrder: 1
             - name: iso
+              bootOrder: 2
+              cdrom:
+                readonly: true
+                bus: sata
+            - name: virtiocontainerdisk
+              bootOrder: 3
               cdrom:
                 readonly: true
                 bus: sata
@@ -57,6 +64,9 @@ spec:
       - dataVolume:
           name: windows-server-2022-os-disk
         name: os-disk
+      - containerDisk:
+          image: container-native-virtualization/virtio-win
+        name: virtiocontainerdisk
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2022-iso

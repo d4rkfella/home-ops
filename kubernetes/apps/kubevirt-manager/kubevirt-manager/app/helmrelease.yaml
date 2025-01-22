@@ -44,22 +44,22 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
-          oauth2-proxy:
-            image:
-              repository: quay.io/oauth2-proxy/oauth2-proxy
-              tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret kubevirt-manager-secret
-                    key: DRAGONFLY_PASSWORD
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+          #oauth2-proxy:
+            #image:
+              #repository: quay.io/oauth2-proxy/oauth2-proxy
+              #tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            #args:
+              #- --config=/etc/oauth2-proxy.cfg
+            #env:
+              #OAUTH2_PROXY_REDIS_PASSWORD:
+                #valueFrom:
+                  #secretKeyRef:
+                    #name: &secret kubevirt-manager-secret
+                    #key: DRAGONFLY_PASSWORD
+            #securityContext: &securityContext
+              #allowPrivilegeEscalation: false
+              #readOnlyRootFilesystem: true
+              #capabilities: { drop: ["ALL"] }
 
           app:
             image:

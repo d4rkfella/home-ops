@@ -68,7 +68,10 @@ spec:
             ports:
               - name: http
                 containerPort: 8080
-            securityContext: &securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
       securityContext:
@@ -84,7 +87,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 4180
+            port: 8080
 
     ingress:
       app:

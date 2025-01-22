@@ -39,7 +39,7 @@ spec:
           tpm: {}
           disks:
             - disk:
-                bus: sata
+                bus: virtio
               name: os-disk
               bootOrder: 1
             - name: iso

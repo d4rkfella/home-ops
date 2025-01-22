@@ -61,7 +61,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/keycloak/app
+  path: ./kubernetes/apps/identity-provider/keycloak/app
   prune: true
   sourceRef:
     kind: GitRepository

@@ -124,25 +124,25 @@ spec:
             app:
               - path: /var/run
 
-      oauth2-proxy-config:
-        type: secret
-        name: *secret
-        advancedMounts:
-          kubevirt-manager:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
+      #oauth2-proxy-config:
+        #type: secret
+        #name: *secret
+        #advancedMounts:
+          #kubevirt-manager:
+            #oauth2-proxy:
+              #- path: /etc/oauth2-proxy.cfg
+                #subPath: oauth2-proxy.cfg
+                #readOnly: true
 
-      darkfellanet-root-ca:
-        type: secret
-        name: *secret
-        advancedMounts:
-          kubevirt-manager:
-            oauth2-proxy:
-              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                subPath: ca.crt
-                readOnly: true
+      #darkfellanet-root-ca:
+        #type: secret
+        #name: *secret
+        #advancedMounts:
+          #kubevirt-manager:
+            #oauth2-proxy:
+              #- path: /etc/ssl/certs/darkfellanet-root-ca.crt
+                #subPath: ca.crt
+                #readOnly: true
 
     rawResources:
       vm-standard:

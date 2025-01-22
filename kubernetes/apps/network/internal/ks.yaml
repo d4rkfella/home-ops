@@ -16,14 +16,14 @@ spec:
       namespace: external-secrets
   interval: 31m
   path: ./kubernetes/apps/network/internal/external-dns
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
   timeout: 5m
-  wait: true
+  wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -42,7 +42,7 @@ spec:
       namespace: cert-manager
   interval: 31m
   path: ./kubernetes/apps/network/internal/ingress-nginx
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

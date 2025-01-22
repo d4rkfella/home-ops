@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-    - name: keycloak-deployment
+    - name: keycloak
       namespace: idp
   path: ./kubernetes/apps/observability/grafana/app
   prune: true

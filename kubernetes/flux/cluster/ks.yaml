@@ -8,9 +8,10 @@ metadata:
 spec:
   targetNamespace: flux-system
   interval: 30m
+  timeout: 5m
   path: ./kubernetes/flux/meta
-  prune: false
-  wait: false
+  prune: true
+  wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -30,11 +31,11 @@ spec:
     - name: cluster-meta
       namespace: flux-system
   interval: 30m
+  timeout: 5m
   path: ./kubernetes/apps
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  timeout: 5m
   wait: false

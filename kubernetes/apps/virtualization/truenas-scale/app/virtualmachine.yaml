@@ -48,15 +48,48 @@ spec:
               model: virtio
               macAddress: 52:54:00:fa:3d:88
           disks:
-            - disk:
+            - name: os-disk
+              bootOrder: 1
+              disk:
                 bus: virtio
-              name: truenas-scale-os-disk
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                readonly: true
+                bus: sata
         machine:
           type: q35
         resources:
           requests:
             memory: 48G
       volumes:
-      - name: truenas-scale-os-disk
-        persistentVolumeClaim:
-          claimName: truenas-scale-os-disk
+      - dataVolume:
+          name: truenas-scale-iso
+        name: iso
+      - dataVolume:
+          name: truenas-scale-os-disk
+        name: os-disk
+  dataVolumeTemplates:
+  - metadata:
+      name: truenas-scale-iso
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+      source:
+        http:
+          url: "https://download.sys.truenas.net/TrueNAS-SCALE-ElectricEel/24.10.1/TrueNAS-SCALE-24.10.1.iso"
+  - metadata:
+      name: truenas-scale-os-disk
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+      source:
+        blank: {}

@@ -47,11 +47,6 @@ spec:
               cdrom:
                 readonly: true
                 bus: sata
-            - name: virtiocontainerdisk
-              bootOrder: 3
-              cdrom:
-                readonly: true
-                bus: sata
         machine:
           type: q35
         resources:
@@ -64,9 +59,6 @@ spec:
       - dataVolume:
           name: windows-server-2022-os-disk
         name: os-disk
-      - containerDisk:
-          image: container-native-virtualization/virtio-win
-        name: virtiocontainerdisk
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2022-iso

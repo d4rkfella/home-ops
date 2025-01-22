@@ -47,6 +47,11 @@ spec:
               cdrom:
                 readonly: true
                 bus: sata
+            - name: virtio-drivers
+              bootOrder: 3
+              cdrom:
+                readonly: true
+                bus: sata
         machine:
           type: q35
         resources:
@@ -59,6 +64,9 @@ spec:
       - dataVolume:
           name: windows-server-2022-os-disk
         name: os-disk
+      - dataVolume:
+          name: windows-virtio-drivers
+        name: virtio-drivers
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2022-iso
@@ -84,3 +92,15 @@ spec:
             storage: 64Gi
       source:
         blank: {}
+  - metadata:
+      name: windows-virtio-drivers
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      source:
+        http:
+          url: "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso"

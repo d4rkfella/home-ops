@@ -62,6 +62,8 @@ spec:
       name: windows-server-2022-iso
     spec:
       storage:
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
             storage: 6Gi
@@ -72,6 +74,8 @@ spec:
       name: windows-server-2022-os-disk
     spec:
       storage:
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
             storage: 64Gi

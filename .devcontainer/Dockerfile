@@ -18,7 +18,7 @@ ARG TASK_VERSION=v3.41.0
 # renovate: depName=siderolabs/talos
 ARG TALOSCTL_VERSION=v1.9.2
 # renovate: depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.4.0
+ARG VIRTCTL_VERSION=v1.5.0-beta.0
 
 ENV LANG="C.UTF-8"
 ENV SHELL=/bin/bash
@@ -41,14 +41,12 @@ RUN apk update && \
     openssl \
     ca-certificates \
     git \
-    yum \
     github-cli \
     libstdc++ \
     direnv \
     yq \
     aws-cli \
     unzip && \
-    yum install virt-viewer && \
     rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

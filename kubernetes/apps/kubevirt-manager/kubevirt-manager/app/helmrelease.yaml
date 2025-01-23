@@ -44,22 +44,22 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
-          #oauth2-proxy:
-            #image:
-              #repository: quay.io/oauth2-proxy/oauth2-proxy
-              #tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            #args:
-              #- --config=/etc/oauth2-proxy.cfg
-            #env:
-              #OAUTH2_PROXY_REDIS_PASSWORD:
-                #valueFrom:
-                  #secretKeyRef:
-                    #name: &secret kubevirt-manager-secret
-                    #key: DRAGONFLY_PASSWORD
-            #securityContext: &securityContext
-              #allowPrivilegeEscalation: false
-              #readOnlyRootFilesystem: true
-              #capabilities: { drop: ["ALL"] }
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret kubevirt-manager-secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
           app:
             image:
@@ -68,10 +68,7 @@ spec:
             ports:
               - name: http
                 containerPort: 8080
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
 
     defaultPodOptions:
       securityContext:
@@ -87,7 +84,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8080
+            port: 4180
 
     ingress:
       app:
@@ -124,25 +121,25 @@ spec:
             app:
               - path: /var/run
 
-      #oauth2-proxy-config:
-        #type: secret
-        #name: *secret
-        #advancedMounts:
-          #kubevirt-manager:
-            #oauth2-proxy:
-              #- path: /etc/oauth2-proxy.cfg
-                #subPath: oauth2-proxy.cfg
-                #readOnly: true
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        advancedMounts:
+          kubevirt-manager:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
 
-      #darkfellanet-root-ca:
-        #type: secret
-        #name: *secret
-        #advancedMounts:
-          #kubevirt-manager:
-            #oauth2-proxy:
-              #- path: /etc/ssl/certs/darkfellanet-root-ca.crt
-                #subPath: ca.crt
-                #readOnly: true
+      darkfellanet-root-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          kubevirt-manager:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
 
     rawResources:
       vm-standard:

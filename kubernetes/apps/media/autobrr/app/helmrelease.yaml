@@ -76,7 +76,7 @@ spec:
               AUTOBRR__POSTGRES_HOST: *dbHost
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_SSLMODE: verify-full
-              AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
+              AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/postgres-ca.crt"
               AUTOBRR__SESSION_SECRET:
                 valueFrom:
                   secretKeyRef:
@@ -182,12 +182,12 @@ spec:
             app:
               - path: /tmp
 
-      cnpg-ca-cert:
+      postgres-ca:
         type: secret
         name: *secret
         advancedMounts:
           autobrr:
             app:
-              - path: /etc/ssl/certs/cnpg-ca.crt
+              - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true

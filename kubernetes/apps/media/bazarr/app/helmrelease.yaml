@@ -256,6 +256,6 @@ spec:
         advancedMounts:
           bazarr:
             oauth2-proxy:
-              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true

@@ -194,13 +194,13 @@ spec:
                 subPath: oauth2-proxy.cfg
                 readOnly: true
 
-      darkfellanet-root-ca:
+      internal-root-ca:
         type: secret
         name: *secret
         defaultMode: 0440
         advancedMounts:
           prowlarr:
             oauth2-proxy:
-              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true

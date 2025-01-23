@@ -26,16 +26,16 @@ spec:
     annotations:
       reloader.stakater.com/auto: "true"
     extraSecretMounts:
-      - name: oauth-client-credentials
-        secretName: grafana-oauth-client-secret
+      - name: oauth-client-secret
+        secretName: &secret grafana-secret
         defaultMode: 0440
-        mountPath: /etc/secrets/oauth-client-credentials
+        mountPath: /etc/secrets/oauth
         readOnly: true
-      - name: darkfellanet-ca
-        secretName: grafana-oauth-client-secret
+      - name: internal-ca
+        secretName: *secret
         defaultMode: 0440
-        mountPath: /etc/ssl/certs/darkfellanet-ca.crt
-        subPath: darkfellanet-ca.crt
+        mountPath: /etc/ssl/certs/Internal-Root-CA.crt
+        subPath: ca.crt
         readOnly: true
     deploymentStrategy:
       type: Recreate
@@ -58,8 +58,8 @@ spec:
           email_attribute_path: email
           login_attribute_path: preferred_username
           name_attribute_path: name
-          client_id: "$__file{/etc/secrets/oauth-client-credentials/client_id}"
-          client_secret: "$__file{/etc/secrets/oauth-client-credentials/client_secret}"
+          client_id: "46f5398b-91b2-4706-bfc3-5f2f4ad624fc"
+          client_secret: "$__file{/etc/secrets/oauth/client_secret}"
           scopes: "openid profile email"
           auth_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
           token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"

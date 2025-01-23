@@ -87,7 +87,7 @@ spec:
                     name: *secret
                     key: *pgPass
               DB_USE_SSL: "true"
-              DB_SSL_CA_FILE: /etc/ssl/certs/cnpg-ca.crt
+              DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
               DB_LOG_QUERIES: "false"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
             probes:
@@ -183,12 +183,12 @@ spec:
             app:
               - path: /tmp
 
-      cnpg-ca-cert:
+      postgres-ca:
         type: secret
         name: *secret
         advancedMounts:
           jellyseerr:
             app:
-              - path: /etc/ssl/certs/cnpg-ca.crt
+              - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true

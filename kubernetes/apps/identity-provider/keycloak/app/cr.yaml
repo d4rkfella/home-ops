@@ -8,13 +8,13 @@ spec:
     podTemplate:
       spec:
         volumes:
-          - name: cnpg-ca-cert
+          - name: postgres-ca
             secret:
               secretName: &secret keycloak-secret
         containers:
             - volumeMounts:
-              - name: cnpg-ca-cert
-                mountPath: /etc/ssl/certs/cnpg-ca.crt
+              - name: postgres-ca
+                mountPath: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true
 

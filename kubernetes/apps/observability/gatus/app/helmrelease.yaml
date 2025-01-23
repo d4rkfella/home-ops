@@ -197,12 +197,12 @@ spec:
                 subPath: config.yaml
                 readOnly: true
 
-      cnpg-ca-cert:
+      postgres-ca:
         type: secret
         name: *secret
         advancedMounts:
           gatus:
             app:
-              - path: /etc/ssl/certs/ca.crt
+              - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true

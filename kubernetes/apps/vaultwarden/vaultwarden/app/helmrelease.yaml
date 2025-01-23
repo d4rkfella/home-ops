@@ -212,22 +212,22 @@ spec:
                 subPath: oauth2-proxy.cfg
                 readOnly: true
 
-      cnpg-ca-cert:
+      postgres-ca:
         type: secret
         name: *secret
         advancedMounts:
           vaultwarden:
             app:
-              - path: /etc/ssl/certs/cnpg-ca.crt
-                subPath: cnpg-ca.crt
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: postgres-ca.crt
                 readOnly: true
 
-      darkfellanet-root-ca:
+      internal-ca:
         type: secret
         name: *secret
         advancedMounts:
           vaultwarden:
             oauth2-proxy:
-              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true

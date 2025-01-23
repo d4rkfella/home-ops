@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: bazarr
+  name: &app bazarr
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
@@ -96,11 +96,11 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: *pgPass
-              #PLEX_TOKEN:
-                #valueFrom:
-                  #secretKeyRef:
-                    #name: *secret
-                    #key: PLEX_TOKEN
+              PLEX_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PLEX_TOKEN
             probes:
               liveness: &probes
                 enabled: false
@@ -179,6 +179,13 @@ spec:
             secretName: "{{ .Release.Name }}-tls"
 
     persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /config
+
       add-ons:
         type: emptyDir
         advancedMounts:
@@ -187,17 +194,6 @@ spec:
               - path: /add-ons
             subcleaner:
               - path: /add-ons
-
-      config:
-        enabled: true
-        type: persistentVolumeClaim
-        size: 5Gi
-        accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-128k
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /config
 
       log:
         type: emptyDir

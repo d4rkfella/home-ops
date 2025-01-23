@@ -6,8 +6,8 @@ resources:
   - ./certificate.yaml
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
-  #- ./volsync-src.yaml
   - ./vault.secret.sops.yaml
+  - ./cronjob.yaml
 configMapGenerator:
   - name: vault-gatus-ep
     options:
@@ -15,5 +15,8 @@ configMapGenerator:
         gatus.io/enabled: "true"
     files:
       - config.yaml=./resources/gatus-ep.yaml
+  - name: vault-backup-configmap
+    files:
+      - resources/config-init.hcl
 generatorOptions:
   disableNameSuffixHash: true

@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vaultbackup
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "0 7 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/agent-configmap: "vault-backup-configmap"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/secret-volume-path: "/home/appuser/.aws"
+        spec:
+          serviceAccountName: vault
+          containers:
+          - name: vaultbackup
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:076c5570ede97814279a31ffefb0a8ea2642236de32199f18450ca9d33083c4b
+            imagePullPolicy: Always
+            env:
+              - name: VAULT_ADDR
+                value: https://vault.darkfellanetwork.com:8200
+              - name: S3BUCKET
+                value: hashicorp-vault-backup
+              - name: S3_ENDPOINT
+                value: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
+          restartPolicy: OnFailure

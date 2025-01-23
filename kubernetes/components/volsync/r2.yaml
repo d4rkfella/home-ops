@@ -35,9 +35,9 @@ spec:
     repository: "${APP}-volsync-secret"
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=opeenbs-zfs-block}"
     cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
-    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=opeenbs-zfs-block}"
     accessModes: ["${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"]
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=2000}
@@ -58,10 +58,10 @@ spec:
     repository: "${APP}-volsync-secret"
     copyMethod: Snapshot
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
-    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=opeenbs-zfs-block}"
     cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
-    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=opeenbs-zfs-block}"
     accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
     capacity: "${VOLSYNC_CAPACITY:=5Gi}"
     moverSecurityContext:

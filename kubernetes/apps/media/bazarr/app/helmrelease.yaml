@@ -96,11 +96,11 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: *pgPass
-              PLEX_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PLEX_TOKEN
+              #PLEX_TOKEN:
+                #valueFrom:
+                  #secretKeyRef:
+                    #name: *secret
+                    #key: PLEX_TOKEN
             probes:
               liveness: &probes
                 enabled: false

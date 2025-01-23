@@ -7,7 +7,6 @@ resources:
   - ./volsync/ks.yaml
 components:
   - ../../components/flux/alerts
-  - ../../components/flux/sops
   - ../../components/namespace
 patches:
   - patch: |

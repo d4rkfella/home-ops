@@ -11,31 +11,24 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
   primaryUpdateStrategy: unsupervised
   storage:
-    pvcTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-      storageClassName: openebs-zfs-32k
-      volumeMode: Filesystem
-    resizeInUseVolumes: true
-  walStorage:
-    pvcTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-      storageClassName: openebs-zfs-32k
-      volumeMode: Filesystem
+    size: 20Gi
+    storageClass: openebs-zfs-32k
   superuserSecret:
     name: &secret cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
       max_connections: "400"
-      shared_buffers: 256MB
+      max_wal_size: "4096"
+      shared_buffers: "256MB"
+      # ZFS tuning
+      # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Workload%20Tuning.html#postgresql
+      # https://vadosware.io/post/everything-ive-seen-on-optimizing-postgres-on-zfs-on-linux/
+      # https://kubeblocks.io/blog/A-testing-report-for-optimizing-PG-performance-on-Kubernetes
+      full_page_writes: "off"
+      recovery_prefetch: "try"
+      wal_init_zero: "off"
+      wal_recycle: "off"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256

@@ -104,7 +104,7 @@ spec:
               - path: /
                 service:
                   identifier: app
-                  port: http
+                  port: 4180
 
     persistence:
       cache-volume:

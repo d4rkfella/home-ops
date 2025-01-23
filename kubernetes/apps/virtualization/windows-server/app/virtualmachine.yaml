@@ -17,7 +17,14 @@ spec:
       domain:
         clock:
           timezone: Europe/Sofia
-          timer: {}
+          timer:
+            hpet:
+              present: false
+            hyperv: {}
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
         cpu:
           cores: 2
           model: host-passthrough

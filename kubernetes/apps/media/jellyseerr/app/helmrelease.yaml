@@ -159,6 +159,12 @@ spec:
 
     persistence:
       config:
+        existingClaim: *app
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config
+      cache:
         enabled: true
         type: persistentVolumeClaim
         size: 20Gi
@@ -167,7 +173,7 @@ spec:
         advancedMounts:
           jellyseerr:
             app:
-              - path: /app/config
+              - path: /app/config/cache
 
       logs:
         type: emptyDir

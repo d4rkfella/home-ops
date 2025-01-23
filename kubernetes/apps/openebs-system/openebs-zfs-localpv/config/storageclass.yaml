@@ -51,14 +51,3 @@ parameters:
   shared: "yes"
   poolname: "ssd_pool"
 provisioner: zfs.csi.openebs.io
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
- name: opeenbs-zfs-block
-parameters:
- volblocksize: "4k"
- thinprovision: "yes"
- fstype: "ext4"
- poolname: "ssd_pool"
-provisioner: zfs.csi.openebs.io

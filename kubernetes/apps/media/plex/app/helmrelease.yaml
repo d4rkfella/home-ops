@@ -40,7 +40,7 @@ spec:
               NVIDIA_DRIVER_CAPABILITIES: all
             probes:
               liveness: &probes
-                enabled: true
+                enabled: false
                 custom: true
                 spec:
                   httpGet:

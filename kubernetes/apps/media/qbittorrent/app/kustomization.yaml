@@ -5,8 +5,6 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-  - ./volsync-src.yaml
-  #- ./volsync-dst.yaml
 configMapGenerator:
   - name: qbittorrent-gatus-ep
     options:

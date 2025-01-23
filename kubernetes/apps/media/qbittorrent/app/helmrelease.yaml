@@ -151,15 +151,7 @@ spec:
 
     persistence:
       config:
-        enabled: true
-        type: persistentVolumeClaim
-        size: 5Gi
-        accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-128k
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: /config
+        existingClaim: *app
 
       scripts:
         type: configMap

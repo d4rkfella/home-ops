@@ -15,7 +15,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 2Gi
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,7 +23,7 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: true
-  interval: 31m
+  interval: 30m
   timeout: 5m
   dependsOn:
     - name: external-secrets-stores

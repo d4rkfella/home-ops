@@ -14,7 +14,7 @@ spec:
         containers:
             - volumeMounts:
               - name: postgres-ca
-                mountPath: /etc/ssl/certs/postgres-ca.crt
+                mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
 

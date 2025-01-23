@@ -65,11 +65,26 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+        volumes:
+          - name: &secret alertmanager-secret
+            secret:
+              secretName: *secret
+              defaultMode: 256
+          - name: &tls alertmanager-internal-tls
+            secret:
+              secretName: *tls
+              defaultMode: 256
         containers:
           - name: oauth-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
             - --config=/etc/oauth2-proxy.cfg
+            env:
+              - name: OAUTH2_PROXY_REDIS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
             ports:
             - containerPort: 8082
               name: oauth-proxy
@@ -79,26 +94,17 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             volumeMounts:
-              - name: alertmanager-secret
+              - name: *secret
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: alertmanager-secret
+              - name: *secret
                 mountPath: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true
-              - name: alertmanager-internal-tls
+              - name: *tls
                 mountPath: /etc/server-tls
                 readOnly: true
-        volumes:
-          - name: alertmanager-secret
-            secret:
-              secretName: alertmanager-secret
-              defaultMode: 256
-          - name: alertmanager-internal-tls
-            secret:
-              secretName: alertmanager-internal-tls
-              defaultMode: 256
         securityContext:
           runAsGroup: 65534
           runAsNonRoot: true
@@ -252,6 +258,12 @@ spec:
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
             args:
             - --config=/etc/oauth2-proxy.cfg
+            env:
+              - name: OAUTH2_PROXY_REDIS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
             ports:
             - containerPort: 8082
               name: oauth-proxy

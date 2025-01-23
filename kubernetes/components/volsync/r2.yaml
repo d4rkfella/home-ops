@@ -69,5 +69,5 @@ spec:
       runAsGroup: ${VOLSYNC_PGID:=2000}
       fsGroup: ${VOLSYNC_PGID:=2000}
     enableFileDeletion: true
-    cleanupCachePVC: true
+    cleanupCachePVC: false
     cleanupTempPVC: false

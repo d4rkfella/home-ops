@@ -16,7 +16,7 @@
     "exit_after_auth" = true
     "template" = {
       "contents" =
-        "{{- with secret \"secret/data/aws/awscreds_s3\" -}}\n[default]\naws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}\naws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}\n{{- end -}}"
+        "{{- with secret \"secrets/vault\" -}}\n[default]\naws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}\naws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}\n{{- end -}}"
       "destination" = "/home/appuser/.aws/credentials"
     }
     "vault" = {

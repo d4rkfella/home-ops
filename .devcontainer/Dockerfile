@@ -50,6 +50,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
+    echo "192.168.91.96    vault.darkfellanetwork.com" >> /etc/hosts && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

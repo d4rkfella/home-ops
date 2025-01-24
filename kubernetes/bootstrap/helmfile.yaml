@@ -77,12 +77,12 @@ releases:
     #needs:
       #- kube-system/coredns
 
-  #- name: zfs-localpv
-    #namespace: openebs-system
-    #chart: zfs-localpv/zfs-localpv
-    #version: 2.6.2
-    #values:
-      #- ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
+  - name: zfs-localpv
+    namespace: openebs-system
+    chart: zfs-localpv/zfs-localpv
+    version: 2.6.2
+    values:
+      - ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
 
   #- name: vault
     #namespace: vault
@@ -96,21 +96,21 @@ releases:
       #- kube-system/kubelet-csr-approver
       #- cert-manager/cert-manager
 
-  - name: flux-operator
-    namespace: flux-system
-    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
-    version: 0.13.0
-    values:
-      - ../apps/flux-system/flux-operator/app/helm-values.yaml
+  #- name: flux-operator
+    #namespace: flux-system
+    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+    #version: 0.13.0
+    #values:
+      #- ../apps/flux-system/flux-operator/app/helm-values.yaml
     #needs:
       #- kube-system/zfs-localpv
 
-  - name: flux-instance
-    namespace: flux-system
-    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
-    version: 0.13.0
-    wait: false
-    values:
-      - ../apps/flux-system/flux-operator/instance/helm-values.yaml
-    needs:
-      - flux-system/flux-operator
+  #- name: flux-instance
+    #namespace: flux-system
+    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
+    #version: 0.13.0
+    #wait: false
+    #values:
+      #- ../apps/flux-system/flux-operator/instance/helm-values.yaml
+    #needs:
+      #- flux-system/flux-operator

@@ -50,7 +50,6 @@ RUN apk update && \
     rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    echo "192.168.91.96    vault.darkfellanetwork.com" >> /etc/hosts && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
@@ -78,6 +77,7 @@ RUN apk update && \
     curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    helm plugin install https://github.com/databus23/helm-diff && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 750 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \

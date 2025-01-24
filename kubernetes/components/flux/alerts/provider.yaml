@@ -9,6 +9,8 @@ spec:
   address: https://alertmanager-operated.observability.svc.cluster.local:8082/api/v2/alerts/
   certSecretRef:
     name: internal-ca-crt
+  secretRef:
+    name: oidc-jwt
 ---
 apiVersion: v1
 kind: Secret

@@ -67,7 +67,8 @@ kind: CronJob
 metadata:
   name: keycloak-jwt-fetcher
 spec:
-  schedule: "0 * * * *"
+  schedule: "*/25 * * * *"
+  concurrencyPolicy: Forbid
   jobTemplate:
     spec:
       template:

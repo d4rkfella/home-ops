@@ -92,6 +92,8 @@ spec:
     persistence:
       config:
         existingClaim: *app
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server
 
       config-cache:
         type: persistentVolumeClaim

@@ -26,14 +26,6 @@ server:
   authDelegator:
     enabled: true
 
-  extraInitContainers: null
-
-  extraContainers: null
-
-  shareProcessNamespace: false
-
-  extraArgs: ""
-
   readinessProbe:
     enabled: true
     path: "/v1/sys/health?standbyok=true&sealedcode=204&uninitcode=204"
@@ -197,7 +189,7 @@ server:
 ui:
   enabled: true
   publishNotReadyAddresses: false
-  activeVaultPodOnly: false
+  activeVaultPodOnly: true
   serviceType: "LoadBalancer"
   externalPort: 8200
   externalTrafficPolicy: Cluster

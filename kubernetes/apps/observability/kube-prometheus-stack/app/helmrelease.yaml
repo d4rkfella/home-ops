@@ -279,11 +279,11 @@ spec:
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: &tls
+              - name: *tls
                 mountPath: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true
-              - name: &tls
+              - name: *tls
                 mountPath: /etc/server-tls
                 readOnly: true
         volumeMounts:

@@ -33,3 +33,76 @@ stringData:
     kBxXWG7bBmmwZXchy+CnSmkfLKhQoGtS8xtDxlbDhwIwaIYhPnlK4iDI7FhkC+mQ
     Z+RJYaoznQKSEGYFNmRP1zJaUFG26T5x1wwtTcvgfVo8
     -----END CERTIFICATE-----
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: oidc-jwt-fetcher
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-access-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["oidc-jwt"]
+  verbs: ["create", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: secret-access-binding
+subjects:
+- kind: ServiceAccount
+  name: oidc-jwt-fetcher
+roleRef:
+  kind: Role
+  name: secret-access-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: keycloak-jwt-fetcher
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: oidc-jwt-fetcher
+          containers:
+          - name: oidc-jwt-fetcher
+            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:26f215ad134854bedbd1a511f9e50f210db8cda90b7a7ab288efcb9d0c46811c
+            env:
+              - name: CLIENT_ID
+                value: "1ec97925-af53-40cf-aee1-d9eae03ddebd"
+              - name: CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: flux-alerts-secret
+                    key: CLIENT_SECRET
+              - name: KEYCLOAK_URL
+                value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+              - name: SCOPE
+                value: "openid profile email"
+          restartPolicy: OnFailure
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/external-secrets.io/externalsecret_v1beta1.json
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: flux-alerts
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: hashicorp-vault
+  target:
+    name: flux-alerts-secret
+  dataFrom:
+    - extract:
+        key: secrets/flux-alerts

@@ -27,8 +27,6 @@ spec:
   dependsOn:
     - name: gha-runner-scale-set-controller
       namespace: actions-runner-system
-    - name: zfs-localpv
-      namespace: kube-system
   values:
     nameOverride: gha-runner-scale-set-new
     runnerScaleSetName: gha-runner-scale-set-new

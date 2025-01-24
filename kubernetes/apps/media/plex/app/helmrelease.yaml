@@ -91,12 +91,15 @@ spec:
 
     persistence:
       config:
+        existingClaim: *app
+
+      config-cache:
         type: persistentVolumeClaim
-        size: 50Gi
+        size: 100Gi
         accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-1m
+        storageClass: openebs-zfs-128k
         globalMounts:
-          - path: /config/Library/Application Support/Plex Media Server
+          - path: /config/Library/Application Support/Plex Media Server/Cache
 
       logs:
         type: emptyDir

@@ -3,26 +3,27 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: secrets-store-csi-driver
+  name: &app vault
 spec:
   interval: 30m
   chart:
     spec:
-      chart: secrets-store-csi-driver
-      version: 1.4.7
+      chart: vault
+      version: 0.29.1
       sourceRef:
         kind: HelmRepository
-        name: secrets-store-csi-driver
+        name: vault
         namespace: flux-system
+  maxHistory: 3
   install:
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
-  values:
-    syncSecret:
-      enabled: true
-    enableSecretRotation: true
+  uninstall:
+    keepHistory: false
+  valuesFrom:
+    - kind: ConfigMap
+      name: vault-helm-values

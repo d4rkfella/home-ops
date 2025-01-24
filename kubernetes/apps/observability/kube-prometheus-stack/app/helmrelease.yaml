@@ -363,3 +363,6 @@ spec:
                 #expr: node_zfs_zpool_state{state!="online"} > 0
                 #labels:
                   #severity: critical
+    prometheusOperator:
+      serviceAccount:
+        name: prometheus-operator

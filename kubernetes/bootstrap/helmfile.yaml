@@ -22,6 +22,9 @@ repositories:
   - name: zfs-localpv
     url: https://openebs.github.io/zfs-localpv
 
+  - name: vault
+    url: https://helm.releases.hashicorp.com
+
 releases:
   #- name: kube-prometheus-stack-crds
     #namespace: observability
@@ -74,33 +77,40 @@ releases:
     #needs:
       #- kube-system/coredns
 
-  - name: zfs-localpv
-    namespace: openebs-system
-    chart: zfs-localpv/zfs-localpv
-    version: 2.6.2
-    values:
-      - ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
+  #- name: zfs-localpv
+    #namespace: openebs-system
+    #chart: zfs-localpv/zfs-localpv
+    #version: 2.6.2
+    #values:
+      #- ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
+
+  #- name: vault
+    #namespace: vault
+    #chart: vault/vault
+    #version: 0.29.1
+    #values:
+      #- ../apps/secrets-management/hashicorp-vault/vault-cluster/app/helm-values.yaml
     #needs:
       #- kube-system/cilium
       #- kube-system/coredns
       #- kube-system/kubelet-csr-approver
       #- cert-manager/cert-manager
 
-  #- name: flux-operator
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
-    #version: 0.13.0
-    #values:
-      #- ../apps/flux-system/flux-operator/app/helm-values.yaml
+  - name: flux-operator
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+    version: 0.13.0
+    values:
+      - ../apps/flux-system/flux-operator/app/helm-values.yaml
     #needs:
       #- kube-system/zfs-localpv
 
-  #- name: flux-instance
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
-    #version: 0.13.0
-    #wait: false
-    #values:
-      #- ../apps/flux-system/flux-operator/instance/helm-values.yaml
-    #needs:
-      #- flux-system/flux-operator
+  - name: flux-instance
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
+    version: 0.13.0
+    wait: false
+    values:
+      - ../apps/flux-system/flux-operator/instance/helm-values.yaml
+    needs:
+      - flux-system/flux-operator

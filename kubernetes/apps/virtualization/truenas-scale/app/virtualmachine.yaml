@@ -1,22 +1,22 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  name: truenas-scale
+  name: truenas
 spec:
   running: true
   template:
     metadata:
       labels:
-        kubevirt.io/domain: truenas-scale
+        kubevirt.io/domain: truenas
     spec:
       networks:
         - name: bridge-1
           multus:
             default: true
-            networkName: kube-system/bridge-truenas-1
+            networkName: virtualization/truenas-vm-1
         - name: bridge-2
           multus:
-            networkName: kube-system/bridge-truenas-2
+            networkName: virtualization/truenas-vm-2
       domain:
         clock:
           utc: {}

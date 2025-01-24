@@ -4,8 +4,11 @@ kind: KubeVirt
 metadata:
   name: kubevirt
 spec:
+  monitorNamespace: observability
+  monitorAccount: prometheus-operator
+  serviceMonitorNamespace: kubevirt
   configuration:
-    vmStateStorageClass: "openebs-zfs-128k"
+    vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:
       featureGates:
         - HostDevices
@@ -14,7 +17,6 @@ spec:
         - ExpandDisks
         - Snapshot
         - NetworkBindingPlugins
-        - DisableCustomSELinuxPolicy
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

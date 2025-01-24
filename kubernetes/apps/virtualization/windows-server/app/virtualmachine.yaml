@@ -13,7 +13,7 @@ spec:
         - name: bridge
           multus:
             default: true
-            networkName: kube-system/bridge-windows-server
+            networkName: virtualization/windows-vm
       domain:
         clock:
           timezone: Europe/Sofia

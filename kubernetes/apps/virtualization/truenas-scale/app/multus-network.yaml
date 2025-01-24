@@ -1,0 +1,53 @@
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: truenas-vm-1
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "truenas-vm-1",
+    "type": "bridge",
+    "bridge": "br0",
+    "ipam": {
+      "type": "static",
+      "addresses": [
+        {
+          "address": "192.168.91.39/24",
+          "gateway": "192.168.91.1"
+        }
+      ],
+      "routes": [
+        { "dst": "0.0.0.0/0", "gw": "192.168.91.1" }
+      ],
+      "dns": {
+        "nameservers": ["1.1.1.1", "1.0.0.1"]
+      }
+    }
+  }'
+---
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: truenas-vm-2
+spec:
+  config: '{
+    "cniVersion": "0.3.1",
+    "name": "truenas-vm-2",
+    "type": "bridge",
+    "bridge": "br0",
+    "ipam": {
+      "type": "static",
+      "addresses": [
+        {
+          "address": "192.168.91.40/24",
+          "gateway": "192.168.91.1"
+        }
+      ],
+      "routes": [
+        { "dst": "0.0.0.0/0", "gw": "192.168.91.1" }
+      ],
+      "dns": {
+        "nameservers": ["1.1.1.1", "1.0.0.1"]
+      }
+    }
+  }'

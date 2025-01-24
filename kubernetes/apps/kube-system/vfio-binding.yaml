@@ -96,8 +96,6 @@ spec:
           volumeMounts:
             - mountPath: /sys
               name: sysfs
-            - mountPath: /dev
-              name: dev
           securityContext:
             privileged: true
 
@@ -111,6 +109,3 @@ spec:
         - name: sysfs
           hostPath:
             path: /sys
-        - name: dev
-          hostPath:
-            path: /dev

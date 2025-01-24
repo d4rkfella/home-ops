@@ -7,6 +7,8 @@ metadata:
   namespace: &ns vaultwarden
 spec:
   dependsOn:
+    - name: windows-server
+      namespace: virtualization
     - name: external-secrets-stores
       namespace: external-secrets
     - name: cloudnative-pg-cluster

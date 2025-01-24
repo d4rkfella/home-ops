@@ -7,7 +7,7 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./vault.secret.sops.yaml
-  - ./cronjob.yaml
+  #- ./cronjob.yaml
 configMapGenerator:
   - name: vault-gatus-ep
     options:
@@ -18,5 +18,10 @@ configMapGenerator:
   - name: vault-backup-configmap
     files:
       - resources/config-init.hcl
+  - name: vault-helm-values
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml
 generatorOptions:
   disableNameSuffixHash: true

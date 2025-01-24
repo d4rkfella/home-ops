@@ -47,7 +47,10 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   resourceNames: ["oidc-jwt"]
-  verbs: ["create", "update", "get"]
+  verbs: ["update", "get"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

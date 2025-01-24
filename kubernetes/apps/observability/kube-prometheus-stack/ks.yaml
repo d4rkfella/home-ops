@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-    - name: vault-injector
+    - name: vault
       namespace: vault
   path: ./kubernetes/apps/observability/kube-prometheus-stack/app
   prune: true

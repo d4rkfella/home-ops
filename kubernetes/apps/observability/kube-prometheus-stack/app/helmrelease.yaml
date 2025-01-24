@@ -173,6 +173,7 @@ spec:
             vault.hashicorp.com/role: "prometheus"
             vault.hashicorp.com/agent-inject-containers: "prometheus"
             vault.hashicorp.com/agent-run-as-group: "65534"
+            vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
         additionalAlertManagerConfigs:
           - scheme: https
             follow_redirects: true

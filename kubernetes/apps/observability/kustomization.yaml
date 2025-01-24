@@ -19,3 +19,10 @@ patches:
         value: observability
     target:
       kind: Namespace
+  - patch: |
+      - op: replace
+        path: /subjects/0/namespace
+        value: observability
+    target:
+      kind: RoleBinding
+      name: secret-access-binding

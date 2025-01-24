@@ -16,3 +16,10 @@ patches:
         value: database
     target:
       kind: Namespace
+  - patch: |
+      - op: replace
+        path: /subjects/0/namespace
+        value: database
+    target:
+      kind: RoleBinding
+      name: secret-access-binding

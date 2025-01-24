@@ -15,3 +15,10 @@ patches:
         value: external-secrets
     target:
       kind: Namespace
+  - patch: |
+      - op: replace
+        path: /subjects/0/namespace
+        value: external-secrets
+    target:
+      kind: RoleBinding
+      name: secret-access-binding

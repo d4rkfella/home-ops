@@ -16,3 +16,10 @@ patches:
         value: flux-system
     target:
       kind: Namespace
+  - patch: |
+      - op: replace
+        path: /subjects/0/namespace
+        value: flux-system
+    target:
+      kind: RoleBinding
+      name: secret-access-binding

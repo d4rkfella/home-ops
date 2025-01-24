@@ -92,10 +92,16 @@ spec:
                 value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
               - name: SCOPE
                 value: "openid profile email"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
           restartPolicy: OnFailure
           securityContext:
+            runAsNonRoot: true
             runAsUser: 65532
             runAsGroup: 65532
+            seccompProfile: { type: RuntimeDefault }
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/external-secrets.io/externalsecret_v1beta1.json
 apiVersion: external-secrets.io/v1beta1

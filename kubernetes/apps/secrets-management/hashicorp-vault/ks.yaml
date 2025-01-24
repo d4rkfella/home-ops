@@ -18,7 +18,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-    namespacea: flux-system
+    namespaceaa: flux-system
   targetNamespace: *ns
   wait: true
   interval: 30m

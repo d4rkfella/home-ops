@@ -1,0 +1,49 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": ["Actions Runner Controller Group"],
+      "groupName": "Actions Runner Controller",
+      "matchPackagePatterns": ["gha-runner-scale-set"],
+      "matchDatasources": ["docker", "helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
+      "description": ["Flux Group"],
+      "groupName": "Flux",
+      "matchPackagePatterns": ["fluxcd"],
+      "matchDatasources": ["docker", "github-tags"],
+      "versioning": "semver",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    },
+    {
+      "description": ["Devcontainer Group"],
+      "matchDatasources": ["github-releases"],
+      "matchPackageNames": ["fluxcd/flux2", "getsops/sops", "kubernetes/kubernetes", "helmfile/helmfile", "helm/helm", "go-task/task", "siderolabs/talos", "kubevirt/kubevirt", "int128/kubelogin", "cilium/hubble", "cilium/cilium-cli"],
+      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
+      "versioning": "semver",
+      "groupName": "Devcontainer",
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "description": ["Talos Group"],
+      "groupName": "Talos",
+      "matchPackagePatterns": ["siderolabs/talosctl", "siderolabs/installer"],
+      "matchDatasources": ["docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
+    }
+  ]
+}

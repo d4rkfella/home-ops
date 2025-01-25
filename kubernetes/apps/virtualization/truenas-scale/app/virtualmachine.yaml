@@ -1,0 +1,96 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: truenas
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: truenas
+    spec:
+      networks:
+        - name: bridge-1
+          multus:
+            default: true
+            networkName: virtualization/truenas-vm-1
+        - name: bridge-2
+          multus:
+            networkName: virtualization/truenas-vm-2
+      domain:
+        clock:
+          utc: {}
+        cpu:
+          cores: 4
+          model: host-passthrough
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: false
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: false
+        devices:
+          hostDevices:
+            - deviceName: devices.kubevirt.io/nvme
+              name: intel-optane
+            - deviceName: devices.kubevirt.io/sas
+              name: sas
+          interfaces:
+            - name: bridge-1
+              bridge: {}
+              model: virtio
+              macAddress: 00:16:3e:bc:da:12
+            - name: bridge-2
+              bridge: {}
+              model: virtio
+              macAddress: 52:54:00:fa:3d:88
+          disks:
+            - name: os-disk
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                readonly: true
+                bus: sata
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 48G
+      volumes:
+      - dataVolume:
+          name: truenas-scale-iso
+        name: iso
+      - dataVolume:
+          name: truenas-scale-os-disk
+        name: os-disk
+  dataVolumeTemplates:
+  - metadata:
+      name: truenas-scale-iso
+    spec:
+      storage:
+        storageClassName: openebs-zfs-1m
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 3Gi
+      source:
+        http:
+          url: "https://download.sys.truenas.net/TrueNAS-SCALE-ElectricEel/24.10.1/TrueNAS-SCALE-24.10.1.iso"
+  - metadata:
+      name: truenas-scale-os-disk
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 32Gi
+      source:
+        blank: {}

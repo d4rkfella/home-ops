@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pci-device-binder
+  namespace: kube-system
+  labels:
+    app: pci-binder
+spec:
+  selector:
+    matchLabels:
+      app: pci-binder
+  template:
+    metadata:
+      labels:
+        app: pci-binder
+    spec:
+      initContainers:
+        - name: pci-bind
+          image: ubuntu:latest
+          command:
+            - bash
+            - -c
+            - |
+              # Function to install required tools
+              install_tools() {
+                echo "Installing required tools..."
+                apt-get update && apt-get install -y zfsutils-linux || {
+                  echo "Error: Failed to install required packages."
+                  return 1
+                }
+                return 0
+              }
+
+              # Function to export the zpool
+              export_zpool() {
+                ZPOOL_NAME="exos20"
+                echo "Attempting to export zpool $ZPOOL_NAME..."
+                if zpool export $ZPOOL_NAME 2>/dev/null; then
+                  echo "Zpool $ZPOOL_NAME exported successfully."
+                else
+                  echo "Error: Failed to export zpool $ZPOOL_NAME."
+                  return 1
+                fi
+                return 0
+              }
+
+              # Function to bind devices to vfio-pci
+              check_and_bind() {
+                DEVICE=$1
+                EXPECTED_DRIVER="vfio-pci"
+                CURRENT_DRIVER=$(basename $(readlink /sys/bus/pci/devices/$DEVICE/driver) 2>/dev/null || echo "none")
+                echo "Device $DEVICE current driver: $CURRENT_DRIVER"
+
+                if [ "$CURRENT_DRIVER" != "$EXPECTED_DRIVER" ]; then
+                  # Check if the zpool needs to be exported
+                  ZPOOL_NAME="exos20"
+                  ZPOOL_CHECKED=false
+                  if zpool list $ZPOOL_NAME >/dev/null 2>&1; then
+                    echo "Zpool $ZPOOL_NAME is imported. Proceeding to export..."
+                    export_zpool || return 1
+                    ZPOOL_CHECKED=true
+                  else
+                    echo "Zpool $ZPOOL_NAME is already exported or not found."
+                    ZPOOL_CHECKED=true
+                  fi
+
+                  # Ensure zpool state was validated
+                  if [ "$ZPOOL_CHECKED" != "true" ]; then
+                    echo "Error: Zpool validation failed unexpectedly. Aborting."
+                    return 1
+                  fi
+
+                  # Unbind from the current driver if necessary
+                  if [ "$CURRENT_DRIVER" != "none" ]; then
+                    echo "Unbinding device $DEVICE from driver $CURRENT_DRIVER"
+                    echo $DEVICE > /sys/bus/pci/devices/$DEVICE/driver/unbind
+                  fi
+
+                  # Set driver_override
+                  echo "Setting driver_override for device $DEVICE to $EXPECTED_DRIVER"
+                  echo "$EXPECTED_DRIVER" > /sys/bus/pci/devices/$DEVICE/driver_override
+
+                  # Bind the device to the new driver
+                  echo "Binding device $DEVICE to $EXPECTED_DRIVER"
+                  echo $DEVICE > /sys/bus/pci/drivers/$EXPECTED_DRIVER/bind
+                else
+                  echo "Device $DEVICE is already bound to $EXPECTED_DRIVER"
+                fi
+              }
+
+              # Execute steps
+              install_tools || exit 1
+              check_and_bind "0000:05:00.0"
+              check_and_bind "0000:0a:00.0"
+
+          volumeMounts:
+            - mountPath: /sys
+              name: sysfs
+          securityContext:
+            privileged: true
+
+      containers:
+        - name: placeholder
+          image: busybox:latest
+          command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
+
+      restartPolicy: Always
+      volumes:
+        - name: sysfs
+          hostPath:
+            path: /sys

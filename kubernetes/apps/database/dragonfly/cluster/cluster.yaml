@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/dragonflydb.io/dragonfly_v1alpha1.json
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  labels:
+    app.kubernetes.io/name: dragonfly
+    app.kubernetes.io/instance: dragonfly-cluster
+    app.kubernetes.io/part-of: dragonfly-operator
+    app.kubernetes.io/created-by: dragonfly-operator
+  name: dragonfly-cluster
+spec:
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.26.1@sha256:eb2dbfb94f6712c709b0261e2d46c9e437b3e67720bdfe05121f1f06c2abe3aa
+  env:
+    - name: MAX_MEMORY
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.memory
+          divisor: 1Mi
+  args:
+    - --maxmemory=$(MAX_MEMORY)Mi
+    - --proactor_threads=2
+    - --cluster_mode=emulated
+    - --dbfilename=dragonfly-dump-{timestamp}
+  snapshot:
+    cron: "*/5 * * * *"
+    persistentVolumeClaimSpec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 2Gi
+  replicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 600m
+      memory: 750Mi
+  authentication:
+    passwordFromSecret:
+      name: dragonfly-secret
+      key: DRAGONFLY_PASSWORD
+      optional: false
+  tlsSecretRef:
+    name: dragonfly-internal-tls
+    namespace: database

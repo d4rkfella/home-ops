@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./certificate.yaml
+  - ./helmrelease.yaml
+  - ./networkpolicy.yaml
+  - ./vault.secret.sops.yaml
+  #- ./cronjob.yaml
+configMapGenerator:
+  - name: vault-gatus-ep
+    options:
+      labels:
+        gatus.io/enabled: "true"
+    files:
+      - config.yaml=./resources/gatus-ep.yaml
+  - name: vault-backup-configmap
+    files:
+      - resources/config-init.hcl
+  - name: vault-helm-values
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml
+generatorOptions:
+  disableNameSuffixHash: true

@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: external-secrets
+resources:
+  - ./external-secrets/ks.yaml
+components:
+  - ../../components/namespace
+  - ../../components/flux/alerts
+patches:
+  - patch: |
+      - op: add
+        path: /metadata/name
+        value: external-secrets
+    target:
+      kind: Namespace
+  - patch: |
+      - op: replace
+        path: /subjects/0/namespace
+        value: external-secrets
+    target:
+      kind: RoleBinding
+      name: secret-access-binding

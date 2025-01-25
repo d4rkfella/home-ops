@@ -1,0 +1,201 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyseerr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: volsync
+      namespace: volsync-system
+
+  values:
+    controllers:
+      jellyseerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
+            env:
+              INIT_POSTGRES_DBNAME: &dbName jellyseerr
+              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret jellyseerr-secret
+                    key: &pgUser POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgPass POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: develop@sha256:a31fa0069a4b27a5e8ce42a9e6f7db7b002e429d24968a03e9fb32c63b57d1a8
+            env:
+              TZ: Europe/Sofia
+              LOG_LEVEL: "info"
+              PORT: &port 80
+              DB_TYPE: postgres
+              DB_HOST: *dbHost
+              DB_NAME: *dbName
+              DB_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgUser
+              DB_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgPass
+              DB_USE_SSL: "true"
+              DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
+              DB_LOG_QUERIES: "false"
+              DB_SSL_REJECT_UNAUTHORIZED: "true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: jellyseerr
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      app:
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            more_set_headers "access-control-allow-origin https://requests.darkfellanetwork.com";
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/overseerr/mind.css"></body>';
+            sub_filter_once on;
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: external
+        tls:
+          - hosts:
+              - &host requests.darkfellanetwork.com
+            secretName: jellyseerr-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config
+
+      cache:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 20Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config/cache
+
+      logs:
+        type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /app/config/logs
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /tmp
+
+      postgres-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: ca.crt
+                readOnly: true

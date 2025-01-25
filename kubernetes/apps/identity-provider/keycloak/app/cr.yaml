@@ -1,0 +1,98 @@
+---
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: keycloak
+spec:
+  unsupported:
+    podTemplate:
+      spec:
+        volumes:
+          - name: postgres-ca
+            secret:
+              secretName: &secret keycloak-secret
+        containers:
+            - volumeMounts:
+              - name: postgres-ca
+                mountPath: /etc/ssl/certs/cnpg-ca.crt
+                subPath: ca.crt
+                readOnly: true
+
+        initContainers:
+          - name: init-db
+            image: "ghcr.io/buroa/postgres-init:17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c"
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: &dbHost postgres17-rw.database.svc.cluster.local
+              - name: INIT_POSTGRES_PORT
+                value: '5432'
+              - name: INIT_POSTGRES_DBNAME
+                value: &dbName keycloak
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_USERNAME
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASSWORD
+            securityContext:
+              runAsUser: 65534
+              runAsGroup: 65534
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile: { type: RuntimeDefault }
+
+  db:
+    vendor: postgres
+    usernameSecret:
+      name: *secret
+      key: POSTGRES_USERNAME
+    passwordSecret:
+      name: *secret
+      key: POSTGRES_PASSWORD
+    host: *dbHost
+    database: *dbName
+    port: 5432
+    schema: public
+
+  instances: 1
+
+  image: ghcr.io/d4rkfella/keycloak:26.1.0@sha256:43d3ad06cce58b7fe8c13869df6346bbf0376eef3f72c2b01a6c689590864f74
+
+  startOptimized: true
+
+  additionalOptions:
+    - name: https-protocols
+      value: "TLSv1.3"
+
+  bootstrapAdmin:
+    user:
+      secret: *secret
+
+  proxy:
+    headers: xforwarded
+
+  hostname:
+    hostname: https://accounts.darkfellanetwork.com
+
+  http:
+    httpEnabled: false
+    httpsPort: 443
+    tlsSecret: keycloak-tls
+
+  ingress:
+    enabled: false

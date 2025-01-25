@@ -1,0 +1,233 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vaultwarden
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      vaultwarden:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
+            env:
+              INIT_POSTGRES_DBNAME: vaultwarden
+              INIT_POSTGRES_HOST: postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret vaultwarden-secret
+                    key: POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: *securityContext
+
+          app:
+            image:
+              repository: vaultwarden/server
+              tag: 1.32.7@sha256:7a0aa23c0947be3582898deb5170ea4359493ed9a76af2badf60a7eb45ac36af
+            env:
+              EMAIL_2FA_ENFORCE_ON_VERIFIED_INVITE: true
+              EMAIL_2FA_AUTO_FALLBACK: true
+              AUTHENTICATOR_DISABLE_TIME_DRIFT: true
+              REQUIRE_DEVICE_EMAIL: true
+              DISABLE_ADMIN_TOKEN: true
+              DATA_FOLDER: data
+              ICON_CACHE_FOLDER: data/icon_cache
+              ATTACHMENTS_FOLDER: data/attachments
+              DOMAIN: https://vaultwarden.darkfellanetwork.com
+              TZ: "Europe/Sofia"
+              EMAIL_CHANGE_ALLOWED: false
+              SIGNUPS_ALLOWED: false
+              SIGNUPS_VERIFY: true
+              SIGNUPS_DOMAINS_WHITELIST: darkfellanetwork.com
+              ROCKET_ADDRESS: 127.0.0.1
+              SMTP_AUTH_MECHANISM: Login
+              SMTP_HOST: smtp-relay.brevo.com.
+              SMTP_FROM: noreply@darkfellanetwork.com
+              SMTP_FROM_NAME: vaultwarden
+              SMTP_PORT: 587
+              SMTP_SECURITY: starttls
+              SMTP_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: SMTP_USERNAME
+              SMTP_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: SMTP_PASSWORD
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DATABASE_URL
+              PUSH_ENABLED: true
+              PUSH_INSTALLATION_ID:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSH_INSTALLATION_ID
+              PUSH_INSTALLATION_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSH_INSTALLATION_KEY
+              PUSH_RELAY_URI: https://api.bitwarden.eu
+              PUSH_IDENTITY_URI: https://identity.bitwarden.eu
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: 4180
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 4180
+
+    ingress:
+      app:
+        enabled: true
+        className: external
+        annotations:
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        hosts:
+          - host: &host vaultwarden.darkfellanetwork.com
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: *port
+        tls:
+          - hosts:
+              - *host
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 15Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          vaultwarden:
+            app:
+              - path: /data
+
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        advancedMounts:
+          vaultwarden:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      postgres-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          vaultwarden:
+            app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: postgres-ca.crt
+                readOnly: true
+
+      internal-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          vaultwarden:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true

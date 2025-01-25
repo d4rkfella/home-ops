@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/external-secrets.io/externalsecret_v1beta1.json
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: "${APP}-volsync"
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: hashicorp-vault
+  target:
+    name: "${APP}-volsync-secret"
+    template:
+      data:
+        RESTIC_REPOSITORY: "{{ .RESTIC_REPOSITORY }}/${APP}-backup/volsync"
+        RESTIC_PASSWORD: "{{ .RESTIC_PASSWORD }}"
+        AWS_ACCESS_KEY_ID: "{{ .AWS_ACCESS_KEY_ID }}"
+        AWS_SECRET_ACCESS_KEY: "{{ .AWS_SECRET_ACCESS_KEY }}"
+  dataFrom:
+    - extract:
+        key: "secrets/volsync/${APP}"
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationsource_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: "${APP}-src"
+spec:
+  sourcePVC: "${APP}"
+  trigger:
+    schedule: "30 0 * * *"
+  restic:
+    copyMethod: "${VOLSYNC_COPYMETHOD:=Snapshot}"
+    pruneIntervalDays: 14
+    repository: "${APP}-volsync-secret"
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
+    accessModes: ["${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"]
+    moverSecurityContext:
+      runAsUser: ${VOLSYNC_PUID:=2000}
+      runAsGroup: ${VOLSYNC_PGID:=2000}
+      fsGroup: ${VOLSYNC_PGID:=2000}
+    retain:
+      daily: 7
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/volsync.backube/replicationdestination_v1alpha1.json
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationDestination
+metadata:
+  name: "${APP}-dst"
+spec:
+  trigger:
+    manual: restore-once
+  restic:
+    repository: "${APP}-volsync-secret"
+    copyMethod: Snapshot
+    volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
+    cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
+    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
+    storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
+    accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
+    capacity: "${VOLSYNC_CAPACITY:=5Gi}"
+    moverSecurityContext:
+      runAsUser: ${VOLSYNC_PUID:=2000}
+      runAsGroup: ${VOLSYNC_PGID:=2000}
+      fsGroup: ${VOLSYNC_PGID:=2000}
+    enableFileDeletion: true
+    cleanupCachePVC: false
+    cleanupTempPVC: false

@@ -65,8 +65,6 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-              - name: work
-                mountPath: /home/runner/_work
         securityContext:
           fsGroup: 123
         serviceAccountName: actions-runner
@@ -74,15 +72,6 @@ spec:
           - name: talos
             secret:
               secretName: actions-runner
-          - name: work
-            ephemeral:
-              volumeClaimTemplate:
-                spec:
-                  accessModes: [ "ReadWriteOnce" ]
-                  storageClassName: "openebs-zfs-128k"
-                  resources:
-                    requests:
-                      storage: 20Gi
     controllerServiceAccount:
       name: gha-runner-scale-set-controller
       namespace: actions-runner-system

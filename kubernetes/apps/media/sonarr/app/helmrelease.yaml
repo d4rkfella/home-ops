@@ -40,7 +40,7 @@ spec:
               tag: 17.2@sha256:92f971d2d9ebe4b060b4bc44dfb13e0baaf68489184b742fae42cc83c7a78c0c
             env:
               INIT_POSTGRES_DBNAME: &dbName sonarr
-              INIT_POSTGRES_HOST: &dbHost postgres17-rw.database.svc.cluster.local
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
@@ -51,6 +51,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: &pgPass POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_USER: postgres-db-manager
               INIT_POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:

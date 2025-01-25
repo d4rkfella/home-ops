@@ -19,7 +19,7 @@ spec:
           serviceAccountName: vault
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:3b562450888cc5a751f3e8855a8277dfd10082f47e47375ec83debb8fd23034b
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:065f9b7fed7d67260c478aab06a646601f5a4adeb7ca71798793c84a1b3d65e7
             imagePullPolicy: Always
             env:
               - name: VAULT_ADDR

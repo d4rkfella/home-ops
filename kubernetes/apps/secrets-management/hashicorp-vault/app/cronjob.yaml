@@ -14,7 +14,6 @@ spec:
             vault.hashicorp.com/agent-configmap: "vault-backup-configmap"
             vault.hashicorp.com/agent-pre-populate-only: "true"
             vault.hashicorp.com/secret-volume-path: "/home/appuser/.aws"
-            vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
         spec:
           serviceAccountName: vault
           volumes:

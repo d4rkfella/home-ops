@@ -84,7 +84,9 @@ spec:
             vault.hashicorp.com/agent-revoke-on-shutdown: "true"
             vault.hashicorp.com/agent-inject-secret-client_secret: "secrets/flux-alerts"
             vault.hashicorp.com/agent-inject-template-client_secret: |
-              {{ .Data.data.client_secret }}
+              {{- with secret "secrets/flux-alerts" -}}
+              {{ .Data.client_secret }}
+              {{- end }}
         spec:
           serviceAccountName: oidc-jwt-fetcher
           containers:

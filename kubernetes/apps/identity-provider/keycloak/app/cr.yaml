@@ -25,11 +25,13 @@ spec:
             imagePullPolicy: IfNotPresent
             env:
               - name: INIT_POSTGRES_HOST
-                value: &dbHost postgres17-rw.database.svc.cluster.local
+                value: &dbHost postgres-v17-rw.database.svc.cluster.local
               - name: INIT_POSTGRES_PORT
                 value: '5432'
               - name: INIT_POSTGRES_DBNAME
                 value: &dbName keycloak
+              - name: INIT_POSTGRES_SUPER_USER
+                value: postgres-db-manager
               - name: INIT_POSTGRES_SUPER_PASS
                 valueFrom:
                   secretKeyRef:

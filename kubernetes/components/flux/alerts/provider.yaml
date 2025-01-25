@@ -47,7 +47,7 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   resourceNames: ["oidc-jwt"]
-  verbs: ["patch", "get"]
+  verbs: ["patch", "get", "update"]
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["create"]

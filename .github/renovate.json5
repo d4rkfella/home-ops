@@ -24,21 +24,20 @@
   "suppressNotifications": ["prEditedNotification", "prIgnoreNotification"],
   "onboarding": false,
   "requireConfig": "ignored",
-  "ignorePaths": ["**/*.sops.*", "**/.archive/**", "**/resources/**"],
+  "ignorePaths": ["**/*.sops.*", "**/resources/**"],
   "flux": {
     "fileMatch": [
-      "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"
+      "(^|/)kubernetes/.+\\.ya?ml$"
     ]
   },
   "helm-values": {
     "fileMatch": [
-      "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"
+      "(^|/)kubernetes/.+\\.ya?ml$"
     ]
   },
   "kubernetes": {
     "fileMatch": [
-      "(^|/)\\.taskfiles/.+\\.ya?ml(?:\\.j2)?$",
-      "(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"
+      "(^|/)kubernetes/.+\\.ya?ml$"
     ]
   }
 }

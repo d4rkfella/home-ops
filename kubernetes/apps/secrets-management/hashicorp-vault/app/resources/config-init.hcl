@@ -19,6 +19,3 @@
         "{{- with secret \"secrets/vault\" -}}\n[default]\naws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}\naws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}\n{{- end -}}"
       "destination" = "/home/appuser/.aws/credentials"
     }
-    "vault" = {
-      "address" = "https://vault.darkfellanetwork.com:8200"
-    }

@@ -102,6 +102,8 @@ spec:
             runAsUser: 65532
             runAsGroup: 65532
             seccompProfile: { type: RuntimeDefault }
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/external-secrets.io/externalsecret_v1beta1.json
 apiVersion: external-secrets.io/v1beta1

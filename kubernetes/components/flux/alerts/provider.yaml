@@ -88,6 +88,7 @@ spec:
           containers:
           - name: oidc-jwt-fetcher
             image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:b1f00c8848452962205bac7f30dea39ff68df698d6deb8826db2701150b5857f
+            command: ["/bin/sh", "-c", "sleep infinity"]
             env:
               - name: CLIENT_ID
                 value: "1ec97925-af53-40cf-aee1-d9eae03ddebd"

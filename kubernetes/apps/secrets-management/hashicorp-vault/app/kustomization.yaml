@@ -7,7 +7,7 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./vault.secret.sops.yaml
-  #- ./cronjob.yaml
+  - ./cronjob.yaml
 configMapGenerator:
   - name: vault-gatus-ep
     options:

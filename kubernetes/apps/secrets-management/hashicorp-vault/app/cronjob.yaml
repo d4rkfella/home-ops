@@ -17,6 +17,9 @@ spec:
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
         spec:
           serviceAccountName: vault
+          volumes:
+           - name: tmp
+             emptyDir: {}
           containers:
           - name: vaultbackup
             image: ghcr.io/d4rkfella/vault-backup:latest@sha256:065f9b7fed7d67260c478aab06a646601f5a4adeb7ca71798793c84a1b3d65e7
@@ -32,6 +35,9 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+            volumeMounts:
+              - name: tmp
+                mountPath: /tmp
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true

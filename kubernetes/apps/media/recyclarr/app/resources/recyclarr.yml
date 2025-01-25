@@ -95,8 +95,8 @@ sonarr:
     replace_existing_custom_formats: true
 
     media_naming:
-      series: plex-tmdb
-      season: standard
+      series: plex-tvdb
+      season: default
       episodes:
         rename: true
         standard: default

@@ -19,7 +19,7 @@ spec:
           serviceAccountName: vault
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:73ab0b21392953e740895c95d3d89bcb3ecf810b0c55cb2cd9c82eabde25faec
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:3b562450888cc5a751f3e8855a8277dfd10082f47e47375ec83debb8fd23034b
             imagePullPolicy: Always
             env:
               - name: VAULT_ADDR
@@ -28,4 +28,15 @@ spec:
                 value: hashicorp-vault-backup
               - name: S3_ENDPOINT
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
           restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile: { type: RuntimeDefault }
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

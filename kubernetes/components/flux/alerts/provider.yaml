@@ -81,7 +81,6 @@ spec:
             vault.hashicorp.com/role: "oidc-jwt-fetcher"
             vault.hashicorp.com/agent-pre-populate-only: "true"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
-            vault.hashicorp.com/agent-revoke-on-shutdown: "true"
             vault.hashicorp.com/agent-inject-secret-client_secret: "secrets/flux-alerts"
             vault.hashicorp.com/agent-inject-template-client_secret: |
               {{- with secret "secrets/flux-alerts" -}}

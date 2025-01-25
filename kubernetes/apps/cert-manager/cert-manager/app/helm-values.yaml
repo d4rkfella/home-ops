@@ -39,3 +39,7 @@ cainjector:
         secretName: "cert-manager-metrics-ca"
         dnsNames:
           - cert-manager-metrics
+hostAliases:
+  - ip: "192.168.91.96"
+    hostnames:
+      - vault.darkfellanetwork.com

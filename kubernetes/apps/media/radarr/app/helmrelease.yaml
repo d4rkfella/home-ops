@@ -140,6 +140,15 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.97"
+          hostnames:
+            - "prowlarr.darkfellanetwork.com"
+            - "qbittorrent.darkfellanetwork.com"
+            - "autobrr.darkfellanetwork.com"
+        - ip: "192.168.91.95"
+          hostnames:
+            - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000

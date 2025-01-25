@@ -117,6 +117,14 @@ spec:
                 memory: 2Gi
 
     defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.97"
+          hostnames:
+            - "radarr.darkfellanetwork.com"
+            - "sonarr.darkfellanetwork.com"
+        - ip: "192.168.91.98"
+          hostnames:
+            - "plex.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

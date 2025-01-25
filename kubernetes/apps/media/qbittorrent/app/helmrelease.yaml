@@ -92,7 +92,10 @@ spec:
                 memory: 25Mi
 
     defaultPodOptions:
-      automountServiceAccountToken: false
+      hostAliases:
+        - ip: "192.168.91.97"
+          hostnames:
+            - "cross-seed.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000

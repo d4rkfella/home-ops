@@ -155,6 +155,10 @@ spec:
                 memory: 2Gi
 
     defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.95"
+          hostnames:
+            - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65534

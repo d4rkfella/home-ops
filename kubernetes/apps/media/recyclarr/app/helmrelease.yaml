@@ -62,6 +62,11 @@ spec:
               capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.97"
+          hostnames:
+            - "radarr.darkfellanetwork.com"
+            - "sonarr.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 2000

@@ -23,7 +23,7 @@ spec:
     remediation:
       retries: 3
   uninstall:
-    keepHistory: false
+    keepHistorya: false
   valuesFrom:
     - kind: ConfigMap
       name: vault-helm-values

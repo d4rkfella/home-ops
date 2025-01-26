@@ -7,4 +7,4 @@ metadata:
   namespace: flux-system
 spec:
   interval: 2h
-  url: https://coredns.github.io/helm
+  url: oci://ghcr.io/coredns/charts

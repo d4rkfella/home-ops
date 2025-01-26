@@ -8,6 +8,8 @@ spec:
   interval: 30m
   chart:
     spec:
+      verify:
+        provider: cosign
       chart: coredns
       version: 1.37.3
       sourceRef:

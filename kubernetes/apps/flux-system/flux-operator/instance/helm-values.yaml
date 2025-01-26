@@ -7,6 +7,9 @@ instance:
     registry: "ghcr.io/fluxcd"
   cluster:
     networkPolicy: true
+  storage:
+    class: openebs-zfs-128k
+    size: 20Gi
   components:
     - source-controller
     - kustomize-controller
@@ -88,7 +91,7 @@ instance:
       - patch: |
           - op: add
             path: /spec/template/spec/containers/0/args/-
-            value: --helm-cache-max-size=10
+            value: --helm-cache-max-size=30
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --helm-cache-ttl=60m

@@ -50,6 +50,10 @@ spec:
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: keycloak-jwt-fetcher
+      toPorts:
+        - ports:
+          - port: "8080"
+            protocol: TCP
   egress:
     - toEndpoints:
         - {}

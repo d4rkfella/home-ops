@@ -41,18 +41,12 @@ spec:
       toPorts:
         - ports:
             - port: "8200"
-    - fromEntities:
-        - kube-apiserver
-      toPorts:
-        - ports:
-          - port: "8080"
-            protocol: TCP
     - fromEndpoints:
         - matchLabels:
             app.kubernetes.io/name: keycloak-jwt-fetcher
       toPorts:
         - ports:
-          - port: "8080"
+          - port: "8200"
             protocol: TCP
   egress:
     - toEndpoints:

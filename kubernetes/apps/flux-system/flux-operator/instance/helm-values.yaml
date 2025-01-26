@@ -98,6 +98,9 @@ instance:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --helm-cache-purge-interval=5m
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --interval-jitter-percentage=15
         target:
           kind: Deployment
           name: source-controller

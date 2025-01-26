@@ -68,7 +68,7 @@ roleRef:
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: keycloak-jwt-fetcher
+  name: &app keycloak-jwt-fetcher
 spec:
   schedule: "*/55 * * * *"
   concurrencyPolicy: Forbid
@@ -76,6 +76,8 @@ spec:
     spec:
       template:
         metadata:
+          labels:
+            app.kubernetes.io/name: *app
           annotations:
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/role: "oidc-jwt-fetcher"

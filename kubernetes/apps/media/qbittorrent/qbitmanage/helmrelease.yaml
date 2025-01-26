@@ -42,6 +42,7 @@ spec:
               tag: v4.1.15@sha256:d0ed1f22a35b732afbd7d49410bd8dfd74bd177bf53de3fedd2fdef6397b3edc
             env:
               TZ: Europe/Sofia
+              QBT_RUN: true
             resources:
               requests:
                 cpu: 10m

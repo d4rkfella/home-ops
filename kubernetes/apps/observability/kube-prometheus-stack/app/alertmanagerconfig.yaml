@@ -18,7 +18,7 @@ spec:
             value: InfoInhibitor
             matchType: =
       - receiver: heartbeat
-        groupInterval: 5m
+        groupInterval: 0s
         groupWait: 0s
         repeatInterval: 5m
         matchers:

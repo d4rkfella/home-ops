@@ -1,6 +1,6 @@
 ---
 commands:
-  dry_run: True
+  dry_run: False
   cross_seed: False
   recheck: False
   cat_update: False
@@ -31,7 +31,7 @@ settings:
   cat_filter_completed: true
   share_limits_filter_completed: true
   tag_nohardlinks_filter_completed: true
-  cat_update_all: true
+  cat_update_all: false
   disable_qbt_default_share_limits: true
 
 directory:

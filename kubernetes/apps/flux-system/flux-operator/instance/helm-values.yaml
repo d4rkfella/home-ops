@@ -1,10 +1,12 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/controlplaneio-fluxcd/charts/main/charts/flux-instance/values.schema.json
 instance:
   distribution:
     # renovate: datasource=github-releases depName=fluxcd/flux2
     version: 2.4.0
+    registry: "ghcr.io/fluxcd"
   cluster:
-    networkPolicy: false
+    networkPolicy: true
   components:
     - source-controller
     - kustomize-controller

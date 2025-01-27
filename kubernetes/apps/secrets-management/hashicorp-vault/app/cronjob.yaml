@@ -11,10 +11,16 @@ spec:
         metadata:
           annotations:
             vault.hashicorp.com/agent-inject: "true"
-            vault.hashicorp.com/agent-configmap: "vault-backup-configmap"
             vault.hashicorp.com/agent-pre-populate-only: "true"
-            vault.hashicorp.com/secret-volume-path: "/home/appuser/.aws"
+            vault.hashicorp.com/agent-inject-token: "true"
+            vault.hashicorp.com/role: "vault"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
+            vault.hashicorp.com/agent-inject-secret-aws-creds: "secrets/vault"
+            vault.hashicorp.com/agent-inject-template-aws-creds: |
+              {{- with secret "secrets/vault" -}}
+                export AWS_ACCESS_KEY_ID="{{ .Data.data.AWS_ACCESS_KEY_ID }}"
+                export AWS_SECRET_ACCESS_KEY="{{ .Data.data.AWS_SECRET_ACCESS_KEY }}"
+              {{- end }}
         spec:
           serviceAccountName: vault
           volumes:
@@ -22,7 +28,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:065f9b7fed7d67260c478aab06a646601f5a4adeb7ca71798793c84a1b3d65e7
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:566e03db892dd300f2662b7028c000ec5bf7862f8b53fd097e68946653a4e984
             imagePullPolicy: Always
             env:
               - name: VAULT_ADDR

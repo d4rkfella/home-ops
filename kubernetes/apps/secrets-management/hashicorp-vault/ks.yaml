@@ -19,7 +19,7 @@ spec:
   path: ./kubernetes/apps/secrets-management/hashicorp-vault/app
   postBuild:
     substitute:
-      APP: *app
+      APP: vault
       GATUS_NAME: "HashiCorp Vault"
       GATUS_PATH: /v1/sys/health
       GATUS_CONDITIONS: '"[BODY].initialized == true", "[BODY].sealed == false"'

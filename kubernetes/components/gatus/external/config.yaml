@@ -1,5 +1,5 @@
 endpoints:
-  - name: "${APP:=${GATUS_NAME}}"
+  - name: "${GATUS_NAME:=${APP}}"
     group: external
     url: "https://${GATUS_SUBDOMAIN:=${APP}}.darkfellanetwork.com:${GATUS_PORT:=443}${GATUS_PATH:=/}"
     interval: 1m

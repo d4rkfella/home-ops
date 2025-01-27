@@ -92,7 +92,7 @@ spec:
           serviceAccountName: oidc-jwt-fetcher
           containers:
           - name: oidc-jwt-fetcher
-            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:2680013bf609875438e1a53678df8b56bb7bf97a521ed52df9f791bddfee7c88
+            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:8423f1314a4b3b079dfbf277c350d0b41dfe1692a045e8a8565a25220b290db6
             env:
               - name: CLIENT_ID
                 value: "1ec97925-af53-40cf-aee1-d9eae03ddebd"

@@ -6,12 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: radarr-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
-    files:
-      - resources/gatus-ep.yaml
   - name: radarr-configmap
     files:
       - resources/pushover-notifier.sh

@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/gatus/external
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
@@ -23,6 +24,10 @@ spec:
       APP: *app
       VOLSYNC_CACHE_CAPACITY: 5Gi
       VOLSYNC_CAPACITY: 10Gi
+      GATUS_NAME: "Plex Media Server"
+      GATUS_SUBDOMAIN: /identity
+      GATUS_PORT: "32400"
+      GATUS_CONDITIONS: "[BODY].MediaContainer.claimed == true"
   prune: true
   sourceRef:
     kind: GitRepository

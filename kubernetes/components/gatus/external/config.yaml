@@ -1,11 +1,15 @@
 endpoints:
-  - name: "${APP}"
+  - name: "${APP}:=${GATUS_NAME}"
     group: external
-    url: "https://${GATUS_SUBDOMAIN:=${APP}}.devbu.io${GATUS_PATH:=/}"
+    url: "https://${GATUS_SUBDOMAIN:=${APP}}.darkfellanetwork.com:${GATUS_PORT:=443}${GATUS_PATH:=/}"
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
-    conditions:
-      - "[STATUS] == ${GATUS_STATUS:=200}"
+    conditions: [
+      "[STATUS] == ${GATUS_STATUS:=200}",
+      "${GATUS_CONDITIONS:+${GATUS_CONDITIONS}}"
+    ]
     alerts:
       - type: pushover
+    headers:
+      Accept: "application/json"

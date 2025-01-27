@@ -7,12 +7,12 @@ resources:
   - ./externalsecret.yaml
   - ./certificate.yaml
 configMapGenerator:
-  - name: plex-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
-    files:
-      - resources/gatus-ep.yaml
+  #- name: plex-gatus-ep
+    #options:
+      #labels:
+        #gatus.io/enabled: "true"
+    #files:
+      #- resources/gatus-ep.yaml
   - name: plex-loki-rules
     options:
       labels:

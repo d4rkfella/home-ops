@@ -28,7 +28,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:566e03db892dd300f2662b7028c000ec5bf7862f8b53fd097e68946653a4e984
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:09f2252cc75879c83729b5f145189de0748b2f2300f4ba8da3415fc37607d4ac
             imagePullPolicy: Always
             command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
             env:
@@ -48,8 +48,8 @@ spec:
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
+            runAsUser: 65534
+            runAsGroup: 65534
             seccompProfile: { type: RuntimeDefault }
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

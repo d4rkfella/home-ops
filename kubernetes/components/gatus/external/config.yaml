@@ -5,7 +5,7 @@ endpoints:
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
-    conditions: ["[STATUS] == ${GATUS_STATUS:=200}","${GATUS_CONDITIONS}"]
+    conditions: ["[STATUS] == ${GATUS_STATUS:=200}","${GATUS_CONDITIONS}:=nil"]
     alerts:
       - type: pushover
     headers:

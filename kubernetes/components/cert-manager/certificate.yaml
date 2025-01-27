@@ -2,7 +2,7 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: ${APP}
+  name: "${APP}"
 spec:
   dnsNames: "[${DNS_NAMES}]"
   issuerRef:

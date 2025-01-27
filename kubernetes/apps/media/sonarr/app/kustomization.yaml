@@ -6,12 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: sonarr-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
-    files:
-      - resources/gatus-ep.yaml
   - name: sonarr-configmap
     files:
       - resources/tba-refresher.sh

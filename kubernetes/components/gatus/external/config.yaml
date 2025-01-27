@@ -1,12 +1,11 @@
-endpoints:
-  - name: "${GATUS_NAME:=${APP}}"
-    group: external
-    url: "https://${GATUS_SUBDOMAIN:=${APP}}.darkfellanetwork.com:${GATUS_PORT:=443}${GATUS_PATH:=/}"
-    interval: 1m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions: "[${GATUS_CONDITIONS:=[STATUS] == ${GATUS_STATUS:=200}}]"
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
+endpoints: { conditions: ["${GATUS_CONDITIONS:=[STATUS] == ${GATUS_STATUS:=200}}"]}
+  #- name: "${GATUS_NAME:=${APP}}"
+    #group: external
+    #url: "https://${GATUS_SUBDOMAIN:=${APP}}.darkfellanetwork.com:${GATUS_PORT:=443}${GATUS_PATH:=/}"
+    #interval: 1m
+    #client:
+      #dns-resolver: tcp://1.1.1.1:53
+    #alerts:
+      #- type: pushover
+    #headers:
+      #Accept: "application/json"

@@ -40,7 +40,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/buroa/postgres-init
-              tag: 17.2@sha256:d72dae44e1a0998cd2307b62bdf271268dd7b342497c959b5a5586f37ef35a34
+              tag: 17.2@sha256:bb893e981c650c5053ceda071aa3f966e62685e2858ea029bc5b4833e25ecfd9
             env:
               INIT_POSTGRES_DBNAME: &dbName jellyseerr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
@@ -69,7 +69,7 @@ spec:
           app:
             image:
               repository: ghcr.io/fallenbagel/jellyseerr
-              tag: develop@sha256:a31fa0069a4b27a5e8ce42a9e6f7db7b002e429d24968a03e9fb32c63b57d1a8
+              tag: develop@sha256:a644fc5562ea82a9d8e003c40f4aad6dd98baa074c89f618ce792e72d8c667e8
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"

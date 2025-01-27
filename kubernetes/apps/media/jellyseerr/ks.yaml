@@ -21,7 +21,8 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_NAME: "Jellyseerr"
+      GATUS_NAME: Jellyseerr
+      GATUS_SUBDOMAIN: requests
       GATUS_PATH: /api/v1/status
       GATUS_CONDITIONS: '"[STATUS] == 200", "has([BODY].version) == true"'
   prune: true

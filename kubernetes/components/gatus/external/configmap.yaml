@@ -13,7 +13,7 @@ data:
         interval: 1m
         client:
           dns-resolver: tcp://1.1.1.1:53
-        conditions: ${GATUS_CONDITIONS:="[STATUS] == ${GATUS_STATUS:=200}"}
+        conditions: ${GATUS_CONDITIONS:=["[STATUS] == ${GATUS_STATUS:=200}"]}
         alerts:
           - type: pushover
         headers:

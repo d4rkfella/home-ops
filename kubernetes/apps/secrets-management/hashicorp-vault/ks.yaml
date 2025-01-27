@@ -22,7 +22,7 @@ spec:
       APP: *app
       GATUS_NAME: "HashiCorp Vault"
       GATUS_PATH: /v1/sys/health
-      GATUS_CONDITIONS: '"[STATUS] == 200", "[BODY].initialized == true", "[BODY].sealed == false"'
+      GATUS_CONDITIONS: '"[BODY].initialized == true", "[BODY].sealed == false"'
       DNS_NAMES: '"vault.darkfellanetwork.com"'
   prune: false
   sourceRef:

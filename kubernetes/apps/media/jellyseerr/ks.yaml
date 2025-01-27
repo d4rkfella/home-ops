@@ -22,7 +22,7 @@ spec:
     substitute:
       APP: *app
       GATUS_NAME: "Jellyseerr"
-      GATUS_PATH: /api/healthz/readiness
+      GATUS_PATH: /api/v1/status
       GATUS_CONDITIONS: '"[STATUS] == 200", "has([BODY].version) == true"'
   prune: true
   sourceRef:

@@ -23,7 +23,7 @@ spec:
       GATUS_NAME: "HashiCorp Vault"
       GATUS_PATH: /v1/sys/health
       GATUS_CONDITIONS: '"[BODY].initialized == true", "[BODY].sealed == false"'
-      DNS_NAMES: "vault.darkfellanetwork.com, vault2.darkfelalnetwork.com"
+      DNS_NAMES: "'vault.darkfellanetwork.com', 'vault2.darkfelalnetwork.com'"
   prune: false
   sourceRef:
     kind: GitRepository

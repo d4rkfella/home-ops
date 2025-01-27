@@ -7,7 +7,9 @@ endpoints:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == ${GATUS_STATUS:=200}"
-      - ${GATUS_CONDITIONS}
+      - "${GATUS_CONDITION_1}"
+      - "${GATUS_CONDITION_2}"
+      - "${GATUS_CONDITION_3}"
     alerts:
       - type: pushover
     headers:

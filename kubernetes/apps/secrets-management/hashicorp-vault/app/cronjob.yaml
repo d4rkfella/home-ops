@@ -28,7 +28,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:sha256:8f3cf765e036cf0bff0029f9c7a82330cf8f87c40a6f3cde594ee42a6c89ccad
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:8f3cf765e036cf0bff0029f9c7a82330cf8f87c40a6f3cde594ee42a6c89ccad
             imagePullPolicy: Always
             command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
             env:

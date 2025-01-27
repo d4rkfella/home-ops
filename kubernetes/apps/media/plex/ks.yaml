@@ -25,7 +25,7 @@ spec:
       VOLSYNC_CACHE_CAPACITY: 5Gi
       VOLSYNC_CAPACITY: 10Gi
       GATUS_NAME: "Plex Media Server"
-      GATUS_SUBDOMAIN: /identity
+      GATUS_PATH: /identity
       GATUS_PORT: "32400"
       GATUS_CONDITIONS: "[BODY].MediaContainer.claimed == true"
   prune: true

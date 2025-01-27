@@ -27,7 +27,7 @@ spec:
       GATUS_NAME: "Plex Media Server"
       GATUS_PATH: /identity
       GATUS_PORT: "32400"
-      GATUS_CONDITIONS: "[BODY].MediaContainer.claimed == true"
+      GATUS_CONDITIONS: "[BODY].MediaContainer.claimed == true, [BODY].MediaContainer.claimed == true "
   prune: true
   sourceRef:
     kind: GitRepository

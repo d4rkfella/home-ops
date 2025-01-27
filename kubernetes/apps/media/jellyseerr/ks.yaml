@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/gatus/external
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
@@ -20,6 +21,9 @@ spec:
   postBuild:
     substitute:
       APP: *app
+      GATUS_NAME: "Jellyseerr"
+      GATUS_PATH: /api/healthz/readiness
+      GATUS_CONDITIONS: '"[STATUS] == 200", "has([BODY].version) == true"'
   prune: true
   sourceRef:
     kind: GitRepository

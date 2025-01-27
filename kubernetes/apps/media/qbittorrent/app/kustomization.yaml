@@ -6,12 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: qbittorrent-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
-    files:
-      - resources/gatus-ep.yaml
   - name: qbittorrent-scripts
     files:
       - resources/post-process.sh

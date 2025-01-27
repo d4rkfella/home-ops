@@ -16,6 +16,9 @@ spec:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 5Gi
+      GATUS_NAME: qBittorrent
+      GATUS_PATH: /api/v2/app/version
+      GATUS_STATUS: "403"
   prune: true
   sourceRef:
     kind: GitRepository

@@ -16,7 +16,14 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/external
   path: ./kubernetes/apps/vaultwarden/vaultwarden/app
+  postBuild:
+    substitute:
+      APP: *app
+      GATUS_NAME: Vaultwarden
+      GATUS_PATH: /alive
   prune: false
   sourceRef:
     kind: GitRepository

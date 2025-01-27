@@ -4,14 +4,3 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: vaultwarden-gatus-ep
-    options:
-      labels:
-        gatus.io/enabled: "true"
-    files:
-      - resources/gatus-ep.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

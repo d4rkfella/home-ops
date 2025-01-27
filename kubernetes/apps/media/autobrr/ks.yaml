@@ -26,7 +26,7 @@ spec:
       VOLSYNC_CAPACITY: 10Gi
       GATUS_NAME: "Autobrr"
       GATUS_PATH: /api/healthz/readiness
-      GATUS_CONDITIONS: "['[STATUS] == 200', '[BODY] == OK']"
+      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY] == OK"]'
   prune: true
   sourceRef:
     kind: GitRepository

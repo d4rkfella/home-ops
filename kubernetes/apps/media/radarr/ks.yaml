@@ -22,7 +22,7 @@ spec:
       APP: *app
       GATUS_NAME: Radarr
       GATUS_PATH: /ping
-      GATUS_CONDITIONS: "['[STATUS] == 200', '[BODY].status == OK']"
+      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].status == OK"]'
   prune: true
   sourceRef:
     kind: GitRepository

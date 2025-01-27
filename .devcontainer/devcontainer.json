@@ -32,14 +32,17 @@
 
             "material-icon-theme.files.associations": {
                 "*.secret.sops.env": "lock",
-                "*.secret.sops.yaml": "lock"
+                "*.secret.sops.yaml": "lock",
+                "helmrelease.yaml": "helm",
+                "helm-values.yaml": "helm"
             },
             "material-icon-theme.folders.associations": {
-                ".archive": "archive",
                 ".github/workflows": "robot",
                 "actions-runner-system": "github",
                 "cert-manager": "guard",
                 "external-secrets": "secure",
+                "vaultwarden": "secure",
+                "secrets-management": "secure",
                 "flux-system": "pipe",
                 "flux": "pipe",
                 "kube-system": "kubernetes",
@@ -48,12 +51,14 @@
                 "storage": "dump",
                 "system-upgrade": "update",
                 "tools": "tools",
-                "volsync": "aws",
+                "volsync-system": "aws",
                 "cloudflared": "cloudflare",
                 "talos": "linux",
                 "vault": "secure",
                 "cdi": "upload",
-                "virtual-machines": "Vm"
+                "virtualization": "Vm",
+                "kubevirt": "Vm",
+                "kubevirt-manager": "Vm"
             },
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,

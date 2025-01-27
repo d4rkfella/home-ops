@@ -9,7 +9,7 @@ data:
   config.yaml: |
     endpoints:
       - name: "${GATUS_NAME:=${APP}}"
-        group: guarded
+        group: internal
         url: "https://${GATUS_SUBDOMAIN:=${APP}}.darkfellanetwork.com:${GATUS_PORT:=443}${GATUS_PATH:=/}"
         interval: 1m
         client:

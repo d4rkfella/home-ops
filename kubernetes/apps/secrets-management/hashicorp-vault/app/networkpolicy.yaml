@@ -43,7 +43,7 @@ spec:
             - port: "8200"
     - fromEndpoints:
         - matchLabels:
-            app.kubernetes.io/name: keycloak-jwt-fetcher
+            app.kubernetes.io/name: oidc-jwt-fetcher
           matchExpressions:
             - key: io.kubernetes.pod.namespace
               operator: Exists

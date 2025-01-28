@@ -30,7 +30,7 @@ spec:
       storageClassName: openebs-zfs-32k
       volumeMode: Filesystem
   superuserSecret:
-    name: &secret postgres-secret
+    name: &secret postgres-admin-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:

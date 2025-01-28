@@ -38,7 +38,7 @@ spec:
       shared_buffers: "256MB"
       wal_init_zero: "off"
       wal_recycle: "off"
-      walSegmentSize: "4096"
+      wal_segment_size: "1024"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256
@@ -81,14 +81,14 @@ spec:
   bootstrap:
     recovery:
       source: &previousCluster postgres17-v0
-    initdb:
-      database: postgres-db-manager
-      owner: postgres-db-manager
-      secret:
-        name: postgres-secret
-      postInitApplicationSQL:
-        - ALTER USER "postgres-db-manager" WITH SUPERUSER;
-      walSegmentSize: 1024
+    #initdb:
+      #database: postgres-db-manager
+      #owner: postgres-db-manager
+      #secret:
+        #name: postgres-secret
+      #postInitApplicationSQL:
+        #- ALTER USER "postgres-db-manager" WITH SUPERUSER;
+      #walSegmentSize: 1024
 
     #recovery:
       #source: &previousCluster postgres17-v1

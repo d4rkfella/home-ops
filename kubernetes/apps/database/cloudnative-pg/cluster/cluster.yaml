@@ -81,10 +81,6 @@ spec:
     initdb:
       database: postgres-db-manager
       owner: postgres-db-manager
-      secret:
-        name: postgres-secret
-      postInitApplicationSQL:
-        - ALTER USER "postgres-db-manager" WITH SUPERUSER;
 
     #recovery:
       #source: &previousCluster postgres17-v1

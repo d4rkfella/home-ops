@@ -32,7 +32,6 @@ spec:
           - name: vaultbackup
             image: ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0
             imagePullPolicy: Always
-            command: ["/bin/sh", "-c", "while true; do sleep 30; done"]
             env:
               - name: VAULT_ADDR
                 value: https://vault.darkfellanetwork.com:8200

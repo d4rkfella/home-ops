@@ -59,8 +59,10 @@ spec:
     retentionPolicy: 30d
     barmanObjectStore: &barmanObjectStore
       data:
+        compression: bzip2
         encryption: AES256
       wal:
+        compression: bzip2
         encryption: AES256
         maxParallel: 8
       destinationPath: s3://postgres-backup/

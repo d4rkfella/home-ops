@@ -31,7 +31,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/getsops/sops:v3.9.4-alpine-amd64@sha256:0fe7f11db354b659098a39440384b544a653216870a5ec0ec5fc170105144d37 /usr/local/bin/sops /usr/local/bin/sops
 RUN sops --version
 
-COPY --from=ghcr.io/helmfile/helmfile:v0.170.0@sha256:148416f84878f1b58e61e8f6b6e94937bda41c91dce935545b34aae4f03caf2a /usr/local/bin/helmfile /usr/local/bin/helmfile
+COPY --from=ghcr.io/helmfile/helmfile:v0.170.1@sha256:6f334935f5ee1dc6780bff3a5b781747570b8e0d0abaa7204211ad2be43005a9 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
 COPY --from=k8s.gcr.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl

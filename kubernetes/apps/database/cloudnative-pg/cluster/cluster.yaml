@@ -35,12 +35,7 @@ spec:
   postgresql:
     parameters:
       max_connections: "400"
-      max_wal_size: "4096"
       shared_buffers: "256MB"
-      # ZFS tuning
-      # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Workload%20Tuning.html#postgresql
-      # https://vadosware.io/post/everything-ive-seen-on-optimizing-postgres-on-zfs-on-linux/
-      # https://kubeblocks.io/blog/A-testing-report-for-optimizing-PG-performance-on-Kubernetes
       wal_init_zero: "off"
       wal_recycle: "off"
     pg_hba:
@@ -72,7 +67,7 @@ spec:
       endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres17-v0
+      serverName: &currentCluster postgres17-v4
       s3Credentials:
         accessKeyId:
           name: *secret
@@ -83,20 +78,22 @@ spec:
   # Note: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
-    initdb:
-      database: postgres-db-manager
-      owner: postgres-db-manager
-      secret:
-        name: postgres-secret
-      postInitApplicationSQL:
-        - ALTER USER "postgres-db-manager" WITH SUPERUSER;
-      walSegmentSize: 1024
+    recovery:
+      source: &previousCluster postgres17-v0
+    #initdb:
+      #database: postgres-db-manager
+      #owner: postgres-db-manager
+      #secret:
+        #name: postgres-secret
+      #postInitApplicationSQL:
+        #- ALTER USER "postgres-db-manager" WITH SUPERUSER;
+      #walSegmentSize: 1024
 
     #recovery:
       #source: &previousCluster postgres17-v1
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  #externalClusters:
-    #- name: *previousCluster
-      #barmanObjectStore:
-        #<<: *barmanObjectStore
-        #serverName: *previousCluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster

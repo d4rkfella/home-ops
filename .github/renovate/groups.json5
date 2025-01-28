@@ -24,8 +24,7 @@
     },
     {
       "description": ["Devcontainer Group"],
-      "matchDatasources": ["github-releases"],
-      "matchPackageNames": ["fluxcd/flux2", "getsops/sops", "kubernetes/kubernetes", "helmfile/helmfile", "helm/helm", "go-task/task", "siderolabs/talos", "kubevirt/kubevirt", "int128/kubelogin", "cilium/hubble", "cilium/cilium-cli"],
+      "matchDatasources": ["github-releases", "docker"],
       "fileMatch": ["^\\.devcontainer/Dockerfile$"],
       "versioning": "semver",
       "groupName": "Devcontainer",

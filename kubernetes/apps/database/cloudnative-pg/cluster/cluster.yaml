@@ -38,6 +38,7 @@ spec:
       shared_buffers: "6144MB"
       wal_init_zero: "off"
       wal_recycle: "off"
+      max_wal_size: "4096"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256
@@ -61,11 +62,11 @@ spec:
       wal:
         encryption: AES256
         maxParallel: 8
-      destinationPath: s3://postgres-backup/
+      destinationPath: s3://cloudnative-pg/
       endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres17-v0
+      serverName: &currentCluster postgres17-v9
       s3Credentials:
         accessKeyId:
           name: *secret
@@ -76,17 +77,11 @@ spec:
   # Note: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
-    #recovery:
-      #source: &previousCluster postgres17-v0
-    initdb:
-      database: postgres
-      owner: postgres
+    recovery:
+      source: &previousCluster postgres17-v0
 
-    #recovery:
-      #source: &previousCluster postgres17-v1
-  # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  #externalClusters:
-    #- name: *previousCluster
-      #barmanObjectStore:
-        #<<: *barmanObjectStore
-        #serverName: *previousCluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster

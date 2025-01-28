@@ -70,6 +70,15 @@ RUN flux --version
 COPY --from=ghcr.io/siderolabs/talosctl:v1.9.2@sha256:94f040316809b5ee6a20bb77b81bf61ded7d7ad9f397344dc02ac79b25bb671c /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
+COPY --from=ghcr.io/getsops/sops:v3.9.4-alpine-amd64@sha256:0fe7f11db354b659098a39440384b544a653216870a5ec0ec5fc170105144d37 /usr/local/bin/sops /usr/local/bin/sops
+RUN sops --version
+
+COPY --from=ghcr.io/helmfile/helmfile:v0.170.0@sha256:148416f84878f1b58e61e8f6b6e94937bda41c91dce935545b34aae4f03caf2a /usr/local/bin/helmfile /usr/local/bin/helmfile
+RUN helmfile --version
+
+COPY --from=k8s.gcr.io/kubectl:v1.32.1 /kubectl /usr/local/bin/kubectl
+RUN kubectl version --client
+
 WORKDIR /tmp
 
 RUN apk update && \
@@ -77,7 +86,6 @@ RUN apk update && \
     apk add --no-cache \
     coreutils \
     curl \
-    cosign \
     jq \
     nano \
     bash \
@@ -96,22 +104,6 @@ RUN apk update && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
-    curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl" && \
-    curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
-    echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
-    mv ./kubectl /usr/local/bin/kubectl && \
-    curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION{,.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig} && \
-    cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
-      --certificate sops-$SOPS_VERSION.checksums.pem \
-      --signature sops-$SOPS_VERSION.checksums.sig \
-      --certificate-identity-regexp=https://github.com/getsops \
-      --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    sha256sum --check --strict --ignore-missing sops-$SOPS_VERSION.checksums.txt && \
-    mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
-    curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//'){,_linux_amd64.tar.gz,_checksums.txt} && \
-    sha256sum --check --strict --ignore-missing helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
-    tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
-    mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \

@@ -16,11 +16,12 @@ spec:
             vault.hashicorp.com/role: "vault"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
             vault.hashicorp.com/agent-run-as-group: "65534"
-            vault.hashicorp.com/agent-inject-secret-aws-creds: "secrets/vault"
-            vault.hashicorp.com/agent-inject-template-aws-creds: |
+            vault.hashicorp.com/agent-inject-secret-credentials: "secrets/vault"
+            vault.hashicorp.com/agent-inject-template-credentials: |
               {{- with secret "secrets/vault" -}}
-                export AWS_ACCESS_KEY_ID="{{ .Data.data.AWS_ACCESS_KEY_ID }}"
-                export AWS_SECRET_ACCESS_KEY="{{ .Data.data.AWS_SECRET_ACCESS_KEY }}"
+              [default]
+              aws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}
+              aws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}
               {{- end }}
         spec:
           serviceAccountName: vault
@@ -39,6 +40,8 @@ spec:
                 value: hashicorp-vault-backup
               - name: S3_ENDPOINT
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+              - name: AWS_CONFIG_FILE
+                value: /vault/secrets/credentials
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

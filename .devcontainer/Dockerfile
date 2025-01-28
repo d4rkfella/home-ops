@@ -69,9 +69,10 @@ RUN apk update && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     rm -rf /root/.cache /tmp/*
 
-USER $USERNAME
 
 WORKDIR /project
+
+USER $USERNAME
 
 ENTRYPOINT [ "/bin/bash", "-c" ]
 CMD [ "bash" ]

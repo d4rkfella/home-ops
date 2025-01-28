@@ -39,8 +39,6 @@ RUN kubectl version --client
 
 WORKDIR /tmp
 
-USER root
-
 RUN apk update && \
     apk upgrade && \
     apk add --no-cache \

@@ -66,7 +66,6 @@ RUN apk update && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     chmod +x /user/local/bin/virtctl
-    helm plugin install https://github.com/databus23/helm-diff && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     rm -rf /root/.cache /tmp/*
 

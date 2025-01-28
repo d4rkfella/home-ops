@@ -1,35 +1,3 @@
-FROM python:3.11-alpine3.21 AS builder
-
-ARG AWS_CLI_VERSION=2.22.35
-
-RUN apk add --no-cache git \
-        unzip \
-        groff \
-        build-base \
-        libffi-dev \
-        cmake
-
-RUN mkdir /aws && \
-    git clone --single-branch --depth 1 -b ${AWS_CLI_VERSION} https://github.com/aws/aws-cli.git /aws && \
-    cd /aws && \
-    python -m venv venv && \
-    . venv/bin/activate && \
-    pip install --upgrade pip setuptools && \
-    ./scripts/installers/make-exe
-
-RUN unzip /aws/dist/awscli-exe.zip && \
-    ./aws/install --bin-dir /aws-cli-bin
-
-# Reduce image size: remove autocomplete and examples
-RUN rm -rf \
-    /usr/local/aws-cli/v2/current/dist/aws_completer \
-    /usr/local/aws-cli/v2/current/dist/awscli/data/ac.index \
-    /usr/local/aws-cli/v2/current/dist/awscli/examples && \
-    find /usr/local/aws-cli/v2/current/dist/awscli/data -name completions-1*.json -delete && \
-    find /usr/local/aws-cli/v2/current/dist/awscli/botocore/data -name examples-1.json -delete
-
-
-
 FROM alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8
 
 ARG USERNAME=vscode
@@ -58,9 +26,18 @@ ENV EDITOR=/usr/bin/nano
 COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
-COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
-COPY --from=builder /aws-cli-bin/ /usr/local/bin/
+COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0 /usr/local/aws-cli /usr/local/aws-cli
+COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0 /usr/local/bin/aws /usr/local/bin/aws
 RUN aws --version
+
+COPY --from=alpine/helm:3.17.0@sha256:6e751770fffffb091a931103108c67a61ee622950a3087dec44a5e2fe7860e41 /usr/bin/helm /usr/local/bin/helm
+RUN helm version
+ 
+COPY --from=fluxcd/flux-cli:v2.4.0@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f /usr/local/bin/flux /usr/local/bin/flux
+RUN flux --version
+
+COPY --from=ghcr.io/siderolabs/talosctl:v1.9.2@sha256:94f040316809b5ee6a20bb77b81bf61ded7d7ad9f397344dc02ac79b25bb671c /bin/talosctl /usr/local/bin/talosctl
+RUN talosctl version --client
 
 WORKDIR /tmp
 
@@ -92,7 +69,6 @@ RUN apk update && \
     curl -fsSLO "https://dl.k8s.io/release/$KUBECTL_VERSION/bin/linux/amd64/kubectl.sha256" && \
     echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check --strict && \
     mv ./kubectl /usr/local/bin/kubectl && \
-    curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash -s -- -v $HELM_VERSION && \
     curl -fsSLO https://github.com/getsops/sops/releases/download/$SOPS_VERSION/sops-$SOPS_VERSION{,.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig} && \
     cosign verify-blob sops-$SOPS_VERSION.checksums.txt \
       --certificate sops-$SOPS_VERSION.checksums.pem \
@@ -101,15 +77,11 @@ RUN apk update && \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
     sha256sum --check --strict --ignore-missing sops-$SOPS_VERSION.checksums.txt && \
     mv sops-$SOPS_VERSION.linux.amd64 /usr/local/bin/sops && \
-    curl -fsSLO https://github.com/siderolabs/talos/releases/download/$TALOSCTL_VERSION/{,talosctl-linux-amd64,sha256sum.txt} && \
-    sha256sum --check --strict --ignore-missing sha256sum.txt && \
-    mv ./talosctl-linux-amd64 /usr/local/bin/talosctl && \
     curl -fsSLO https://github.com/helmfile/helmfile/releases/download/$HELMFILE_VERSION/helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//'){,_linux_amd64.tar.gz,_checksums.txt} && \
     sha256sum --check --strict --ignore-missing helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_checksums.txt && \
     tar -xvzf helmfile_$(echo $HELMFILE_VERSION | sed 's/^v//')_linux_amd64.tar.gz && \
     mv helmfile /usr/local/bin/helmfile && \
     curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \
-    curl -fsSL https://fluxcd.io/install.sh | FLUX_VERSION=$(echo $FLUX_VERSION | sed 's/^v//') bash && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     helm plugin install https://github.com/databus23/helm-diff && \

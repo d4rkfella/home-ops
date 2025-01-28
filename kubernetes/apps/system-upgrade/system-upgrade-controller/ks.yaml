@@ -41,7 +41,7 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: false
-  interval: 31m
+  interval: 30m
   timeout: 5m
   postBuild:
     substitute:

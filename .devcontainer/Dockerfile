@@ -1,3 +1,35 @@
+FROM python:3.11-alpine3.21 AS builder
+
+ARG AWS_CLI_VERSION=2.22.35
+
+RUN apk add --no-cache git \
+        unzip \
+        groff \
+        build-base \
+        libffi-dev \
+        cmake
+
+RUN mkdir /aws && \
+    git clone --single-branch --depth 1 -b ${AWS_CLI_VERSION} https://github.com/aws/aws-cli.git /aws && \
+    cd /aws && \
+    python -m venv venv && \
+    . venv/bin/activate && \
+    pip install --upgrade pip setuptools && \
+    ./scripts/installers/make-exe
+
+RUN unzip /aws/dist/awscli-exe.zip && \
+    ./aws/install --bin-dir /aws-cli-bin
+
+# Reduce image size: remove autocomplete and examples
+RUN rm -rf \
+    /usr/local/aws-cli/v2/current/dist/aws_completer \
+    /usr/local/aws-cli/v2/current/dist/awscli/data/ac.index \
+    /usr/local/aws-cli/v2/current/dist/awscli/examples && \
+    find /usr/local/aws-cli/v2/current/dist/awscli/data -name completions-1*.json -delete && \
+    find /usr/local/aws-cli/v2/current/dist/awscli/botocore/data -name examples-1.json -delete
+
+
+
 FROM alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8
 
 ARG USERNAME=vscode
@@ -21,10 +53,14 @@ ARG TALOSCTL_VERSION=v1.9.2
 ARG VIRTCTL_VERSION=v1.4.0
 
 ENV LANG="C.UTF-8"
-ENV SHELL=/bin/bash
 ENV EDITOR=/usr/bin/nano
 
 COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /bin/vault /usr/local/bin/vault
+RUN vault --version
+
+COPY --from=builder /usr/local/aws-cli /usr/local/aws-cli
+COPY --from=builder /aws-cli-bin/ /usr/local/bin/
+RUN aws --version
 
 WORKDIR /tmp
 
@@ -45,7 +81,6 @@ RUN apk update && \
     libstdc++ \
     direnv \
     yq \
-    aws-cli \
     unzip && \
     rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
@@ -87,4 +122,5 @@ WORKDIR /project
 
 USER $USERNAME
 
-SHELL ["/bin/bash", "-c"]
+ENTRYPOINT [ "/bin/bash", "-c" ]
+CMD [ "bash" ]

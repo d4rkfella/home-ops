@@ -41,6 +41,7 @@ spec:
       max_wal_size: "4096"
       min_wal_size: "2048"
       wal_compression: "off"
+      huge_pages: "on"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256

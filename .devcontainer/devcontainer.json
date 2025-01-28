@@ -3,7 +3,6 @@
     "name": "Kubernetes Management",
 
     "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:2519f5b78c6bdda390703376b69519f48b923b9e6477c92eeadad759bc970ce9",
-
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
     "workspaceFolder": "/project",
@@ -12,6 +11,8 @@
     "customizations": {
       "vscode": {
         "settings": {
+            "terminal.integrated.defaultProfile.linux": "bash",
+            "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
             "editor.bracketPairColorization.enabled": true,
             "editor.fontFamily": "FiraCode Nerd Font, monospace",
             "editor.fontLigatures": true,

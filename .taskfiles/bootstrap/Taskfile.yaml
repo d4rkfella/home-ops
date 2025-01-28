@@ -83,8 +83,4 @@ tasks:
     preconditions:
       - test -f {{.ROOT_DIR}}/age.key
       - test -f {{.CLUSTER_DIR}}/bootstrap/flux/age-key.secret.sops.yaml
-      - test -f {{.CLUSTER_DIR}}/bootstrap/flux/deploy-key.secret.sops.yaml
-      - test -f {{.CLUSTER_DIR}}/flux/vars/cluster-secrets.secret.sops.yaml
       - sops filestatus {{.CLUSTER_DIR}}/bootstrap/flux/age-key.secret.sops.yaml | jq --exit-status '.encrypted'
-      - sops filestatus {{.CLUSTER_DIR}}/bootstrap/flux/deploy-key.secret.sops.yaml | jq --exit-status '.encrypted'
-      - sops filestatus {{.CLUSTER_DIR}}/flux/vars/cluster-secrets.secret.sops.yaml | jq --exit-status '.encrypted'

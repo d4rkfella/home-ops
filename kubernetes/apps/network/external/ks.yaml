@@ -68,7 +68,7 @@ spec:
   dependsOn:
     - name: cert-manager-certificates
       namespace: cert-manager
-  interval: 31m
+  interval: 30m
   path: ./kubernetes/apps/network/external/ingress-nginx
   prune: true
   sourceRef:

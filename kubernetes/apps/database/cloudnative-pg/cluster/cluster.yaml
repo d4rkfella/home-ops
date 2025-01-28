@@ -35,10 +35,9 @@ spec:
   postgresql:
     parameters:
       max_connections: "400"
-      shared_buffers: "256MB"
+      shared_buffers: "6144MB"
       wal_init_zero: "off"
       wal_recycle: "off"
-      min_wal_size: "80MB"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256
@@ -58,10 +57,8 @@ spec:
     retentionPolicy: 30d
     barmanObjectStore: &barmanObjectStore
       data:
-        compression: bzip2
         encryption: AES256
       wal:
-        compression: bzip2
         encryption: AES256
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
@@ -79,22 +76,21 @@ spec:
   # Note: previousCluster needs to be set to the name of the previous
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
-    recovery:
-      source: &previousCluster postgres17-v0
-    #initdb:
-      #database: postgres-db-manager
-      #owner: postgres-db-manager
-      #secret:
-        #name: postgres-secret
-      #postInitApplicationSQL:
-        #- ALTER USER "postgres-db-manager" WITH SUPERUSER;
-      #walSegmentSize: 1024
+    #recovery:
+      #source: &previousCluster postgres17-v0
+    initdb:
+      database: postgres-db-manager
+      owner: postgres-db-manager
+      secret:
+        name: postgres-secret
+      postInitApplicationSQL:
+        - ALTER USER "postgres-db-manager" WITH SUPERUSER;
 
     #recovery:
       #source: &previousCluster postgres17-v1
   # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+  #externalClusters:
+    #- name: *previousCluster
+      #barmanObjectStore:
+        #<<: *barmanObjectStore
+        #serverName: *previousCluster

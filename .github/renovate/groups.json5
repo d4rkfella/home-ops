@@ -31,8 +31,7 @@
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       },
-      "automerge": true,
-      "automergeType": "branch"
+      "separateMinorPatch": true
     },
     {
       "description": ["Talos Group"],

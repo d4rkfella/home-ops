@@ -39,6 +39,7 @@ spec:
       wal_init_zero: "off"
       wal_recycle: "off"
       max_wal_size: "4096"
+      min_wal_size: "2048"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256

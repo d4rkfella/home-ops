@@ -11,8 +11,6 @@ ARG VIRTCTL_VERSION=v1.4.0
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 
-USER root
-
 COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
@@ -40,6 +38,8 @@ COPY --from=k8s.gcr.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl
 RUN kubectl version --client
 
 WORKDIR /tmp
+
+USER root
 
 RUN apk update && \
     apk upgrade && \

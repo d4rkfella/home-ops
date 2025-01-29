@@ -3,17 +3,15 @@
 version: '3'
 
 vars:
-  CLUSTER: '{{.CLUSTER | default "main"}}'
-  CLUSTER_DIR: '{{.ROOT_DIR}}/kubernetes/{{.CLUSTER}}'
+  KUBERNETES_DIR: '{{.ROOT_DIR}}/kubernetes'
 
 env:
-  KUBECONFIG: '{{.CLUSTER_DIR}}/kubeconfig'
-  TALOSCONFIG: '{{.CLUSTER_DIR}}/talosconfig'
+  KUBECONFIG: '{{.KUBERNETES_DIR}}/kubeconfig'
+  TALOSCONFIG: '{{.KUBERNETES_DIR}}/talosconfig'
   SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
 
 includes:
   bootstrap: .taskfiles/bootstrap
-  volsync: .taskfiles/VolSync/Taskfile.yaml
 
 tasks:
   default: task --list

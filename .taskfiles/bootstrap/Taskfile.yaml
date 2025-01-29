@@ -5,82 +5,66 @@ version: '3'
 
 vars:
   KUBERNETES_VERSION:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
   TALOS_CONTROLLER:
     sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
   TALOS_SCHEMATIC_ID:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
   TALOS_VERSION:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
 
 tasks:
-
   kubernetes:
     desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
     prompt: Bootstrap a Talos Kubernetes cluster ... continue?
-    summary: |
-      CLUSTER: Cluster to run command against (default: main)
-    vars: &vars
-      CLUSTER: '{{.CLUSTER}}'
     cmds:
-      - { task: apply-config, vars: *vars }
-      - { task: etcd, vars: *vars }
-      - { task: conf, vars: *vars }
-      - { task: apps, vars: *vars }
-      - { task: flux, vars: *vars }
-    requires:
-      vars: ['CLUSTER']
+      - { task: apply-config }
+      - { task: etcd }
+      - { task: conf }
+      - { task: apps }
     preconditions:
       - talosctl config info &>/dev/null
-      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/talosconfig
   apply-config:
     internal: true
     cmd: |
       export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
-        sops --decrypt {{.CLUSTER_DIR}}/bootstrap/talos/assets/{{.HOSTNAME}}.secret.sops.yaml | \
+        sops --decrypt {{.KUBERNETES_DIR}}/bootstrap/talos/{{.IP}}.secret.sops.yaml | \
             /usr/local/bin/envsubst | \
-                talosctl apply-config --insecure --nodes {{.HOSTNAME}} --file /dev/stdin
-    env: *vars
+                talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
     requires:
-      vars: ['CLUSTER', 'HOSTNAME']
+      vars: ['IP']
     preconditions:
-      - test -f {{.CLUSTER_DIR}}/talosconfig
-      - test -f {{.CLUSTER_DIR}}/bootstrap/talos/assets/{{.HOSTNAME}}.secret.sops.yaml
+      - test -f {{.KUBERNETES_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/bootstrap/talos/{{.IP}}.secret.sops.yaml
 
   etcd:
     internal: true
     cmd: until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
     preconditions:
-      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/talosconfig
       - talosctl config info &>/dev/null
 
   conf:
     internal: true
-    cmd: talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name {{.CLUSTER}} {{.CLUSTER_DIR}}
+    cmd: talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name main {{.KUBERNETES_DIR}}
     preconditions:
-      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/talosconfig
       - talosctl config info &>/dev/null
 
   apps:
     internal: true
     cmds:
       - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
-      - helmfile --quiet --file {{.CLUSTER_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      - helmfile --quiet --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      - sops --decrypt {{.KUBERNETES_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace vault
+      - sops --decrypt {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+      - kubectl apply --server-side --filename {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
       - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
     preconditions:
-      - test -f {{.CLUSTER_DIR}}/talosconfig
-      - test -f {{.CLUSTER_DIR}}/bootstrap/helmfile.yaml
+      - test -f {{.KUBERNETES_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml
+      - test -f {{.KUBERNETES_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml
+      - test -f {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml
+      - test -f {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
       - talosctl config info &>/dev/null
-
-  flux:
-    internal: true
-    cmds:
-      - kubectl apply --server-side --kustomize {{.CLUSTER_DIR}}/bootstrap/flux
-      - sops --decrypt {{.CLUSTER_DIR}}/bootstrap/flux/age-key.secret.sops.yaml | kubectl apply --server-side --filename -
-      - sops --decrypt {{.CLUSTER_DIR}}/bootstrap/flux/deploy-key.secret.sops.yaml | kubectl apply --server-side --filename -
-      - sops --decrypt {{.CLUSTER_DIR}}/flux/vars/cluster-secrets.secret.sops.yaml | kubectl apply --server-side --filename -
-      - kubectl apply --server-side --kustomize {{.CLUSTER_DIR}}/flux/config
-    preconditions:
-      - test -f {{.ROOT_DIR}}/age.key
-      - test -f {{.CLUSTER_DIR}}/bootstrap/flux/age-key.secret.sops.yaml
-      - sops filestatus {{.CLUSTER_DIR}}/bootstrap/flux/age-key.secret.sops.yaml | jq --exit-status '.encrypted'

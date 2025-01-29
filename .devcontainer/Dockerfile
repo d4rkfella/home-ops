@@ -57,7 +57,7 @@ RUN apk update && \
     libstdc++ \
     direnv \
     yq \
-    docker openrc \
+    docker-cli \
     unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

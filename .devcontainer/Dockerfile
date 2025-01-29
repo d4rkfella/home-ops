@@ -4,11 +4,11 @@ ARG USERNAME=vscode
 ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 # renovate: depName=go-task/task
-ARG TASK_VERSION=v3.41.0
+ARG TASK_VERSION=v3.40.0
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
 # renovate: depName=a8m/envsubst
-ARG ENVSUBST_VERSION=v1.4.2
+ARG ENVSUBST_VERSION=v1.4.1
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano

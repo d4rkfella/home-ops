@@ -7,6 +7,8 @@ ARG USER_GID=$USER_UID
 ARG TASK_VERSION=v3.41.0
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
+# renovate: depName=a8m/envsubst
+ARG ENVSUBST_VERSION=v1.4.2
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
@@ -21,7 +23,7 @@ RUN aws --version
 
 COPY --from=alpine/helm:3.17.0@sha256:6e751770fffffb091a931103108c67a61ee622950a3087dec44a5e2fe7860e41 /usr/bin/helm /usr/local/bin/helm
 RUN helm version
- 
+
 COPY --from=fluxcd/flux-cli:v2.4.0@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f /usr/local/bin/flux /usr/local/bin/flux
 RUN flux --version
 
@@ -67,6 +69,8 @@ RUN apk update && \
     curl -fsSLO https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{,linux_amd64.tar.gz,checksums.txt} && \
     sha256sum --check --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
+    curl -fsSL https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m`{,.md5}
+    mv ./envsubst-`uname -s`-`uname -m` /usr/local/bin/envsubst && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \

@@ -12,6 +12,7 @@ env:
 
 includes:
   bootstrap: .taskfiles/bootstrap
+  talos: .taskfiles/talos
 
 tasks:
   default: task --list

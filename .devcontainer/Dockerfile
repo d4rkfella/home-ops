@@ -13,7 +13,7 @@ ARG ENVSUBST_VERSION=v1.4.2
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=hashicorp/vault:1.17@sha256:74a4ab138ab5d64725e89cd9a9c73f7040c7fe49e98b71697b275ca9a69919df /bin/vault /usr/local/bin/vault
+COPY --from=hashicorp/vault:1.18.2@sha256:2090eb7ac7a4bdef802f685698bd4dc0740de683affe8ff7df55f4fc77077ba7 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
 COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0 /usr/local/aws-cli /usr/local/aws-cli

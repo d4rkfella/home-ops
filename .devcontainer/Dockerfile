@@ -36,7 +36,7 @@ RUN sops --version
 COPY --from=ghcr.io/helmfile/helmfile:v0.170.1@sha256:6f334935f5ee1dc6780bff3a5b781747570b8e0d0abaa7204211ad2be43005a9 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
-COPY --from=registry.k8s.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl
+COPY --from=registry.k8s.io/kubectl:v1.32.1@sha256:6ae337221866ae69380cfa08e2b38fa113fd5044cfb5b7a7662f5b0028be23b6 /bin/kubectl /usr/local/bin/kubectl
 RUN kubectl version --client
 
 WORKDIR /tmp

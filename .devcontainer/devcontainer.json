@@ -2,15 +2,19 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:226bf5c8cf79f47503c4d3b5fc914ef5c3ea95bf015943a5ffadb0e1bea67e30",
+    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:9b9ff8130498a6466af528505a393460ef9efd60e95e4ab7da75d37ea40fde38",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
+    "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
 
     "customizations": {
       "vscode": {
         "settings": {
+            "docker.dockerPath": "/usr/bin/docker",
             "terminal.integrated.defaultProfile.linux": "bash",
             "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
             "editor.bracketPairColorization.enabled": true,

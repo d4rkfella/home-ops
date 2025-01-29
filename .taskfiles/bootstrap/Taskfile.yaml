@@ -62,7 +62,7 @@ tasks:
       - kubectl apply --server-side --filename {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
       - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
     preconditions:
-      - test -f {{.KUBERNETES_DIR}}/talosconfig
+      - test -f {{.KUBERNETES_DIR}}/kubeconfig
       - test -f {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml
       - test -f {{.KUBERNETES_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml
       - test -f {{.KUBERNETES_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml

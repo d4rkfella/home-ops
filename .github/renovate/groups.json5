@@ -25,8 +25,19 @@
     {
       "description": ["Devcontainer Group"],
       "matchDatasources": ["github-releases", "docker"],
-      "fileMatch": ["**/Dockerfile"],
-      "matchPackagePatterns": ["kubevirt/kubevirt", "a8m/envsubst", "go-task/task", "hashicorp/vault", "d4rkfella/vault-backup", "alpine/helm", "fluxcd/flux-cli", "siderolabs/talosctl", "getsops/sops", "helmfile/helmfile", "registry.k8s.io/kubectl"],
+      "matchPackagePatterns": [
+        "alpine",
+        "fluxcd/flux-cli",
+        "hashicorp/vault",
+        "ghcr.io/d4rkfella/vault-backup",
+        "ghcr.io/siderolabs/talosctl",
+        "ghcr.io/getsops/sops",
+        "ghcr.io/helmfile/helmfile",
+        "registry.k8s.io/kubectl",
+        "go-task/task",
+        "kubevirt/kubevirt",
+        "a8m/envsubst"
+      ],
       "versioning": "semver",
       "groupName": "Devcontainer",
       "group": {

@@ -69,7 +69,7 @@ RUN apk update && \
     curl -fsSLO https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{,linux_amd64.tar.gz,checksums.txt} && \
     sha256sum --check --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
-    curl -fsSL https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-Linux-x86_64 && \
+    curl -fsSLO https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-Linux-x86_64 && \
     mv ./envsubst-Linux-x86_64 /usr/local/bin/envsubst && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \

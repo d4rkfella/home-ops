@@ -67,7 +67,7 @@ RUN apk update && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
-    curl -fsSLO https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{,linux_amd64.tar.gz,checksums.txt} && \
+    curl -fsSLO https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt} && \
     sha256sum --check --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
     curl -fsSLO https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \

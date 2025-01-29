@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:550e194b64495b1e92675f3840452fcb21334bbf07b161d5171ddaac07c45d16",
+    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:1fd5e71e062e5a889e19c46535304c7fdb9ff2e61615ad0e4dbb64f80e8a5c43",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
 
     "workspaceFolder": "/project",
@@ -85,7 +85,8 @@
             "editorconfig.editorconfig",
             "ms-kubernetes-tools.vscode-kubernetes-tools",
             "ms-azuretools.vscode-docker",
-            "GitHub.vscode-pull-request-github"
+            "GitHub.vscode-pull-request-github",
+            "donjayamanne.githistory"
         ]
       }
     }

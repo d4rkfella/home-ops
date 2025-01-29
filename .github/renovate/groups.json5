@@ -25,7 +25,7 @@
     {
       "description": ["Devcontainer Group"],
       "matchDatasources": ["github-releases", "docker"],
-      "fileMatch": ["^\\.devcontainer/Dockerfile$"],
+      "fileMatch": ["**/Dockerfile"],
       "versioning": "semver",
       "groupName": "Devcontainer",
       "group": {

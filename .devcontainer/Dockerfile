@@ -62,14 +62,15 @@ RUN apk update && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
-    bash -c "$(curl --location https://taskfile.dev/install.sh)" -- -d $TASK_VERSION -b /usr/local/bin && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    curl -fsSLO https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{,linux_amd64.tar.gz,checksums.txt} && \
+    sha256sum --check --strict --ignore-missing task_checksums.txt && \
+    tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     rm -rf /root/.cache /tmp/*
-
 
 WORKDIR /project
 

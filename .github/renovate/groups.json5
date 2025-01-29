@@ -8,8 +8,7 @@
       "matchDatasources": ["docker", "helm"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
+      }
     },
     {
       "description": ["Flux Operator Group"],
@@ -40,8 +39,7 @@
       "groupName": "Devcontainer",
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
-      "separateMinorPatch": true
+      }
     },
     {
       "description": ["Talos Group"],

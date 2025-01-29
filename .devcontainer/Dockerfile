@@ -62,7 +62,7 @@ RUN apk update && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
-    curl -fsSL https://taskfile.dev/install.sh | bash -s -- -d $TASK_VERSION -b /usr/local/bin && \
+    bash -c "$(curl --location https://taskfile.dev/install.sh)" -- -d $TASK_VERSION -b ~/usr/local/bin && \
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \

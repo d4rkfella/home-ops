@@ -58,7 +58,6 @@ RUN apk update && \
     direnv \
     yq \
     unzip && \
-    rm -rf /var/cache/apk/* && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
@@ -74,7 +73,7 @@ RUN apk update && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    rm -rf /root/.cache /tmp/*
+    rm -rf /root/.cache /tmp/* /var/cache/apk/*
 
 WORKDIR /project
 

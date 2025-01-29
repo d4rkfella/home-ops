@@ -8,6 +8,7 @@ on:
     paths:
       - kubernetes/apps/**
       - kubernetes/flux/**
+      - .devcontainer/Dockerfile
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}

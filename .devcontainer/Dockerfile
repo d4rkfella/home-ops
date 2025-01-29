@@ -8,12 +8,12 @@ ARG TASK_VERSION=v3.40.0
 # renovate: depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.4.0
 # renovate: depName=a8m/envsubst
-ARG ENVSUBST_VERSION=v1.4.1
+ARG ENVSUBST_VERSION=v1.4.2
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=hashicorp/vault:1.18@sha256:8f1ba670da547c6af67be55609bd285c3ee3d8b73f88021adbfc43c82ca409e8 /bin/vault /usr/local/bin/vault
+COPY --from=hashicorp/vault:1.17 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
 COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0 /usr/local/aws-cli /usr/local/aws-cli

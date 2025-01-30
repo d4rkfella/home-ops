@@ -17,7 +17,7 @@ ENV EDITOR=/usr/bin/nano
 COPY --from=hashicorp/vault:1.18.4@sha256:790a848da73ea8260e982e79b1e320e899836a24bf059c1e8484d040623b6b93 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
-COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:4632f425536f50b0d25776c275a2f773ea451a34d29355753d6b861cee9284a0 /usr/local/aws-cli /usr/local/aws-cli
+COPY --from=ghcr.io/d4rkfella/vault-backup:latest@sha256:3bcd66f36a53134dc04daee6c4af80810dfc86fd58f6f7eb70865c4a8cdc3290 /usr/local/aws-cli /usr/local/aws-cli
 RUN ln -s /usr/local/aws-cli/v2/current/bin/aws /usr/local/bin/aws \
     && ln -s /usr/local/aws-cli/v2/current/bin/aws_completer /usr/local/bin/aws_completer
 RUN aws --version

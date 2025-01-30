@@ -35,7 +35,7 @@ spec:
   postgresql:
     parameters:
       max_connections: "400"
-      shared_buffers: "1024MB"
+      shared_buffers: "1GB"
       wal_init_zero: "off"
       wal_recycle: "off"
       max_wal_size: "4096"

@@ -44,6 +44,8 @@ spec:
       wal_compression: "off"
       huge_pages: "on"
       work_mem: 10MB
+      checkpoint_timeout: "15min"
+      checkpoint_completion_target: "0.9"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256

@@ -16,8 +16,13 @@
     {
       "description": ["Custom schedule for frequently updated packages"],
       "matchDataSources": ["docker"],
-      "matchPackagePatterns": ["postgresql", "aws-cli"],
+      "matchPackagePatterns": ["postgresql"],
       "schedule": ["on the first day of the month"]
+    },
+    {
+      "matchPackageNames": ["keycloak"],
+      "matchDatasources": ["docker"],
+      "sourceUrl": "https://github.com/keycloak/keycloak/releases"
     }
   ]
 }

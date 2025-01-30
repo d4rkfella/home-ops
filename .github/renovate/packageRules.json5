@@ -20,7 +20,7 @@
       "schedule": ["on the first day of the month"]
     },
     {
-      "matchPackageNames": ["ghcr.io/d4rkfella/keycloak"],
+      "matchDepNames": ["ghcr.io/d4rkfella/keycloak"],
       "matchDatasources": ["docker"],
       "sourceUrl": "https://github.com/keycloak/keycloak"
     }

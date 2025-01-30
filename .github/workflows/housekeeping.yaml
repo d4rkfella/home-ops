@@ -1,0 +1,29 @@
+name: Cleanup Workflow Runs
+
+on:
+  workflow_dispatch: # You can trigger this manually
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all workflow runs
+        run: |
+          # Install jq (for parsing JSON)
+          sudo apt-get install jq
+
+          # Set variables
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+          REPO="${{ github.repository }}"
+
+          # Get list of workflow run IDs
+          runs=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+              "https://api.github.com/repos/$REPO/actions/runs?per_page=100" \
+              | jq '.workflow_runs[].id')
+
+          # Loop over and delete each run
+          for run_id in $runs; do
+            curl -s -X DELETE -H "Authorization: token $GITHUB_TOKEN" \
+                "https://api.github.com/repos/$REPO/actions/runs/$run_id"
+            echo "Deleted run: $run_id"
+          done

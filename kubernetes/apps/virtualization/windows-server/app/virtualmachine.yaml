@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kubevirt.io/virtualmachine_v1.json
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: windows-server-2022
+spec:
+  running: true
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: windows-server-2022
+    spec:
+      networks:
+        - name: bridge
+          multus:
+            default: true
+            networkName: virtualization/windows-vm
+      domain:
+        clock:
+          timezone: Europe/Sofia
+          timer:
+            hpet:
+              present: false
+            hyperv: {}
+            pit:
+              tickPolicy: delay
+            rtc:
+              tickPolicy: catchup
+        cpu:
+          cores: 2
+          model: host-passthrough
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: true
+        firmware:
+          bootloader:
+            efi: {}
+          uuid: 43a838b8-9c2f-41ef-84b0-2370fd097a97
+        devices:
+          interfaces:
+            - name: bridge
+              bridge: {}
+              model: virtio
+              macAddress: 52:54:00:ab:cd:ef
+          tpm: {}
+          disks:
+            - disk:
+                bus: virtio
+              name: os-disk
+              bootOrder: 1
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                readonly: true
+                bus: sata
+            - name: virtio-drivers
+              bootOrder: 3
+              cdrom:
+                readonly: true
+                bus: sata
+        machine:
+          type: "pc-q35-rhel9.2.0"
+        resources:
+          requests:
+            memory: 4G
+      volumes:
+      - dataVolume:
+          name: windows-server-2022-iso
+        name: iso
+      - dataVolume:
+          name: windows-server-2022-os-disk
+        name: os-disk
+      - dataVolume:
+          name: windows-virtio-drivers
+        name: virtio-drivers
+  dataVolumeTemplates:
+  - metadata:
+      name: windows-server-2022-iso
+    spec:
+      storage:
+        storageClassName: openebs-zfs-1m
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 6Gi
+      source:
+        http:
+          url: "https://go.microsoft.com/fwlink/p/?LinkID=2195280&clcid=0x409&culture=en-us&country=US"
+  - metadata:
+      name: windows-server-2022-os-disk
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 64Gi
+      source:
+        blank: {}
+  - metadata:
+      name: windows-virtio-drivers
+    spec:
+      storage:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      source:
+        http:
+          url: "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso"

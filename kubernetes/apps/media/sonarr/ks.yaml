@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app sonarr
+  namespace: &ns media
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/internal
+  dependsOn:
+    - name: cloudnative-pg-cluster
+      namespace: database
+    - name: external-secrets-stores
+      namespace: external-secrets
+  path: ./kubernetes/apps/media/sonarr/app
+  postBuild:
+    substitute:
+      APP: *app
+      GATUS_NAME: Sonarr
+      GATUS_PATH: /ping
+      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].status == OK"]'
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *ns
+  wait: true
+  interval: 30m
+  timeout: 5m

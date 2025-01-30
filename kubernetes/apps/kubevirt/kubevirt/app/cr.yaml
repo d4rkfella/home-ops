@@ -1,0 +1,30 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+spec:
+  monitorNamespace: observability
+  monitorAccount: prometheus-operator
+  configuration:
+    vmStateStorageClass: "openebs-zfs-32k"
+    developerConfiguration:
+      featureGates:
+        - HostDevices
+        - DataVolumes
+        - VMPersistentState
+        - ExpandDisks
+        - Snapshot
+        - NetworkBindingPlugins
+    smbios:
+      sku: "TalosCloud"
+      version: "v0.1.0"
+      manufacturer: "Talos Virtualization"
+      product: "talosvm"
+      family: "ccio"
+    permittedHostDevices:
+      pciHostDevices:
+        - pciVendorSelector: 1000:0097
+          resourceName: devices.kubevirt.io/sas
+        - pciVendorSelector: 8086:2701
+          resourceName: devices.kubevirt.io/nvme

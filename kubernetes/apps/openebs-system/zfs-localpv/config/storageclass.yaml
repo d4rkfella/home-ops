@@ -1,0 +1,53 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-zfs-1m
+  annotations:
+    cdi.kubevirt.io/clone-strategy: snapshot
+allowVolumeExpansion: true
+parameters:
+  thinprovision: "yes"
+  recordsize: "1m"
+  compression: "lz4"
+  dedup: "off"
+  fstype: "zfs"
+  shared: "yes"
+  poolname: "ssd_pool"
+provisioner: zfs.csi.openebs.io
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-zfs-128k
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+    cdi.kubevirt.io/clone-strategy: snapshot
+allowVolumeExpansion: true
+parameters:
+  thinprovision: "yes"
+  recordsize: "128k"
+  compression: "lz4"
+  dedup: "off"
+  fstype: "zfs"
+  shared: "yes"
+  poolname: "ssd_pool"
+provisioner: zfs.csi.openebs.io
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-zfs-32k
+  annotations:
+    cdi.kubevirt.io/clone-strategy: snapshot
+allowVolumeExpansion: true
+parameters:
+  thinprovision: "yes"
+  recordsize: "32k"
+  compression: "lz4"
+  dedup: "off"
+  fstype: "zfs"
+  shared: "yes"
+  poolname: "ssd_pool"
+provisioner: zfs.csi.openebs.io

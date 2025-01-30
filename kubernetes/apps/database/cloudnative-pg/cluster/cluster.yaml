@@ -1,0 +1,91 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-v17
+  labels:
+    cnpg.io/reload: ""
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:b17d21f8ec36add9b3c0ea3fb354d05f62a8fddf8ba65ae94e63ba77bc42202e
+  primaryUpdateStrategy: unsupervised
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+      storageClassName: openebs-zfs-32k
+      volumeMode: Filesystem
+    resizeInUseVolumes: true
+  walStorage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+      storageClassName: openebs-zfs-32k
+      volumeMode: Filesystem
+  superuserSecret:
+    name: &secret postgres-admin-secret
+  enableSuperuserAccess: true
+  postgresql:
+    parameters:
+      max_connections: "400"
+      shared_buffers: "512MB"
+      wal_init_zero: "off"
+      wal_recycle: "off"
+      max_wal_size: "4096"
+      min_wal_size: "2048"
+      wal_compression: "off"
+      huge_pages: "on"
+    pg_hba:
+      - hostssl all all 172.16.0.0/16 scram-sha-256
+      - hostssl all all 127.0.0.1/32 scram-sha-256
+      - host all all all reject
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  resources:
+    requests:
+      cpu: 500m
+    limits:
+      memory: 4096Mi
+      hugepages-2Mi: 2Gi
+  monitoring:
+    enablePodMonitor: true
+  backup:
+    retentionPolicy: 30d
+    barmanObjectStore: &barmanObjectStore
+      data:
+        compression: bzip2
+        encryption: AES256
+      wal:
+        compression: bzip2
+        encryption: AES256
+        maxParallel: 8
+      destinationPath: s3://postgres-backup/
+      endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
+      # Note: serverName version needs to be inclemented
+      # when recovering from an existing cnpg cluster
+      serverName: &currentCluster postgres17-v0
+      s3Credentials:
+        accessKeyId:
+          name: *secret
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: *secret
+          key: ACCESS_SECRET_KEY
+  # Note: previousCluster needs to be set to the name of the previous
+  # cluster when recovering from an existing cnpg cluster
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres17-v0
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster

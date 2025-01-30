@@ -18,7 +18,8 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
-            - env:
+            - name: keycloak
+              env:
               - name: KC_DB_URL_PROPERTIES
                 value: "?sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
 

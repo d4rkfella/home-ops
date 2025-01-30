@@ -47,8 +47,8 @@ spec:
       checkpoint_timeout: "15min"
       checkpoint_completion_target: "0.9"
       archive_timeout: "15min"
-      hot_standby feedback: "on"
-      max slot wal_keep size: "8GB"
+      hot_standby_feedback: "on"
+      max_slot_wal_keep_size: "8GB"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256

@@ -1,0 +1,93 @@
+//devcontainer.json
+{
+    "name": "Kubernetes Management",
+
+    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:8362c181040e67121f8f729d017cd45ea38682c46bda81a5a43ebd46b64c69b2",
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
+
+    "workspaceFolder": "/project",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
+    "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+
+    "customizations": {
+      "vscode": {
+        "settings": {
+            "docker.dockerPath": "/usr/bin/docker",
+            "terminal.integrated.defaultProfile.linux": "bash",
+            "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
+            "editor.bracketPairColorization.enabled": true,
+            "editor.fontFamily": "FiraCode Nerd Font, monospace",
+            "editor.fontLigatures": true,
+            "editor.guides.bracketPairs": true,
+            "editor.guides.bracketPairsHorizontal": true,
+            "editor.guides.highlightActiveBracketPair": true,
+            "editor.hover.delay": 1000,
+            "editor.rulers": [
+                100
+            ],
+            "editor.stickyScroll.enabled": false,
+            "explorer.autoReveal": false,
+
+            "files.associations": {
+                "**/*.json5": "jsonc"
+            },
+            "files.trimTrailingWhitespace": true,
+
+            "material-icon-theme.files.associations": {
+                "*.secret.sops.env": "lock",
+                "*.secret.sops.yaml": "lock",
+                "helmrelease.yaml": "helm",
+                "helm-values.yaml": "helm"
+            },
+            "material-icon-theme.folders.associations": {
+                ".github/workflows": "robot",
+                "actions-runner-system": "github",
+                "cert-manager": "guard",
+                "external-secrets": "secure",
+                "vaultwarden": "secure",
+                "secrets-management": "secure",
+                "flux-system": "pipe",
+                "flux": "pipe",
+                "kube-system": "kubernetes",
+                "network": "connection",
+                "observability": "event",
+                "storage": "dump",
+                "system-upgrade": "update",
+                "tools": "tools",
+                "volsync-system": "aws",
+                "cloudflared": "cloudflare",
+                "talos": "linux",
+                "vault": "secure",
+                "cdi": "upload",
+                "virtualization": "Vm",
+                "kubevirt": "Vm",
+                "kubevirt-manager": "Vm"
+            },
+            "sops.defaults.ageKeyFile": "./age.key",
+            "sops.creationEnabled": true,
+            "yaml.schemaStore.enable": true,
+            "yaml.schemas": {
+                "kubernetes": "./kubernetes/**/*.yaml"
+            }
+        },
+        "extensions": [
+            "signageos.signageos-vscode-sops",
+            "BriteSnow.vscode-toggle-quotes",
+            "redhat.vscode-yaml",
+            "mitchdenny.ecdc",
+            "mikestead.dotenv",
+            "fcrespo82.markdown-table-formatter",
+            "albert.TabOut",
+            "pkief.material-icon-theme",
+            "PKief.material-product-icons",
+            "editorconfig.editorconfig",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "ms-azuretools.vscode-docker",
+            "GitHub.vscode-pull-request-github",
+            "donjayamanne.githistory"
+        ]
+      }
+    }
+}

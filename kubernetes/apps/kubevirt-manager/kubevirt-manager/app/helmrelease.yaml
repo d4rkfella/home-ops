@@ -1,0 +1,334 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app kubevirt-manager
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    global:
+      propagateGlobalMetadataToPods: true
+      labels:
+        kubevirt-manager.io/version: 1.4.2
+    serviceAccount:
+      create: true
+      name: *app
+    controllers:
+      kubevirt-manager:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret kubevirt-manager-secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+          app:
+            image:
+              repository: kubevirtmanager/kubevirt-manager
+              tag: 1.5.0@sha256:6bdb107e81b5eb7c06ca0eabdf3637868c96e8e211e8f08c675124a8357ab0c4
+            ports:
+              - name: http
+                containerPort: 8080
+            securityContext: *securityContext
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.95"
+          hostnames:
+            - "accounts.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 4180
+
+    ingress:
+      app:
+        annotations:
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: kubevirt-manager-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: 4180
+
+    persistence:
+      cache-volume:
+        type: emptyDir
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /var/cache/nginx
+
+      run-volume:
+        type: emptyDir
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /var/run
+
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        advancedMounts:
+          kubevirt-manager:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      darkfellanet-root-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          kubevirt-manager:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
+
+    rawResources:
+      vm-standard:
+        enabled: true
+        apiVersion: scheduling.k8s.io/v1
+        kind: PriorityClass
+        labels:
+          kubevirt-manager.io/managed: "true"
+        spec:
+          preemptionPolicy: Never
+          value: 999999999
+          description: Priority class for VMs which should not be preemtited.
+
+      vm-preemptible:
+        enabled: true
+        apiVersion: scheduling.k8s.io/v1
+        kind: PriorityClass
+        labels:
+          kubevirt-manager.io/managed: "true"
+        spec:
+          preemptionPolicy: PreemptLowerPriority
+          value: 1000000
+          description: Priority class for VMs which are allowed to be preemtited.
+
+    rbac:
+      roles:
+        kubevirt-manager:
+          enabled: true
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["nodes", "namespaces"]
+              verbs: ["get", "list"]
+            - apiGroups: [""]
+              resources: ["customresourcedefinitions"]
+              verbs: ["get", "list"]
+            - apiGroups: ["networking.k8s.io"]
+              resources: ["networkpolicies"]
+              verbs: ["*"]
+            - apiGroups: [""]
+              resources: ["persistentvolumeclaims", "persistentvolumes", "services", "secrets", "serviceaccounts", "configmaps"]
+              verbs: ["*"]
+            - apiGroups: ["apps"]
+              resources: ["deployments"]
+              verbs: ["*"]
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources: ["role", "clusterrole"]
+              verbs: ["get", "list"]
+            - apiGroups: ["rbac.authorization.k8s.io"]
+              resources: ["rolebindings", "clusterrolebindings"]
+              verbs: ["*"]
+            - apiGroups: ["storage.k8s.io"]
+              resources: ["storageclasses"]
+              verbs: ["get", "list"]
+            - apiGroups: ["apiextensions.k8s.io"]
+              resources: ["customresourcedefinitions"]
+              verbs: ["get", "list"]
+            - apiGroups: ["k8s.cni.cncf.io"]
+              resources: ["network-attachment-definitions"]
+              verbs: ["get", "list"]
+            - apiGroups: ["kubevirt.io"]
+              resources: ["virtualmachines", "virtualmachineinstances", "virtualmachineinstancemigrations"]
+              verbs: ["*"]
+            - apiGroups: ["subresources.kubevirt.io"]
+              resources: ["*"]
+              verbs: ["get", "list", "update", "patch"]
+            - apiGroups: ["instancetype.kubevirt.io"]
+              resources: ["*"]
+              verbs: ["*"]
+            - apiGroups: ["cdi.kubevirt.io"]
+              resources: ["*"]
+              verbs: ["*"]
+            - apiGroups: ["pool.kubevirt.io"]
+              resources: ["*"]
+              verbs: ["*"]
+            - apiGroups: ["scheduling.k8s.io"]
+              resources: ["priorityclasses"]
+              verbs: ["get", "list"]
+            - apiGroups: ["autoscaling"]
+              resources: ["horizontalpodautoscalers"]
+              verbs: ["*"]
+            - apiGroups: ["cluster.x-k8s.io"]
+              resources: ["clusters", "machinedeployments"]
+              verbs: ["*"]
+            - apiGroups: ["controlplane.cluster.x-k8s.io"]
+              resources: ["kubeadmcontrolplanes"]
+              verbs: ["*"]
+            - apiGroups: ["infrastructure.cluster.x-k8s.io"]
+              resources: ["kubevirtmachinetemplates", "kubevirtclusters"]
+              verbs: ["*"]
+            - apiGroups: ["bootstrap.cluster.x-k8s.io"]
+              resources: ["kubeadmconfigtemplates"]
+              verbs: ["*"]
+            - apiGroups: ["addons.cluster.x-k8s.io"]
+              resources: ["clusterresourcesets"]
+              verbs: ["*"]
+            - apiGroups: ["kubevirt-manager.io"]
+              resources: ["images"]
+              verbs: ["*"]
+        kccm:
+          enabled: true
+          type: ClusterRole
+          rules:
+            - apiGroups: ["kubevirt.io"]
+              resources: ["virtualmachines"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["kubevirt.io"]
+              resources: ["virtualmachineinstances"]
+              verbs: ["get", "list", "watch", "update"]
+            - apiGroups: [""]
+              resources: ["pods"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: [""]
+              resources: ["services"]
+              verbs: ["*"]
+        cas-workload:
+          enabled: true
+          type: ClusterRole
+          rules:
+            - apiGroups: [""]
+              resources: ["namespaces", "persistentvolumeclaims", "persistentvolumes", "pods", "replicationcontrollers", "services", "secrets"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: [""]
+              resources: ["nodes"]
+              verbs: ["get", "list", "watch", "udate"]
+            - apiGroups: [""]
+              resources: ["pods/eviction"]
+              verbs: ["create"]
+            - apiGroups: ["policy"]
+              resources: ["poddisruptionbudgets"]
+              verbs: ["list", "watch"]
+            - apiGroups: ["storage.k8s.io"]
+              resources: ["csinodes", "storageclasses", "csidrivers", "csistoragecapacities"]
+              verbs: ["get", "list", "watch"]
+            - apiGroups: ["batch"]
+              resources: ["jobs"]
+              verbs: ["list", "watch"]
+            - apiGroups: ["apps"]
+              resources: ["daemonsets", "replicasets", "statefulsets"]
+              verbs: ["list", "watch"]
+            - apiGroups: [""]
+              resources: ["events"]
+              verbs: ["create", "patch"]
+            - apiGroups: [""]
+              resources: ["configmaps"]
+              verbs: ["create", "delete", "get", "update"]
+            - apiGroups: ["coordination.k8s.io"]
+              resources: ["leases"]
+              verbs: ["create", "get", "update"]
+        cas-management:
+          enabled: true
+          type: ClusterRole
+          rules:
+            - apiGroups: ["cluster.x-k8s.io"]
+              resources: ["machinedeployments", "machinedeployments/scale", "machines", "machinesets", "machinepools"]
+              verbs: ["get", "list", "watch", "udate"]
+            - apiGroups: ["infrastructure.cluster.x-k8s.io"]
+              resources: ["kubevirtcluster", "kubevirtmachinetemplate", "kubevirtmachinetemplates"]
+              verbs: ["get", "list", "watch", "udate"]
+      bindings:
+        kubevirt-manager:
+          enabled: true
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: kubevirt-manager
+          subjects:
+            - identifier: default
+        kccm:
+          enabled: true
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: kccm
+          subjects:
+            - identifier: default
+        cas-workload:
+          enabled: true
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: cas-workload
+          subjects:
+            - identifier: default
+        cas-management:
+          enabled: true
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: cas-management
+          subjects:
+            - identifier: default

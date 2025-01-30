@@ -1,0 +1,216 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app prowlarr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      prowlarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.2@sha256:84a9ff4d12012dc51e78c29718a6355921b99b7ec8e5806dcb243fdad6b94d9d
+            env:
+              INIT_POSTGRES_DBNAME: &dbName prowlarr
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret "{{ .Release.Name }}-secret"
+                    key: &pgUser POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgPass POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_USER: postgres-db-manager
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: *securityContext
+
+          app:
+            image:
+              repository: ghcr.io/onedr0p/prowlarr-develop
+              tag: 1.30.2.4939@sha256:cf9e51aaabc9c6b745b34af7c5b5280ac62eb07f62b397b6b1834ba4c9862616
+            env:
+              TZ: Europe/Sofia
+              PROWLARR__APP__INSTANCENAME: Prowlarr
+              PROWLARR__APP__THEME: dark
+              PROWLARR__AUTH__METHOD: External
+              PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              PROWLARR__LOG__DBENABLED: "False"
+              PROWLARR__LOG__LEVEL: info
+              PROWLARR__SERVER__BINDADDRESS: 127.0.0.1
+              PROWLARR__SERVER__PORT: 80
+              PROWLARR__UPDATE__BRANCH: develop
+              PROWLARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PROWLARR_API_KEY
+              PROWLARR__POSTGRES__HOST: *dbHost
+              PROWLARR__POSTGRES__MAINDB: *dbName
+              PROWLARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgUser
+              PROWLARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgPass
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: 4180
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 1Gi
+            securityContext: *securityContext
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.97"
+          hostnames:
+            - "radarr.darkfellanetwork.com"
+            - "sonarr.darkfellanetwork.com"
+            - "qbittorrent.darkfellanetwork.com"
+        - ip: "192.168.91.95"
+          hostnames:
+            - "accounts.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: Always
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 4180
+
+    ingress:
+      app:
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            proxy_set_header Accept-Encoding "";
+            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/prowlarr/mind.css"></body>';
+            sub_filter_once on;
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: prowlarr-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        type: emptyDir
+        advancedMounts:
+          prowlarr:
+            app:
+              - path: /config
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          prowlarr:
+            app:
+              - path: /tmp
+
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        defaultMode: 0440
+        advancedMounts:
+          prowlarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      internal-root-ca:
+        type: secret
+        name: *secret
+        defaultMode: 0440
+        advancedMounts:
+          prowlarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true

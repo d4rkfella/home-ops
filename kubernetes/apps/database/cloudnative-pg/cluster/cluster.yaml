@@ -34,12 +34,13 @@ spec:
   enableSuperuserAccess: true
   postgresql:
     parameters:
-      max_connections: "400"
+      max_connections: "200"
       shared_buffers: "1GB"
       wal_init_zero: "off"
       wal_recycle: "off"
       max_wal_size: "4096"
       min_wal_size: "2048"
+      wal_keep_size: "8GB"
       wal_compression: "off"
       huge_pages: "on"
       work_mem: 10MB

@@ -3,6 +3,7 @@ FROM alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcff
 ARG USERNAME=vscode
 ARG USER_UID=2100
 ARG USER_GID=$USER_UID
+
 # renovate: depName=go-task/task
 ARG TASK_VERSION=v3.41.0
 # renovate: depName=kubevirt/kubevirt

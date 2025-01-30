@@ -18,6 +18,9 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
+            - env:
+              - name: KC_DB_URL_PROPERTIES
+                value: "?sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
 
         initContainers:
           - name: init-db
@@ -74,7 +77,7 @@ spec:
 
   instances: 1
 
-  image: ghcr.io/d4rkfella/keycloak:26.1.0@sha256:43d3ad06cce58b7fe8c13869df6346bbf0376eef3f72c2b01a6c689590864f74
+  image: ghcr.io/d4rkfella/keycloak:26.1.0@sha256:2a8fb7c6f1a045c4651570a539a48db0a89c40e1b4d0024b792959f035262b8e
 
   startOptimized: true
 

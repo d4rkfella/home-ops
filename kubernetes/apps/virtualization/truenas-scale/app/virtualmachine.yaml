@@ -64,7 +64,10 @@ spec:
           type: "pc-q35-rhel9.2.0"
         resources:
           requests:
-            memory: 48G
+            memory: 49152Mi
+        memory:
+          hugepages:
+            pageSize: "2Mi"
       volumes:
       - dataVolume:
           name: truenas-scale-iso

@@ -9,12 +9,16 @@ metadata:
     cert-manager.io/private-key-rotation-policy: Always
     cert-manager.io/private-key-algorithm: ECDSA
     cert-manager.io/private-key-size: "384"
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location /admin {
+        deny all;
+        return 403;
+      }
 spec:
   ingressClassName: external
   tls:
     - hosts:
         - &host accounts.darkfellanetwork.com
-        - admin.darkfellanetwork.com
       secretName: keycloak-tls
   rules:
     - host: *host

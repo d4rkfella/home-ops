@@ -32,27 +32,3 @@ spec:
                 name: keycloak-service
                 port:
                   number: 443
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: keycloak-admin-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-spec:
-  ingressClassName: internal
-  tls:
-    - hosts:
-        - &host accounts.darkfellanetwork.com
-      secretName: keycloak-tls
-  rules:
-    - host: *host
-      http:
-        paths:
-          - path: /admin
-            pathType: Prefix
-            backend:
-              service:
-                name: keycloak-service
-                port:
-                  number: 443

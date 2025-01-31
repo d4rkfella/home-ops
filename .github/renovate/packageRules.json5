@@ -23,6 +23,12 @@
       "matchPackageNames": ["ghcr.io/d4rkfella/keycloak"],
       "matchDatasources": ["docker"],
       "changelogUrl": "https://www.keycloak.org/docs/latest/release_notes/index.html"
+    },
+    {
+      "matchPackageNames": ["hashicorp/vault"],
+      "matchDatasources": ["docker"],
+      "sourceUrl": "https://github.com/hashicorp/vault",
+      "changelogUrl": "https://github.com/hashicorp/vault/blob/main/CHANGELOG.md"
     }
   ]
 }

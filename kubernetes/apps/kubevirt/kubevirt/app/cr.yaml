@@ -7,6 +7,8 @@ spec:
   monitorNamespace: observability
   monitorAccount: prometheus-operator
   configuration:
+    ksmConfiguration:
+      nodeLabelSelector: {}
     vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:
       useEmulation: false

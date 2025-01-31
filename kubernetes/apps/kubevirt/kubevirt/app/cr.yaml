@@ -5,7 +5,7 @@ metadata:
   name: kubevirt
 spec:
   monitorNamespace: observability
-  monitorAccount: prometheus-k8s
+  monitorAccount: prometheus-operator
   configuration:
     vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:

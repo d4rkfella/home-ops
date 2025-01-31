@@ -15,6 +15,7 @@ spec:
   tls:
     - hosts:
         - &host accounts.darkfellanetwork.com
+        - admin.darkfellanetwork.com
       secretName: keycloak-tls
   rules:
     - host: *host
@@ -35,16 +36,12 @@ metadata:
   namespace: idp
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    cert-manager.io/cluster-issuer: zerossl-prod
-    cert-manager.io/private-key-rotation-policy: Always
-    cert-manager.io/private-key-algorithm: ECDSA
-    cert-manager.io/private-key-size: "384"
 spec:
   ingressClassName: internal
   tls:
     - hosts:
         - &host admin.darkfellanetwork.com
-      secretName: keycloak-admin-tls
+      secretName: keycloak-tls
   rules:
     - host: *host
       http:

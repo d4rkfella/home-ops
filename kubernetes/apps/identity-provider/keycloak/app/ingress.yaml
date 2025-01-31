@@ -44,7 +44,7 @@ spec:
   tls:
     - hosts:
         - &host admin.darkfellanetwork.com
-      secretName: keycloak-tls
+      secretName: keycloak-admin-tls
   rules:
     - host: *host
       http:

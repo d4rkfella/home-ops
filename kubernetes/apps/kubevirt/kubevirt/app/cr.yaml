@@ -9,7 +9,7 @@ spec:
   configuration:
     vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:
-      useEmulation: false
+      useEmulation: true
       featureGates:
         - HostDevices
         - DataVolumes

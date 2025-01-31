@@ -11,9 +11,15 @@ metadata:
     cert-manager.io/private-key-size: "384"
     nginx.ingress.kubernetes.io/server-snippet: |
       location /admin {
-        satisfy any;
-        allow 192.168.91.0/24;
-        deny all;
+        set $allowed_ip 0;
+
+        if ($remote_addr ~ ^192\.168\.91\.) {
+          set $allowed_ip 1;
+        }
+
+        if ($allowed_ip = 0) {
+          return 403;
+        }
       }
 spec:
   ingressClassName: external

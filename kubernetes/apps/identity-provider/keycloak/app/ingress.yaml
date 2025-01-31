@@ -20,6 +20,11 @@ metadata:
         if ($allowed_ip = 0) {
           return 403;
         }
+
+        proxy_pass https://keycloak-service.idp.svc.cluster.local:443;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
       }
 spec:
   ingressClassName: external

@@ -81,4 +81,4 @@ WORKDIR /project
 
 USER $USERNAME
 
-CMD [ "/bin/bash", "-i" ]
+ENTRYPOINT ["/bin/bash", "-i"]

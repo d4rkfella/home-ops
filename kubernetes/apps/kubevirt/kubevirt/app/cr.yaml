@@ -18,7 +18,6 @@ spec:
         - VMPersistentState
         - ExpandDisks
         - Snapshot
-        - NetworkBindingPlugins
         - CPUNodeDiscovery
     smbios:
       sku: "TalosCloud"

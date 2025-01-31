@@ -27,7 +27,7 @@ RUN helm version
 COPY --from=fluxcd/flux-cli:v2.4.0@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f /usr/local/bin/flux /usr/local/bin/flux
 RUN flux --version
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.9.3@sha256:d1d324131e46d915ab16a24aba8e5aabd3361c0749f78fb2cf16703eafae8a2f /talosctl /usr/local/bin/talosctl
+COPY --from=ghcr.io/siderolabs/talosctl:v1.10.0-alpha.1 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
 COPY --from=ghcr.io/getsops/sops:v3.9.4@sha256:5861d711e485d01fa9d148654cf267b285f78bc1bf74d9ea208e90be737d2293 /usr/local/bin/sops /usr/local/bin/sops

@@ -37,7 +37,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-  ingressClassName: external
+  ingressClassName: internal
   tls:
     - hosts:
         - &host admin.darkfellanetwork.com

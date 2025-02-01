@@ -11,6 +11,8 @@ bpf:
   preallocateMaps: true
   tproxy: true
   datapathMode: netkit
+bgpControlPlane:
+  enabled: true
 cgroup:
   automount:
     enabled: false

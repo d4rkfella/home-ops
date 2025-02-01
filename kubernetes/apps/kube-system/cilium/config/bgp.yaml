@@ -7,7 +7,7 @@ spec:
  - localASN: 65400
    serviceSelector:
      matchExpressions:
-       - {key: "io.cilium/bgp-announce", operator: In, values: ['worker']}
+       - {key: "io.cilium/bgp-announce", operator: In, values: ['true']}
    neighbors:
     - peerAddress: '192.168.91.1/32'
       peerASN: 65532

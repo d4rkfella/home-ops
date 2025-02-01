@@ -30,6 +30,8 @@ hubble:
   enabled: false
 ipam:
   mode: kubernetes
+ipv6:
+  enabled: true
 ipv4NativeRoutingCIDR: 172.16.0.0/16
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445

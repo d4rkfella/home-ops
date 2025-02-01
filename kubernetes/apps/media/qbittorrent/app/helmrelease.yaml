@@ -118,6 +118,8 @@ spec:
         allocateLoadBalancerNodePorts: false
         annotations:
           lbipam.cilium.io/ips: 192.168.91.82
+        labels:
+          io.cilium/bgp-announce: "true"
         ports:
           bittorrent-tcp:
             enabled: true

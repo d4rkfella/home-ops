@@ -2,6 +2,7 @@
 cni:
   exclusive: false
 enableIPv4BIGTCP: true
+enableIPv6BIGTCP: true
 autoDirectNodeRoutes: true
 bandwidthManager:
   enabled: true

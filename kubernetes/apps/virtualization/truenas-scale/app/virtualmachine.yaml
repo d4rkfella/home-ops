@@ -37,6 +37,8 @@ spec:
               secureBoot: false
         devices:
           autoattachVSOCK: true
+          autoattachInputDevice: false
+          autoattachMemBalloon: false
           hostDevices:
             - deviceName: devices.kubevirt.io/nvme
               name: intel-optane

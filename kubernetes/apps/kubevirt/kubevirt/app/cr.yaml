@@ -11,7 +11,7 @@ spec:
       nodeLabelSelector: {}
     vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:
-      useEmulation: true
+      useEmulation: false
       featureGates:
         - HostDevices
         - DataVolumes

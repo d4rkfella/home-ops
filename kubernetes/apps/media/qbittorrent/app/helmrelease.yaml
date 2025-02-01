@@ -117,7 +117,7 @@ spec:
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
         annotations:
-          lbipam.cilium.io/ips: 192.168.91.82
+          lbipam.cilium.io/ips: 192.168.91.82,2a01:5a8:304:266b:1000::1
         labels:
           io.cilium/bgp-announce: "true"
         ports:

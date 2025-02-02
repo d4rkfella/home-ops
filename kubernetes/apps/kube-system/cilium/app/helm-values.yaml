@@ -33,7 +33,7 @@ ipam:
 ipv6:
   enabled: true
 ipv4NativeRoutingCIDR: 172.16.0.0/16
-ipv6NativeRoutingCIDR: fdc7::/16
+ipv6NativeRoutingCIDR: fd40:10::/96
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true

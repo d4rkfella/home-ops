@@ -192,7 +192,7 @@ ui:
   activeVaultPodOnly: true
   serviceType: "LoadBalancer"
   externalPort: 8200
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   serviceNodePort: 0
   annotations:
     external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com

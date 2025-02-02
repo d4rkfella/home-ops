@@ -131,7 +131,6 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: UDP
-
     ingress:
       app:
         annotations:

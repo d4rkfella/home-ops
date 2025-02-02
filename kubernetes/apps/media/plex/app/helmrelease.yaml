@@ -84,7 +84,7 @@ spec:
         allocateLoadBalancerNodePorts: false
         annotations:
           external-dns.alpha.kubernetes.io/hostname: plex.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.92.98
+          lbipam.cilium.io/ips: 192.168.91.98
         labels:
           io.cilium/bgp-announce: "true"
         ports:

@@ -3,12 +3,16 @@ kind: CiliumBGPPeeringPolicy
 metadata:
  name: bgp-peering-policy
 spec:
- virtualRouters:
- - localASN: 65400
-   serviceSelector:
-     matchExpressions:
-       - {key: "io.cilium/bgp-announce", operator: In, values: ['true']}
-   neighbors:
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: linux
+  virtualRouters:
+  - localASN: 65400
+    exportPodCIDR: false
+    serviceSelector:
+      matchExpressions:
+        - {key: "io.cilium/bgp-announce", operator: In, values: ['true']}
+    neighbors:
     - peerAddress: '192.168.91.1/32'
       peerASN: 65532
       eBGPMultihopTTL: 10

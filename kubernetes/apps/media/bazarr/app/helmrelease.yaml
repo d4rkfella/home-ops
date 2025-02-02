@@ -160,6 +160,8 @@ spec:
 
     service:
       app:
+        ipFamilyPolicy: RequireDualStack
+        ipFamilies: ["IPv4", "IPv6"]
         controller: bazarr
         ports:
           http:

@@ -108,6 +108,8 @@ spec:
       app:
         controller: *app
         primary: true
+        ipFamilyPolicy: RequireDualStack
+        ipFamilies: ["IPv4", "IPv6"]
         ports:
           http:
             port: *port

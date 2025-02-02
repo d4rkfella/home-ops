@@ -82,7 +82,8 @@ server:
     publishNotReadyAddresses: false
     port: 8200
     targetPort: 8200
-
+    ipFamilyPolicy: RequireDualStack
+    ipFamilies: ["IPv4", "IPv6"]
   dataStorage:
     enabled: true
     size: 20Gi

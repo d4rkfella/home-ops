@@ -2,7 +2,6 @@
 cni:
   exclusive: false
 enableIPv4BIGTCP: true
-enableIPv6BIGTCP: true
 autoDirectNodeRoutes: true
 bandwidthManager:
   enabled: true
@@ -30,16 +29,13 @@ hubble:
   enabled: false
 ipam:
   mode: kubernetes
-ipv6:
-  enabled: true
 ipv4NativeRoutingCIDR: 172.16.0.0/16
-ipv6NativeRoutingCIDR: fd40:10::/96
 k8sServiceHost: 127.0.0.1
 k8sServicePort: 7445
 kubeProxyReplacement: true
 kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
-  enabled: true
+  enabled: false
 loadBalancer:
   algorithm: maglev
   mode: dsr

@@ -136,8 +136,6 @@ spec:
 
     service:
       app:
-        ipFamilyPolicy: RequireDualStack
-        ipFamilies: ["IPv4", "IPv6"]
         controller: jellyseerr
         ports:
           http:

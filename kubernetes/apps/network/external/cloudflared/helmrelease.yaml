@@ -84,8 +84,6 @@ spec:
               app.kubernetes.io/name: *app
     service:
       app:
-        ipFamilyPolicy: RequireDualStack
-        ipFamilies: ["IPv4", "IPv6"]
         controller: cloudflared
         ports:
           http:

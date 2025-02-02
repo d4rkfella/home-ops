@@ -34,8 +34,6 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       service:
-        ipFamilyPolicy: RequireDualStack
-        ipFamilies: ["IPv4", "IPv6"]
         targetPort: oauth-proxy
       serviceMonitor:
         selfMonitor: false

@@ -120,8 +120,6 @@ spec:
             app.kubernetes.io/part-of: dragonfly-operator
             control-plane: controller-manager
         controller: dragonfly-operator-controller-manager
-        ipFamilyPolicy: RequireDualStack
-        ipFamilies: ["IPv4", "IPv6"]
         ports:
           https:
             port: 8443

@@ -74,8 +74,6 @@ spec:
         seccompProfile: { type: RuntimeDefault }
     service:
       app:
-        ipFamilyPolicy: RequireDualStack
-        ipFamilies: ["IPv4", "IPv6"]
         controller: flaresolverr
         ports:
           http:

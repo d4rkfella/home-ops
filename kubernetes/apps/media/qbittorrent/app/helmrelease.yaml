@@ -118,8 +118,8 @@ spec:
         allocateLoadBalancerNodePorts: false
         ipFamilyPolicy: RequireDualStack
         ipFamilies: ["IPv4", "IPv6"]
-        #annotations:
-          #lbipam.cilium.io/ips: 192.168.91.82,2a01:5a8:304:266b:1000::1
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.82,2a01:5a8:304:28d7:8a2e:0370:7334
         labels:
           io.cilium/bgp-announce: "true"
         ports:

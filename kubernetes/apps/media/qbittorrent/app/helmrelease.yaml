@@ -116,7 +116,7 @@ spec:
         primary: false
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
-        ipFamilyPolicy: PreferDualStack
+        ipFamilyPolicy: RequireDualStack
         ipFamilies: ["IPv4", "IPv6"]
         #annotations:
           #lbipam.cilium.io/ips: 192.168.91.82,2a01:5a8:304:266b:1000::1

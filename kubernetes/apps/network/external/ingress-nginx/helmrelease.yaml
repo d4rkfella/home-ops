@@ -32,6 +32,8 @@ spec:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: &hostname external.darkfellanetwork.com
           lbipam.cilium.io/ips: 192.168.91.95
+        labels:
+          io.cilium/bgp-announce: "true"
         allocateLoadBalancerNodePorts: false
       ingressClassResource:
         name: external

@@ -85,7 +85,7 @@ spec:
           namespaceSelector:
             any: true
       extraArgs:
-        default-ssl-certificate: cert-manager/darkfellanet-tls
+        default-ssl-certificate: network/darkfellanet-tls
         publish-status-address: *hostname
       terminationGracePeriodSeconds: 120
       publishService:

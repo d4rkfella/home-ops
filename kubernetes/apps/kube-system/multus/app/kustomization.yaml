@@ -7,3 +7,9 @@ resources:
   - https://raw.githubusercontent.com/k8snetworkplumbingwg/network-attachment-definition-client/refs/tags/v1.7.5/artifacts/networks-crd.yaml
   - ./helmrelease.yaml
   - ./rbac.yaml
+configMapGenerator:
+  - name: multus-helm-values
+    files:
+      - values.yaml=./helm-values.yaml
+configurations:
+  - kustomizeconfig.yaml

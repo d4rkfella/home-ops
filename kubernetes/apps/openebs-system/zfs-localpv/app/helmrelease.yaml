@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: zfs-localpv
-      version: 2.6.2
+      version: 2.7.0-develop
       sourceRef:
         kind: HelmRepository
         name: zfs-localpv

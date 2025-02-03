@@ -216,7 +216,6 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         enableAdminAPI: false
-        walCompression: true
         enableFeatures:
           - memory-snapshot-on-shutdown
         retention: 14d
@@ -226,6 +225,7 @@ spec:
             cpu: 100m
           limits:
             memory: 1500Mi
+        walCompression: false
         storageSpec:
           volumeClaimTemplate:
             spec:

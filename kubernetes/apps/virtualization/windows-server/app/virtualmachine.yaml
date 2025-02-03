@@ -40,6 +40,9 @@ spec:
             efi: {}
           uuid: 43a838b8-9c2f-41ef-84b0-2370fd097a97
         devices:
+          autoattachVSOCK: true
+          autoattachInputDevice: false
+          autoattachMemBalloon: false
           interfaces:
             - name: bridge
               bridge: {}

@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/openebs-system/zfs-localpv/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -34,7 +34,7 @@ spec:
     - name: openebs-zfs-localpv
       namespace: openebs-system
   path: ./kubernetes/apps/openebs-system/zfs-localpv/config
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -55,7 +55,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/openebs-system/zfs-localpv/scrubber
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

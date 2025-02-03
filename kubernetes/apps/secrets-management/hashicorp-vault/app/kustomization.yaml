@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
-  #- ./vault.secret.sops.yaml
+  - ./vault.secret.sops.yaml
   - ./cronjob.yaml
 configMapGenerator:
   - name: vault-helm-values

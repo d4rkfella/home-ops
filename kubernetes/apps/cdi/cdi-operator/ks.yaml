@@ -10,7 +10,7 @@ spec:
     - name: kubevirt
       namespace: kubevirt
   path: ./kubernetes/apps/cdi/cdi-operator/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

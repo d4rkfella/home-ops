@@ -189,7 +189,7 @@ server:
 ui:
   enabled: true
   publishNotReadyAddresses: false
-  activeVaultPodOnly: true
+  activeVaultPodOnly: false
   serviceType: "LoadBalancer"
   externalPort: 8200
   externalTrafficPolicy: Local
@@ -197,8 +197,6 @@ ui:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: vault.darkfellanetwork.com
     lbipam.cilium.io/ips: 192.168.92.10
-  labels:
-    io.cilium/bgp-announce: "true"
 
 serverTelemetry:
   prometheusRules:

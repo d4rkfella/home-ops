@@ -249,3 +249,14 @@ spec:
               - path: /etc/ssl/certs/darkfellanet-root-ca.crt
                 subPath: ca.crt
                 readOnly: true
+
+      postgres-cert-file:
+        type: secret
+        name: *secret
+        defaultMode: 0440
+        advancedMounts:
+          radarr:
+            app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: postgres-ca.crt
+                readOnly: true

@@ -250,6 +250,9 @@ spec:
               - source_labels: [__meta_kubernetes_endpoint_port_name]
                 regex: "https"
                 action: keep
+              - source_labels: [__meta_kubernetes_pod_label_app]
+                regex: vault-agent-injector
+                action: drop
             tls_config:
               server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false

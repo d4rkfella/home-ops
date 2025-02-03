@@ -141,7 +141,6 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
-      runtimeClassName: runc.v2
       hostAliases:
         - ip: "192.168.92.12"
           hostnames:

@@ -306,6 +306,15 @@ spec:
           fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
+    nodeExporter:
+      enabled: true
+      operatingSystems:
+        linux:
+          enabled: true
+        aix:
+          enabled: false
+        darwin:
+          enabled: false
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus:

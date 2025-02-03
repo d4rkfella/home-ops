@@ -100,41 +100,41 @@ releases:
       #command: kubectl
       #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
 
-  - name: vault
-    namespace: vault
-    chart: vault/vault
-    version: 0.29.1
-    values:
-      - ../apps/secrets-management/hashicorp-vault/app/helm-values.yaml
+  #- name: vault
+    #namespace: vault
+    #chart: vault/vault
+    #version: 0.29.1
+    #values:
+      #- ../apps/secrets-management/hashicorp-vault/app/helm-values.yaml
     #hooks:
     #- events: ["prepare"]
       #showlogs: true
       #command: kubectl
       #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
 
-  #- name: flux-operator
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
-    #version: 0.13.0
-    #values:
-      #- ../apps/flux-system/flux-operator/app/helm-values.yaml
-    #hooks:
-    #- events: ["prepare"]
-      #showlogs: true
-      #command: kubectl
-      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+  - name: flux-operator
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+    version: 0.13.0
+    values:
+      - ../apps/flux-system/flux-operator/app/helm-values.yaml
+    hooks:
+    - events: ["prepare"]
+      showlogs: true
+      command: kubectl
+      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
     #needs:
       #- kube-system/zfs-localpv
 
-  #- name: flux-instance
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
-    #version: 0.13.0
-    #wait: false
-    #values:
-      #- ../apps/flux-system/flux-operator/instance/helm-values.yaml
-    #needs:
-      #- flux-system/flux-operator
+  - name: flux-instance
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
+    version: 0.13.0
+    wait: false
+    values:
+      - ../apps/flux-system/flux-operator/instance/helm-values.yaml
+    needs:
+      - flux-system/flux-operator
 
   #- name: multus
     #namespace: kube-system

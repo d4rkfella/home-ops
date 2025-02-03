@@ -246,6 +246,10 @@ spec:
                 namespaces:
                   names:
                     - vault
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_endpoint_port_name]
+                regex: "8200"
+                action: keep
             tls_config:
               server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false

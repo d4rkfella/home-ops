@@ -247,9 +247,12 @@ spec:
                   names:
                     - vault
             relabel_configs:
-              - source_labels: [__meta_kubernetes_endpoint_port_number]
-                regex: "8200"
+              - source_labels: [__meta_kubernetes_endpoint_port_name]
+                regex: "https"
                 action: keep
+              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+                regex: vault-agent-injector
+                action: drop
             tls_config:
               server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false

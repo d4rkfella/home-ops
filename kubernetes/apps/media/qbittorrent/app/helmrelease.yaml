@@ -93,7 +93,7 @@ spec:
 
     defaultPodOptions:
       hostAliases:
-        - ip: "192.168.91.97"
+        - ip: "192.168.92.12"
           hostnames:
             - "cross-seed.darkfellanetwork.com"
       securityContext:

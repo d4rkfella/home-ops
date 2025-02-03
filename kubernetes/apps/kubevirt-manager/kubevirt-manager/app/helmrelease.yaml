@@ -72,7 +72,7 @@ spec:
 
     defaultPodOptions:
       hostAliases:
-        - ip: "192.168.91.95"
+        - ip: "192.168.92.11"
           hostnames:
             - "accounts.darkfellanetwork.com"
       securityContext:

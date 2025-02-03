@@ -140,14 +140,14 @@ spec:
 
     defaultPodOptions:
       hostAliases:
-        - ip: "192.168.91.97"
+        - ip: "192.168.92.12"
           hostnames:
             - "radarr.darkfellanetwork.com"
             - "sonarr.darkfellanetwork.com"
-        - ip: "192.168.91.98"
+        - ip: "192.168.92.13"
           hostnames:
             - "plex.darkfellanetwork.com"
-        - ip: "192.168.91.95"
+        - ip: "192.168.92.11"
           hostnames:
             - "accounts.darkfellanetwork.com"
       securityContext:

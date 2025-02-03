@@ -118,11 +118,11 @@ releases:
     version: 0.13.0
     values:
       - ../apps/flux-system/flux-operator/app/helm-values.yaml
-    hooks:
-    - events: ["prepare"]
-      showlogs: true
-      command: kubectl
-      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+    #hooks:
+    #- events: ["prepare"]
+      #showlogs: true
+      #command: kubectl
+      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
     #needs:
       #- kube-system/zfs-localpv
 

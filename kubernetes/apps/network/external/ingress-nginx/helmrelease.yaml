@@ -31,7 +31,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: &hostname external.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.91.95
+          lbipam.cilium.io/ips: 192.168.92.11
         labels:
           io.cilium/bgp-announce: "true"
         allocateLoadBalancerNodePorts: false

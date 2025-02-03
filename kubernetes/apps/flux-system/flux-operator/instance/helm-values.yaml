@@ -26,6 +26,13 @@ instance:
   kustomize:
     patches:
       - patch: |
+          - op: add
+            path: /spec/decryption
+            value:
+              provider: sops
+              secretRef:
+                name: sops-age
+      - patch: |
           - op: replace
             path: /spec/template/spec/containers/0/image
             value: ghcr.io/d4rkfella/fluxcd/notification-controller:am-bearer@sha256:3b3daabbc557666874a766370181744a82b27c56d1ba86bdabb61dfe5d56c6d2

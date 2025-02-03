@@ -243,9 +243,8 @@ spec:
               credentials_file: /vault/secrets/token
             kubernetes_sd_configs:
               - role: endpoints
-                namespace_selector:
-                  match_names:
-                    - vault
+                namespace:
+                  - vault
             tls_config:
               server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false

@@ -31,7 +31,7 @@ spec:
           containers:
           - name: vaultbackup
             image: ghcr.io/d4rkfella/vault-backup:latest@sha256:0eac503d8604cf454b34fe2c217ec4331dfe20c188a88d0d849da89d09d61cc2
-            imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
                 value: https://vault.darkfellanetwork.com:8200

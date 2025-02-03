@@ -241,8 +241,14 @@ spec:
             scheme: https
             authorization:
               credentials_file: /vault/secrets/token
-            static_configs:
-              - targets: ['vault.darkfellanetwork.com:8200']
+            kubernetes_sd_configs:
+              - role: endpoints
+                namespace_selector:
+                  match_names:
+                    - vault
+            tls_config:
+              server_name: vault.darkfellanetwork.com
+              insecure_skip_verify: false
 
         volumes:
           - name: &secret prometheus-secret

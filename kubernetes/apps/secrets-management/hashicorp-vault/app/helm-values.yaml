@@ -189,7 +189,7 @@ server:
 ui:
   enabled: true
   publishNotReadyAddresses: false
-  activeVaultPodOnly: false
+  activeVaultPodOnly: true
   serviceType: "LoadBalancer"
   externalPort: 8200
   externalTrafficPolicy: Local

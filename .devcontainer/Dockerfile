@@ -7,7 +7,7 @@ ARG USER_GID=$USER_UID
 # renovate: depName=go-task/task
 ARG TASK_VERSION=v3.41.0
 # renovate: depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.4.0
+ARG VIRTCTL_VERSION=v1.5.0-beta.0
 # renovate: depName=a8m/envsubst
 ARG ENVSUBST_VERSION=v1.4.2
 

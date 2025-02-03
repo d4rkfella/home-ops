@@ -21,7 +21,7 @@ COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/lo
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
 RUN aws --version
 
-COPY --from=alpine/helm:3.17.0@sha256:6e751770fffffb091a931103108c67a61ee622950a3087dec44a5e2fe7860e41 /usr/bin/helm /usr/local/bin/helm
+COPY --from=alpine/helm:3.17.0@sha256:3171b2d9aed2d6e033f1cf8ae4dc2863a0cef21f167fb4655c15afbe68256432 /usr/bin/helm /usr/local/bin/helm
 RUN helm version
 
 COPY --from=fluxcd/flux-cli:v2.4.0@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f /usr/local/bin/flux /usr/local/bin/flux

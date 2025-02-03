@@ -243,12 +243,12 @@ spec:
               credentials_file: /vault/secrets/token
             kubernetes_sd_configs:
               - role: endpoints
-                namespace:
-                  - vault
+                namespaces:
+                  names:
+                    - vault
             tls_config:
               server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false
-
         volumes:
           - name: &secret prometheus-secret
             secret:

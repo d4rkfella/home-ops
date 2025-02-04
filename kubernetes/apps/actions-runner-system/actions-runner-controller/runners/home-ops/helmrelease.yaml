@@ -45,7 +45,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/d4rkfella/home-ops
     minRunners: 1
-    maxRunners: 6
+    maxRunners: 3
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:

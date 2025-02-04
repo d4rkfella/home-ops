@@ -9,7 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
+  interval: 31m
   path: ./kubernetes/apps/arc-runners/app
   prune: true
   sourceRef:

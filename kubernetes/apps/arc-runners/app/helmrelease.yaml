@@ -42,7 +42,6 @@ spec:
         resources:
           requests:
             storage: 20Gi
-      kubernetesModeServiceAccount: home-ops-runner
     template:
       spec:
         containers:

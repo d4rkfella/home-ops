@@ -2,17 +2,14 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: actions-runner-system
+namespace: arc-runners
 resources:
-  - ./actions-runner-controller/ks.yaml
+  - ./ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
 patches:
   - patch: |
-      - op: add
-        path: /metadata/name
-        value: arc-systems
       - op: add
         path: /metadata/name
         value: arc-runners
@@ -21,7 +18,7 @@ patches:
   - patch: |
       - op: replace
         path: /subjects/0/namespace
-        value: actions-runner-system
+        value: arc-runners
     target:
       kind: RoleBinding
       name: secret-access-binding

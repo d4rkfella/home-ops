@@ -72,6 +72,7 @@ spec:
               AUTOBRR__PORT: &port 80
               AUTOBRR__LOG_PATH: /config/log
               AUTOBRR__LOG_LEVEL: INFO
+              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
               AUTOBRR__POSTGRES_DATABASE: *dbName
               AUTOBRR__POSTGRES_HOST: *dbHost

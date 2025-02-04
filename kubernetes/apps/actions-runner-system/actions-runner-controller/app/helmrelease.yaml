@@ -29,3 +29,13 @@ spec:
   values:
     fullnameOverride: *name
     replicaCount: 1
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile: { type: RuntimeDefault }
+    securityContext:
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true

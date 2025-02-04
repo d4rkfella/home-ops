@@ -26,24 +26,12 @@ spec:
       retries: 3
   dependsOn:
     - name: actions-runner-controller
-      namespace: actions-runner-system
+      namespace: arc-systems
     - name: zfs-localpv
       namespace: openebs-system
-  valuesFrom:
-    - targetPath: githubConfigSecret.github_app_id
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
-    - targetPath: githubConfigSecret.github_app_installation_id
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
-    - targetPath: githubConfigSecret.github_app_private_key
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
     githubConfigUrl: https://github.com/d4rkfella/home-ops
+    githubConfigSecret: arc-runners-secret
     minRunners: 1
     maxRunners: 3
     containerMode:
@@ -80,4 +68,4 @@ spec:
               secretName: *name
     controllerServiceAccount:
       name: actions-runner-controller
-      namespace: actions-runner-system
+      namespace: arc-systems

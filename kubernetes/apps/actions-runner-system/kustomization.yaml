@@ -12,7 +12,10 @@ patches:
   - patch: |
       - op: add
         path: /metadata/name
-        value: actions-runner-system
+        value: arc-systems
+      - op: add
+        path: /metadata/name
+        value: arc-runners
     target:
       kind: Namespace
   - patch: |

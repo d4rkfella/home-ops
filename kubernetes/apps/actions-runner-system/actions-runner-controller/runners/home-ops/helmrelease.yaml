@@ -31,7 +31,7 @@ spec:
       namespace: openebs-system
   values:
     githubConfigUrl: https://github.com/d4rkfella/home-ops
-    githubConfigSecret: gha-runner-scale-set-secret
+    githubConfigSecret: actions-runner-controller-secret
     minRunners: 1
     maxRunners: 6
     containerMode:

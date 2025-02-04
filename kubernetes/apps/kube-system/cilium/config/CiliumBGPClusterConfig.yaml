@@ -5,7 +5,7 @@ metadata:
 spec:
   bgpInstances:
   - name: "cilium"
-    localASN: 65000
+    localASN: 65001
     peers:
     - name: "opnsense"
       peerASN: 65000

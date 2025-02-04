@@ -93,7 +93,7 @@ spec:
 
     defaultPodOptions:
       hostAliases:
-        - ip: "192.168.92.12"
+        - ip: "192.168.91.52"
           hostnames:
             - "cross-seed.darkfellanetwork.com"
       securityContext:
@@ -116,10 +116,9 @@ spec:
         primary: false
         type: LoadBalancer
         allocateLoadBalancerNodePorts: false
+        externalTrafficPolicy: Local
         annotations:
-          lbipam.cilium.io/ips: 192.168.92.14
-        labels:
-          io.cilium/bgp-announce: "true"
+          lbipam.cilium.io/ips: 192.168.91.55
         ports:
           bittorrent-tcp:
             enabled: true

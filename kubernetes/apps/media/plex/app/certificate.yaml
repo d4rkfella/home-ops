@@ -5,6 +5,9 @@ metadata:
 spec:
   dnsNames:
     - plex.darkfellanetwork.com
+  subject:
+    organizations:
+      - DarkfellaNET
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
@@ -12,6 +15,7 @@ spec:
   privateKey:
     algorithm: ECDSA
     rotationPolicy: Always
+    encoding: PKCS8
     size: 384
   secretName: plex-tls
   usages:

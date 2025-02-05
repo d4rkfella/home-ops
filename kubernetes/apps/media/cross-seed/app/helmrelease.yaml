@@ -93,6 +93,8 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
         className: internal
         tls:
           - hosts:

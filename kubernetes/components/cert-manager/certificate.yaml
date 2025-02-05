@@ -5,6 +5,9 @@ metadata:
   name: ${APP}-tls
 spec:
   dnsNames: ${DNS_NAMES}
+  subject:
+    organizations:
+      - DarkfellaNET
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer
@@ -13,6 +16,7 @@ spec:
     algorithm: ECDSA
     rotationPolicy: Always
     size: 384
+    encoding: PKCS8
   secretName: ${APP}-tls
   usages:
     - digital signature

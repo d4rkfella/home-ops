@@ -45,6 +45,8 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
         ingressClassName: internal
         tls:
           - hosts: &host ["alertmanager.darkfellanetwork.com"]
@@ -156,6 +158,8 @@ spec:
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
           nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
         ingressClassName: internal
         tls:
           - hosts: &host ["prometheus.darkfellanetwork.com"]

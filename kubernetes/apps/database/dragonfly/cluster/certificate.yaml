@@ -14,6 +14,7 @@ spec:
   privateKey:
     algorithm: ECDSA
     encoding: PKCS8
+    rotationPolicy: Always
     size: 384
   dnsNames:
     - dragonfly-cluster

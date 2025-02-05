@@ -59,7 +59,6 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: oidc-jwt-fetcher
-  #namespace: not-used
 roleRef:
   kind: Role
   name: secret-access-role

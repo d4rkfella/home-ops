@@ -55,13 +55,9 @@ securityContext:
       - FOWNER
       - SETGID
       - SETUID
-      - PERFMON
-      - BPF
       - SYS_RESOURCE
       - SYS_ADMIN
     cleanCiliumState:
       - NET_ADMIN
       - SYS_RESOURCE
-      - PERFMON
-      - BPF
       - SYS_ADMIN

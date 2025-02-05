@@ -21,7 +21,7 @@ spec:
         - Snapshot
         - CPUNodeDiscovery
         - VSOCK
-        - ExperimentalVirtiofsSupport
+        - EnableVirtioFsConfigVolumes
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

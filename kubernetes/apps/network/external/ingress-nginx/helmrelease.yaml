@@ -68,7 +68,7 @@ spec:
         Referrer-Policy: "no-referrer"
         Permissions-Policy: "interest-cohort=()"
         Cross-Origin-Opener-Policy: "same-origin"
-        Cross-Origin-Resource-Policy: "same-site"
+        Cross-Origin-Resource-Policy: "same-site,theme-park.dev"
         Cross-Origin-Embedder-Policy: "require-corp"
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000

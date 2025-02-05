@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-  interval: 31m
+  interval: 30m
   path: ./kubernetes/apps/arc-system/app
   prune: true
   sourceRef:

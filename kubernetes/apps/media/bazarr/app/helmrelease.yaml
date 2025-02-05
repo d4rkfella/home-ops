@@ -172,11 +172,6 @@ spec:
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA
           cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            more_set_headers "access-control-allow-origin https://bazarr.darkfellanetwork.com";
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/bazarr/mind.css"></body>';
-            sub_filter_once on;
         className: internal
         hosts:
           - host: &host "{{ .Release.Name }}.darkfellanetwork.com"

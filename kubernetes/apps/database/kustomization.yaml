@@ -9,11 +9,3 @@ resources:
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
-patches:
-  - patch: |
-      - op: add
-        path: /subjects/0/namespace
-        value: database
-    target:
-      kind: RoleBinding
-      name: secret-access-binding

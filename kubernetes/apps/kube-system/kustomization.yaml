@@ -14,10 +14,3 @@ resources:
   - ./vfiobinding.yaml
 components:
   - ../../components/namespace
-patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: kube-system
-    target:
-      kind: Namespace

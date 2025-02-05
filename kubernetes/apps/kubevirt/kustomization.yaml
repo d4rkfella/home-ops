@@ -8,17 +8,3 @@ resources:
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
-patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: kubevirt
-    target:
-      kind: Namespace
-  - patch: |
-      - op: replace
-        path: /subjects/0/namespace
-        value: kubevirt
-    target:
-      kind: RoleBinding
-      name: secret-access-binding

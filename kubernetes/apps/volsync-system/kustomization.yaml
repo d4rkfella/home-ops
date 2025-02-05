@@ -8,17 +8,3 @@ resources:
 components:
   - ../../components/flux/alerts
   - ../../components/namespace
-patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: volsync-system
-    target:
-      kind: Namespace
-  - patch: |
-      - op: replace
-        path: /subjects/0/namespace
-        value: volsync-system
-    target:
-      kind: RoleBinding
-      name: secret-access-binding

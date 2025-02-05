@@ -48,7 +48,8 @@
       "matchDatasources": ["docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
-      },
+      }
+    },
     {
       "description": ["Keycloak Group"],
       "groupName": "Keycloak",

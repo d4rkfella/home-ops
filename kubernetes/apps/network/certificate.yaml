@@ -8,6 +8,13 @@ spec:
   issuerRef:
     name: zerossl-prod
     kind: ClusterIssuer
+  subject:
+    organizations:
+      - DarkfellaNET
+  privateKey:
+    algorithm: ECDSA
+    rotationPolicy: Always
+    size: 384
   commonName: darkfellanetwork.com
   dnsNames:
     - darkfellanetwork.com

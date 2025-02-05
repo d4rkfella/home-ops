@@ -50,14 +50,16 @@ securityContext:
       - NET_ADMIN
       - NET_RAW
       - IPC_LOCK
-      - SYS_ADMIN
       - SYS_RESOURCE
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
       - SETUID
-      - NET_BIND_SERVICE
+      - PERFMON
+      - BPF
+      - SYS_RESOURCE
     cleanCiliumState:
       - NET_ADMIN
-      - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF

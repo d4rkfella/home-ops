@@ -69,7 +69,7 @@ spec:
         Permissions-Policy: "interest-cohort=()"
         Access-Control-Allow-Origin: "https://theme-park.dev"
         Cross-Origin-Opener-Policy: "same-origin"
-        Cross-Origin-Resource-Policy: "same-site,theme-park.dev"
+        Cross-Origin-Resource-Policy: "same-site"
         Cross-Origin-Embedder-Policy: "require-corp"
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000

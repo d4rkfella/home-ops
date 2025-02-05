@@ -65,7 +65,7 @@ spec:
         X-Frame-Options: "DENY"
         X-Content-Type-Options: "nosniff"
         X-XSS-Protection: "1; mode=block"
-        Referrer-Policy: "no-referrer"
+        #Referrer-Policy: "no-referrer"
         Permissions-Policy: "interest-cohort=()"
         #Access-Control-Allow-Origin: "https://theme-park.dev"
         #Cross-Origin-Opener-Policy: "same-origin"

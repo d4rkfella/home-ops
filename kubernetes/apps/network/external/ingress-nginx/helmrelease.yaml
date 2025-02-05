@@ -62,7 +62,6 @@ spec:
         # https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
         # https://www.invicti.com/blog/web-security/http-security-headers/
         X-Robots-Tag: "noindex, nofollow"
-        Cache-Control: "no-store"
         X-Frame-Options: "DENY"
         X-Content-Type-Options: "nosniff"
         X-XSS-Protection: "1; mode=block"

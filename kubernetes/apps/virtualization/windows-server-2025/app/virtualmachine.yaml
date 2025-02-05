@@ -53,6 +53,9 @@ spec:
               model: virtio
               macAddress: 50:d4:cb:0f:ee:d9
           tpm: {}
+          filesystems:
+            - name: certificate
+              virtiofs: {}
           disks:
             - disk:
                 bus: virtio
@@ -83,6 +86,9 @@ spec:
       - dataVolume:
           name: windows-virtio-drivers
         name: virtio-drivers
+      - secret:
+          secretName: dc-tls
+        name: certificate
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2025-iso

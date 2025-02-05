@@ -5,6 +5,7 @@ namespace: virtualization
 resources:
   - ./truenas-scale/ks.yaml
   - ./windows-server/ks.yaml
+  - ./windows-server-2025/ks.yaml
 components:
   - ../../components/namespace
   - ../../components/flux/alerts

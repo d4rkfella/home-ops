@@ -44,6 +44,18 @@ spec:
             - key: ingress-class
               operator: In
               values: ["external"]
+      addHeaders:
+          # https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
+          # https://www.invicti.com/blog/web-security/http-security-headers/
+          X-Robots-Tag: "noindex, nofollow"
+          X-Frame-Options: "DENY"
+          X-Content-Type-Options: "nosniff"
+          X-XSS-Protection: "1; mode=block"
+          Referrer-Policy: "no-referrer"
+          Permissions-Policy: "interest-cohort=()"
+          Cross-Origin-Opener-Policy: "same-origin"
+          Cross-Origin-Resource-Policy: "same-site"
+          Cross-Origin-Embedder-Policy: "require-corp"
       config:
         custom-http-errors: >-
           401,403,404,500,501,502,503,504
@@ -58,18 +70,6 @@ spec:
         disable-ipv6-dns: "true"
         enable-ocsp: "true"
         enable-real-ip: "true"
-        addHeaders:
-          # https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
-          # https://www.invicti.com/blog/web-security/http-security-headers/
-          X-Robots-Tag: "noindex, nofollow"
-          X-Frame-Options: "DENY"
-          X-Content-Type-Options: "nosniff"
-          X-XSS-Protection: "1; mode=block"
-          Referrer-Policy: "no-referrer"
-          Permissions-Policy: "interest-cohort=()"
-          Cross-Origin-Opener-Policy: "same-origin"
-          Cross-Origin-Resource-Policy: "same-site"
-          Cross-Origin-Embedder-Policy: "require-corp"
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000
         force-ssl-redirect: "true"

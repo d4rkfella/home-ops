@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./virtualmachine.yaml
   - ./multus-network.yaml
+  - ./certificate.yaml

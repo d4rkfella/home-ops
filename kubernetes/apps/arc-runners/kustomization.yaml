@@ -8,7 +8,7 @@ resources:
 components:
   - ../../components/namespace
   - ../../components/flux/alerts
-patches:
+#patches:
   #- patch: |
       #- op: replace
         #path: /subjects/0/namespace

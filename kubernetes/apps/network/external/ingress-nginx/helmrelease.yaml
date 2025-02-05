@@ -67,6 +67,7 @@ spec:
         X-XSS-Protection: "1; mode=block"
         Referrer-Policy: "no-referrer"
         Permissions-Policy: "interest-cohort=()"
+        Access-Control-Allow-Origin: "https://theme-park.dev"
         Cross-Origin-Opener-Policy: "same-origin"
         Cross-Origin-Resource-Policy: "same-site,theme-park.dev"
         Cross-Origin-Embedder-Policy: "require-corp"

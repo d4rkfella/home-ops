@@ -10,9 +10,9 @@ components:
   - ../../components/flux/alerts
 patches:
   - patch: |
-      - op: replace
+      - op: add
         path: /subjects/0/namespace
-        value: not-used
+        value: arc-runners
     target:
       kind: RoleBinding
       name: secret-access-binding

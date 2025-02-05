@@ -45,8 +45,6 @@ spec:
               operator: In
               values: ["external"]
       addHeaders:
-        # https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html
-        # https://www.invicti.com/blog/web-security/http-security-headers/
         X-Robots-Tag: "noindex, nofollow"
       config:
         custom-http-errors: >-

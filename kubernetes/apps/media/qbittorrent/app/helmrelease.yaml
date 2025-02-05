@@ -131,10 +131,6 @@ spec:
     ingress:
       app:
         annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            proxy_set_header Accept-Encoding "";
-            sub_filter '</body>' '<link rel="stylesheet" type="text/css" href="https://theme-park.dev/css/base/vuetorrent/mind.css"></body>';
-            sub_filter_once on;
           cert-manager.io/cluster-issuer: zerossl-prod
           cert-manager.io/private-key-rotation-policy: Always
           cert-manager.io/private-key-algorithm: ECDSA

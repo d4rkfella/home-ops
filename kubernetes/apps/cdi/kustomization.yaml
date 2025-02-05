@@ -11,12 +11,6 @@ components:
 patches:
   - patch: |
       - op: add
-        path: /metadata/name
-        value: cdi
-    target:
-      kind: Namespace
-  - patch: |
-      - op: replace
         path: /subjects/0/namespace
         value: cdi
     target:

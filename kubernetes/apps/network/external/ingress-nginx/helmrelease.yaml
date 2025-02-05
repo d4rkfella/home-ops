@@ -67,10 +67,10 @@ spec:
         X-XSS-Protection: "1; mode=block"
         Referrer-Policy: "no-referrer"
         Permissions-Policy: "interest-cohort=()"
-        Access-Control-Allow-Origin: "https://theme-park.dev"
-        Cross-Origin-Opener-Policy: "same-origin"
-        Cross-Origin-Resource-Policy: "same-site"
-        Cross-Origin-Embedder-Policy: "require-corp"
+        #Access-Control-Allow-Origin: "https://theme-park.dev"
+        #Cross-Origin-Opener-Policy: "same-origin"
+        #Cross-Origin-Resource-Policy: "same-site"
+        #Cross-Origin-Embedder-Policy: "require-corp"
         hide-headers: Server,X-Powered-By
         hsts-max-age: 31536000
         force-ssl-redirect: "true"

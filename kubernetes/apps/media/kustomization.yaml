@@ -20,12 +20,12 @@ components:
   - ../../components/namespace
   - ../../components/flux/alerts
 patches:
-  - patch: |
-      - op: add
-        path: /metadata/name
-        value: media
-    target:
-      kind: Namespace
+  #- patch: |
+      #- op: add
+        #path: /metadata/name
+        #value: media
+    #target:
+      #kind: Namespace
   - patch: |
       - op: replace
         path: /subjects/0/namespace

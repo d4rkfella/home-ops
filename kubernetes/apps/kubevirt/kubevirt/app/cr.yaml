@@ -25,6 +25,7 @@ spec:
         - VSOCK
         - CPUManager
         - AlignCPUs
+        - NUMA
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

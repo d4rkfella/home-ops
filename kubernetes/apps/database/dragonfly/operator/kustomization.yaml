@@ -5,4 +5,4 @@ kind: Kustomization
 resources:
   - ./rbac.yaml
   - ./helmrelease.yaml
-  - https://raw.githubusercontent.com/dragonflydb/dragonfly-operator/v1.1.8/manifests/crd.yaml
+  - https://raw.githubusercontent.com/dragonflydb/dragonfly-operator/v1.1.9/manifests/crd.yaml

@@ -29,6 +29,11 @@ spec:
               present: false
         cpu:
           model: host-passthrough
+          dedicatedCpuPlacement: true
+          isolateEmulatorThread: true
+          numa:
+            guestMappingPassthrough: {}
+        ioThreadsPolicy: auto
         memory:
           hugepages:
             pageSize: "2Mi"

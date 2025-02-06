@@ -105,6 +105,10 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 200m
+                memory: 100m
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true

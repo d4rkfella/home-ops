@@ -3,8 +3,7 @@ kind: Certificate
 metadata:
   name: dc-tls
 spec:
-  dnsNames:
-    - dc.darkfellanetwork.com
+  commonName: dc.darkfellanetwork.com
   issuerRef:
     group: cert-manager.io
     kind: ClusterIssuer

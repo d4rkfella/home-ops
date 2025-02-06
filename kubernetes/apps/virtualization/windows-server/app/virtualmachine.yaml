@@ -29,6 +29,8 @@ spec:
               present: false
         cpu:
           model: host-passthrough
+          cores: 1
+          sockets: 4
           dedicatedCpuPlacement: true
           isolateEmulatorThread: true
           numa:
@@ -78,10 +80,8 @@ spec:
           type: q35
         resources:
           requests:
-            cpu: 2
             memory: 4Gi
           limits:
-            cpu: 2
             memory: 4Gi
       volumes:
       - dataVolume:

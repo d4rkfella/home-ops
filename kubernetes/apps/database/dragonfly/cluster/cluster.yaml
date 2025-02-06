@@ -34,9 +34,6 @@ spec:
     requests:
       cpu: 500m
       memory: 500Mi
-    limits:
-      cpu: 600m
-      memory: 750Mi
   authentication:
     passwordFromSecret:
       name: dragonfly-secret

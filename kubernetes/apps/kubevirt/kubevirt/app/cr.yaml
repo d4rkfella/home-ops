@@ -3,8 +3,6 @@ apiVersion: kubevirt.io/v1
 kind: KubeVirt
 metadata:
   name: kubevirt
-  annotations:
-    alpha.kubevirt.io/EmulatorThreadCompleteToEvenParity: ""
 spec:
   monitorNamespace: observability
   monitorAccount: prometheus-operator
@@ -24,7 +22,6 @@ spec:
         - CPUNodeDiscovery
         - VSOCK
         - CPUManager
-        - AlignCPUs
         - NUMA
     smbios:
       sku: "TalosCloud"

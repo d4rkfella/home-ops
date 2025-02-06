@@ -34,7 +34,7 @@ spec:
     global:
       propagateGlobalMetadataToPods: true
       labels:
-        kubevirt-manager.io/version: 1.4.2
+        kubevirt-manager.io/version: 1.5.0
     serviceAccount:
       create: true
       name: *app

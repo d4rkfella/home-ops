@@ -18,7 +18,6 @@ spec:
             networkName: virtualization/windows-vm-2025
       domain:
         clock:
-          timezone: Europe/Sofia
           timer:
             hpet:
               present: false
@@ -68,8 +67,6 @@ spec:
               cdrom:
                 readonly: true
                 bus: sata
-            - name: certificate
-              disk: {}
         machine:
           type: q35
         resources:
@@ -85,9 +82,6 @@ spec:
       - dataVolume:
           name: windows-virtio-drivers
         name: virtio-drivers
-      - secret:
-          secretName: dc-tls
-        name: certificate
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2025-iso

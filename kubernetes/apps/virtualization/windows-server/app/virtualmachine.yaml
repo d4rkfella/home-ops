@@ -28,8 +28,10 @@ spec:
             rtc:
               present: false
         cpu:
-          cores: 2
           model: host-passthrough
+        memory:
+          hugepages:
+            pageSize: "2Mi"
         features:
           acpi: {}
           apic: {}
@@ -71,7 +73,11 @@ spec:
           type: q35
         resources:
           requests:
-            memory: 4G
+            cpu: 4
+            memory: 4Gi
+          limits:
+            cpu: 4
+            memory: 4Gi
       volumes:
       - dataVolume:
           name: windows-server-2025-iso

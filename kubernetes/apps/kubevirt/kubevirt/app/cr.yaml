@@ -22,7 +22,6 @@ spec:
         - CPUNodeDiscovery
         - VSOCK
         - CPUManager
-        - Numa
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

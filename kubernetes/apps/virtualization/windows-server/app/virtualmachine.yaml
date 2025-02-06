@@ -33,8 +33,6 @@ spec:
           sockets: 4
           dedicatedCpuPlacement: true
           isolateEmulatorThread: true
-          numa:
-            guestMappingPassthrough: {}
         ioThreadsPolicy: auto
         memory:
           hugepages:

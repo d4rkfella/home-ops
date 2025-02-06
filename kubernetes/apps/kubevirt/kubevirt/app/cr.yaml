@@ -21,6 +21,7 @@ spec:
         - Snapshot
         - CPUNodeDiscovery
         - VSOCK
+        - CPUManager
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

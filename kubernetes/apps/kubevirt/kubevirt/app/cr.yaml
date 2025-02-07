@@ -14,7 +14,7 @@ spec:
       nodeLabelSelector: {}
     vmStateStorageClass: "openebs-zfs-32k"
     developerConfiguration:
-      useEmulation: false
+      useEmulation: true
       featureGates:
         - HostDevices
         - DataVolumes
@@ -25,6 +25,7 @@ spec:
         - VSOCK
         - CPUManager
         - AlignCPUs
+        - EnableVirtioFsConfigVolumes
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

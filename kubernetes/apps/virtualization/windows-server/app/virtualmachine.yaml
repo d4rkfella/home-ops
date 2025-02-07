@@ -11,6 +11,7 @@ spec:
       labels:
         kubevirt.io/domain: windows-server-2025
     spec:
+      priorityClassName: system-node-critical
       networks:
         - name: bridge
           multus:

@@ -11,6 +11,7 @@ spec:
       labels:
         kubevirt.io/domain: truenas
     spec:
+      priorityClassName: system-node-critical
       networks:
         - name: bridge-1
           multus:

@@ -23,6 +23,14 @@ spec:
               value: exos20
             - name: PCI_IDS
               value: "0000:05:00.0,0000:0a:00.0"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - all
+              add:
+                - SYS_ADMIN
           volumeMounts:
             - mountPath: /sys
               name: sysfs
@@ -30,6 +38,12 @@ spec:
         - name: placeholder
           image: busybox:latest
           command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
+
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: { type: RuntimeDefault }
 
       volumes:
         - name: sysfs

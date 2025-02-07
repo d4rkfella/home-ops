@@ -96,7 +96,7 @@ releases:
   - name: zfs-localpv
     namespace: openebs-system
     chart: zfs-localpv/zfs-localpv
-    version: 2.7.0-develop
+    version: 2.7.0-prerelease
     values:
       - ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
     hooks:

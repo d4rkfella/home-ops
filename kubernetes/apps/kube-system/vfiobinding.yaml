@@ -14,11 +14,7 @@ spec:
       labels:
         app: pci-binder
     spec:
-      dnsPolicy: None
-      dnsConfig:
-        nameservers:
-          - 1.1.1.1
-          - 1.0.0.1
+      restartPolicy: Always
       initContainers:
         - name: pci-bind
           image: ghcr.io/d4rkfella/talos-vfio-binding:latest@sha256:149fa9165e5d689cfeeb8bc5226d172c15cc9d1c7cf0ef11c4a6f2d90f1b4f7d
@@ -38,7 +34,6 @@ spec:
           image: busybox:latest
           command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
 
-      restartPolicy: Always
       volumes:
         - name: sysfs
           hostPath:

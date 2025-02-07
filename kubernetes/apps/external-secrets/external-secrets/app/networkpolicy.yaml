@@ -75,7 +75,7 @@ spec:
             io.kubernetes.pod.namespace: observability
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "8090"
 
     - fromEntities:
         - kube-apiserver

@@ -17,34 +17,29 @@ spec:
       restartPolicy: Always
       initContainers:
         - name: pci-bind
-          image: ghcr.io/d4rkfella/talos-vfio-binding:latest@sha256:149fa9165e5d689cfeeb8bc5226d172c15cc9d1c7cf0ef11c4a6f2d90f1b4f7d
+          image: ghcr.io/d4rkfella/talos-vfio-binding:latest@sha256:24d5fc0914c93582e729fbb59efec769605167df63c978f90f4679f102f81011
           env:
             - name: ZPOOL_NAME
               value: exos20
             - name: PCI_IDS
               value: "0000:05:00.0,0000:0a:00.0"
-          command: ["/bin/bash"]
-          args: ["-c", "while true; do sleep 1000; done"]
           securityContext:
             runAsUser: 0
             runAsGroup: 0
             runAsNonRoot: false
-            allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
-            capabilities:
-              drop:
-                - all
-              add:
-                - SYS_ADMIN
+            privileged: true
           volumeMounts:
             - mountPath: /sys
               name: sysfs
-            - mountPath: /dev/zfs
-              name: zfs-dev
       containers:
         - name: placeholder
           image: busybox:latest
           command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: { drop: ["ALL"] }
 
       securityContext:
         runAsNonRoot: true
@@ -56,7 +51,3 @@ spec:
         - name: sysfs
           hostPath:
             path: /sys
-        - name: zfs-dev
-          hostPath:
-            path: /dev/zfs
-            type: CharDevice

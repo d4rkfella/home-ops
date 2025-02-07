@@ -39,6 +39,8 @@ spec:
           volumeMounts:
             - mountPath: /sys
               name: sysfs
+            - mountPath: /dev/zfs
+              name: zfs-dev
       containers:
         - name: placeholder
           image: busybox:latest
@@ -54,3 +56,7 @@ spec:
         - name: sysfs
           hostPath:
             path: /sys
+        - name: zfs-dev
+          hostPath:
+            path: /dev/zfs
+            type: CharDevice

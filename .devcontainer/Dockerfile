@@ -1,4 +1,4 @@
-FROM alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcffe38ed51099
+FROM alpine:3.21.2
 
 ARG USERNAME=vscode
 ARG USER_UID=2100
@@ -14,29 +14,29 @@ ARG ENVSUBST_VERSION=v1.4.2
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=hashicorp/vault:1.18.4@sha256:790a848da73ea8260e982e79b1e320e899836a24bf059c1e8484d040623b6b93 /bin/vault /usr/local/bin/vault
+COPY --from=hashicorp/vault:1.18.4 /bin/vault /usr/local/bin/vault
 RUN vault --version
 
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
 RUN aws --version
 
-COPY --from=alpine/helm:3.17.0@sha256:3171b2d9aed2d6e033f1cf8ae4dc2863a0cef21f167fb4655c15afbe68256432 /usr/bin/helm /usr/local/bin/helm
+COPY --from=alpine/helm:3.17.0 /usr/bin/helm /usr/local/bin/helm
 RUN helm version
 
-COPY --from=fluxcd/flux-cli:v2.4.0@sha256:a9cb966cddc1a0c56dc0d57dda485d9477dd397f8b45f222717b24663471fd1f /usr/local/bin/flux /usr/local/bin/flux
+COPY --from=fluxcd/flux-cli:v2.4.0 /usr/local/bin/flux /usr/local/bin/flux
 RUN flux --version
 
 COPY --from=ghcr.io/siderolabs/talosctl:v1.9.3 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
-COPY --from=ghcr.io/getsops/sops:v3.9.4@sha256:5861d711e485d01fa9d148654cf267b285f78bc1bf74d9ea208e90be737d2293 /usr/local/bin/sops /usr/local/bin/sops
+COPY --from=ghcr.io/getsops/sops:v3.9.4 /usr/local/bin/sops /usr/local/bin/sops
 RUN sops --version
 
-COPY --from=ghcr.io/helmfile/helmfile:v0.170.1@sha256:6f334935f5ee1dc6780bff3a5b781747570b8e0d0abaa7204211ad2be43005a9 /usr/local/bin/helmfile /usr/local/bin/helmfile
+COPY --from=ghcr.io/helmfile/helmfile:v0.170.1 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
-COPY --from=registry.k8s.io/kubectl:v1.32.1@sha256:6ae337221866ae69380cfa08e2b38fa113fd5044cfb5b7a7662f5b0028be23b6 /bin/kubectl /usr/local/bin/kubectl
+COPY --from=registry.k8s.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl
 RUN kubectl version --client
 
 WORKDIR /tmp
@@ -81,4 +81,4 @@ WORKDIR /project
 
 USER $USERNAME
 
-ENTRYPOINT ["/bin/bash", "-i"]
+ENTRYPOINT ["/bin/bash"]

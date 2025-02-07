@@ -26,9 +26,6 @@ spec:
           volumeMounts:
             - mountPath: /sys
               name: sysfs
-          securityContext:
-            privileged: true
-
       containers:
         - name: placeholder
           image: busybox:latest

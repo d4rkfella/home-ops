@@ -17,7 +17,7 @@ spec:
       restartPolicy: Always
       initContainers:
         - name: pci-bind
-          image: ghcr.io/d4rkfella/talos-vfio-binding:latest@sha256:149fa9165e5d689cfeeb8bc5226d172c15cc9d1c7cf0ef11c4a6f2d90f1b4f7d
+          image: ghcr.io/d4rkfella/talos-vfio-binding:latest@sha256:b2af18fb31725434c4b8af83cf226620f7aace1a626a8e903583e28749fe0be3
           env:
             - name: ZPOOL_NAME
               value: exos20

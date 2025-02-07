@@ -28,7 +28,7 @@ spec:
         - matchLabels:
             io.kubernetes.pod.namespace: vault
             app.kubernetes.io/name: vault
-            vault-active: true
+            vault-active: "true"
       toPorts:
         - ports:
             - port: "8200"

@@ -76,13 +76,6 @@ spec:
       toPorts:
         - ports:
             - port: "8080"
-
-    - fromEntities:
-        - kube-apiserver
-      toPorts:
-        - ports:
-            - port: "10250"
-
   egress:
     - toEntities:
         - kube-apiserver

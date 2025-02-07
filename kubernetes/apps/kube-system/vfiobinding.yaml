@@ -23,6 +23,8 @@ spec:
               value: exos20
             - name: PCI_IDS
               value: "0000:05:00.0,0000:0a:00.0"
+          command: ["/bin/bash"]
+          args: ["-c", "while true; do sleep 1000; done"]
           securityContext:
             runAsUser: 0
             runAsGroup: 0

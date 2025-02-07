@@ -14,6 +14,7 @@ spec:
       labels:
         app: pci-binder
     spec:
+      priorityClassName: system-node-critical
       restartPolicy: Always
       initContainers:
         - name: pci-bind

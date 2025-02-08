@@ -8,10 +8,3 @@ crds:
       enabled: true
 zfsNode:
   encrKeysDir: /var/openebs/keys
-zfsPlugin:
-  name: "openebs-zfs-plugin"
-  image:
-    registry: ghcr.io/
-    repository: openebs/zfs-driver
-    tag: 2.7.0-develop@sha256:6ee6d4830dbf7d92ccf7656fb10f0c63a4c3256de46d4c22087bad3f378d9362
-    pullPolicy: IfNotPresent

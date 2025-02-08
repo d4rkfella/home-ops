@@ -86,7 +86,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: plex.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.91.64
+          lbipam.cilium.io/ips: 192.168.91.54
         ports:
           http:
             port: 32400

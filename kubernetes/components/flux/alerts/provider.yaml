@@ -1,0 +1,119 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/notification.toolkit.fluxcd.io/provider_v1beta3.json
+apiVersion: notification.toolkit.fluxcd.io/v1beta3
+kind: Provider
+metadata:
+  name: alert-manager
+spec:
+  type: alertmanager
+  address: https://alertmanager-operated.observability.svc.cluster.local:8082/api/v2/alerts/
+  certSecretRef:
+    name: internal-ca-crt
+  secretRef:
+    name: oidc-jwt
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: internal-ca-crt
+stringData:
+  ca.crt: |
+    -----BEGIN CERTIFICATE-----
+    MIICXTCCAeOgAwIBAgIUVRl+sJWzZ0ijVOrMY7EsVHuI21swCgYIKoZIzj0EAwMw
+    XDERMA8GA1UEBhMIQnVsZ2FyaWExDjAMBgNVBAcTBVNvZmlhMRUwEwYDVQQKEwxE
+    YXJrZmVsbGFORVQxIDAeBgNVBAMTF0RhcmtmZWxsYU5FVCBSb290IENBIHYxMB4X
+    DTI1MDEyMjIwNDUxNloXDTM1MDEyMDIwNDU0NlowXDERMA8GA1UEBhMIQnVsZ2Fy
+    aWExDjAMBgNVBAcTBVNvZmlhMRUwEwYDVQQKEwxEYXJrZmVsbGFORVQxIDAeBgNV
+    BAMTF0RhcmtmZWxsYU5FVCBSb290IENBIHYxMHYwEAYHKoZIzj0CAQYFK4EEACID
+    YgAEz7MYMB+SFpUDzykHwQD62/v3ihL+XblywIbLC24JJk3X/zjpGB194Ou3v3wm
+    3xnvLfCp07KO3s73530Z/OkKBP2fjx1FajQpW/wA6lFG5toKpIPSg+ApCFW5ks63
+    lcnBo2YwZDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBAjAdBgNV
+    HQ4EFgQUu3vcT3VCckiK9XXxUI/Rl7X91LgwHwYDVR0jBBgwFoAUu3vcT3VCckiK
+    9XXxUI/Rl7X91LgwCgYIKoZIzj0EAwMDaAAwZQIxALwmMVB2+nWpEZNmBHfM+7eW
+    kBxXWG7bBmmwZXchy+CnSmkfLKhQoGtS8xtDxlbDhwIwaIYhPnlK4iDI7FhkC+mQ
+    Z+RJYaoznQKSEGYFNmRP1zJaUFG26T5x1wwtTcvgfVo8
+    -----END CERTIFICATE-----
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: oidc-jwt-fetcher
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: secret-access-role
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["oidc-jwt"]
+  verbs: ["patch", "get", "update"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: secret-access-binding
+subjects:
+- kind: ServiceAccount
+  name: oidc-jwt-fetcher
+roleRef:
+  kind: Role
+  name: secret-access-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: &app oidc-jwt-fetcher
+spec:
+  schedule: "*/55 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: *app
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "oidc-jwt-fetcher"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/service: "https://vault.darkfellanetwork.com:8200"
+            vault.hashicorp.com/agent-inject-secret-client_secret: "secrets/flux-alerts"
+            vault.hashicorp.com/agent-inject-template-client_secret: |
+              {{- with secret "secrets/flux-alerts" -}}
+              {{ .Data.data.client_secret }}
+              {{- end }}
+        spec:
+          serviceAccountName: oidc-jwt-fetcher
+          containers:
+          - name: oidc-jwt-fetcher
+            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:d9fdb8e403f6dbd7335a945ed352d7a8cfd363b64e8a45dbb95b9bac87d2d7c5
+            env:
+              - name: CLIENT_ID
+                value: "1ec97925-af53-40cf-aee1-d9eae03ddebd"
+              - name: CLIENT_SECRET_FILE
+                value: "/vault/secrets/client_secret"
+              - name: TOKEN_ENDPOINT_URL
+                value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+              - name: SCOPE
+                value: "openid profile email"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 200m
+                memory: 100m
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile: { type: RuntimeDefault }
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

@@ -1,0 +1,27 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dragonfly-internal-tls
+  namespace: database
+spec:
+  secretName: dragonfly-internal-tls
+  duration: 2160h
+  renewBefore: 360h
+  subject:
+    organizations:
+      - DarkfellaNET
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS8
+    rotationPolicy: Always
+    size: 384
+  dnsNames:
+    - dragonfly-cluster
+    - dragonfly-cluster.database
+    - dragonfly-cluster.database.svc
+    - dragonfly-cluster.database.svc.cluster.local
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

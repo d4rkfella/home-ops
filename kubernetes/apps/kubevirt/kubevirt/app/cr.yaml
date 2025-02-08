@@ -1,0 +1,40 @@
+---
+apiVersion: kubevirt.io/v1
+kind: KubeVirt
+metadata:
+  name: kubevirt
+  annotations:
+    alpha.kubevirt.io/EmulatorThreadCompleteToEvenParity: ""
+spec:
+  monitorNamespace: observability
+  monitorAccount: prometheus-operator
+  serviceMonitorNamespace: kubevirt
+  configuration:
+    ksmConfiguration:
+      nodeLabelSelector: {}
+    vmStateStorageClass: "openebs-zfs-32k"
+    developerConfiguration:
+      useEmulation: true
+      featureGates:
+        - HostDevices
+        - DataVolumes
+        - VMPersistentState
+        - ExpandDisks
+        - Snapshot
+        - CPUNodeDiscovery
+        - VSOCK
+        - CPUManager
+        - AlignCPUs
+        - EnableVirtioFsConfigVolumes
+    smbios:
+      sku: "TalosCloud"
+      version: "v0.1.0"
+      manufacturer: "Talos Virtualization"
+      product: "talosvm"
+      family: "ccio"
+    permittedHostDevices:
+      pciHostDevices:
+        - pciVendorSelector: 1000:0097
+          resourceName: devices.kubevirt.io/sas
+        - pciVendorSelector: 8086:2701
+          resourceName: devices.kubevirt.io/nvme

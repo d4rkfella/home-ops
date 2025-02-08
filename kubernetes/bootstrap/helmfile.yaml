@@ -1,0 +1,149 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+helmDefaults:
+  force: true
+  timeout: 600
+  wait: true
+  waitForJobs: true
+
+repositories:
+  - name: cilium
+    url: https://helm.cilium.io
+
+  - name: postfinance
+    url: https://postfinance.github.io/kubelet-csr-approver
+
+  - name: cert-manager
+    url: https://charts.jetstack.io
+
+  - name: zfs-localpv
+    url: https://openebs.github.io/zfs-localpv
+
+  - name: vault
+    url: https://helm.releases.hashicorp.com
+
+releases:
+  - name: kube-prometheus-stack-crds
+    namespace: observability
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 18.0.0
+    hooks:
+    - events: ["prepare"]
+      showlogs: true
+      command: kubectl
+      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+
+  - name: cilium
+    namespace: kube-system
+    chart: cilium/cilium
+    version: 1.17.0
+    values:
+      - ../apps/kube-system/cilium/app/helm-values.yaml
+    needs:
+      - observability/kube-prometheus-stack-crds
+
+  - name: coredns
+    namespace: kube-system
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.39.0
+    values:
+      - ../apps/kube-system/coredns/app/helm-values.yaml
+    needs:
+      - kube-system/cilium
+      - observability/kube-prometheus-stack-crds
+
+  - name: kubelet-csr-approver
+    namespace: kube-system
+    chart: postfinance/kubelet-csr-approver
+    version: 1.2.5
+    values:
+      - ../apps/kube-system/kubelet-csr-approver/app/helm-values.yaml
+    needs:
+      - kube-system/coredns
+      - kube-system/cilium
+      - observability/kube-prometheus-stack-crds
+
+  - name: cert-manager
+    namespace: cert-manager
+    chart: cert-manager/cert-manager
+    version: v1.17.0
+    values:
+      - ../apps/cert-manager/cert-manager/app/helm-values.yaml
+    hooks:
+    - events: ["prepare"]
+      showlogs: true
+      command: kubectl
+      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+    needs:
+      - kube-system/coredns
+      - kube-system/cilium
+      - observability/kube-prometheus-stack-crds
+
+  #- name: external-secrets
+    #namespace: external-secrets
+    #chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    #version: 0.13.0
+    #values:
+      #- ../apps/external-secrets/external-secrets/app/helm-values.yaml
+    #hooks:
+    #- events: ["prepare"]
+      #showlogs: true
+      #command: kubectl
+      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+    #needs:
+      #- kube-system/coredns
+
+  - name: zfs-localpv
+    namespace: openebs-system
+    chart: zfs-localpv/zfs-localpv
+    version: 2.7.0-prerelease
+    values:
+      - ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
+    hooks:
+    - events: ["prepare"]
+      showlogs: true
+      command: kubectl
+      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+
+  #- name: vault
+    #namespace: vault
+    #chart: vault/vault
+    #version: 0.29.1
+    #values:
+      #- ../apps/secrets-management/hashicorp-vault/app/helm-values.yaml
+    #hooks:
+    #- events: ["prepare"]
+      #showlogs: true
+      #command: kubectl
+      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+
+  #- name: flux-operator
+    #namespace: flux-system
+    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+    #version: 0.13.0
+    #values:
+      #- ../apps/flux-system/flux-operator/app/helm-values.yaml
+    #hooks:
+    #- events: ["prepare"]
+      #showlogs: true
+      #command: kubectl
+      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
+    #needs:
+      #- kube-system/zfs-localpv
+
+  #- name: flux-instance
+    #namespace: flux-system
+    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
+    #version: 0.13.0
+    #wait: false
+    #values:
+      #- ../apps/flux-system/flux-operator/instance/helm-values.yaml
+    #needs:
+      #- flux-system/flux-operator
+
+  #- name: multus
+    #namespace: kube-system
+    #chart: oci://ghcr.io/bjw-s/helm/app-template
+    #version: 3.6.1
+    #values:
+      #- ../apps/kube-system/multus/app/helm-values.yaml

@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app vaultwarden
+  namespace: &ns vaultwarden
+spec:
+  dependsOn:
+    - name: windows-server
+      namespace: virtualization
+    - name: external-secrets-stores
+      namespace: external-secrets
+    - name: cloudnative-pg-cluster
+      namespace: database
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/gatus/external
+  path: ./kubernetes/apps/vaultwarden/vaultwarden/app
+  postBuild:
+    substitute:
+      APP: *app
+      GATUS_NAME: Vaultwarden
+      GATUS_PATH: /alive
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *ns
+  wait: false
+  interval: 30m
+  timeout: 5m

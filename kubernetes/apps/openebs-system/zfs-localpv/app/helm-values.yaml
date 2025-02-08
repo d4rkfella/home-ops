@@ -1,0 +1,10 @@
+feature:
+  storageCapacity: true
+crds:
+  zfsLocalPv:
+    enabled: true
+  csi:
+    volumeSnapshots:
+      enabled: true
+zfsNode:
+  encrKeysDir: /var/openebs/keys

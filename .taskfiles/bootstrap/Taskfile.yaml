@@ -1,0 +1,70 @@
+
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+vars:
+  KUBERNETES_VERSION:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+  TALOS_CONTROLLER:
+    sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
+  TALOS_SCHEMATIC_ID:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+  TALOS_VERSION:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+
+tasks:
+  kubernetes:
+    desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
+    prompt: Bootstrap a Talos Kubernetes cluster ... continue?
+    cmds:
+      - { task: apply-config }
+      - { task: etcd }
+      - { task: conf }
+      - { task: apps }
+    preconditions:
+      - talosctl config info &>/dev/null
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+  apply-config:
+    internal: true
+    cmd: |
+      export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
+        sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.secret.sops.yaml | \
+            /usr/local/bin/envsubst | \
+                talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
+    requires:
+      vars: ['IP']
+    preconditions:
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.secret.sops.yaml
+
+  etcd:
+    internal: true
+    cmd: until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
+    preconditions:
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - talosctl config info &>/dev/null
+
+  conf:
+    internal: true
+    cmd: talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name main {{.CLUSTER_DIR}}
+    preconditions:
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - talosctl config info &>/dev/null
+
+  apps:
+    internal: true
+    cmds:
+      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
+      - helmfile --quiet --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      - sops --decrypt {{.CLUSTER_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace vault
+      - sops --decrypt {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+      - kubectl apply --server-side --filename {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
+      - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
+    preconditions:
+      - test -f {{.CLUSTER_DIR}}/kubeconfig
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
+      - test -f {{.CLUSTER_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml
+      - test -f {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml
+      - test -f {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
+      - talosctl config info &>/dev/null

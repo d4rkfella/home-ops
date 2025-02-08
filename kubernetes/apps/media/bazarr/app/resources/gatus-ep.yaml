@@ -1,0 +1,17 @@
+endpoints:
+  - name: "Bazarr"
+    group: guarded
+    url: "https://bazarr.darkfellanetwork.com/api/system/status"
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].data.bazarr_directory == /app/bin"
+    alerts:
+      - type: pushover
+    headers:
+      X-API-KEY: {{ .BAZARR_API_KEY }}

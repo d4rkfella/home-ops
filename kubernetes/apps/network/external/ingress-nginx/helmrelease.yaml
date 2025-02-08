@@ -32,7 +32,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: &hostname external.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.91.58
+          lbipam.cilium.io/ips: 192.168.91.51
         allocateLoadBalancerNodePorts: false
       ingressClassResource:
         name: external

@@ -12,8 +12,7 @@
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor"],
-      "semanticCommitType": "feat",
-      "semanticCommitScope": "helm",
+      "commitMessagePrefix": "feat(helm): ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
       "matchPackagePatterns": [".*(/charts/|/chart|helm).*"]
@@ -22,7 +21,7 @@
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["patch"],
       "semanticCommitType": "fix",
-      "semanticCommitScope": "helm",
+      "commitMessagePrefix": "fix(helm): ",
       "commitMessageTopic": "{{depName}}",
       "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
       "matchPackagePatterns": [".*(/charts/|/chart|helm).*"]

@@ -44,15 +44,25 @@ spec:
               TZ: Europe/Sofia
               QBT_RUN: true
               QBT_WIDTH: 100
+              QBITTORRENT_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret qbitmanage-secret
+                    key: QBITTORRENT_USERNAME
+              QBITTORRENT:PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: QBITTORRENT_PASSWORD
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 1Gi
-            lifecycle:
-              postStart:
-                exec:
-                  command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
+            #lifecycle:
+              #postStart:
+                #exec:
+                  #command: ["/bin/sh", "-c", "cp /secret/config.yml /config/config.yml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -79,10 +89,10 @@ spec:
           - path: /config
 
       config-file:
-        type: secret
-        name: "{{ .Release.Name }}-secret"
+        type: configMap
+        name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /secret/config.yml
+          - path: /config/config.yml
             subPath: config.yml
             readOnly: true
 

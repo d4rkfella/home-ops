@@ -32,7 +32,7 @@
     },
     {
       "registryUrls": ["ghcr.io"],
-      "packagePatterns": ["*/charts/*", "*-chart"],
+      "packagePatterns": [".*(/charts/|/chart|helm).*"],
       "datasource": "helm"
     }
   ]

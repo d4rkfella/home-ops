@@ -19,6 +19,11 @@
     },
     {
       "matchDatasources": ["docker"],
+      "matchPackagePatterns": [".*(/charts/|/chart|helm).*"],
+      "addLabels": ["renovate/helm"]
+    },
+    {
+      "matchDatasources": ["docker"],
       "addLabels": ["renovate/container"]
     },
     {

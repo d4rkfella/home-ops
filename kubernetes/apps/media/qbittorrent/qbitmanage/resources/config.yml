@@ -15,8 +15,8 @@ commands:
 
 qbt:
   host: https://qbittorrent.darkfellanetwork.com
-  user: '!ENV QBITTORRENT_USERNAME'
-  pass: '!ENV QBITTORRENT_PASSWORD'
+  user: !ENV QBITTORRENT_USERNAME
+  pass: !ENV QBITTORRENT_PASSWORD
 
 settings:
   force_auto_tmm: true

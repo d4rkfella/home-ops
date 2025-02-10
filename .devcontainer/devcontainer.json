@@ -66,12 +66,14 @@
                 "kubevirt": "Vm",
                 "kubevirt-manager": "Vm"
             },
+            "material-icon-theme.hidesExplorerArrows": true,
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,
             "yaml.schemaStore.enable": true,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"
-            }
+            },
+            "git-autoconfig.configList": [{"user.email": "georgi.panov@darkfellanetwork.com", "user.name": "d4kfella"}]
         },
         "extensions": [
             "signageos.signageos-vscode-sops",

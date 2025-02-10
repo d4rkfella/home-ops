@@ -33,6 +33,32 @@
       "commitMessageExtra": "( {{currentDigestShort}} → {{newDigestShort}} )"
     },
     {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["major"],
+      "commitMessagePrefix": "feat(helm)!: ",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": " ( {{currentVersion}} → {{newVersion}} )",
+      "matchPackagePatterns": [".*(/charts/|/chart|helm).*"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor"],
+      "semanticCommitType": "feat",
+      "semanticCommitScope": "helm",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
+      "matchPackagePatterns": [".*(/charts/|/chart|helm).*"]
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "semanticCommitType": "fix",
+      "semanticCommitScope": "helm",
+      "commitMessageTopic": "{{depName}}",
+      "commitMessageExtra": "( {{currentVersion}} → {{newVersion}} )",
+      "matchPackagePatterns": [".*(/charts/|/chart|helm).*"]
+    },
+    {
       "matchDatasources": ["helm"],
       "matchUpdateTypes": ["major"],
       "commitMessagePrefix": "feat(helm)!: ",

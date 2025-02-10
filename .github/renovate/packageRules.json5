@@ -29,11 +29,6 @@
       "matchDatasources": ["docker"],
       "sourceUrl": "https://github.com/hashicorp/vault",
       "changelogUrl": "https://github.com/hashicorp/vault/blob/main/CHANGELOG.md"
-    },
-    {
-      "registryUrls": ["ghcr.io"],
-      "packagePatterns": [".*(/charts/|/chart|helm).*"],
-      "datasource": "helm"
     }
   ]
 }

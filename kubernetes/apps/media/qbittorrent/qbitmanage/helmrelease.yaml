@@ -49,7 +49,7 @@ spec:
                   secretKeyRef:
                     name: &secret qbitmanage-secret
                     key: QBITTORRENT_USERNAME
-              QBITTORRENT:PASSWORD:
+              QBITTORRENT_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret

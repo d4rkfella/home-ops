@@ -8,6 +8,8 @@ spec:
   interval: 30m
   chart:
     spec:
+      verify:
+        provider: cosign
       chart: app-template
       version: 3.7.0
       sourceRef:

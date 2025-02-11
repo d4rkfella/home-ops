@@ -4,7 +4,6 @@
 
     "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:94bbbeeb4eee7eb509965a7feb3156f4a79d103e16c3f88f7022858422b0f732",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
-
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
     "mounts": [
@@ -13,12 +12,30 @@
 
     "customizations": {
       "vscode": {
+        "extensions": [
+            "signageos.signageos-vscode-sops",
+            "BriteSnow.vscode-toggle-quotes",
+            "redhat.vscode-yaml",
+            "mitchdenny.ecdc",
+            "mikestead.dotenv",
+            "fcrespo82.markdown-table-formatter",
+            "albert.TabOut",
+            "PKief.material-product-icons",
+            "editorconfig.editorconfig",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "ms-azuretools.vscode-docker",
+            "GitHub.vscode-pull-request-github",
+            "donjayamanne.githistory",
+            "shyykoserhiy.git-autoconfig",
+            "PKief.material-icon-theme"
+        ],
         "settings": {
             "git.path": "/usr/bin/git",
             "docker.dockerPath": "/usr/bin/docker",
             "terminal.integrated.defaultProfile.linux": "bash",
             "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
             "editor.bracketPairColorization.enabled": true,
+            "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
             "editor.fontFamily": "FiraCode Nerd Font, monospace",
             "editor.fontLigatures": true,
             "editor.guides.bracketPairs": true,
@@ -35,7 +52,7 @@
                 "**/*.json5": "jsonc"
             },
             "files.trimTrailingWhitespace": true,
-
+            "workbench.iconTheme": "material-icon-theme",
             "material-icon-theme.files.associations": {
                 "*.secret.sops.env": "lock",
                 "*.secret.sops.yaml": "lock",
@@ -44,7 +61,8 @@
             },
             "material-icon-theme.folders.associations": {
                 ".github/workflows": "robot",
-                "actions-runner-system": "github",
+                "arc-system": "github",
+                "arc-runners": "github",
                 "cert-manager": "guard",
                 "external-secrets": "secure",
                 "vaultwarden": "secure",
@@ -64,7 +82,8 @@
                 "cdi": "upload",
                 "virtualization": "Vm",
                 "kubevirt": "Vm",
-                "kubevirt-manager": "Vm"
+                "kubevirt-manager": "Vm",
+                "openebs-system": "dump"
             },
             "material-icon-theme.hidesExplorerArrows": true,
             "sops.defaults.ageKeyFile": "./age.key",
@@ -74,24 +93,7 @@
                 "kubernetes": "./kubernetes/**/*.yaml"
             },
             "git-autoconfig.configList": [{"user.email": "georgi.panov@darkfellanetwork.com", "user.name": "d4kfella"}]
-        },
-        "extensions": [
-            "signageos.signageos-vscode-sops",
-            "BriteSnow.vscode-toggle-quotes",
-            "redhat.vscode-yaml",
-            "mitchdenny.ecdc",
-            "mikestead.dotenv",
-            "fcrespo82.markdown-table-formatter",
-            "albert.TabOut",
-            "pkief.material-icon-theme",
-            "PKief.material-product-icons",
-            "editorconfig.editorconfig",
-            "ms-kubernetes-tools.vscode-kubernetes-tools",
-            "ms-azuretools.vscode-docker",
-            "GitHub.vscode-pull-request-github",
-            "donjayamanne.githistory",
-            "shyykoserhiy.git-autoconfig"
-        ]
+        }
       }
     }
 }

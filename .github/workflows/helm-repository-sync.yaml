@@ -52,9 +52,11 @@ jobs:
 
       - if: ${{ github.event.inputs.helmRepoNamespace == '' && github.event.inputs.helmRepoName == '' }}
         name: Sync Helm Repository
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_and_modified_files }}
         run: |
           declare -A repos=()
-          for f in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
+          for f in $ALL_CHANGED_FILES; do
               repo_namespace="$(yq -r '.spec.chart.spec.sourceRef.namespace' "${f}")"
               repo_name="$(yq -r '.spec.chart.spec.sourceRef.name' "${f}")"
               repos["${repo_namespace}:${repo_name}"]=1

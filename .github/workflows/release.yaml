@@ -10,7 +10,7 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 #v1.11.3

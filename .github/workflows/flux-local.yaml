@@ -16,7 +16,7 @@ concurrency:
 jobs:
   test:
     name: Flux Local Test
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Generate Token
         uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 #v1.11.3
@@ -37,7 +37,7 @@ jobs:
 
   diff:
     name: Flux Local Diff
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       pull-requests: write
     strategy:
@@ -112,7 +112,7 @@ jobs:
     needs: ["test", "diff"]
     if: ${{ always() }}
     name: Flux Local successful
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check flux-local status
         if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}

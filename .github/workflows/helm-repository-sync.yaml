@@ -55,9 +55,15 @@ jobs:
         run: |
           declare -A repos=()
           for f in ${{ steps.changed-files.outputs.all_changed_and_modified_files }}; do
-              repo_namespace="$(yq -r '.spec.chart.spec.sourceRef.namespace' "${f}")"
-              repo_name="$(yq -r '.spec.chart.spec.sourceRef.name' "${f}")"
-              repos["${repo_namespace}:${repo_name}"]=1
+              f=$(echo "$f" | sed 's/[^a-zA-Z0-9\/._-]//g')
+              if [[ "$f" =~ ^[a-zA-Z0-9\/._-]+$ ]]; then
+                  # Extract repo information from the file using `yq`
+                  repo_namespace="$(yq -r '.spec.chart.spec.sourceRef.namespace' "${f}")"
+                  repo_name="$(yq -r '.spec.chart.spec.sourceRef.name' "${f}")"
+                  repos["${repo_namespace}:${repo_name}"]=1
+              else
+                  echo "Skipping invalid file: $f"
+              fi
           done
           for r in "${!repos[@]}"; do
               IFS=':' read -r repo_namespace repo_name <<< "${r}"

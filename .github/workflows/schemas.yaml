@@ -23,7 +23,7 @@ jobs:
       packages: write
     steps:
       - name: Generate Token
-        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7
+        uses: actions/create-github-app-token@67e27a7eb7db372a1c61a7f9bdab8699e9ee57f7 #v1.11.3
         id: app-token
         with:
           app-id: "${{ secrets.BOT_APP_ID }}"
@@ -41,12 +41,12 @@ jobs:
         run: brew install kubectl uv
 
       - name: Setup Python
-        uses: actions/setup-python@8039c45ed9a312fba91f3399cd0605ba2ebfe93c
+        uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 #v5.4.0
         with:
           python-version: 3.13.x
 
       - name: Setup Node
-        uses: actions/setup-node@802632921f8532d2409ae6eac3313b6f81f11122
+        uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a #v4.2.0
         with:
           node-version: 22.x
 

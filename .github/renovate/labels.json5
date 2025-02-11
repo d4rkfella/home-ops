@@ -24,6 +24,7 @@
     },
     {
       "matchDatasources": ["docker"],
+      "excludePackagePatterns": [".*(/charts/|/chart|helm).*"],
       "addLabels": ["renovate/container"]
     },
     {

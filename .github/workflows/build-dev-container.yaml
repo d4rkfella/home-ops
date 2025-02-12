@@ -53,12 +53,12 @@ jobs:
         docker pull ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:${{ env.VERSION }}
 
     - name: Get image digest
-      run: echo DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:${{ env.VERSION }}) >> $GITHUB_ENV
+      run: echo IMAGE=$(docker inspect --format '{{index .RepoDigests 0}}' ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:${{ env.VERSION }}) >> $GITHUB_ENV
 
     - name: Sign the image
       run: |
         cosign sign \
-          ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer@${{ env.DIGEST }}
+          ${{ env.IMAGE }}
       env:
         COSIGN_EXPERIMENTAL: 1
 

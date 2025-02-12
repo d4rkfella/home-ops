@@ -58,6 +58,7 @@ RUN apk update && \
     direnv \
     yq \
     docker-cli \
+    cosign \
     unzip && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

@@ -74,10 +74,10 @@ RUN apk update && \
     curl -fsSLO https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
     mv ./envsubst-`uname -s`-`uname -m` /usr/local/bin/envsubst && \
     curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
-    curl -fsSLO https://releases.hashicorp.com/vault/$VAULT_VERSION/vault_1.18.4_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig} && \
-    gpg --verify ./vault_$VAULT_VERSION_SHA256SUMS.72D7468F.sig ./vault_$VAULT_VERSION_SHA256SUMS && \
-    sha256sum -c ./vault_$VAULT_VERSION_SHA256SUMS --ignore-missing && \
-    unzip ./vault_$VAULT_VERSION_linux_amd64.zip && \
+    curl -fsSLO https://releases.hashicorp.com/vault/$VAULT_VERSION/vault_${VAULT_VERSION}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig} && \
+    gpg --verify ./vault_${VAULT_VERSION}_SHA256SUMS.72D7468F.sig ./vault_${VAULT_VERSION}_SHA256SUMS && \
+    sha256sum -c ./vault_{$VAULT_VERSION}_SHA256SUMS --ignore-missing && \
+    unzip ./vault_${VAULT_VERSION}_linux_amd64.zip && \
     mv ./vault /usr/local/bin/vault && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \

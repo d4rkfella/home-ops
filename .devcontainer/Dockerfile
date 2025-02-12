@@ -10,12 +10,11 @@ ARG TASK_VERSION=v3.41.0
 ARG VIRTCTL_VERSION=v1.5.0-beta.0
 # renovate: depName=a8m/envsubst
 ARG ENVSUBST_VERSION=v1.4.2
+# renovate: depName=hashicorp/vault
+ARG VAULT_VERSION=1.18.4
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
-
-COPY --from=hashicorp/vault:1.18.4 /bin/vault /usr/local/bin/vault
-RUN vault --version
 
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
@@ -49,6 +48,7 @@ RUN apk update && \
     jq \
     nano \
     bash \
+    gnupg \
     bash-completion \
     openssl \
     ca-certificates \
@@ -73,10 +73,17 @@ RUN apk update && \
     tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
     curl -fsSLO https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
     mv ./envsubst-`uname -s`-`uname -m` /usr/local/bin/envsubst && \
+    curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
+    curl -fsSLO https://releases.hashicorp.com/vault/$VAULT_VERSION/vault_1.18.4_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig} && \
+    gpg --verify ./vault_$VAULT_VERSION_SHA256SUMS.72D7468F.sig ./vault_$VAULT_VERSION_SHA256SUMS && \
+    sha256sum -c ./vault_$VAULT_VERSION_SHA256SUMS --ignore-missing && \
+    unzip ./vault_$VAULT_VERSION_linux_amd64.zip && \
+    mv ./vault /usr/local/bin/vault && \
     chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin && \
     chown -R $USERNAME:$USERNAME /home/$USERNAME && chmod -R 700 /home/$USERNAME && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    rm -rf /root/.cache /tmp/* /var/cache/apk/*
+    rm -rf /root/.cache /tmp/* /var/cache/apk/* && \
+    vault --version
 
 WORKDIR /project
 

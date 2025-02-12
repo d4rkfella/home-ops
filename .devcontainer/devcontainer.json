@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:e0d3fea641bea6ead7ba5e4ed239a9e6d1f057a29743cc7b81154b2b28c93653",
+    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:a8c712a2d667d2a32a6cdf55b9afc5c5c4ce27dd85ff793a7002a873507e35a7",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceFolder": "/project",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
@@ -26,7 +26,6 @@
             "ms-azuretools.vscode-docker",
             "GitHub.vscode-pull-request-github",
             "donjayamanne.githistory",
-            "shyykoserhiy.git-autoconfig",
             "PKief.material-icon-theme"
         ],
         "settings": {
@@ -92,7 +91,7 @@
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"
             },
-            "git-autoconfig.configList": [{"user.email": "georgi.panov@darkfellanetwork.com", "user.name": "d4kfella"}]
+            "git.enableCommitSigning": true
         }
       }
     }

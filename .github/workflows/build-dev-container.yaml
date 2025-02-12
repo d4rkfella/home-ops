@@ -63,6 +63,6 @@ jobs:
         COSIGN_EXPERIMENTAL: 1
 
     - name: Verify the pushed tags
-      run: cosign verify ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer@${{ env.DIGEST }}
+      run: cosign verify ${{ env.IMAGE }}
       env:
         COSIGN_EXPERIMENTAL: 1

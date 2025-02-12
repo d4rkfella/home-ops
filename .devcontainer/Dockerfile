@@ -121,6 +121,7 @@ RUN apk update && \
     libstdc++ \
     direnv \
     yq \
+    gnupg \
     docker-cli && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

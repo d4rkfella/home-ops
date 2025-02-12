@@ -49,7 +49,6 @@ jobs:
         platforms: linux/amd64
         file: .devcontainer/Dockerfile
         context: .
-        output: digest
 
     - name: Sign the image
       run: |

@@ -42,7 +42,7 @@ RUN apk update && \
     sha256sum -c ./vault_${VAULT_VERSION}_SHA256SUMS --ignore-missing && \
     unzip ./vault_${VAULT_VERSION}_linux_amd64.zip && \
     mv ./vault /usr/local/bin/vault && \
-    curl -fSsL https://keybase.io/r6by/pgp_keys.asc | gpg --import | gpg --import && \
+    curl -fSsL https://keybase.io/r6by/pgp_keys.asc?fingerprint=208DD36ED5BB3745A16743A4C7C6FBB5B91C1155 | gpg --import && \
     curl -fSsLO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     curl -fSsLO "https://github.com/helm/helm/releases/download/v${HELM_VERSION}/helm-v${HELM_VERSION}-linux-amd64.tar.gz{.asc,.sha256.asc}" && \
     gpg --verify ./helm-v${HELM_VERSION}-linux-amd64.tar.gz.sha256.asc ./helm-v${HELM_VERSION}-linux-amd64.tar.gz.sha256 && \

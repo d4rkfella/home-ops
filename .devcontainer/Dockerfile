@@ -33,7 +33,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/getsops/sops:v3.9.4 /usr/local/bin/sops /usr/local/bin/sops
 RUN sops --version
 
-COPY --from=ghcr.io/helmfile/helmfile:v0.170.1 /usr/local/bin/helmfile /usr/local/bin/helmfile
+COPY --from=ghcr.io/helmfile/helmfile:v0.171.0 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
 COPY --from=registry.k8s.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl

@@ -39,6 +39,7 @@ jobs:
       run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
     - name: Build and Push Docker Image
+      id: build-and-push
       uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 #v6.13.0
       with:
         push: true
@@ -48,6 +49,7 @@ jobs:
         platforms: linux/amd64
         file: .devcontainer/Dockerfile
         context: .
+        output: digest
 
     - name: Sign the image
       run: |

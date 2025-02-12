@@ -63,6 +63,8 @@ jobs:
         COSIGN_EXPERIMENTAL: 1
 
     - name: Verify the pushed tags
-      run: cosign verify ${{ env.IMAGE }}
+      run: |
+        cosign verify --certificate-identity "ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}" \
+          ${{ env.IMAGE }}
       env:
         COSIGN_EXPERIMENTAL: 1

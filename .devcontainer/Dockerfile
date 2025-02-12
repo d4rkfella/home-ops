@@ -79,7 +79,6 @@ RUN apk update && \
     rm -rf /root/.cache /tmp/* /var/cache/apk/*
 
 WORKDIR /project
-
 USER $USERNAME
 
 ENTRYPOINT ["/bin/bash"]

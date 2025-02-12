@@ -57,7 +57,7 @@ jobs:
 
     - name: Sign the image
       run: |
-        cosign sign \
+        cosign sign --yes \
           ${{ env.IMAGE }}
       env:
         COSIGN_EXPERIMENTAL: 1

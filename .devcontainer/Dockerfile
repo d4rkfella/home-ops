@@ -21,6 +21,7 @@ RUN apk update && \
     ca-certificates \
     cosign \
     unzip && \
+    coreutils &&\
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert,.sha256}" && \
     cosign verify-blob kubectl \
       --certificate kubectl.cert \

@@ -65,7 +65,7 @@ jobs:
     - name: Verify the pushed tags
       run: |
         cosign verify --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-          --certificate-identity "ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}" \
+          --certificate-identity "https://github.com/d4rkfella/home-ops/.github/workflows/build-devcontainer.yaml@refs/heads/main" \
           ${{ env.IMAGE }}
       env:
         COSIGN_EXPERIMENTAL: 1

@@ -54,7 +54,7 @@
       "description": ["Keycloak Group"],
       "groupName": "Keycloak",
       "matchPackagePatterns": ["ghcr.io/d4rkfella/keycloak", "keycloak/keycloak-k8s-resources"],
-      "matchDatasources": ["github-releases", "docker"],
+      "matchDatasources": ["github-tags", "docker"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }

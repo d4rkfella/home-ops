@@ -9,7 +9,6 @@
     "mounts": [
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
-
     "customizations": {
       "vscode": {
         "extensions": [
@@ -29,7 +28,14 @@
             "PKief.material-icon-theme"
         ],
         "settings": {
+            "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+            "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
+            "vs-kubernetes": {
+                "vs-kubernetes.kubeconfig": "./kubernetes/kubeconfig",
+                "vs-kubernetes.crd-code-completion": "enabled"
+            },
             "git.path": "/usr/bin/git",
+            "git.enableCommitSigning": true,
             "docker.dockerPath": "/usr/bin/docker",
             "terminal.integrated.defaultProfile.linux": "bash",
             "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
@@ -90,8 +96,7 @@
             "yaml.schemaStore.enable": true,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"
-            },
-            "git.enableCommitSigning": true
+            }
         }
       }
     }

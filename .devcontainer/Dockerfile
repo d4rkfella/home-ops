@@ -16,28 +16,6 @@ ARG VAULT_VERSION=1.18.4
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 
-COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
-COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
-RUN aws --version
-
-COPY --from=alpine/helm:3.17.0 /usr/bin/helm /usr/local/bin/helm
-RUN helm version
-
-COPY --from=fluxcd/flux-cli:v2.4.0 /usr/local/bin/flux /usr/local/bin/flux
-RUN flux --version
-
-COPY --from=ghcr.io/siderolabs/talosctl:v1.9.3 /talosctl /usr/local/bin/talosctl
-RUN talosctl version --client
-
-COPY --from=ghcr.io/getsops/sops:v3.9.4 /usr/local/bin/sops /usr/local/bin/sops
-RUN sops --version
-
-COPY --from=ghcr.io/helmfile/helmfile:v0.171.0 /usr/local/bin/helmfile /usr/local/bin/helmfile
-RUN helmfile --version
-
-COPY --from=registry.k8s.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl
-RUN kubectl version --client
-
 WORKDIR /tmp
 
 RUN apk update && \
@@ -84,6 +62,32 @@ RUN apk update && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     rm -rf /root/.cache /tmp/* /var/cache/apk/* && \
     vault --version
+
+COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
+COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
+RUN aws --version
+
+COPY --from=alpine/helm:3.17.0 /usr/bin/helm /usr/local/bin/helm
+RUN helm version
+
+COPY --from=fluxcd/flux-cli:v2.4.0 /usr/local/bin/flux /usr/local/bin/flux
+RUN flux --version
+
+COPY --from=ghcr.io/siderolabs/talosctl:v1.9.3 /talosctl /usr/local/bin/talosctl
+RUN talosctl version --client
+
+RUN cosign verify ghcr.io/getsops/sops:v3.9.4 \
+        --certificate-identity-regexp=https://github.com/getsops \
+        --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+        -o text
+COPY --from=ghcr.io/getsops/sops:v3.9.4 /usr/local/bin/sops /usr/local/bin/sops
+RUN sops --version
+
+COPY --from=ghcr.io/helmfile/helmfile:v0.171.0 /usr/local/bin/helmfile /usr/local/bin/helmfile
+RUN helmfile --version
+
+COPY --from=registry.k8s.io/kubectl:v1.32.1 /bin/kubectl /usr/local/bin/kubectl
+RUN kubectl version --client
 
 WORKDIR /project
 

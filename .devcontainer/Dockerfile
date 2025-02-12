@@ -10,7 +10,7 @@ ARG ENVSUBST_VERSION=v1.4.2
 ARG VAULT_VERSION=1.18.4
 # renovate: depName=helm/helm
 ARG HELM_VERSION=3.17.0
-
+ARG KUBECTL_VERSION=v1.32.1
 WORKDIR /tmp
 
 RUN apk update && \

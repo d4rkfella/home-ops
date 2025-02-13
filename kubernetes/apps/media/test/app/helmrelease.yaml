@@ -122,14 +122,14 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          radarr:
+          radarr-test:
             app:
               - path: /config
 
       tmp:
         type: emptyDir
         advancedMounts:
-          radarr:
+          radarr-test:
             app:
               - path: /tmp
 
@@ -138,6 +138,6 @@ spec:
         server: 192.168.91.40
         path: /mnt/exos20/data
         advancedMounts:
-          radarr:
+          radarr-test:
             app:
               - path: /data

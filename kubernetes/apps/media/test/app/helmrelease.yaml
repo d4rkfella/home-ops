@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/radarr-distroless
-              tag: 5.19.0.9697
+              tag: 5.19.0.9697@sha256:8166cad6bf34107637f5b498c92418083d9235ad179acbcede596a94366a73d5
             env:
               TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr

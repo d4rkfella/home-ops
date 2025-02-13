@@ -11,7 +11,7 @@ ARG VAULT_VERSION=v1.18.4
 # renovate: depName=helm/helm
 ARG HELM_VERSION=v3.17.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-ARG KUBECTL_VERSION=v1.32.1
+ARG KUBECTL_VERSION=v1.32.2
 # renovate: depName=getsops/sops
 ARG SOPS_VERSION=v3.9.4
 # renovate: depName=fluxcd/flux2

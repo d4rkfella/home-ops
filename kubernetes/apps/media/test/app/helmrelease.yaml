@@ -28,7 +28,7 @@ spec:
 
   values:
     controllers:
-      radarr:
+      radarr-test:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:

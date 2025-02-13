@@ -34,8 +34,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/guillaumedsde/radarr-distroless
-              tag: 5.8.3.8933
+              repository: ghcr.io/d4rkfella/radarr-distroless
+              tag: 5.18.4.9674@sha256:225080ac70568031556ade8c371462bce3c5655fce56a71f56a532f650ec889d
             env:
               TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr

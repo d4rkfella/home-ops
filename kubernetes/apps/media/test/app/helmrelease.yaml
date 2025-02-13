@@ -1,0 +1,140 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app radarr-test
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/radarr-distroless
+              tag: 5.18.4.9674@sha256:748dfea1bd9953b156a852c3fd2dfa5f1076dae1e113d447fd1dea1c7e53a604
+            env:
+              TZ: Europe/Sofia
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__PORT: 80
+              RADARR__SERVER__BINDADDRESS: 0.0.0.0
+              RADARR__UPDATE__BRANCH: develop
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.52"
+          hostnames:
+            - "prowlarr.darkfellanetwork.com"
+            - "qbittorrent.darkfellanetwork.com"
+            - "autobrr.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+
+    ingress:
+      app:
+        annotations:
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: "{{ .Release.Name }}-tls"
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 15Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          radarr:
+            app:
+              - path: /config
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          radarr:
+            app:
+              - path: /tmp
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        advancedMounts:
+          radarr:
+            app:
+              - path: /data

@@ -79,7 +79,7 @@ spec:
 
           app:
             image:
-              repository: ghcr.io/d4rkfella/bazarr-distroless:v1.5.1
+              repository: ghcr.io/d4rkfella/bazarr-distroless
               tag: 1.5.1@sha256:89ae209952ed7afef0a3838c2267a6c2b1a33976f7f5f06bd6c3fc64faa67725
             env:
               TZ: Europe/Sofia

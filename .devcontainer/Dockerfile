@@ -1,4 +1,4 @@
-FROM alpine:3.21.2 AS builder
+FROM alpine:3.21.3 AS builder
 
 # renovate: depName=go-task/task
 ARG TASK_VERSION=v3.41.0
@@ -96,7 +96,7 @@ COPY --from=ghcr.io/helmfile/helmfile:v0.171.0 /usr/local/bin/helmfile /usr/loca
 RUN helmfile --version
 
 
-FROM alpine:3.21.2
+FROM alpine:3.21.3
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano

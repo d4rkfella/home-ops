@@ -205,6 +205,13 @@ spec:
             app:
               - path: /config
 
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /tmp
+
       scripts:
         type: configMap
         name: "{{ .Release.Name }}-configmap"

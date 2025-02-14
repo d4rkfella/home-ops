@@ -55,6 +55,7 @@ RUN apk update && \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
     sha256sum -c --strict sops-${SOPS_VERSION}.checksums.txt --ignore-missing && \
+    mv sops /usr/local/bin/sops && \
     #Download virtctl binary
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \

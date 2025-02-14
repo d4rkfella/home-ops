@@ -64,8 +64,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/autobrr/autobrr
-              tag: v1.58.0@sha256:9b11c36605da242933b93dfc0c572bd17fa05af9aba2ae70deafe4977ba8048b
+              repository: ghcr.io/d4rkfella/autobrr-distroless
+              tag: v1.58.0@sha256:996c8d1589c04a51aab1d38070d73af922f2228021a0ed3489bfc872a6813299
             env:
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__HOST: 0.0.0.0

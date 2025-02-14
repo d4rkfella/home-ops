@@ -102,6 +102,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: PLEX_TOKEN
+              BAZARR__PORT: 6767
             probes:
               liveness: &probes
                 enabled: false

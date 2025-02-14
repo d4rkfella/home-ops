@@ -80,7 +80,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: 1.5.1@sha256:89ae209952ed7afef0a3838c2267a6c2b1a33976f7f5f06bd6c3fc64faa67725
+              tag: 1.5.1@sha256:5401d88607be8795949993323811da71e0e87bc70e422ffd48995e7377a277f3
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"
@@ -102,7 +102,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: PLEX_TOKEN
-              BAZARR__PORT: 6767
             probes:
               liveness: &probes
                 enabled: false

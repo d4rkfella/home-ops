@@ -48,14 +48,14 @@ RUN apk update && \
     tar -xzf flux_${FLUX_VERSION#v}_linux_amd64.tar.gz && \
     mv flux /usr/local/bin/flux && \
     #Download and verify sops binary
-    curl -fsSLO "https://github.com/getsops/sops/releases/download/v3.9.4/sops-${SOPS_VERSION}{.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig}" && \
+    curl -fsSLO "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}{.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig}" && \
     cosign verify-blob sops-${SOPS_VERSION}.checksums.txt \
       --certificate sops-${SOPS_VERSION}.checksums.pem \
       --signature sops-${SOPS_VERSION}.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
       --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
     sha256sum -c --strict sops-${SOPS_VERSION}.checksums.txt --ignore-missing && \
-    mv sops /usr/local/bin/sops && \
+    mv sops-${SOPS_VERSION}.linux.amd64 /usr/local/bin/sops && \
     #Download virtctl binary
     curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \

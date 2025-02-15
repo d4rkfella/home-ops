@@ -40,7 +40,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbittorrent-distroless
-              tag: 5.0.3@sha256:77eb8d7babbb80d7231ebb5dcd009c70e198307584c75d66477a56950eae3819
+              tag: 5.0.3@sha256:fdbb8383b3b8645ee81128fb43ea4a1228ebe9074d3630f9c380a5d8152ffbe7
             env:
               UMASK: "022"
               TZ: Europe/Sofia
@@ -180,11 +180,3 @@ spec:
           qbittorrent:
             git-sync:
               - path: /tmp
-
-      test:
-        type: emptyDir
-        advancedMounts:
-          qbittorrent:
-            app:
-              - path: /etc
-

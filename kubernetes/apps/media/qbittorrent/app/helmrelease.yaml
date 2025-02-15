@@ -180,3 +180,11 @@ spec:
           qbittorrent:
             git-sync:
               - path: /tmp
+
+      test:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /etc
+

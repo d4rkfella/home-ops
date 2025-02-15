@@ -40,7 +40,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbittorrent-distroless
-              tag: 5.0.3@sha256:0f59e8cf787b8fb564c2dcf7a5cd4fbb585a580b5bf36ec354c3e284a3186f0c
+              tag: 5.0.3@sha256:8886c59ca19331bee0cb718388182afd4d5bef582019e12de4ecc257898ca1f6
             env:
               UMASK: "022"
               TZ: Europe/Sofia

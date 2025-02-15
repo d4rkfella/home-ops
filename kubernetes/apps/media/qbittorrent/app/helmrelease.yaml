@@ -39,8 +39,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/onedr0p/qbittorrent
-              tag: 5.0.3@sha256:ef7b54df65ed34aec0809024061fc55b322cc8b3882dfebde499fb3f50f5bb62
+              repository: ghcr.io/d4rkfella/qbittorrent-distroless
+              tag: 5.0.3@sha256:eb6d427870942e01e475c82aa14ba5a954114123f4a2db44036631d57db288cd
             env:
               UMASK: "022"
               TZ: Europe/Sofia
@@ -153,15 +153,6 @@ spec:
     persistence:
       config:
         existingClaim: *app
-
-      scripts:
-        type: configMap
-        name: "{{ .Release.Name }}-scripts"
-        defaultMode: 0550
-        advancedMounts:
-          qbittorrent:
-            app:
-              - readOnly: true
 
       media:
         type: nfs

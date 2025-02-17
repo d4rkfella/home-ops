@@ -108,16 +108,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: *pgPass
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_USER_KEY
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -210,15 +200,6 @@ spec:
           sonarr:
             app:
               - path: /tmp
-
-      scripts:
-        type: configMap
-        name: "{{ .Release.Name }}-configmap"
-        defaultMode: 0550
-        advancedMounts:
-          sonarr:
-            app:
-              - readOnly: true
 
       media:
         type: nfs

@@ -108,16 +108,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: *pgPass
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_USER_KEY
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_TOKEN
             probes:
               liveness: &probes
                 enabled: true
@@ -204,17 +194,6 @@ spec:
           radarr:
             app:
               - path: /tmp
-
-      scripts:
-        type: configMap
-        name: radarr-configmap
-        defaultMode: 0550
-        advancedMounts:
-          radarr:
-            app:
-              - path: /scripts/pushover-notifier.sh
-                subPath: pushover-notifier.sh
-                readOnly: true
 
       media:
         type: nfs

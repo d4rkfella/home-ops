@@ -91,7 +91,6 @@ spec:
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: 80
               SONARR__SERVER__BINDADDRESS  : 127.0.0.1
-              SONARR__UPDATE__BRANCH: develop
               SONARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:

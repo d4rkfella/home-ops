@@ -91,7 +91,6 @@ spec:
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__PORT: 80
               RADARR__SERVER__BINDADDRESS: 127.0.0.1
-              RADARR__UPDATE__BRANCH: develop
               RADARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:

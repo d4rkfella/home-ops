@@ -91,7 +91,6 @@ spec:
               PROWLARR__LOG__LEVEL: info
               PROWLARR__SERVER__BINDADDRESS: 127.0.0.1
               PROWLARR__SERVER__PORT: 80
-              PROWLARR__UPDATE__BRANCH: develop
               PROWLARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:

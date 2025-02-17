@@ -79,10 +79,11 @@ spec:
 
           app:
             image:
-              repository: ghcr.io/onedr0p/bazarr
-              tag: 1.5.1@sha256:1c88830f3c51fc2f1230ad7040bcbe30f197449ae93f835448cf516d8b7e5e82
+              repository: ghcr.io/d4rkfella/bazarr-distroless
+              tag: 1.5.1@sha256:b38e3265c3f81bc78eb12e51c8838722143835b3da207b1cf43ec750fa24e176
             env:
               TZ: Europe/Sofia
+              BAZARR__PORT: 8080
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: *dbHost
               POSTGRES_PORT: *dbPort

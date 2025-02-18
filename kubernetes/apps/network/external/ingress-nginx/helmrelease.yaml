@@ -28,6 +28,11 @@ spec:
       annotations:
         reloader.stakater.com/auto: "true"
       replicaCount: 2
+      image:
+        registry: ghcr.io
+        image: d4rkfella/ingress-nginx-controller
+        tag: "1.12.0-nginx.1.25"
+        digest: sha256:57c2d7cf7160415f43aee0088f3f99d3637201be337a3d37df973a4788a4e60c
       service:
         externalTrafficPolicy: Local
         annotations:

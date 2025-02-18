@@ -68,8 +68,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/fallenbagel/jellyseerr
-              tag: develop@sha256:54f79c833763a1f9ed6839ff44727e9bd6de7a424ba016cd271e140e609b76cc
+              repository: ghcr.io/d4rkfella/jellyseerr-distroless
+              tag: v2.3.0@sha256:861ae6afbec8f2254ca5653eb3070d81bb6b934d2fbff9d05b576c87291f0a6d
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"

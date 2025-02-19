@@ -63,7 +63,7 @@ spec:
                 directory: /rules
           rule_path: /rules/fake
           alertmanager_client:
-            bearer_token: test
+            credentials_file: /vault/secrets/client-secret
       limits_config:
         retention_period: 14d
     singleBinary:

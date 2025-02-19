@@ -52,20 +52,20 @@ spec:
             index:
               prefix: loki_index_
               period: 24h
-        structuredConfig:
-          ruler:
-            enable_api: true
-            enable_alertmanager_v2: true
-            alertmanager_url: https://alertmanager-operated.observability.svc.cluster.local:8082
-            http_client_config:
-              oauth2:
-                client_id: "c5255584-bff5-4c69-ac84-4ed78b869c3b"
-                client_secret_ref: loki-secret
-                token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
-                endpoint_params:
-                  grant_type: client_credentials
-                tls_config:
-                  insecure_skip_verify: true
+      structuredConfig:
+        ruler:
+          enable_api: true
+          enable_alertmanager_v2: true
+          alertmanager_url: https://alertmanager-operated.observability.svc.cluster.local:8082
+          http_client_config:
+            oauth2:
+              client_id: "c5255584-bff5-4c69-ac84-4ed78b869c3b"
+              client_secret_ref: loki-secret
+              token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+              endpoint_params:
+                grant_type: client_credentials
+              tls_config:
+                insecure_skip_verify: true
             storage:
               type: local
               local:

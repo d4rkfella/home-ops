@@ -6,9 +6,6 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: qbittorrent-scripts
-    files:
-      - resources/post-process.sh
   - name: qbittorrent-loki-rules
     options:
       labels:

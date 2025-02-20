@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import ssl
 import errno
 import logging
 import queue
@@ -997,13 +996,13 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: ssl.CERT_REQUIRED | None = None,
+        cert_reqs: int | str | None = ssl.CERT_REQUIRED,
         key_password: str | None = None,
-        ca_certs: /etc/ssl/certs/ca-certificates.crt | None = None,
+        ca_certs: str | None = None,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
-        assert_hostname: str | None = None,
+        assert_hostname: str | Literal[False] | None = None,
         assert_fingerprint: str | None = None,
         ca_cert_dir: str | None = None,
         **conn_kw: typing.Any,

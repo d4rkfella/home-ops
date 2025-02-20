@@ -9,9 +9,6 @@ configMapGenerator:
   - name: bazarr-gatus-ep
     files:
       - resources/gatus-ep.yaml
-  - name: bazarr-configmap
-    files:
-      - resources/subcleaner.sh
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

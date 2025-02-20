@@ -62,6 +62,22 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
+          subcleaner:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.4.0@sha256:0330739a707a2969d617e859f096659ab6d149212658ac0ad7e550b59482ebf0
+            env:
+              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
+              GITSYNC_REF: master
+              GITSYNC_ONE_TIME: ""
+              GITSYNC_ROOT: /add-ons
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+            securityContext: *securityContext
+
         containers:
           oauth2-proxy:
             image:
@@ -98,11 +114,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: *pgPass
-              PLEX_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PLEX_TOKEN
             probes:
               liveness: &probes
                 enabled: false
@@ -122,22 +133,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1Gi
-
-          subcleaner:
-            image:
-              repository: registry.k8s.io/git-sync/git-sync
-              tag: v4.4.0@sha256:0330739a707a2969d617e859f096659ab6d149212658ac0ad7e550b59482ebf0
-            env:
-              GITSYNC_REPO: https://github.com/KBlixt/subcleaner
-              GITSYNC_REF: master
-              GITSYNC_PERIOD: 24h
-              GITSYNC_ROOT: /add-ons
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 128Mi
-            securityContext: *securityContext
 
     defaultPodOptions:
       hostAliases:
@@ -228,16 +223,6 @@ spec:
             app:
               - path: /data/media
                 subPath: media
-
-      scripts:
-        type: configMap
-        name: "{{ .Release.Name }}-configmap"
-        defaultMode: 0775
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /scripts
-                readOnly: true
 
       tmp:
         type: emptyDir

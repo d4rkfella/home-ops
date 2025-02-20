@@ -1055,11 +1055,11 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         """
         self.num_connections += 1
         log.debug(
-            "Starting new HTTPS connection (%d): %s:%s",
+            "Starting new HTTPS connection (%d): %s:%s, cert_reqs: %s",
             self.num_connections,
             self.host,
             self.port or "443",
-            cert_reqs in _new_conn: %s", self.cert_reqs
+            self.cert_reqs
         )
 
         if not self.ConnectionCls or self.ConnectionCls is DummyConnection:  # type: ignore[comparison-overlap]

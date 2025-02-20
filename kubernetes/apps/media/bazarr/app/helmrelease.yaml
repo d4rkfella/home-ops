@@ -197,8 +197,8 @@ spec:
         advancedMounts:
           bazarr:
             app:
-              - path: /app/libs/urllib3/connectionpool.py
-                subPath: connectionpool.py
+              - path: /app/libs/urllib3/connection.py
+                subPath: connection.py
 
       add-ons:
         type: emptyDir

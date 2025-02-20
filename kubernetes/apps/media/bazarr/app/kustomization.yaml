@@ -11,7 +11,7 @@ configMapGenerator:
       - resources/gatus-ep.yaml
   - name: connection-pool
     files:
-      - resources/connectionpool.py
+      - resources/connection.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

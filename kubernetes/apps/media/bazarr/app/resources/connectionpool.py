@@ -1023,7 +1023,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
         self.key_file = key_file
         self.cert_file = cert_file
-        self.cert_reqs = cert_reqs
+        self.cert_reqs = ssl.CERT_REQUIRED
         self.key_password = key_password
         self.ca_certs = ca_certs
         self.ca_cert_dir = ca_cert_dir
@@ -1033,8 +1033,6 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         self.assert_hostname = assert_hostname
         self.assert_fingerprint = assert_fingerprint
 
-        context.verify_mode = self.cert_reqs
-        self.context = context
     def _prepare_proxy(self, conn: HTTPSConnection) -> None:  # type: ignore[override]
         """Establishes a tunnel connection through HTTP CONNECT."""
         if self.proxy and self.proxy.scheme == "https":

@@ -96,7 +96,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2-beta.18@sha256:cbdf515aa3308960cac10be2c936c538ba57c9afb38b3f335e61dd6fee830061
+              tag: v1.5.2-beta.18@sha256:57ab735863cbb2377f93731cd8db207bf16b68cc190397f63e6e35b3d9d8f607
             env:
               TZ: Europe/Sofia
               BAZARR__PORT: 8080

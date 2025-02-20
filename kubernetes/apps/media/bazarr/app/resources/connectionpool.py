@@ -974,7 +974,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
     """
 
     scheme = "https"
-    ConnectionCls: type[BaseHTTPSConnection] = BaseHTTPSConnection
+    ConnectionCls: type[BaseHTTPSConnection] = HTTPSConnection
 
     def __init__(
         self,

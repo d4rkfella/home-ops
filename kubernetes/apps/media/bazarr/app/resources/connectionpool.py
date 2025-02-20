@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ssl
+import warnings
 import errno
 import logging
 import queue
@@ -10,6 +11,7 @@ import warnings
 import weakref
 from socket import timeout as SocketTimeout
 from types import TracebackType
+from urllib3.exceptions import InsecureRequestWarning
 
 from ._base_connection import _TYPE_BODY
 from ._collections import HTTPHeaderDict

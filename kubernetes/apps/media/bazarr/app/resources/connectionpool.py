@@ -996,7 +996,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy: Url | None = None,
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
-        cert_file: str | None = None,,
+        cert_file: str | None = None,
         cert_reqs: ssl.CERT_REQUIRED | None = None,
         key_password: str | None = None,
         ca_certs: /etc/ssl/certs/ca-certificates.crt,

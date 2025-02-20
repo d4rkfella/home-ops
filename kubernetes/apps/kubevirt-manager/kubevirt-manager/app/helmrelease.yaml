@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:e92ee02d3f627089930a2b240eb0f79770b0b4bee7042b91aa2e63450c442936
+              tag: 1.5.0@sha256:847c3db948b7026fb79971cea3aa3db6e3e4526a7e575f7b753b87f45a62f982
             env:
               SERVER_NAME: kubevirt-manager.darkfellanetwork.com
               SSL_CERT_PATH: /usr/local/openresty/nginx/ssl/tls.crt
@@ -89,32 +89,16 @@ spec:
 
     service:
       app:
-        controller: *app
-        ports:
-          https:
-            port: 4443
-
-    ingress:
-      app:
+        controller: kubevirt-manager
+        type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
+        externalTrafficPolicy: Local
         annotations:
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          cert-manager.io/private-key-encoding: PKCS8
-          cert-manager.io/subject-organizations: DarkfellaNET
-        className: internal
-        tls:
-          - hosts:
-              - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: kubevirt-manager-tls
-        hosts:
-          - host: *host
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: 4180
+          external-dns.alpha.kubernetes.io/hostname: kubevirt-manager.darkfellanetwork.com
+          lbipam.cilium.io/ips: 192.168.91.64
+        ports:
+          http:
+            port: 4443
 
     persistence:
       cache-volume:

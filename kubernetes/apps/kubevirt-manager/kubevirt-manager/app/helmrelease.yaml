@@ -129,6 +129,15 @@ spec:
               - path: /etc/secrets
                 readOnly: true
 
+      prometheus-config:
+        type: configMap
+        name: prometheus-config
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /etc/nginx/location.d/
+                readOnly: true
+
       run-volume:
         type: emptyDir
         advancedMounts:

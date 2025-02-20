@@ -9,9 +9,6 @@ configMapGenerator:
   - name: bazarr-gatus-ep
     files:
       - resources/gatus-ep.yaml
-  - name: connection-pool
-    files:
-      - resources/connection.py
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

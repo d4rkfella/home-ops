@@ -96,7 +96,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2-beta.18@sha256:4fb1dc74d5dbeea353bc0f9bb183a91854b1a8cf0ec4ad597b866c9fe023ec29
+              tag: v1.5.2-beta.18@sha256:bb7f2474d54c2e986dc444937c90de7dae76b924b8ed2bc636688d71acc571d8
             env:
               TZ: Europe/Sofia
               BAZARR__PORT: 8080
@@ -190,15 +190,6 @@ spec:
           bazarr:
             app:
               - path: /config
-
-      connection-pool:
-        type: configMap
-        name: connection-pool
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /app/libs/urllib3/connection.py
-                subPath: connection.py
 
       add-ons:
         type: emptyDir

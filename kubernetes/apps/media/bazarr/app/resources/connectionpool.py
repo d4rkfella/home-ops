@@ -997,7 +997,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: ssl.CERT_REQUIRED | None = ssl.CERT_REQUIRED,
+        cert_reqs: int | str | None = None,
         key_password: str | None = None,
         ca_certs: str | None = None,
         ssl_version: int | str | None = None,
@@ -1023,8 +1023,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
         self.key_file = key_file
         self.cert_file = cert_file
-        self.cert_reqs = cert_reqs
-        log.debug("cert_reqs in constructor: %s", self.cert_reqs)
+        self.cert_reqs = ssl.CERT_REQUIRED or cert_reqs
         self.key_password = key_password
         self.ca_certs = ca_certs
         self.ca_cert_dir = ca_cert_dir
@@ -1058,9 +1057,8 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             "Starting new HTTPS connection (%d): %s:%s, cert_reqs: %s",
             self.num_connections,
             self.host,
-            self.port or "443",
-            self.cert_reqs
-        )
+            self.port or "443"
+            )
 
         if not self.ConnectionCls or self.ConnectionCls is DummyConnection:  # type: ignore[comparison-overlap]
             raise ImportError(

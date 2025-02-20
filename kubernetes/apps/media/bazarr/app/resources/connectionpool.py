@@ -999,7 +999,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         cert_file: str | None = None,
         cert_reqs: ssl.CERT_REQUIRED | None = None,
         key_password: str | None = None,
-        ca_certs: /etc/ssl/certs/ca-certificates.crt,
+        ca_certs: /etc/ssl/certs/ca-certificates.crt | None = None,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,

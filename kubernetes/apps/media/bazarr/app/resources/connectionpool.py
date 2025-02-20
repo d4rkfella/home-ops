@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import ssl
 import errno
 import logging
 import queue
@@ -968,6 +967,19 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
 
 
 class HTTPSConnectionPool(HTTPConnectionPool):
+    """
+    Same as :class:`.HTTPConnectionPool`, but HTTPS.
+
+    :class:`.HTTPSConnection` uses one of ``assert_fingerprint``,
+    ``assert_hostname`` and ``host`` in this order to verify connections.
+    If ``assert_hostname`` is False, no verification is done.
+
+    The ``key_file``, ``cert_file``, ``cert_reqs``, ``ca_certs``,
+    ``ca_cert_dir``, ``ssl_version``, ``key_password`` are only used if :mod:`ssl`
+    is available and are fed into :meth:`urllib3.util.ssl_wrap_socket` to upgrade
+    the connection socket into an SSL socket.
+    """
+
     scheme = "https"
     ConnectionCls: type[BaseHTTPSConnection] = HTTPSConnection
 
@@ -984,9 +996,9 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Enable certificate verification
+        cert_reqs: int | str | None = ssl.CERT_NONE,  # Default to CERT_NONE (no verification)
         key_password: str | None = None,
-        ca_certs: str | None = None,  # Path to CA certs for verification
+        ca_certs: str | None = None,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
@@ -1020,10 +1032,24 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         self.assert_hostname = assert_hostname
         self.assert_fingerprint = assert_fingerprint
 
+    def _prepare_proxy(self, conn: HTTPSConnection) -> None:  # type: ignore[override]
+        """Establishes a tunnel connection through HTTP CONNECT."""
+        if self.proxy and self.proxy.scheme == "https":
+            tunnel_scheme = "https"
+        else:
+            tunnel_scheme = "http"
+
+        conn.set_tunnel(
+            scheme=tunnel_scheme,
+            host=self._tunnel_host,
+            port=self.port,
+            headers=self.proxy_headers,
+        )
+        conn.connect()
+
     def _new_conn(self) -> BaseHTTPSConnection:
         """
-        Return a fresh HTTPS connection.
-        This is where the SSL context gets set up.
+        Return a fresh :class:`urllib3.connection.HTTPConnection`.
         """
         self.num_connections += 1
         log.debug(
@@ -1033,23 +1059,57 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             self.port or "443",
         )
 
-        actual_host = self.host
+        if not self.ConnectionCls or self.ConnectionCls is DummyConnection:  # type: ignore[comparison-overlap]
+            raise ImportError(
+                "Can't connect to HTTPS URL because the SSL module is not available."
+            )
+
+        actual_host: str = self.host
         actual_port = self.port
         if self.proxy is not None and self.proxy.host is not None:
             actual_host = self.proxy.host
             actual_port = self.proxy.port
 
-        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        # Create SSL context based on the provided parameters
+        ssl_context = ssl.create_default_context()
         ssl_context.verify_mode = self.cert_reqs or ssl.CERT_NONE
         if self.ca_certs:
             ssl_context.load_verify_locations(cafile=self.ca_certs)
         if self.cert_file:
             ssl_context.load_cert_chain(certfile=self.cert_file, keyfile=self.key_file)
 
+        # Apply SSL version settings if provided
+        if self.ssl_version:
+            ssl_context.options |= getattr(ssl, 'OP_NO_SSLv2', 0)
+            ssl_context.options |= getattr(ssl, 'OP_NO_SSLv3', 0)
+            ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
+
         return self.ConnectionCls(
             host=actual_host,
             port=actual_port,
             timeout=self.timeout.connect_timeout,
-            ssl_context=ssl_context,
+            ssl_context=ssl_context,  # Pass the SSL context here
             **self.conn_kw,
         )
+
+    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
+        """
+        Called right before a request is made, after the socket is created.
+        """
+        super()._validate_conn(conn)
+
+        # Force connect early to allow us to validate the connection.
+        if conn.is_closed:
+            conn.connect()
+
+        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
+        if not conn.is_verified and not conn.proxy_is_verified:
+            warnings.warn(
+                (
+                    f"Unverified HTTPS request is being made to host '{conn.host}'. "
+                    "Adding certificate verification is strongly advised. See: "
+                    "https://urllib3.readthedocs.io/en/latest/advanced-usage.html"
+                    "#tls-warnings"
+                ),
+                InsecureRequestWarning,
+            )

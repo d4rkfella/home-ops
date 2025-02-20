@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:cfe3d1ec97adcd65059cb1d457b9457274e3b4e1335ff01becc184071229fb49
+              tag: 1.5.0@sha256:b66ea5b647eb475cc15a4a28e66d1639559d258ff610be62e8d83cbe68ce1454
             ports:
               - name: http
                 containerPort: 8080
@@ -129,14 +129,14 @@ spec:
               - path: /etc/secrets
                 readOnly: true
 
-      prometheus-config:
-        type: configMap
-        name: prometheus-config
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /etc/nginx/location.d/
-                readOnly: true
+      #prometheus-config:
+        #type: configMap
+        #name: prometheus-config
+        #advancedMounts:
+          #kubevirt-manager:
+            #app:
+              #- path: /etc/nginx/location.d/
+                #readOnly: true
 
       run-volume:
         type: emptyDir

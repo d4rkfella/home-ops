@@ -999,7 +999,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         cert_file: str | None = None,
         key_password: str | None = None,
         ca_certs: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_REQUIRED,
+        cert_reqs: ssl.CERT_REQUIRED,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
@@ -1023,7 +1023,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
         self.key_file = key_file
         self.cert_file = cert_file
-        self.cert_reqs = ssl.CERT_REQUIRED
+        self.cert_reqs = cert_reqs
         self.key_password = key_password
         self.ca_certs = ca_certs
         self.ca_cert_dir = ca_cert_dir
@@ -1078,7 +1078,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             cert_file=self.cert_file,
             key_file=self.key_file,
             key_password=self.key_password,
-            cert_reqs=ssl.CERT_REQUIRED,
+            cert_reqs=self.cert_reqs,
             ca_certs=self.ca_certs,
             ca_cert_dir=self.ca_cert_dir,
             assert_hostname=self.assert_hostname,

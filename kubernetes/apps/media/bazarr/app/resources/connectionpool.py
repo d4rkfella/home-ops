@@ -999,7 +999,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         cert_file: str | None = None,
         key_password: str | None = None,
         ca_certs: str | None = None,
-        cert_reqs: ssl.CERT_REQUIRED,
+        cert_reqs: ssl.CERT_REQUIRED | None = ssl.CERT_REQUIRED,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,

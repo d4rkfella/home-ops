@@ -997,9 +997,9 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_REQUIRED,
+        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Enable certificate verification
         key_password: str | None = None,
-        ca_certs: str | None = "/etc/ssl/certs/ca-certificates.crt",
+        ca_certs: str | None = None,  # Path to CA certificates bundle
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
@@ -1021,9 +1021,10 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             **conn_kw,
         )
 
+        # Ensure that you are using certificate verification (ssl.CERT_REQUIRED)
+        self.cert_reqs = cert_reqs or ssl.CERT_REQUIRED
         self.key_file = key_file
         self.cert_file = cert_file
-        self.cert_reqs = cert_reqs
         self.key_password = key_password
         self.ca_certs = ca_certs
         self.ca_cert_dir = ca_cert_dir
@@ -1032,21 +1033,6 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         self.ssl_maximum_version = ssl_maximum_version
         self.assert_hostname = assert_hostname
         self.assert_fingerprint = assert_fingerprint
-
-    def _prepare_proxy(self, conn: HTTPSConnection) -> None:  # type: ignore[override]
-        """Establishes a tunnel connection through HTTP CONNECT."""
-        if self.proxy and self.proxy.scheme == "https":
-            tunnel_scheme = "https"
-        else:
-            tunnel_scheme = "http"
-
-        conn.set_tunnel(
-            scheme=tunnel_scheme,
-            host=self._tunnel_host,
-            port=self.port,
-            headers=self.proxy_headers,
-        )
-        conn.connect()
 
     def _new_conn(self) -> BaseHTTPSConnection:
         """
@@ -1060,20 +1046,31 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             self.port or "443",
         )
 
-        if not self.ConnectionCls or self.ConnectionCls is DummyConnection:  # type: ignore[comparison-overlap]
+        if not self.ConnectionCls or self.ConnectionCls is DummyConnection:
             raise ImportError(
                 "Can't connect to HTTPS URL because the SSL module is not available."
             )
 
-        actual_host: str = self.host
-        actual_port = self.port
-        if self.proxy is not None and self.proxy.host is not None:
-            actual_host = self.proxy.host
-            actual_port = self.proxy.port
+        # Create SSL context for certificate validation
+        context = ssl.create_default_context()
+        context.verify_mode = ssl.CERT_REQUIRED  # Enable verification
+        if self.ca_certs:
+            context.load_verify_locations(self.ca_certs)
+        elif self.ca_cert_dir:
+            context.load_verify_locations(cafile=self.ca_cert_dir)
 
+        # Optionally specify SSL/TLS version and range
+        if self.ssl_version:
+            context.options |= ssl.OP_NO_TLSv1_3  # Example: Disabling TLS 1.3
+        if self.ssl_minimum_version:
+            context.minimum_version = self.ssl_minimum_version
+        if self.ssl_maximum_version:
+            context.maximum_version = self.ssl_maximum_version
+
+        # Create and return the connection with the SSL context
         return self.ConnectionCls(
-            host=actual_host,
-            port=actual_port,
+            host=self.host,
+            port=self.port,
             timeout=self.timeout.connect_timeout,
             cert_file=self.cert_file,
             key_file=self.key_file,
@@ -1081,6 +1078,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             cert_reqs=self.cert_reqs,
             ca_certs=self.ca_certs,
             ca_cert_dir=self.ca_cert_dir,
+            ssl_context=context,  # Pass the SSL context for verification
             assert_hostname=self.assert_hostname,
             assert_fingerprint=self.assert_fingerprint,
             ssl_version=self.ssl_version,
@@ -1099,89 +1097,10 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         if conn.is_closed:
             conn.connect()
 
-        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
-        if not conn.is_verified and not conn.proxy_is_verified:
+        # Check SSL certificate validation
+        if self.cert_reqs == ssl.CERT_REQUIRED and not conn.is_verified:
             warnings.warn(
-                (
-                    f"Unverified HTTPS request is being made to host '{conn.host}'. "
-                    "Adding certificate verification is strongly advised. See: "
-                    "https://urllib3.readthedocs.io/en/latest/advanced-usage.html"
-                    "#tls-warnings"
-                ),
+                f"Unverified HTTPS request is being made to host '{conn.host}'. "
+                "This connection requires certificate verification. Please provide a valid CA certificate.",
                 InsecureRequestWarning,
             )
-
-
-def connection_from_url(url: str, **kw: typing.Any) -> HTTPConnectionPool:
-    """
-    Given a url, return an :class:`.ConnectionPool` instance of its host.
-
-    This is a shortcut for not having to parse out the scheme, host, and port
-    of the url before creating an :class:`.ConnectionPool` instance.
-
-    :param url:
-        Absolute URL string that must include the scheme. Port is optional.
-
-    :param \\**kw:
-        Passes additional parameters to the constructor of the appropriate
-        :class:`.ConnectionPool`. Useful for specifying things like
-        timeout, maxsize, headers, etc.
-
-    Example::
-
-        >>> conn = connection_from_url('http://google.com/')
-        >>> r = conn.request('GET', '/')
-    """
-    scheme, _, host, port, *_ = parse_url(url)
-    scheme = scheme or "http"
-    port = port or port_by_scheme.get(scheme, 80)
-    if scheme == "https":
-        return HTTPSConnectionPool(host, port=port, **kw)  # type: ignore[arg-type]
-    else:
-        return HTTPConnectionPool(host, port=port, **kw)  # type: ignore[arg-type]
-
-
-@typing.overload
-def _normalize_host(host: None, scheme: str | None) -> None:
-    ...
-
-
-@typing.overload
-def _normalize_host(host: str, scheme: str | None) -> str:
-    ...
-
-
-def _normalize_host(host: str | None, scheme: str | None) -> str | None:
-    """
-    Normalize hosts for comparisons and use with sockets.
-    """
-
-    host = normalize_host(host, scheme)
-
-    # httplib doesn't like it when we include brackets in IPv6 addresses
-    # Specifically, if we include brackets but also pass the port then
-    # httplib crazily doubles up the square brackets on the Host header.
-    # Instead, we need to make sure we never pass ``None`` as the port.
-    # However, for backward compatibility reasons we can't actually
-    # *assert* that.  See http://bugs.python.org/issue28539
-    if host and host.startswith("[") and host.endswith("]"):
-        host = host[1:-1]
-    return host
-
-
-def _url_from_pool(
-    pool: HTTPConnectionPool | HTTPSConnectionPool, path: str | None = None
-) -> str:
-    """Returns the URL from a given connection pool. This is mainly used for testing and logging."""
-    return Url(scheme=pool.scheme, host=pool.host, port=pool.port, path=path).url
-
-
-def _close_pool_connections(pool: queue.LifoQueue[typing.Any]) -> None:
-    """Drains a queue of connections and closes each one."""
-    try:
-        while True:
-            conn = pool.get(block=False)
-            if conn:
-                conn.close()
-    except queue.Empty:
-        pass  # Done.

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ssl
 import errno
 import logging
 import queue

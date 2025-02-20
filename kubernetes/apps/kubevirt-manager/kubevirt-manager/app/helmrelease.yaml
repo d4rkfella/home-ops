@@ -120,6 +120,14 @@ spec:
             app:
               - path: /var/cache/nginx
 
+      token:
+        type: secret
+        name: oidc-jwt
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /etc/secrets
+
       run-volume:
         type: emptyDir
         advancedMounts:

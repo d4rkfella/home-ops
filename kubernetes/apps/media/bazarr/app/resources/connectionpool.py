@@ -1078,7 +1078,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             cert_file=self.cert_file,
             key_file=self.key_file,
             key_password=self.key_password,
-            cert_reqs=self.cert_reqs,
+            cert_reqs=ssl.CERT_REQUIRED,
             ca_certs=self.ca_certs,
             ca_cert_dir=self.ca_cert_dir,
             assert_hostname=self.assert_hostname,

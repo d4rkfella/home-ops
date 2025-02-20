@@ -968,11 +968,6 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
 
 
 class HTTPSConnectionPool(HTTPConnectionPool):
-    """
-    Same as :class:`.HTTPConnectionPool`, but HTTPS.
-    This class is modified to enable SSL verification by using proper parameters.
-    """
-
     scheme = "https"
     ConnectionCls: type[BaseHTTPSConnection] = HTTPSConnection
 
@@ -989,13 +984,13 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Enforce certificate verification
+        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Enable certificate verification
         key_password: str | None = None,
-        ca_certs: str | None = None,  # Path to CA certificates for verification
+        ca_certs: str | None = None,  # Path to CA certs for verification
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
-        assert_hostname: str | Literal[False] | None = None,  # Hostname verification
+        assert_hostname: str | Literal[False] | None = None,
         assert_fingerprint: str | None = None,
         ca_cert_dir: str | None = None,
         **conn_kw: typing.Any,
@@ -1027,8 +1022,8 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
     def _new_conn(self) -> BaseHTTPSConnection:
         """
-        Return a fresh :class:`urllib3.connection.HTTPSConnection`.
-        This will be upgraded to an SSL connection.
+        Return a fresh HTTPS connection.
+        This is where the SSL context gets set up.
         """
         self.num_connections += 1
         log.debug(
@@ -1038,61 +1033,23 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             self.port or "443",
         )
 
-        if not self.ConnectionCls or self.ConnectionCls is DummyConnection:
-            raise ImportError(
-                "Can't connect to HTTPS URL because the SSL module is not available."
-            )
-
-        actual_host: str = self.host
+        actual_host = self.host
         actual_port = self.port
         if self.proxy is not None and self.proxy.host is not None:
             actual_host = self.proxy.host
             actual_port = self.proxy.port
 
-        # Create SSL context for certificate verification
-        ssl_context = create_urllib3_context(
-            key_file=self.key_file,
-            cert_file=self.cert_file,
-            cert_reqs=self.cert_reqs,  # Enforcing certificate verification
-            ca_certs=self.ca_certs,  # Path to CA certificates for verification
-            ca_cert_dir=self.ca_cert_dir,
-            ssl_version=self.ssl_version,
-            min_version=self.ssl_minimum_version,
-            max_version=self.ssl_maximum_version,
-        )
-
-        # Set the hostname verification flag if needed
-        if self.assert_hostname is not False:
-            ssl_context.check_hostname = True
-            ssl_context.hostname = self.assert_hostname or self.host
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.verify_mode = self.cert_reqs or ssl.CERT_NONE
+        if self.ca_certs:
+            ssl_context.load_verify_locations(cafile=self.ca_certs)
+        if self.cert_file:
+            ssl_context.load_cert_chain(certfile=self.cert_file, keyfile=self.key_file)
 
         return self.ConnectionCls(
             host=actual_host,
             port=actual_port,
             timeout=self.timeout.connect_timeout,
-            ssl_context=ssl_context,  # Apply SSL context
+            ssl_context=ssl_context,
             **self.conn_kw,
         )
-
-    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
-        """
-        Called right before a request is made, after the socket is created.
-        Verifies SSL certificate.
-        """
-        super()._validate_conn(conn)
-
-        # Force connect early to allow us to validate the connection.
-        if conn.is_closed:
-            conn.connect()
-
-        # Check for SSL verification issues and log warnings
-        if not conn.is_verified and not conn.proxy_is_verified:
-            warnings.warn(
-                (
-                    f"Unverified HTTPS request is being made to host '{conn.host}'. "
-                    "Adding certificate verification is strongly advised. See: "
-                    "https://urllib3.readthedocs.io/en/latest/advanced-usage.html"
-                    "#tls-warnings"
-                ),
-                InsecureRequestWarning,
-            )

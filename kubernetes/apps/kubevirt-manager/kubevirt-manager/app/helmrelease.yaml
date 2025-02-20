@@ -64,9 +64,11 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:ac83ccf3fb3655bf8d4bd288ef6ec17abaaad426fd48601fdccb72d45e55a61f
+              tag: 1.5.0@sha256:e92ee02d3f627089930a2b240eb0f79770b0b4bee7042b91aa2e63450c442936
             env:
               SERVER_NAME: kubevirt-manager.darkfellanetwork.com
+              SSL_CERT_PATH: /usr/local/openresty/nginx/ssl/tls.crt
+              SSL_CERT_KEY_PATH: /usr/local/openresty/nginx/ssl/tls.key
             ports:
               - name: https
                 containerPort: 4443
@@ -139,6 +141,14 @@ spec:
             app:
               - path: /etc/nginx/location.d/
                 readOnly: true
+
+      cert:
+        type: secret
+        name: kubevirt-manager-tls
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /usr/local/openresty/nginx/ssl
 
       run-volume:
         type: emptyDir

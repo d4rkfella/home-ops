@@ -1091,7 +1091,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
     def _connect(self, conn: BaseHTTPConnection) -> None:
         """Connect to the server and configure SSL."""
-        super()._connect()
+        super()._connect(conn)
 
         # Create an SSL context
         context = ssl.create_default_context()
@@ -1114,7 +1114,16 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             self.sock,
             server_hostname=self.host if self.assert_hostname else None,
         )
-
+        if not conn.is_verified and not conn.proxy_is_verified:
+            warnings.warn(
+                (
+                    f"Unverified HTTPS request is being made to host '{conn.host}'. "
+                    "Adding certificate verification is strongly advised. See: "
+                    "https://urllib3.readthedocs.io/en/latest/advanced-usage.html"
+                    "#tls-warnings"
+                ),
+                InsecureRequestWarning,
+            )
         # Verify the server's certificate
         if self.assert_hostname:
             ssl.match_hostname(self.sock.getpeercert(), self.assert_hostname)

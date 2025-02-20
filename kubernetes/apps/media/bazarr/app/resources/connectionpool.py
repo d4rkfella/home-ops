@@ -1089,9 +1089,9 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             **self.conn_kw,
         )
 
-    def connect(self) -> None:
+    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
         """Connect to the server and configure SSL."""
-        super().connect()
+        super()._validate_conn(conn)
 
         # Create an SSL context
         context = ssl.create_default_context()
@@ -1125,6 +1125,21 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             fingerprint = ssl.PEM_cert_to_DER_cert(cert).hex()
             if fingerprint.lower() != self.assert_fingerprint.lower():
                 raise ssl.SSLError(f"Fingerprint mismatch: {fingerprint} != {self.assert_fingerprint}")
+
+        if conn.is_closed:
+            conn.connect()
+
+        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
+        if not conn.is_verified and not conn.proxy_is_verified:
+            warnings.warn(
+                (
+                    f"Unverified HTTPS request is being made to host '{conn.host}'. "
+                    "Adding certificate verification is strongly advised. See: "
+                    "https://urllib3.readthedocs.io/en/latest/advanced-usage.html"
+                    "#tls-warnings"
+                ),
+                InsecureRequestWarning,
+            )
 
 
 def connection_from_url(url: str, **kw: typing.Any) -> HTTPConnectionPool:

@@ -1003,7 +1003,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
-        assert_hostname: str | Literal[False] | None = None,
+        assert_hostname: str | bool | None = None,
         assert_fingerprint: str | None = None,
         ca_cert_dir: str | None = None,
         **conn_kw: typing.Any,

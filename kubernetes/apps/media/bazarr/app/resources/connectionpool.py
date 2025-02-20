@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ssl
 import errno
 import logging
 import queue
@@ -7,7 +8,6 @@ import sys
 import typing
 import warnings
 import weakref
-import ssl
 from socket import timeout as SocketTimeout
 from types import TracebackType
 
@@ -970,7 +970,15 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
 class HTTPSConnectionPool(HTTPConnectionPool):
     """
     Same as :class:`.HTTPConnectionPool`, but HTTPS.
-    This class enables SSL verification, including certificate and hostname validation.
+
+    :class:`.HTTPSConnection` uses one of ``assert_fingerprint``,
+    ``assert_hostname`` and ``host`` in this order to verify connections.
+    If ``assert_hostname`` is False, no verification is done.
+
+    The ``key_file``, ``cert_file``, ``cert_reqs``, ``ca_certs``,
+    ``ca_cert_dir``, ``ssl_version``, ``key_password`` are only used if :mod:`ssl`
+    is available and are fed into :meth:`urllib3.util.ssl_wrap_socket` to upgrade
+    the connection socket into an SSL socket.
     """
 
     scheme = "https"
@@ -989,13 +997,13 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Ensure cert verification
+        cert_reqs: int | str | None = ssl.CERT_REQUIRED,
         key_password: str | None = None,
-        ca_certs: str | None = None,  # Path to CA certificates for verification
+        ca_certs: str | None = None,
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
-        assert_hostname: str | Literal[False] | None = True,  # Ensure hostname is verified
+        assert_hostname: str | Literal[False] | None = None,
         assert_fingerprint: str | None = None,
         ca_cert_dir: str | None = None,
         **conn_kw: typing.Any,
@@ -1025,7 +1033,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         self.assert_hostname = assert_hostname
         self.assert_fingerprint = assert_fingerprint
 
-    def _prepare_proxy(self, conn: BaseHTTPSConnection) -> None:  # type: ignore[override]
+    def _prepare_proxy(self, conn: HTTPSConnection) -> None:  # type: ignore[override]
         """Establishes a tunnel connection through HTTP CONNECT."""
         if self.proxy and self.proxy.scheme == "https":
             tunnel_scheme = "https"
@@ -1081,7 +1089,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             **self.conn_kw,
         )
 
-    def _validate_conn(self, conn: BaseHTTPSConnection) -> None:
+    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
         """
         Called right before a request is made, after the socket is created.
         """
@@ -1091,7 +1099,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         if conn.is_closed:
             conn.connect()
 
-        # Verify that the certificate is properly verified
+        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
         if not conn.is_verified and not conn.proxy_is_verified:
             warnings.warn(
                 (
@@ -1102,3 +1110,78 @@ class HTTPSConnectionPool(HTTPConnectionPool):
                 ),
                 InsecureRequestWarning,
             )
+
+
+def connection_from_url(url: str, **kw: typing.Any) -> HTTPConnectionPool:
+    """
+    Given a url, return an :class:`.ConnectionPool` instance of its host.
+
+    This is a shortcut for not having to parse out the scheme, host, and port
+    of the url before creating an :class:`.ConnectionPool` instance.
+
+    :param url:
+        Absolute URL string that must include the scheme. Port is optional.
+
+    :param \\**kw:
+        Passes additional parameters to the constructor of the appropriate
+        :class:`.ConnectionPool`. Useful for specifying things like
+        timeout, maxsize, headers, etc.
+
+    Example::
+
+        >>> conn = connection_from_url('http://google.com/')
+        >>> r = conn.request('GET', '/')
+    """
+    scheme, _, host, port, *_ = parse_url(url)
+    scheme = scheme or "http"
+    port = port or port_by_scheme.get(scheme, 80)
+    if scheme == "https":
+        return HTTPSConnectionPool(host, port=port, **kw)  # type: ignore[arg-type]
+    else:
+        return HTTPConnectionPool(host, port=port, **kw)  # type: ignore[arg-type]
+
+
+@typing.overload
+def _normalize_host(host: None, scheme: str | None) -> None:
+    ...
+
+
+@typing.overload
+def _normalize_host(host: str, scheme: str | None) -> str:
+    ...
+
+
+def _normalize_host(host: str | None, scheme: str | None) -> str | None:
+    """
+    Normalize hosts for comparisons and use with sockets.
+    """
+
+    host = normalize_host(host, scheme)
+
+    # httplib doesn't like it when we include brackets in IPv6 addresses
+    # Specifically, if we include brackets but also pass the port then
+    # httplib crazily doubles up the square brackets on the Host header.
+    # Instead, we need to make sure we never pass ``None`` as the port.
+    # However, for backward compatibility reasons we can't actually
+    # *assert* that.  See http://bugs.python.org/issue28539
+    if host and host.startswith("[") and host.endswith("]"):
+        host = host[1:-1]
+    return host
+
+
+def _url_from_pool(
+    pool: HTTPConnectionPool | HTTPSConnectionPool, path: str | None = None
+) -> str:
+    """Returns the URL from a given connection pool. This is mainly used for testing and logging."""
+    return Url(scheme=pool.scheme, host=pool.host, port=pool.port, path=path).url
+
+
+def _close_pool_connections(pool: queue.LifoQueue[typing.Any]) -> None:
+    """Drains a queue of connections and closes each one."""
+    try:
+        while True:
+            conn = pool.get(block=False)
+            if conn:
+                conn.close()
+    except queue.Empty:
+        pass  # Done.

@@ -970,19 +970,11 @@ class HTTPConnectionPool(ConnectionPool, RequestMethods):
 class HTTPSConnectionPool(HTTPConnectionPool):
     """
     Same as :class:`.HTTPConnectionPool`, but HTTPS.
-
-    :class:`.HTTPSConnection` uses one of ``assert_fingerprint``,
-    ``assert_hostname`` and ``host`` in this order to verify connections.
-    If ``assert_hostname`` is False, no verification is done.
-
-    The ``key_file``, ``cert_file``, ``cert_reqs``, ``ca_certs``,
-    ``ca_cert_dir``, ``ssl_version``, ``key_password`` are only used if :mod:`ssl`
-    is available and are fed into :meth:`urllib3.util.ssl_wrap_socket` to upgrade
-    the connection socket into an SSL socket.
+    This class enables SSL verification, including certificate and hostname validation.
     """
 
     scheme = "https"
-    ConnectionCls: type[BaseHTTPSConnection] = HTTPSConnection
+    ConnectionCls: type[BaseHTTPSConnection] = BaseHTTPSConnection
 
     def __init__(
         self,
@@ -997,13 +989,13 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = ssl.CERT_NONE,  # Default to CERT_NONE (no verification)
+        cert_reqs: int | str | None = ssl.CERT_REQUIRED,  # Ensure cert verification
         key_password: str | None = None,
-        ca_certs: str | None = None,
+        ca_certs: str | None = None,  # Path to CA certificates for verification
         ssl_version: int | str | None = None,
         ssl_minimum_version: ssl.TLSVersion | None = None,
         ssl_maximum_version: ssl.TLSVersion | None = None,
-        assert_hostname: str | Literal[False] | None = None,
+        assert_hostname: str | Literal[False] | None = True,  # Ensure hostname is verified
         assert_fingerprint: str | None = None,
         ca_cert_dir: str | None = None,
         **conn_kw: typing.Any,
@@ -1033,7 +1025,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         self.assert_hostname = assert_hostname
         self.assert_fingerprint = assert_fingerprint
 
-    def _prepare_proxy(self, conn: HTTPSConnection) -> None:  # type: ignore[override]
+    def _prepare_proxy(self, conn: BaseHTTPSConnection) -> None:  # type: ignore[override]
         """Establishes a tunnel connection through HTTP CONNECT."""
         if self.proxy and self.proxy.scheme == "https":
             tunnel_scheme = "https"
@@ -1071,29 +1063,25 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             actual_host = self.proxy.host
             actual_port = self.proxy.port
 
-        # Create SSL context based on the provided parameters
-        ssl_context = ssl.create_default_context()
-        ssl_context.verify_mode = self.cert_reqs or ssl.CERT_NONE
-        if self.ca_certs:
-            ssl_context.load_verify_locations(cafile=self.ca_certs)
-        if self.cert_file:
-            ssl_context.load_cert_chain(certfile=self.cert_file, keyfile=self.key_file)
-
-        # Apply SSL version settings if provided
-        if self.ssl_version:
-            ssl_context.options |= getattr(ssl, 'OP_NO_SSLv2', 0)
-            ssl_context.options |= getattr(ssl, 'OP_NO_SSLv3', 0)
-            ssl_context.set_ciphers('DEFAULT@SECLEVEL=1')
-
         return self.ConnectionCls(
             host=actual_host,
             port=actual_port,
             timeout=self.timeout.connect_timeout,
-            ssl_context=ssl_context,  # Pass the SSL context here
+            cert_file=self.cert_file,
+            key_file=self.key_file,
+            key_password=self.key_password,
+            cert_reqs=self.cert_reqs,
+            ca_certs=self.ca_certs,
+            ca_cert_dir=self.ca_cert_dir,
+            assert_hostname=self.assert_hostname,
+            assert_fingerprint=self.assert_fingerprint,
+            ssl_version=self.ssl_version,
+            ssl_minimum_version=self.ssl_minimum_version,
+            ssl_maximum_version=self.ssl_maximum_version,
             **self.conn_kw,
         )
 
-    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
+    def _validate_conn(self, conn: BaseHTTPSConnection) -> None:
         """
         Called right before a request is made, after the socket is created.
         """
@@ -1103,7 +1091,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         if conn.is_closed:
             conn.connect()
 
-        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
+        # Verify that the certificate is properly verified
         if not conn.is_verified and not conn.proxy_is_verified:
             warnings.warn(
                 (

@@ -7,6 +7,7 @@ import sys
 import typing
 import warnings
 import weakref
+import ssl
 from socket import timeout as SocketTimeout
 from types import TracebackType
 

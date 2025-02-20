@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:df5d475e802b02609636854c926e489300b190871ae478855d45c7103cab655f
+              tag: 1.5.0@sha256:961be04dffdb4e4696b734c4a3c53a55605e020dbadc003f8b1e11f86c5f0a68
             ports:
               - name: http
                 containerPort: 8080

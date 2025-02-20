@@ -75,9 +75,11 @@ spec:
       extraVolumeMounts:
         - name: bearer-token
           mountPath: /etc/secrets/client-secret
+          readOnly: true
         - name: internal-root-ca
           mountPath: /etc/ssl/certs/internal-root-ca.crt
           subPath: ca.crt
+          readOnly: true
       extraVolumes:
         - name: bearer-token
           secret:

@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:eccd2ba52a6a2e72bc21171b504567e02e17d0f98a89dcd57e886d1f9d316d62
+              tag: 1.5.0@sha256:45d0fa76ab6c296ff8782a82de4413b00df7eca8604f9bd37d4581171ba3359f
             ports:
               - name: http
                 containerPort: 8080
@@ -77,10 +77,10 @@ spec:
             - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:

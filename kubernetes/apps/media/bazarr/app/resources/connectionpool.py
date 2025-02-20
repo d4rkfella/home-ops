@@ -1089,31 +1089,17 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             **self.conn_kw,
         )
 
-    def _connect(self, conn: BaseHTTPConnection) -> None:
-        """Connect to the server and configure SSL."""
-        super()._connect(conn)
+    def _validate_conn(self, conn: BaseHTTPConnection) -> None:
+        """
+        Called right before a request is made, after the socket is created.
+        """
+        super()._validate_conn(conn)
 
-        # Create an SSL context
-        context = ssl.create_default_context()
-        context.verify_mode = self.cert_reqs
+        # Force connect early to allow us to validate the connection.
+        if conn.is_closed:
+            conn.connect()
 
-        # Load CA certificates
-        if self.ca_certs or self.ca_cert_dir:
-            context.load_verify_locations(cafile=self.ca_certs, capath=self.ca_cert_dir)
-
-        # Configure SSL version
-        if self.ssl_version:
-            context.protocol = self.ssl_version
-        if self.ssl_minimum_version:
-            context.minimum_version = self.ssl_minimum_version
-        if self.ssl_maximum_version:
-            context.maximum_version = self.ssl_maximum_version
-
-        # Wrap the socket with SSL
-        self.sock = context.wrap_socket(
-            self.sock,
-            server_hostname=self.host if self.assert_hostname else None,
-        )
+        # TODO revise this, see https://github.com/urllib3/urllib3/issues/2791
         if not conn.is_verified and not conn.proxy_is_verified:
             warnings.warn(
                 (
@@ -1124,17 +1110,6 @@ class HTTPSConnectionPool(HTTPConnectionPool):
                 ),
                 InsecureRequestWarning,
             )
-        # Verify the server's certificate
-        if self.assert_hostname:
-            ssl.match_hostname(self.sock.getpeercert(), self.assert_hostname)
-
-        # Verify the certificate fingerprint
-        if self.assert_fingerprint:
-            cert = self.sock.getpeercert(binary_form=True)
-            fingerprint = ssl.PEM_cert_to_DER_cert(cert).hex()
-            if fingerprint.lower() != self.assert_fingerprint.lower():
-                raise ssl.SSLError(f"Fingerprint mismatch: {fingerprint} != {self.assert_fingerprint}")
-
 
 def connection_from_url(url: str, **kw: typing.Any) -> HTTPConnectionPool:
     """

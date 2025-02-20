@@ -145,6 +145,13 @@ spec:
             app:
               - path: /var/run
 
+      test:
+        type: emptyDir
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /var/run/openresty
+
       log:
         type: emptyDir
         advancedMounts:

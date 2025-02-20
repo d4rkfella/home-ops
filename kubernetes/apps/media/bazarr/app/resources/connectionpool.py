@@ -997,7 +997,6 @@ class HTTPSConnectionPool(HTTPConnectionPool):
         _proxy_headers: typing.Mapping[str, str] | None = None,
         key_file: str | None = None,
         cert_file: str | None = None,
-        cert_reqs: int | str | None = None,
         key_password: str | None = None,
         ca_certs: str | None = None,
         cert_reqs: int | str | None = ssl.CERT_REQUIRED,

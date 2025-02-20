@@ -35,13 +35,6 @@ instance:
         target:
           group: kustomize.toolkit.fluxcd.io
           kind: Kustomization
-      - patch: |
-          - op: replace
-            path: /spec/template/spec/containers/0/image
-            value: ghcr.io/d4rkfella/fluxcd/notification-controller:am-bearer@sha256:3b3daabbc557666874a766370181744a82b27c56d1ba86bdabb61dfe5d56c6d2
-        target:
-          kind: Deployment
-          name: notification-controller
       # Increase the number of workers and limits
       # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#increase-the-number-of-workers-and-limits
       - patch: |

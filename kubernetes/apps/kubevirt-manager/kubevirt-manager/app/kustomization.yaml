@@ -6,7 +6,7 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
 configMapGenerator:
-  - name: prometheus-conf
+  - name: prometheus-config
     files:
       - resources/prometheus.conf
 generatorOptions:

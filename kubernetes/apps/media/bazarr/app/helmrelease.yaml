@@ -191,6 +191,15 @@ spec:
             app:
               - path: /config
 
+      connection-pool:
+        type: configMap
+        name: connection-pool
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /app/libs/urllib3/connectionpool.py
+                subPath: connectionpool.py
+
       add-ons:
         type: emptyDir
         advancedMounts:

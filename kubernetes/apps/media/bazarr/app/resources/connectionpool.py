@@ -1016,6 +1016,7 @@ class HTTPSConnectionPool(HTTPConnectionPool):
             block,
             headers,
             retries,
+            cert_reqs,
             _proxy,
             _proxy_headers,
             **conn_kw,
@@ -1023,7 +1024,6 @@ class HTTPSConnectionPool(HTTPConnectionPool):
 
         self.key_file = key_file
         self.cert_file = cert_file
-        self.cert_reqs = cert_reqs
         self.key_password = key_password
         self.ca_certs = ca_certs
         self.ca_cert_dir = ca_cert_dir

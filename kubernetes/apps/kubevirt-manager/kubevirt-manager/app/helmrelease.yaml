@@ -145,6 +145,13 @@ spec:
             app:
               - path: /var/run/openresty
 
+      log:
+        type: emptyDir
+        advancedMounts:
+          kubevirt-manager:
+            app:
+              - path: /var/log/nginx
+
       oauth2-proxy-config:
         type: secret
         name: *secret

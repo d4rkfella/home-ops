@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:5a6dbb6c6a202674e35e69667ca71e42d91b315455f541453109158c6bc26b21
+              tag: 1.5.0@sha256:8a63e2730639f07a9e08757e4c7ed9b0057289bc7da4f7eed8c690443a61c620
             env:
               SERVER_NAME: kubevirt-manager.darkfellanetwork.com
               SSL_CERT_PATH: /usr/local/openresty/nginx/ssl/tls.crt

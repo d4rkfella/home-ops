@@ -44,35 +44,29 @@ spec:
           reloader.stakater.com/auto: "true"
 
         containers:
-          oauth2-proxy:
-            image:
-              repository: quay.io/oauth2-proxy/oauth2-proxy
-              tag: v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret kubevirt-manager-secret
-                    key: DRAGONFLY_PASSWORD
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:8a63e2730639f07a9e08757e4c7ed9b0057289bc7da4f7eed8c690443a61c620
+              tag: 1.5.0@sha256:daa94b6547aba705eb02901eb58b49b7c941d55577a7d4196c6f4b009b1292b9
             env:
-              SERVER_NAME: kubevirt-manager.darkfellanetwork.com
-              SSL_CERT_PATH: /usr/local/openresty/nginx/ssl/tls.crt
-              SSL_CERT_KEY_PATH: /usr/local/openresty/nginx/ssl/tls.key
+              NGINX_SERVER_NAME: "kubevirt-manager.darkfellanetwork.com"
+              NGINX_SSL_CERTIFICATE: "/usr/local/openresty/nginx/ssl/tls.crt"
+              NGINX_SSL_CERTIFICATE_KEY: "/usr/local/openresty/nginx/ssl/tls.key"
+              OIDC_DISCOVERY: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration"
+              OIDC_REDIRECT_URI: "https://kubevirt-manager.darkfellanetwork.com/callback"
+              OIDC_CLIENT_ID: "6a7e3e1d-f71e-4b30-bbad-4457c3ba7c41"
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret kubevirt-manager-secret
+                    key: CLIENT_SECRET
             ports:
               - name: https
                 containerPort: 4443
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
       hostAliases:

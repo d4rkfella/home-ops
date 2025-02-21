@@ -68,7 +68,7 @@ spec:
                     key: DRAGONFLY_PASSWORD
             ports:
               - name: https
-                containerPort: 4443
+                containerPort: 443
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -98,7 +98,7 @@ spec:
           lbipam.cilium.io/ips: 192.168.91.64
         ports:
           http:
-            port: 4443
+            port: 443
 
     persistence:
       cache-volume:

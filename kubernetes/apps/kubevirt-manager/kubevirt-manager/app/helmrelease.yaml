@@ -60,6 +60,12 @@ spec:
                   secretKeyRef:
                     name: &secret kubevirt-manager-secret
                     key: CLIENT_SECRET
+              OIDC_REDIS_HOST: dragonfly-cluster.database.svc.cluster.local
+              OIDC_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
             ports:
               - name: https
                 containerPort: 4443
@@ -97,28 +103,22 @@ spec:
     persistence:
       cache-volume:
         type: emptyDir
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /var/cache/nginx
+        globalMounts:
+          - path: /var/cache/nginx
 
       token:
         type: secret
         name: oidc-jwt
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /etc/secrets
-                readOnly: true
+        globalMounts:
+          - path: /etc/secrets
+            readOnly: true
 
       prometheus-config:
         type: configMap
         name: prometheus-config
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /etc/nginx/location.d/
-                readOnly: true
+        globalMounts:
+          - path: /etc/nginx/location.d/
+            readOnly: true
 
       nginx-config:
         type: configMap
@@ -137,10 +137,8 @@ spec:
       cert:
         type: secret
         name: kubevirt-manager-tls
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /usr/local/openresty/nginx/ssl
+        globalMounts:
+          - path: /usr/local/openresty/nginx/ssl
 
       run-volume:
         type: emptyDir
@@ -158,30 +156,16 @@ spec:
 
       log:
         type: emptyDir
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /var/log/openresty
-
-      oauth2-proxy-config:
-        type: secret
-        name: *secret
-        advancedMounts:
-          kubevirt-manager:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
+        globalMounts:
+          - path: /var/log/openresty
 
       darkfellanet-root-ca:
         type: secret
         name: *secret
-        advancedMounts:
-          kubevirt-manager:
-            oauth2-proxy:
-              - path: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
-                readOnly: true
+        globalMounts:
+          - path: /etc/ssl/certs/Internal-Root-CA.crt
+            subPath: ca.crt
+            readOnly: true
 
     rawResources:
       vm-standard:

@@ -107,13 +107,6 @@ spec:
         globalMounts:
           - path: /var/cache/nginx
 
-      token:
-        type: secret
-        name: oidc-jwt
-        globalMounts:
-          - path: /etc/secrets
-            readOnly: true
-
       prometheus-config:
         type: configMap
         name: prometheus-config

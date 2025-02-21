@@ -47,7 +47,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:a809f7e86f941670631ea108a7c2cfca06c134e45ebe238508e9775e03e59587
+              tag: 1.5.0@sha256:a059759d10f16379cce768781c18145eb59b78683e15912f71f19f9f62709753
             env:
               NGINX_SERVER_NAME: "kubevirt-manager.darkfellanetwork.com"
               NGINX_SSL_CERTIFICATE: "/usr/local/openresty/nginx/ssl/tls.crt"

@@ -39,6 +39,6 @@ spec:
       name: dragonfly-secret
       key: DRAGONFLY_PASSWORD
       optional: false
-  tlsSecretRef:
-    name: dragonfly-internal-tls
-    namespace: database
+  #tlsSecretRef:
+    #name: dragonfly-internal-tls
+    #namespace: database

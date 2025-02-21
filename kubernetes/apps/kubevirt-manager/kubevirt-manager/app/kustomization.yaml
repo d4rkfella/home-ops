@@ -14,6 +14,9 @@ configMapGenerator:
   - name: nginx-config
     files:
       - resources/nginx.conf
+  - name: prometheus-config
+    files:
+      - resources/prometheus.conf
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

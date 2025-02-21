@@ -66,6 +66,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
+              OIDC_REDIS_SSL_VERIFY: false
             ports:
               - name: https
                 containerPort: 443

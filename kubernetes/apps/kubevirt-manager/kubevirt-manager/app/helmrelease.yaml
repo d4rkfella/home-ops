@@ -120,6 +120,20 @@ spec:
               - path: /etc/nginx/location.d/
                 readOnly: true
 
+      nginx-config:
+        type: configMap
+        name: nginx-config
+        globalMounts:
+          - path: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+
+      nginx-default:
+        type: configMap
+        name: nginx-default
+        globalMounts:
+          - path: /etc/nginx/conf.d/default.conf
+            subPath: default.conf
+
       cert:
         type: secret
         name: kubevirt-manager-tls

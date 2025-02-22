@@ -47,9 +47,8 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: 1.5.0@sha256:aa83d5b3038926561cc4664115c3459ff855770df1f0cb0eb7a92318b2423947
+              tag: 1.5.0@sha256:108e6162e515b90f04c09381ee7a65700bab4a947901a3038ba293c52f2ae114
             env:
-              NGINX_SERVER_NAME: kubevirt-manager.darkfellanetwork.com
               OIDC_DISCOVERY: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration"
               OIDC_REDIRECT_URI: "https://kubevirt-manager.darkfellanetwork.com/callback"
               OIDC_CLIENT_ID: "6a7e3e1d-f71e-4b30-bbad-4457c3ba7c41"
@@ -82,7 +81,7 @@ spec:
         runAsUser: 65532
         runAsGroup: 65532
         fsGroup: 65532
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
     service:
@@ -99,46 +98,7 @@ spec:
             port: 443
 
     persistence:
-      cache-volume:
-        type: emptyDir
-        globalMounts:
-          - path: /var/cache/nginx
-
-      prometheus-config:
-        type: configMap
-        name: prometheus-config
-        globalMounts:
-          - path: /etc/nginx/location.d/
-            readOnly: true
-
-      nginx-config:
-        type: configMap
-        name: nginx-config
-        globalMounts:
-          - path: /etc/nginx/nginx.conf
-            subPath: nginx.conf
-
-      nginx-default:
-        type: configMap
-        name: nginx-default
-        globalMounts:
-          - path: /etc/nginx/conf.d/default.conf
-            subPath: default.conf
-
-      cert:
-        type: secret
-        name: kubevirt-manager-tls
-        globalMounts:
-          - path: /usr/local/openresty/nginx/ssl
-
       run-volume:
-        type: emptyDir
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /var/run
-
-      test:
         type: emptyDir
         advancedMounts:
           kubevirt-manager:
@@ -150,6 +110,20 @@ spec:
         globalMounts:
           - path: /var/log/openresty
 
+      prometheus-config:
+        type: configMap
+        name: prometheus-config
+        globalMounts:
+          - path: /etc/nginx/location.d/
+            readOnly: true
+
+      cert:
+        type: secret
+        name: kubevirt-manager-tls
+        globalMounts:
+          - path: /usr/local/openresty/nginx/ssl
+            readOnly: true
+
       darkfellanet-root-ca:
         type: secret
         name: *secret
@@ -158,7 +132,7 @@ spec:
             subPath: ca.crt
             readOnly: true
 
-      bundled-ca-certs:
+      bundled-certs-dir:
         type: emptyDir
         globalMounts:
           - path: /etc/ssl/certs/bundled

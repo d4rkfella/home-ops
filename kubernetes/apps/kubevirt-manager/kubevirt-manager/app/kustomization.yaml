@@ -7,12 +7,6 @@ resources:
   - ./externalsecret.yaml
   - ./certificate.yaml
 configMapGenerator:
-  - name: nginx-default
-    files:
-      - resources/default.conf
-  - name: nginx-config
-    files:
-      - resources/nginx.conf
   - name: prometheus-config
     files:
       - resources/prometheus.conf

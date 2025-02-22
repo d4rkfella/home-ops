@@ -137,6 +137,9 @@ spec:
         globalMounts:
           - path: /etc/ssl/certs/bundled
 
+      tmp:
+        type: emptyDir
+
     rawResources:
       vm-standard:
         enabled: true

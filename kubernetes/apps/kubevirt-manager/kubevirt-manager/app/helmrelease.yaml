@@ -100,10 +100,8 @@ spec:
     persistence:
       run-volume:
         type: emptyDir
-        advancedMounts:
-          kubevirt-manager:
-            app:
-              - path: /var/run/openresty
+        globalMounts:
+          - path: /var/run/openresty
 
       log:
         type: emptyDir

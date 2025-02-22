@@ -1,0 +1,182 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app qbittorrent
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: volsync
+      namespace: volsync-system
+
+  values:
+    controllers:
+      qbittorrent:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/qbittorrent-distroless
+              tag: 5.0.4_v2.0.11@sha256:8cc1aba18008ee78b8e06553e9d10563930e11609e2068d3558287e996ecf44a
+            env:
+              UMASK: "022"
+              TZ: Europe/Sofia
+              QBT_WEBUI_PORT: &port 80
+              QBT_TORRENTING_PORT: &torrentPort 50413
+              CROSS_SEED_ENABLED: true
+              CROSS_SEED_URL: https://cross-seed.darkfellanetwork.com
+              CROSS_SEED_SLEEP_INTERVAL: 15
+              PUSHOVER_ENABLED: true
+            envFrom:
+            - secretRef:
+                name: "{{ .Release.Name }}-secret"
+            probes:
+              readiness: &probes
+                enabled: true
+                spec:
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  failureThreshold: 3
+              liveness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 16Gi
+
+          git-sync:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.4.0
+            args:
+              - --repo=https://github.com/WDaan/VueTorrent
+              - --ref=latest-release
+              - --period=86400s
+              - --root=/addons
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 25Mi
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.52"
+          hostnames:
+            - "cross-seed.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: Always
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        primary: true
+        ports:
+          http:
+            port: *port
+      upload:
+        controller: *app
+        primary: false
+        type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.55
+        ports:
+          bittorrent-tcp:
+            enabled: true
+            port: *torrentPort
+            protocol: TCP
+          bittorrent-udp:
+            enabled: true
+            port: *torrentPort
+            protocol: UDP
+    ingress:
+      app:
+        annotations:
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: "{{ .Release.Name }}-tls"
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        existingClaim: *app
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /data/downloads/torrents
+                subPath: downloads/torrents
+
+      addons:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /addons
+                readOnly: true
+            git-sync:
+              - path: /addons
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            git-sync:
+              - path: /tmp

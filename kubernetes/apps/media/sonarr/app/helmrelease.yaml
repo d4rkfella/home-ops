@@ -1,0 +1,233 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app sonarr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+
+  values:
+    controllers:
+      sonarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.4@sha256:3b71d4fccc4281666f4806f8ca5aef740b9c62c68cfa611aabe473fc5150e532
+            env:
+              INIT_POSTGRES_DBNAME: &dbName sonarr
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret "{{ .Release.Name }}-secret"
+                    key: &pgUser POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgPass POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_USER: postgres-db-manager
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: *securityContext
+
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/sonarr-distroless
+              tag: v4.0.13.2932@sha256:0a2d12bf9b3f332646418a46bca2b5fdb91316a4ef0b36aa14f031d3e1ee53ce
+            env:
+              TZ: Europe/Sofia
+              SONARR__APP__INSTANCENAME: Sonarr
+              SONARR__APP__THEME: dark
+              SONARR__AUTH__METHOD: External
+              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__LOG__DBENABLED: "False"
+              SONARR__LOG__LEVEL: info
+              SONARR__SERVER__PORT: 80
+              SONARR__SERVER__BINDADDRESS  : 127.0.0.1
+              SONARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: SONARR_API_KEY
+              SONARR__POSTGRES__HOST: *dbHost
+              SONARR__POSTGRES__MAINDB: *dbName
+              SONARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgUser
+              SONARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgPass
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: 4180
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.52"
+          hostnames:
+            - "prowlarr.darkfellanetwork.com"
+            - "qbittorrent.darkfellanetwork.com"
+            - "autobrr.darkfellanetwork.com"
+        - ip: "192.168.91.51"
+          hostnames:
+            - "accounts.darkfellanetwork.com"
+        - ip: "192.168.91.54"
+          hostnames:
+            - "plex.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 2000
+        runAsGroup: 2000
+        fsGroup: 2000
+        fsGroupChangePolicy: Always
+        seccompProfile: { type: RuntimeDefault }
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 4180
+
+    ingress:
+      app:
+        annotations:
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
+        className: internal
+        tls:
+          - hosts:
+              - &host "{{ .Release.Name }}.darkfellanetwork.com"
+            secretName: "{{ .Release.Name }}-tls"
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 15Gi
+        storageClass: openebs-zfs-128k
+        accessMode: ReadWriteOnce
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /config
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /tmp
+
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        advancedMounts:
+          sonarr:
+            app:
+              - path: /data
+
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        defaultMode: 0440
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      darkfellanet-root-ca:
+        type: secret
+        name: *secret
+        defaultMode: 0440
+        advancedMounts:
+          sonarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/darkfellanet-root-ca.crt
+                subPath: ca.crt
+                readOnly: true

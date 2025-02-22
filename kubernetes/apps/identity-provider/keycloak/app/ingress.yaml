@@ -1,0 +1,47 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    cert-manager.io/cluster-issuer: zerossl-prod
+    cert-manager.io/private-key-rotation-policy: Always
+    cert-manager.io/private-key-algorithm: ECDSA
+    cert-manager.io/private-key-size: "384"
+    cert-manager.io/private-key-encoding: PKCS8
+    cert-manager.io/subject-organizations: DarkfellaNET
+    nginx.ingress.kubernetes.io/server-snippet: |
+      location /admin {
+        set $allowed_ip 0;
+
+        if ($remote_addr ~ ^192\.168\.91\.) {
+          set $allowed_ip 1;
+        }
+
+        if ($allowed_ip = 0) {
+          return 403;
+        }
+
+        proxy_pass https://keycloak-service.idp.svc.cluster.local:443;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      }
+spec:
+  ingressClassName: external
+  tls:
+    - hosts:
+        - &host accounts.darkfellanetwork.com
+      secretName: keycloak-tls
+  rules:
+    - host: *host
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: keycloak-service
+                port:
+                  number: 443

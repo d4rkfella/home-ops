@@ -1,0 +1,46 @@
+---
+security:
+  oidc:
+    issuer-url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+    client-id: cf97a83c-445e-4d2c-93ac-f13a1a037c59
+    client-secret: ${OIDC_CLIENT_SECRET}
+    redirect-url: https://status.darkfellanetwork.com/authorization-code/callback
+    scopes: [openid]
+web:
+  port: ${WEB_PORT}
+storage:
+  type: postgres
+  path: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DBNAME}?sslmode=verify-full&sslrootcert=/etc/ssl/certs/postgres-ca.crt
+  caching: true
+metrics: true
+debug: false
+ui:
+  title: Status | Gatus
+  header: Status
+alerting:
+  pushover:
+    title: Gatus
+    application-token: ${PUSHOVER_TOKEN}
+    user-key: ${PUSHOVER_USER_KEY}
+    priority: 1
+    default-alert:
+      description: health-check failed
+      send-on-resolved: true
+      failure-threshold: 3
+      success-threshold: 3
+connectivity:
+  checker:
+    target: 1.1.1.1:53
+    interval: 1m
+endpoints:
+  - name: Gatus
+    group: external
+    url: https://status.darkfellanetwork.com/health
+    interval: 1m
+    client:
+      dns-resolver: tcp://1.1.1.1:53
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].status == UP"
+    alerts:
+      - type: pushover

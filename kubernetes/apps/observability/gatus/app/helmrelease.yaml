@@ -1,0 +1,213 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gatus
+spec:
+  interval: 30m
+  chart:
+    spec:
+      verify:
+        provider: cosign
+      chart: app-template
+      version: 3.7.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      gatus:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17.4@sha256:3b71d4fccc4281666f4806f8ca5aef740b9c62c68cfa611aabe473fc5150e532
+            env:
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_PORT: &dbPort 5432
+              INIT_POSTGRES_DBNAME: &dbName gatus
+              INIT_POSTGRES_SUPER_USER: postgres-db-manager
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret gatus-secret
+                    key: POSTGRES_SUPER_PASS
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgUser POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgPass POSTGRES_PASSWORD
+            securityContext: &securityContext
+              privileged: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+          init-config:
+            dependsOn: init-db
+            image:
+              repository: ghcr.io/kiwigrid/k8s-sidecar
+              tag: 1.30.1@sha256:439c5ac985827e6a85ad4490a66320b62aefd9e8c6d06fdb1d9c83d582f8a902
+            env:
+              FOLDER: /config
+              LABEL: gatus.io/enabled
+              NAMESPACE: ALL
+              RESOURCE: both
+              UNIQUE_FILENAMES: true
+              METHOD: WATCH
+            restartPolicy: Always
+            resources: &resources
+              requests:
+                cpu: 20m
+              limits:
+                memory: 256Mi
+            securityContext: *securityContext
+        containers:
+          app:
+            image:
+              repository: ghcr.io/twin/gatus
+              tag: v5.16.0@sha256:bb738c87cf2e2a08b8fff180cfc433e7b8b87bb1779c1fb1b00f8b748673e3c3
+            env:
+              TZ: Europe/Sofia
+              GATUS_CONFIG_PATH: /config
+              GATUS_DELAY_START_SECONDS: 5
+              WEB_PORT: &port 80
+              POSTGRES_HOST: *dbHost
+              POSTGRES_PORT: *dbPort
+              POSTGRES_DBNAME: *dbName
+              POSTGRES_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgUser
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgPass
+              PUSHOVER_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_TOKEN
+              PUSHOVER_USER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: PUSHOVER_USER_KEY
+              OIDC_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: OIDC_CLIENT_SECRET
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext: *securityContext
+            resources: *resources
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      app:
+        controller: gatus
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        serviceName: gatus
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+    ingress:
+      app:
+        annotations:
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            more_set_headers "access-control-allow-origin https://status.darkfellanetwork.com";
+            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-vOq0p1C22jhkdRTdIHA8DSPgcwXkh5mq8FK4cumu/wU='; style-src https://status.darkfellanetwork.com/css/custom.css https://status.darkfellanetwork.com/css/app.css; img-src 'self'; connect-src https://status.darkfellanetwork.com; manifest-src 'self'";
+          cert-manager.io/cluster-issuer: zerossl-prod
+          cert-manager.io/private-key-rotation-policy: Always
+          cert-manager.io/private-key-algorithm: ECDSA
+          cert-manager.io/private-key-size: "384"
+          cert-manager.io/private-key-encoding: PKCS8
+          cert-manager.io/subject-organizations: DarkfellaNET
+        className: external
+        tls:
+          - hosts:
+              - &host "status.darkfellanetwork.com"
+            secretName: gatus-tls
+        hosts:
+          - host: *host
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+    serviceAccount:
+      create: true
+      name: gatus
+
+    persistence:
+      config:
+        type: emptyDir
+        advancedMounts:
+          gatus:
+            app:
+              - path: /config
+            init-config:
+              - path: /config
+
+      config-file:
+        type: configMap
+        name: gatus-configmap
+        advancedMounts:
+          gatus:
+            app:
+              - path: /config/config.yaml
+                subPath: config.yaml
+                readOnly: true
+
+      postgres-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          gatus:
+            app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: ca.crt
+                readOnly: true

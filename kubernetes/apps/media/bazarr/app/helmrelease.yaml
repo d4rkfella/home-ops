@@ -59,7 +59,7 @@ spec:
                     key: &pgPass POSTGRES_PASSWORD
             securityContext: &securityContext
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
 
           subcleaner:

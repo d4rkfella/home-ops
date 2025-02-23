@@ -174,15 +174,6 @@ spec:
             app:
               - path: /config
 
-      add-ons:
-        type: emptyDir
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /add-ons
-            subcleaner:
-              - path: /add-ons
-
       log:
         type: emptyDir
         advancedMounts:
@@ -206,15 +197,6 @@ spec:
             app:
               - path: /data/media
                 subPath: media
-
-      tmp:
-        type: emptyDir
-        advancedMounts:
-          bazarr:
-            subcleaner:
-              - path: /tmp
-            app:
-              - path: /tmp
 
       oauth2-proxy-config:
         type: secret

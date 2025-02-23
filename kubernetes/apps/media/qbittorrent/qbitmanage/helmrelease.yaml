@@ -25,7 +25,7 @@ spec:
     controllers:
       qbitmanage:
         annotations:
-          secret.reloader.stakater.com/reload: "{{ .Release.Name }}-secret"
+          reloader.stakater.com/auto: "true"
         type: cronjob
         cronjob:
           schedule: 0 0 * * *

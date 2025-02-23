@@ -69,7 +69,6 @@ spec:
             env:
               GITSYNC_REPO: https://github.com/d4rkfella/subcleaner
               GITSYNC_REF: master
-              GITSYNC_ONE_TIME: true
               GITSYNC_ROOT: /add-ons
             resources:
               requests:
@@ -78,7 +77,7 @@ spec:
                 memory: 128Mi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
         containers:
@@ -99,7 +98,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2-beta.19@sha256:94ed1ada3c772baeafbba96818d1c3435279977f9a77cdf6f8f73d6d63cd9bec
+              tag: v1.5.2-beta.19@sha256:c3f79c824ff47792dc11ea2ac9f3064c5646eac21880edf9c9e64a08e7088884
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

@@ -147,7 +147,7 @@ spec:
           hostnames:
             - "accounts.darkfellanetwork.com"
       securityContext:
-        runAsNonRoot: true
+        runAsNonRoot: false
         runAsUser: 0
         runAsGroup: 2000
         fsGroup: 2000

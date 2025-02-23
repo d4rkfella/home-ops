@@ -114,8 +114,17 @@ share_limits:
     max_seeding_time: 16d
     cleanup: true
 
-  TorrentLeech:
+  cross-seed:
     priority: 5
+    include_all_tags:
+    - cross-seed
+    categories:
+    - cross-seed
+    max_seeding_time: 30d
+    cleanup: true
+
+  TorrentLeech:
+    priority: 6
     include_all_tags:
     - TorrentLeech
     categories:
@@ -127,7 +136,7 @@ share_limits:
     cleanup: true
 
   IPTorrents:
-    priority: 6
+    priority: 7
     include_all_tags:
     - IPTorrents
     categories:
@@ -139,7 +148,7 @@ share_limits:
     cleanup: true
 
   speedapp.io:
-    priority: 7
+    priority: 8
     include_all_tags:
     - speedapp.io
     categories:
@@ -151,7 +160,7 @@ share_limits:
     cleanup: true
 
   manual:
-    priority: 8
+    priority: 9
     include_any_tags:
     - speedapp.io
     - IPTorrents

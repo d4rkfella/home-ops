@@ -59,7 +59,7 @@ spec:
                     key: &pgPass POSTGRES_PASSWORD
             securityContext: &securityContext
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
           subcleaner:
@@ -76,10 +76,7 @@ spec:
                 cpu: 10m
               limits:
                 memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
 
         containers:
           oauth2-proxy:
@@ -99,7 +96,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2-beta.19@sha256:c3f79c824ff47792dc11ea2ac9f3064c5646eac21880edf9c9e64a08e7088884
+              tag: v1.5.2-beta.19@sha256:617ee60c5f2a731741c578c5a32544331c2057b605ae301f708e5699af10561a
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"
@@ -129,8 +126,7 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext:
-              runAsUser: 0
+            securityContext: *securityContext
             resources:
               requests:
                 cpu: 10m
@@ -150,11 +146,11 @@ spec:
           hostnames:
             - "accounts.darkfellanetwork.com"
       securityContext:
-        runAsNonRoot: false
+        runAsNonRoot: true
         runAsUser: 2000
         runAsGroup: 2000
         fsGroup: 2000
-        fsGroupChangePolicy: OnRootMismatch
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:

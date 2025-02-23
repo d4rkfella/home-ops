@@ -99,10 +99,9 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.1@sha256:68ddb0d813196d7f58b08b1d01449133c0ac2e2076238ab8071be402db0f321e
+              tag: v1.5.1@sha256:712ccca85a24cb999b8016026dc293e37b539ac3fa25374efbaa3ebcd7de124e
             env:
               TZ: Europe/Sofia
-              BAZARR__PORT: 8080
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: *dbHost
               POSTGRES_PORT: *dbPort

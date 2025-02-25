@@ -104,7 +104,7 @@ spec:
                     key: CLIENT_SECRET
               AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfellanetwork.com/api/auth/oidc/callback
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
@@ -145,10 +145,10 @@ spec:
             - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: Always
         seccompProfile: { type: RuntimeDefault }
 
     service:

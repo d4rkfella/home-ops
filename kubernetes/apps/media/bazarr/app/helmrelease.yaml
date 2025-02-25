@@ -188,6 +188,13 @@ spec:
             app:
               - path: /config/cache
 
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          bazarr:
+            app:
+              - path: /tmp
+
       media:
         type: nfs
         server: 192.168.91.40

@@ -3,11 +3,11 @@ FROM alpine:3.21.3 AS build
 # renovate: datasource=github-releases depName=go-task/task
 ARG TASK_VERSION=v3.41.0
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.5.0-beta.0
+ARG VIRTCTL_VERSION=v1.5.0-rc.0
 # renovate: datasource=github-releases depName=a8m/envsubst
 ARG ENVSUBST_VERSION=v1.4.2
 # renovate: datasource=github-releases depName=hashicorp/vault
-ARG VAULT_VERSION=v1.18.4
+ARG VAULT_VERSION=v1.18.5
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.17.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
@@ -15,7 +15,7 @@ ARG KUBECTL_VERSION=v1.32.2
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.9.4
 # renovate: datasource=github-releases depName=fluxcd/flux2
-ARG FLUX_VERSION=v2.4.0
+ARG FLUX_VERSION=v2.5.1
 
 WORKDIR /tmp
 

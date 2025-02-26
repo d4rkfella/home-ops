@@ -9,7 +9,7 @@ ARG ENVSUBST_VERSION=v1.4.2
 # renovate: depName=hashicorp/vault
 ARG VAULT_VERSION=v1.18.4
 # renovate: depName=helm/helm
-ARG HELM_VERSION=v3.17.0
+ARG HELM_VERSION=v3.17.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 ARG KUBECTL_VERSION=v1.32.2
 # renovate: depName=getsops/sops
@@ -60,20 +60,21 @@ RUN apk update && \
     #Download and verify task binary
     curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
-    tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
+    tar -xvzf task_linux_amd64.tar.gz && mv task /usr/local/bin/task && \
     #Download envsubst binary
     curl -fsSL -o /usr/local/bin/envsubst https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
     #Download and verify vault binary
     curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
     curl -fsSLO "https://releases.hashicorp.com/vault/${VAULT_VERSION#v}/vault_${VAULT_VERSION#v}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig}" && \
-    gpg --verify ./vault_${VAULT_VERSION#v}_SHA256SUMS.72D7468F.sig ./vault_${VAULT_VERSION#v}_SHA256SUMS && \
+    gpg --verify vault_${VAULT_VERSION#v}_SHA256SUMS.72D7468F.sig vault_${VAULT_VERSION#v}_SHA256SUMS && \
     sha256sum -c --strict vault_${VAULT_VERSION#v}_SHA256SUMS --ignore-missing && \
-    unzip ./vault_${VAULT_VERSION#v}_linux_amd64.zip && \
-    mv ./vault /usr/local/bin/vault && \
+    unzip vault_${VAULT_VERSION#v}_linux_amd64.zip && \
+    mv vault /usr/local/bin/vault && \
     #Download and verify helm binary
     curl -fSsL https://keybase.io/r6by/pgp_keys.asc?fingerprint=208DD36ED5BB3745A16743A4C7C6FBB5B91C1155 | gpg --import && \
-    curl -fSsLO "https://github.com/helm/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.asc}" && \
-    gpg --verify ./helm-${HELM_VERSION}-linux-amd64.tar.gz.asc ./helm-${HELM_VERSION}-linux-amd64.tar.gz && \
+    curl -fsSLO "https://get.helm.sh/helm-v3.17.1-linux-amd64.tar.gz" && \
+    curl -fsLO "https://github.com/helm/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz.asc" && \
+    gpg --verify helm-${HELM_VERSION}-linux-amd64.tar.gz.asc helm-${HELM_VERSION}-linux-amd64.tar.gz && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
     #Set permissions

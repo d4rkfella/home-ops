@@ -71,10 +71,8 @@ RUN apk update && \
     unzip vault_${VAULT_VERSION#v}_linux_amd64.zip && \
     mv vault /usr/local/bin/vault && \
     #Download and verify helm binary
-    curl -fSsL https://keybase.io/r6by/pgp_keys.asc?fingerprint=208DD36ED5BB3745A16743A4C7C6FBB5B91C1155 | gpg --import && \
-    curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256sum}" && \
-    curl -fsLO "https://github.com/helm/helm/releases/download/v3.17.1/helm-v3.17.1-linux-amd64.tar.gz.sha256sum.asc}" && \
-    gpg --verify helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256.asc helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256 && \
+    curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
+    sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
     #Set permissions

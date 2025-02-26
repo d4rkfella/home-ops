@@ -24,8 +24,8 @@
       "matchDatasources": ["github-releases", "docker"],
       "matchPackagePatterns": [
         "alpine",
-        "fluxcd/flux-cli",
         "hashicorp/vault",
+        "fluxcd/flux2",
         "ghcr.io/d4rkfella/vault-backup",
         "ghcr.io/siderolabs/talosctl",
         "ghcr.io/getsops/sops",

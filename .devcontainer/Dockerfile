@@ -1,4 +1,4 @@
-FROM alpine:3.21.3 AS builder
+FROM alpine:3.21.3 AS build
 
 # renovate: depName=go-task/task
 ARG TASK_VERSION=v3.41.0
@@ -29,13 +29,12 @@ RUN apk update && \
     coreutils \
     unzip && \
     #Download and verify kubectl binary
-    curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert,.sha256}" && \
+    curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
       --certificate kubectl.cert \
       --signature kubectl.sig \
       --certificate-identity krel-staging@k8s-releng-prod.iam.gserviceaccount.com \
       --certificate-oidc-issuer https://accounts.google.com && \
-    sha256sum -c <(echo "$(cat kubectl.sha256)  kubectl") && \
     mv kubectl /usr/local/bin/kubectl && \
     #Download and verify flux-cli binary
     curl -fsSLO "https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION#v}_{linux_amd64.tar.gz,checksums.txt,checksums.txt.pem,checksums.txt.sig}" && \
@@ -57,15 +56,13 @@ RUN apk update && \
     sha256sum -c --strict sops-${SOPS_VERSION}.checksums.txt --ignore-missing && \
     mv sops-${SOPS_VERSION}.linux.amd64 /usr/local/bin/sops && \
     #Download virtctl binary
-    curl -fsSLO https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
-    mv ./virtctl-$VIRTCTL_VERSION-linux-amd64 /usr/local/bin/virtctl && \
+    curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     #Download and verify task binary
     curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv ./task /usr/local/bin/task && \
     #Download envsubst binary
-    curl -fsSLO https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
-    mv ./envsubst-`uname -s`-`uname -m` /usr/local/bin/envsubst && \
+    curl -fsSL -o /usr/local/bin/envsubst https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
     #Download and verify vault binary
     curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
     curl -fsSLO "https://releases.hashicorp.com/vault/${VAULT_VERSION#v}/vault_${VAULT_VERSION#v}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig}" && \
@@ -75,15 +72,12 @@ RUN apk update && \
     mv ./vault /usr/local/bin/vault && \
     #Download and verify helm binary
     curl -fSsL https://keybase.io/r6by/pgp_keys.asc?fingerprint=208DD36ED5BB3745A16743A4C7C6FBB5B91C1155 | gpg --import && \
-    curl -fSsLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
-    curl -fSsLO "https://github.com/helm/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz{.asc,.sha256.asc}" && \
-    gpg --verify ./helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256.asc ./helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256 && \
+    curl -fSsLO "https://github.com/helm/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.asc}" && \
     gpg --verify ./helm-${HELM_VERSION}-linux-amd64.tar.gz.asc ./helm-${HELM_VERSION}-linux-amd64.tar.gz && \
-    sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
     #Set permissions
-    chown -R root:root /usr/local/bin && chmod -R 755 /usr/local/bin
+    chmod +x /usr/local/bin/*
 
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
@@ -105,8 +99,8 @@ ARG USERNAME=vscode
 ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 
-COPY --from=builder /usr/local/bin/ /usr/local/bin/
-COPY --from=builder /usr/local/aws-cli/ /usr/local/aws-cli/
+COPY --from=build /usr/local/bin/ /usr/local/bin/
+COPY --from=build /usr/local/aws-cli/ /usr/local/aws-cli/
 
 RUN apk update && \
     apk upgrade && \

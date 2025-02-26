@@ -15,7 +15,7 @@ ARG KUBECTL_VERSION=v1.32.2
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.9.4
 # renovate: datasource=github-releases depName=fluxcd/flux2
-ARG FLUX_VERSION=v2.4.0
+ARG FLUX_VERSION=v2.5.1
 
 WORKDIR /tmp
 

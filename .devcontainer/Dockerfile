@@ -5,7 +5,7 @@ ARG TASK_VERSION=v3.41.0
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.5.0-rc.0
 # renovate: datasource=github-releases depName=a8m/envsubst
-ARG ENVSUBST_VERSION=v1.4.2
+ARG ENVSUBST_VERSION=v1.4.3
 # renovate: datasource=github-releases depName=hashicorp/vault
 ARG VAULT_VERSION=v1.18.5
 # renovate: datasource=github-releases depName=helm/helm

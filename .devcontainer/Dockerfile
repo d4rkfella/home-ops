@@ -16,6 +16,8 @@ ARG KUBECTL_VERSION=v1.32.2
 ARG SOPS_VERSION=v3.9.4
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.5.1
+# renovate: datasource=github-releases depName=hadolint/hadolint
+ARG HADOLINT_VERSION=v2.12.0
 
 WORKDIR /tmp
 
@@ -75,6 +77,8 @@ RUN apk update && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
+    #Download hadolint
+    curl -fsSL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64" && \
     #Set permissions
     chmod +x /usr/local/bin/*
 

@@ -4,6 +4,7 @@
     "config:recommended",
     "docker:enableMajor",
     "replacements:k8s-registry-move",
+    "customManagers:dockerfileVersions",
     ":automergeBranch",
     ":disableRateLimiting",
     ":dependencyDashboard",

@@ -32,7 +32,7 @@ spec:
         registry: ghcr.io
         image: d4rkfella/wolfi-nginx-ingress-controller
         tag: "1.12.0"
-        digest: sha256:c6e5a752a65a3108f294bfab0611a79a9833cc029a2bee054f1ac165adf35d17
+        digest: sha256:c5c21d59f5be090cb6385b647ba4c75747f780e9020aecfa46ba85b9f0a6a38d
         runAsNonRoot: true
         runAsUser: 65532
         runAsGroup: 65532

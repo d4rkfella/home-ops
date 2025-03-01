@@ -1,7 +1,6 @@
 ---
 commands:
   dry_run: False
-  cross_seed: False
   recheck: False
   cat_update: False
   tag_update: True
@@ -27,7 +26,6 @@ settings:
   share_limits_min_seeding_time_tag: MinSeedTimeNotReached
   share_limits_min_num_seeds_tag: MinSeedsNotMet
   share_limits_last_active_tag: LastActiveLimitNotReached
-  cross_seed_tag: cross-seed
   cat_filter_completed: true
   share_limits_filter_completed: true
   tag_nohardlinks_filter_completed: true

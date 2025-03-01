@@ -46,6 +46,16 @@ spec:
           external-dns.alpha.kubernetes.io/hostname: &hostname internal.darkfellanetwork.com
           lbipam.cilium.io/ips: 192.168.91.52
         allocateLoadBalancerNodePorts: false
+      extraVolumeMounts:
+        - name: tmp
+          mountPath: /tmp/nginx
+        - name: ingress-controller
+          mountPath: /etc/ingress-controller
+      extraVolumes:
+        - name: tmp
+          emptyDir: {}
+        - name: ingress-controller
+          emptyDir: {}
       ingressClassResource:
         name: internal
         default: true

@@ -25,6 +25,8 @@ spec:
   values:
     fullnameOverride: *app
     controller:
+      opentelemetry:
+        enabled: false
       annotations:
         reloader.stakater.com/auto: "true"
       replicaCount: 2

@@ -32,7 +32,14 @@ spec:
         registry: ghcr.io
         image: d4rkfella/wolfi-nginx-ingress-controller
         tag: "1.12.0"
-        digest: sha256:5cc9527dbc0d10cca8860bddd47c35bf0c06a304103e574e099561ea866aa131
+        digest: sha256:6169e7b958abf357b092d0973150cc86566fbdaf929222c42b2ee7c1d19e8299
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+        readOnlyRootFilesystem: false
       service:
         externalTrafficPolicy: Local
         annotations:

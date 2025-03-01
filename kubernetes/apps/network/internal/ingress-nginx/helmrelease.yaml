@@ -30,9 +30,9 @@ spec:
       replicaCount: 2
       image:
         registry: ghcr.io
-        image: d4rkfella/wolfi-nginx-ingress-controller
+        image: d4rkfella/nginx-ingress-controller
         tag: "1.12.0"
-        digest: sha256:be2e8343a8da486276266c76d5ca5daf4ee7bb2574912ea3b69a131307171851
+        digest: sha256:2140b3f813cec432d26a5e5ab0dcb707d914b8cb5aa4066d3b0da015c123f7e3
         runAsNonRoot: true
         runAsUser: 65532
         runAsGroup: 65532

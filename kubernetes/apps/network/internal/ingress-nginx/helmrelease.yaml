@@ -50,7 +50,8 @@ spec:
         - name: tmp
           mountPath: /tmp/nginx
         - name: ingress-controller
-          mountPath: /etc/ingress-controller
+          mountPath: /etc/ingress-controller/telemetry/opentelemetry.toml
+          subPath: opentelemetry.toml
       extraVolumes:
         - name: tmp
           emptyDir: {}

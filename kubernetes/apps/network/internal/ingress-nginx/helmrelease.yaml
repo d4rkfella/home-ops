@@ -50,6 +50,7 @@ spec:
               operator: In
               values: ["internal"]
       config:
+        enable-opentelemetry: "false"
         custom-http-errors: >-
           401,403,404,500,501,502,503,504
         allow-snippet-annotations: true

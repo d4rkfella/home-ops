@@ -30,9 +30,16 @@ spec:
       replicaCount: 2
       image:
         registry: ghcr.io
-        image: d4rkfella/ingress-nginx-controller
-        tag: "1.12.0-nginx.1.25"
-        digest: sha256:57c2d7cf7160415f43aee0088f3f99d3637201be337a3d37df973a4788a4e60c
+        image: d4rkfella/nginx-ingress-controller
+        tag: "1.12.0"
+        digest: sha256:2140b3f813cec432d26a5e5ab0dcb707d914b8cb5aa4066d3b0da015c123f7e3
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+        readOnlyRootFilesystem: false
       service:
         externalTrafficPolicy: Local
         annotations:

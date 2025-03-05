@@ -1,44 +1,47 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Pre-pull Images"
+name: Image Pull
 
 on:
   pull_request:
     branches: ["main"]
-    paths:
-      - kubernetes/apps/**
-      - kubernetes/flux/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  HOMEBREW_NO_ANALYTICS: "1"
-
 jobs:
-  extract-images:
-    name: Extract Images
+  pre-job:
+    name: Image Pull - Pre-Job
+    runs-on: ubuntu-24.04
+    outputs:
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@dcc7a0cba800f454d79fff4b993e8c3555bcc0a8 # v45.0.7
+        with:
+          files: kubernetes/**
+
+  extract:
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    name: Image Pull - Extract Images
+    needs: pre-job
     runs-on: ubuntu-24.04
     strategy:
       matrix:
         branches: ["default", "pull"]
       fail-fast: false
     outputs:
-      default: ${{ steps.extract-images.outputs.default }}
-      pull: ${{ steps.extract-images.outputs.pull }}
+      default: ${{ steps.images.outputs.default }}
+      pull: ${{ steps.images.outputs.pull }}
     steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@21cfef2b496dd8ef5b904c159339626a10ad380e # v1.11.6
-        id: app-token
-        with:
-          app-id: "${{ secrets.BOT_APP_ID }}"
-          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}"
-
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
-          token: "${{ steps.app-token.outputs.token }}"
           ref: "${{ matrix.branches == 'default' && github.event.repository.default_branch || '' }}"
 
       - name: Gather Images
@@ -49,61 +52,70 @@ jobs:
             --all-namespaces
             --path /github/workspace/kubernetes/flux/cluster
             --enable-images
-            --output yaml
-            --output-file images.yaml
+            --only-images
+            --output json
+            --output-file images.json
 
-      - name: Extract Images
-        id: extract-images
+      - name: Output Images
+        id: images
         run: |
-          images=$(yq --indent=0 --output-format=json \
-              '[.. | .images? | select(. != null)] | flatten | sort | unique' images.yaml \
-          )
-          echo "${{ matrix.branches }}=${images}" >> $GITHUB_OUTPUT
+          echo "${{ matrix.branches }}=$(jq --compact-output '.' images.json)" >> $GITHUB_OUTPUT
 
-  compare-images:
-    name: Compare Images
+          echo '## Branch ${{ matrix.branches }} images' >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          jq '.' images.json >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  compare:
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' && needs.extract.outputs.default != needs.extract.outputs.pull }}
+    name: Image Pull - Compare Images
     runs-on: ubuntu-24.04
-    needs: ["extract-images"]
+    needs: ["pre-job", "extract"]
     outputs:
-      images: ${{ steps.compare-images.outputs.images }}
+      images: ${{ steps.compare.outputs.images }}
     steps:
       - name: Compare Images
-        id: compare-images
+        id: compare
         run: |
           images=$(jq --compact-output --null-input \
-              --argjson f1 '${{ needs.extract-images.outputs.default }}' \
-              --argjson f2 '${{ needs.extract-images.outputs.pull }}' \
+              --argjson f1 '${{ needs.extract.outputs.default }}' \
+              --argjson f2 '${{ needs.extract.outputs.pull }}' \
               '$f2 - $f1' \
           )
           echo "images=${images}" >> $GITHUB_OUTPUT
 
-  pre-pull-images:
-    if: ${{ needs.compare-images.outputs.images != '[]' }}
-    name: Pre-pull Images
-    runs-on: ["home-ops-runner"]
-    needs: ["compare-images"]
+          echo '## New images to Pull' >> $GITHUB_STEP_SUMMARY
+          echo '```json' >> $GITHUB_STEP_SUMMARY
+          echo $images | jq >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  pull:
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' && needs.compare.outputs.images != '[]' }}
+    name: Image Pull - Pull Images
+    runs-on: home-ops-runner
+    needs: ["pre-job", "compare"]
     strategy:
       matrix:
-        images: ${{ fromJSON(needs.compare-images.outputs.images) }}
+        images: ${{ fromJSON(needs.compare.outputs.images) }}
       max-parallel: 4
       fail-fast: false
     steps:
-      - name: Setup Homebrew
-        uses: Homebrew/actions/setup-homebrew@8ce652ac38863d3b22770338748bbf45599c0b92
+      - name: Install talosctl
+        run: curl -fsSL https://talos.dev/install | sh
 
-      - name: Setup Workflow Tools
-        run: brew install siderolabs/tap/talosctl
+      - name: Pull Image
+        run: talosctl --nodes $NODE image pull ${{ matrix.images }}
 
-      - name: Pre-pull Image
-        run: talosctl image pull ${{ matrix.images }} --nodes $NODE
-
-  # Summarize matrix https://github.community/t/status-check-for-a-matrix-jobs/127354/7
-  pre-pull-images-success:
+  status:
     if: ${{ always() }}
-    needs: ["pre-pull-images"]
-    name: Pre-pull Images Successful
+    name: Image Pull - Success
+    needs: pull
     runs-on: ubuntu-24.04
     steps:
-      - if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
-        name: Check matrix status
+      - name: Any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
         run: exit 1
+
+      - name: All jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"

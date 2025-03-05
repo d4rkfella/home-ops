@@ -14,7 +14,7 @@ server:
   enabled: true
   image:
     repository: "hashicorp/vault"
-    tag: "1.18.5"
+    tag: "1.19.0"
     pullPolicy: IfNotPresent
 
   updateStrategyType: "OnDelete"

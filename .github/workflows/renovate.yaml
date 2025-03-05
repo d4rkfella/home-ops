@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Renovate"
+name: Renovate
 
 on:
   workflow_dispatch:
@@ -11,19 +11,19 @@ on:
         required: false
       logLevel:
         description: Log Level
-        default: info
+        default: debug
         required: false
       version:
         description: Renovate version
         default: latest
         required: false
   schedule:
-    - cron: "0 * * * *" # Every hour
+    - cron: "0 * * * *"
   push:
     branches: ["main"]
     paths:
-      - .github/renovate.json5
-      - .github/renovate/**.json5
+      - .renovaterc.json5
+      - .renovate/**.json5
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -39,7 +39,7 @@ env:
   WORKFLOW_RENOVATE_VERSION: "${{ inputs.version || 'latest' }}"
 
 jobs:
-  renovate:
+  main:
     name: Renovate
     runs-on: ubuntu-24.04
     steps:
@@ -55,9 +55,8 @@ jobs:
         with:
           token: "${{ steps.app-token.outputs.token }}"
 
-      - name: Renovate
+      - name: Run Renovate
         uses: renovatebot/github-action@02f4fdeb479bbb229caa7ad82cb5e691c07e80b3 # v41.0.14
         with:
-          configurationFile: .github/renovate.json5
           token: "${{ steps.app-token.outputs.token }}"
           renovate-version: "${{ env.WORKFLOW_RENOVATE_VERSION }}"

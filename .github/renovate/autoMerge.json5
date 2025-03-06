@@ -21,7 +21,7 @@
     {
       "description": ["Auto-merge GitHub Actions for minor and patch"],
       "matchManagers": ["github-actions"],
-      "matchDatasources": ["github-tags"],
+      "matchDatasources": ["github-tags","docker"],
       "automerge": true,
       "automergeType": "branch",
       "matchUpdateTypes": ["minor", "patch", "digest"]

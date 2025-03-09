@@ -6,6 +6,8 @@ metadata:
   name: reloader
 spec:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
   interval: 30m
   chart:
     spec:
@@ -16,10 +18,20 @@ spec:
         name: stakater
         namespace: flux-system
 =======
+=======
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: reloader
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   install:
     remediation:

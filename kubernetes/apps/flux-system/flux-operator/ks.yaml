@@ -4,46 +4,19 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app flux-operator
-  namespace: &ns flux-system
+  namespace: flux-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
+  interval: 1h
   path: ./kubernetes/apps/flux-system/flux-operator/app
-  prune: false
+  prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
-  timeout: 5m
-  wait: false
----
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app flux-instance
-  namespace: &ns flux-system
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/external
-  interval: 30m
-  path: ./kubernetes/apps/flux-system/flux-operator/instance
-  postBuild:
-    substitute:
-      APP: flux-webhook
-      GATUS_NAME: "Flux Webhook"
-      GATUS_STATUS: "404"
-  prune: false
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *ns
+  targetNamespace: flux-system
   timeout: 5m
   wait: false

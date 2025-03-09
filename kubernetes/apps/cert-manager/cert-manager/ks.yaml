@@ -4,46 +4,55 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app cert-manager
-  namespace: &namespace cert-manager
+  namespace: &ns cert-manager
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *ns
+  healthCheckExprs:
+    - apiVersion: cert-manager.io/v1
+      kind: ClusterIssuer
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+  interval: 1h
   path: ./kubernetes/apps/cert-manager/cert-manager/app
-  prune: false
+  prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
-  wait: true
-  interval: 30m
+  targetNamespace: *ns
   timeout: 5m
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cert-manager-issuers
-  namespace: &namespace cert-manager
+  name: &app cert-manager-tls
+  namespace: &ns cert-manager
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
-  path: ./kubernetes/apps/cert-manager/cert-manager/issuers
-  prune: false
+  healthCheckExprs:
+    - apiVersion: cert-manager.io/v1
+      kind: Certificate
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+  interval: 1h
+  path: ./kubernetes/apps/cert-manager/cert-manager/tls
+  prune: true
+  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: *ns
+  timeout: 15m
   wait: true
-  interval: 30m
-  timeout: 5m

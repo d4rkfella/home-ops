@@ -1,19 +1,32 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
 helmDefaults:
-  force: true
-  timeout: 600
+  cleanupOnFail: true
   wait: true
   waitForJobs: true
+  # waitRetries: 3 # Not supported by Helm yet
 
 repositories:
+  - name: controlplaneio
+    url: ghcr.io/controlplaneio-fluxcd/charts
+    oci: true
+
+  - name: coredns
+    url: ghcr.io/coredns/charts
+    oci: true
+
   - name: cilium
     url: https://helm.cilium.io
+
+  - name: external-secrets
+    url: ghcr.io/external-secrets/charts
+    oci: true
 
   - name: postfinance
     url: https://postfinance.github.io/kubelet-csr-approver
 
-  - name: cert-manager
+  - name: jetstack
     url: https://charts.jetstack.io
 
   - name: zfs-localpv
@@ -44,13 +57,11 @@ releases:
 
   - name: coredns
     namespace: kube-system
-    chart: oci://ghcr.io/coredns/charts/coredns
+    atomic: true
+    chart: coredns/coredns
     version: 1.39.1
-    values:
-      - ../apps/kube-system/coredns/app/helm-values.yaml
-    needs:
-      - kube-system/cilium
-      - observability/kube-prometheus-stack-crds
+    values: ['../apps/kube-system/coredns/app/helm/values.yaml']
+    needs: ['kube-system/cilium']
 
   - name: kubelet-csr-approver
     namespace: kube-system
@@ -65,33 +76,36 @@ releases:
 
   - name: cert-manager
     namespace: cert-manager
-    chart: cert-manager/cert-manager
+    atomic: true
+    chart: jetstack/cert-manager
     version: v1.17.1
-    values:
-      - ../apps/cert-manager/cert-manager/app/helm-values.yaml
-    hooks:
-    - events: ["prepare"]
-      showlogs: true
-      command: kubectl
-      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
-    needs:
-      - kube-system/coredns
-      - kube-system/cilium
-      - observability/kube-prometheus-stack-crds
+    values: ['../apps/cert-manager/cert-manager/app/helm/values.yaml']
 
-  #- name: external-secrets
-    #namespace: external-secrets
-    #chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    #version: 0.13.0
-    #values:
-      #- ../apps/external-secrets/external-secrets/app/helm-values.yaml
-    #hooks:
-    #- events: ["prepare"]
-      #showlogs: true
-      #command: kubectl
-      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
-    #needs:
-      #- kube-system/coredns
+  - name: external-secrets
+    namespace: external-secrets
+    atomic: true
+    chart: external-secrets/external-secrets
+    version: 0.14.3
+    values: ['../apps/external-secrets/external-secrets/app/helm/values.yaml']
+    hooks:
+      - # Wait for external-secrets CRDs to be available
+        events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd clustersecretstores.external-secrets.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - # Apply cluster secret store configuration
+        events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=external-secrets
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename=../apps/external-secrets/external-secrets/app/clustersecretstore.yaml
+        showlogs: true
+    needs: ['cert-manager/cert-manager']
 
   - name: zfs-localpv
     namespace: openebs-system
@@ -117,29 +131,21 @@ releases:
       #command: kubectl
       #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
 
-  #- name: flux-operator
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
-    #version: 0.13.0
-    #values:
-      #- ../apps/flux-system/flux-operator/app/helm-values.yaml
-    #hooks:
-    #- events: ["prepare"]
-      #showlogs: true
-      #command: kubectl
-      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
-    #needs:
-      #- kube-system/zfs-localpv
+  - name: flux-operator
+    namespace: flux-system
+    atomic: true
+    chart: controlplaneio/flux-operator
+    version: 0.17.0
+    values: ['../apps/flux-system/flux-operator/app/helm/values.yaml']
+    needs: ['external-secrets/external-secrets']
 
-  #- name: flux-instance
-    #namespace: flux-system
-    #chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
-    #version: 0.13.0
-    #wait: false
-    #values:
-      #- ../apps/flux-system/flux-operator/instance/helm-values.yaml
-    #needs:
-      #- flux-system/flux-operator
+  - name: flux-instance
+    namespace: flux-system
+    atomic: true
+    chart: controlplaneio/flux-instance
+    version: 0.17.0
+    values: ['../apps/flux-system/flux-instance/app/helm/values.yaml']
+    needs: ['flux-system/flux-operator']
 
   #- name: multus
     #namespace: kube-system

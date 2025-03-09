@@ -16,8 +16,9 @@ spec:
       namespace: media
     - name: sonarr
       namespace: media
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   path: ./kubernetes/apps/media/recyclarr/app
   prune: true
   sourceRef:

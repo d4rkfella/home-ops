@@ -17,8 +17,9 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: true
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -41,5 +42,6 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: false
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m

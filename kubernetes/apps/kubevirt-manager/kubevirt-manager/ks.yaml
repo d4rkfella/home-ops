@@ -24,5 +24,6 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: false
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m

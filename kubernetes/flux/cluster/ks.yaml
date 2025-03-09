@@ -11,14 +11,16 @@ spec:
     secretRef:
       name: sops-age
   targetNamespace: flux-system
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   path: ./kubernetes/flux/meta
   prune: true
   wait: true
   sourceRef:
     kind: GitRepository
     name: flux-system
+    namespace: flux-system
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -34,8 +36,9 @@ spec:
   dependsOn:
     - name: cluster-meta
       namespace: flux-system
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   path: ./kubernetes/apps
   prune: true
   sourceRef:
@@ -43,3 +46,18 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: false
+  patches:
+    - # Add Sops decryption to child Kustomizations
+      patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          decryption:
+            provider: sops
+            secretRef:
+              name: sops-age
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization

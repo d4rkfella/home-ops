@@ -5,17 +5,10 @@ kind: HelmRelease
 metadata:
   name: coredns
 spec:
-  interval: 30m
-  chart:
-    spec:
-      verify:
-        provider: cosign
-      chart: coredns
-      version: 1.39.1
-      sourceRef:
-        kind: HelmRepository
-        name: coredns
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: coredns
   install:
     remediation:
       retries: 3
@@ -26,4 +19,4 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: coredns-helm-values
+      name: coredns-values

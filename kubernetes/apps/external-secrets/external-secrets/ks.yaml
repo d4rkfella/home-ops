@@ -9,6 +9,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *namespace
+  healthCheckExprs:
+    - apiVersion: external-secrets.io/v1beta1
+      kind: ClusterSecretStore
+      failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
+      current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   path: ./kubernetes/apps/external-secrets/external-secrets/app
   prune: true
   sourceRef:
@@ -16,32 +26,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *ns
-  wait: true
-  interval: 30m
+  interval: 1h
   timeout: 5m
----
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app external-secrets-stores
-  namespace: &ns external-secrets
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: external-secrets
-      namespace: external-secrets
-    - name: vault
-      namespace: vault
-  path: ./kubernetes/apps/external-secrets/external-secrets/stores
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  targetNamespace: *ns
-  wait: true
-  interval: 30m
-  timeout: 5m
+  retryInterval: 2m

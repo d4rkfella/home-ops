@@ -14,7 +14,8 @@ spec:
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
-  interval: 30m
+  interval: 1h
+  retryInterval: 2m
   path: ./kubernetes/apps/network/internal/external-dns
   prune: true
   sourceRef:
@@ -37,7 +38,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
+  interval: 1h
+  retryInterval: 2m
   path: ./kubernetes/apps/network/internal/ingress-nginx
   prune: true
   sourceRef:

@@ -3,9 +3,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app vault
+  name: vault
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: vault

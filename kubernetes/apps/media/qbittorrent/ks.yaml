@@ -27,8 +27,9 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: true
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   dependsOn:
     - name: external-secrets-stores
       namespace: external-secrets
@@ -46,8 +47,9 @@ spec:
   dependsOn:
     - name: qbittorrent
       namespace: media
-  interval: 30m
+  interval: 1h
   timeout: 5m
+  retryInterval: 2m
   path: ./kubernetes/apps/media/qbittorrent/qbitmanage
   prune: true
   sourceRef:

@@ -3,6 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: media
+components:
+  - ../../components/common
 resources:
   - ./jellyseerr/ks.yaml
   - ./radarr/ks.yaml
@@ -16,6 +18,3 @@ resources:
   - ./plex/ks.yaml
   - ./cross-seed/ks.yaml
   - ./recyclarr/ks.yaml
-components:
-  - ../../components/namespace
-  - ../../components/flux/alerts

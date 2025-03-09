@@ -8,9 +8,6 @@ spec:
   secretName: dragonfly-internal-tls
   duration: 2160h
   renewBefore: 360h
-  subject:
-    organizations:
-      - DarkfellaNET
   privateKey:
     algorithm: ECDSA
     encoding: PKCS8

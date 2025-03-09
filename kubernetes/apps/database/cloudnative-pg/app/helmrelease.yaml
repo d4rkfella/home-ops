@@ -5,34 +5,10 @@ kind: HelmRelease
 metadata:
   name: cloudnative-pg
 spec:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  interval: 30m
-  chart:
-    spec:
-      chart: cloudnative-pg
-      version: 0.23.2
-      sourceRef:
-        kind: HelmRepository
-        name: cloudnative-pg
-        namespace: flux-system
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: cloudnative-pg
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   install:
     remediation:
       retries: 3

@@ -7,37 +7,11 @@ metadata:
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
 spec:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  interval: 30m
-  chart:
-    spec:
-      verify:
-        provider: cosign
-      chart: app-template
-      version: 3.7.2
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
   dependsOn:
     - name: qbittorrent
       namespace: media

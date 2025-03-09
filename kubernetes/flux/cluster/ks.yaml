@@ -15,7 +15,7 @@ spec:
   timeout: 5m
   retryInterval: 2m
   path: ./kubernetes/flux/meta
-  prune: false
+  prune: true
   wait: true
   sourceRef:
     kind: GitRepository
@@ -40,7 +40,7 @@ spec:
   timeout: 5m
   retryInterval: 2m
   path: ./kubernetes/apps
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

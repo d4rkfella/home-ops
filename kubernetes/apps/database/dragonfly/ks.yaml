@@ -32,8 +32,8 @@ spec:
   healthCheckExprs:
     - apiVersion: dragonflydb.io/v1alpha1
       kind: Dragonfly
-      failed: status.filter(e, e.phase == 'resources-created')
-      current: status.filter(e, e.phase == 'ready')
+      failed: status(e, e.phase == 'resources-created')
+      current: status(e, e.phase == 'ready')
   interval: 10m
   path: ./kubernetes/apps/database/dragonfly/cluster
   prune: false

@@ -29,6 +29,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  healthCheckExprs:
+    - apiVersion: dragonflydb.io/v1alpha1
+      kind: Dragonfly
+      failed: status.filter(e, e.phase == 'resources-created')
+      current: status.filter(e, e.phase == 'Ready')
   interval: 10m
   path: ./kubernetes/apps/database/dragonfly/cluster
   prune: false

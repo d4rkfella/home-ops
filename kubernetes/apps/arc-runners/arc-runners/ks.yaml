@@ -17,7 +17,7 @@ spec:
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/arc-runners/arc-runners/home-ops
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

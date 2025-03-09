@@ -25,7 +25,7 @@ spec:
       GATUS_NAME: "Autobrr"
       GATUS_PATH: /api/healthz/readiness
       GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY] == OK"]'
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

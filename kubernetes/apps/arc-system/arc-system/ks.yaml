@@ -15,7 +15,7 @@ spec:
       name: *app
       namespace: *ns
   path: ./kubernetes/apps/arc-system/arc-system/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

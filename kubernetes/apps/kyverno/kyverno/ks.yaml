@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kyverno/kyverno/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -35,7 +35,7 @@ spec:
     - name: kyverno
       namespace: kyverno
   path: ./kubernetes/apps/kyverno/kyverno/policies
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

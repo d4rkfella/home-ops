@@ -17,7 +17,7 @@ spec:
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/network/external/cloudflared
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -41,7 +41,7 @@ spec:
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/network/external/external-dns
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -65,7 +65,7 @@ spec:
   interval: 1h
   retryInterval: 2m
   path: ./kubernetes/apps/network/external/ingress-nginx
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

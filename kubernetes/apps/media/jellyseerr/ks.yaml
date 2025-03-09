@@ -23,7 +23,7 @@ spec:
       GATUS_SUBDOMAIN: requests
       GATUS_PATH: /api/v1/status
       GATUS_CONDITIONS: '["[STATUS] == 200", "has([BODY].version) == true"]'
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

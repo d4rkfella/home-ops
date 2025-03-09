@@ -18,7 +18,7 @@ spec:
   timeout: 5m
   retryInterval: 2m
   path: ./kubernetes/apps/media/recyclarr/app
-  prune: true
+  prune: false
   sourceRef:
     kind: GitRepository
     name: flux-system

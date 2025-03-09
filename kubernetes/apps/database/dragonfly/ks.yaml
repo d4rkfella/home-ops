@@ -29,11 +29,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  healthCheckExprs:
-    - apiVersion: dragonflydb.io/v1alpha1
-      kind: Dragonfly
-      inProgress: status.phase == resources-created
-      current: status.phase == ready
   interval: 10m
   path: ./kubernetes/apps/database/dragonfly/cluster
   prune: true

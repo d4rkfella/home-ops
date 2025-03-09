@@ -11,7 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   interval: 10m
   path: ./kubernetes/apps/database/dragonfly/operator
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -36,7 +36,7 @@ spec:
       current: status.phase == "ready"
   interval: 10m
   path: ./kubernetes/apps/database/dragonfly/cluster
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

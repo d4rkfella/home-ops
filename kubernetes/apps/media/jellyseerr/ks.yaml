@@ -13,8 +13,6 @@ spec:
     - ../../../../components/volsync
     - ../../../../components/gatus/external
   dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: database
   path: ./kubernetes/apps/media/jellyseerr/app

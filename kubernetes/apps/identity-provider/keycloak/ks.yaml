@@ -54,8 +54,6 @@ metadata:
   namespace: &ns idp
 spec:
   dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: database
     - name: keycloak-operator

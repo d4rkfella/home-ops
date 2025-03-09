@@ -7,8 +7,6 @@ metadata:
   namespace: &ns vaultwarden
 spec:
   dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: database
   commonMetadata:

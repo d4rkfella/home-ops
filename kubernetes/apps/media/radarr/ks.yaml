@@ -14,8 +14,6 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: external-secrets-stores
-      namespace: external-secrets
   path: ./kubernetes/apps/media/radarr/app
   postBuild:
     substitute:

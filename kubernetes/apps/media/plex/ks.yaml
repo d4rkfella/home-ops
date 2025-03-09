@@ -13,8 +13,6 @@ spec:
     - ../../../../components/volsync
     - ../../../../components/gatus/internal
   dependsOn:
-    - name: external-secrets-stores
-      namespace: external-secrets
     - name: volsync
       namespace: volsync-system
   interval: 1h

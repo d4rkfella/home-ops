@@ -14,8 +14,6 @@ spec:
       namespace: kubevirt
     - name: cdi-operator
       namespace: cdi
-    - name: external-secrets-stores
-      namespace: external-secrets
   path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/app
   prune: true
   sourceRef:

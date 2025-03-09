@@ -14,6 +14,10 @@ spec:
       namespace: kubevirt
     - name: cdi-operator
       namespace: cdi
+    - name: dragonfly-cluster
+      namespace: database
+    - name: keycloak
+      namespace: idp
   path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/app
   prune: false
   sourceRef:

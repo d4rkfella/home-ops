@@ -95,7 +95,7 @@ spec:
               startup:
                 enabled: false
             resources:
-              reque
+              requests:
                 cpu: 10m
                 memory: 64Mi
               limits:

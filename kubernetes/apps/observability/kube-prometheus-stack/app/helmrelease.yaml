@@ -5,6 +5,7 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
+<<<<<<< Updated upstream
   interval: 30m
   timeout: 15m
   chart:
@@ -15,6 +16,12 @@ spec:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
+=======
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+>>>>>>> Stashed changes
   install:
     crds: Skip
     remediation:

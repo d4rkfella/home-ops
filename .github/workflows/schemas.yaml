@@ -35,7 +35,7 @@ jobs:
           token: "${{ steps.app-token.outputs.token }}"
 
       - name: Setup Homebrew
-        uses: Homebrew/actions/setup-homebrew@8ce652ac38863d3b22770338748bbf45599c0b92
+        uses: Homebrew/actions/setup-homebrew@d7821a4163723a2e08e424e8474911dbf348ca8d
 
       - name: Setup Workflow Tools
         run: brew install kubectl uv

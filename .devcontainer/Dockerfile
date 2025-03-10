@@ -1,7 +1,7 @@
 FROM alpine:3.21.3 AS build
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.42.0
+ARG TASK_VERSION=v3.42.1
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.5.0-rc.1
 # renovate: datasource=github-releases depName=a8m/envsubst

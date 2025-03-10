@@ -24,7 +24,7 @@ spec:
       APP: *app
       GATUS_NAME: Vaultwarden
       GATUS_PATH: /alive
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

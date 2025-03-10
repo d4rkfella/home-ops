@@ -1,0 +1,72 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: external-dns
+spec:
+  interval: 12h
+  url: https://kubernetes-sigs.github.io/external-dns
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/heads/master/charts/external-dns/values.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app external-dns
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.15.2
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: *app
+    provider:
+      name: rfc2136
+    env:
+      - name: KERBEROS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: external-dns-secret
+            key: KERBEROS_PASSWORD
+
+    extraArgs:
+      - --ignore-ingress-tls-spec
+      - --rfc2136-gss-tsig
+      - --rfc2136-host=dc.darkfellanetwork.com
+      - --rfc2136-port=53
+      - --rfc2136-zone=darkfellanetwork.com
+      - --rfc2136-kerberos-username=externaldns_service
+      - --rfc2136-kerberos-password=$(KERBEROS_PASSWORD)
+      - --rfc2136-kerberos-realm=DARKFELLANETWORK.COM
+      - --rfc2136-tsig-axfr
+    triggerLoopOnEvent: true
+    policy: sync
+    sources: ["ingress", "service"]
+    txtOwnerId: default
+    txtPrefix: k8s.
+    domainFilters: ["darkfellanetwork.com"]
+    serviceMonitor:
+      enabled: true
+    extraVolumes:
+      - configMap:
+          defaultMode: 420
+          name: internal-external-dns-configmap
+        name: kerberos-config-volume
+    extraVolumeMounts:
+      - mountPath: /etc/krb5.conf
+        name: kerberos-config-volume
+        subPath: krb5.conf

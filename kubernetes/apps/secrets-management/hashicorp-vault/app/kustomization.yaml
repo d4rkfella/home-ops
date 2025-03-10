@@ -8,8 +8,8 @@ resources:
   - ./vault.secret.sops.yaml
   - ./cronjob.yaml
 configMapGenerator:
-  - name: vault-helm-values
+  - name: vault-values
     files:
-      - values.yaml=./helm-values.yaml
+      - values.yaml=./helm/values.yaml
 configurations:
-  - kustomizeconfig.yaml
+  - ./helm/kustomizeconfig.yaml

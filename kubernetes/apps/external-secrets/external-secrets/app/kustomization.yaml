@@ -6,7 +6,6 @@ resources:
   - ./networkpolicy.yaml
   - ./clustersecretstore.yaml
   - ./helmrelease.yaml
-  - ./helmrepository.yaml
 configMapGenerator:
   - name: external-secrets-values
     files:

@@ -1,4 +1,13 @@
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: postfinance
+spec:
+  interval: 12h
+  url: https://postfinance.github.io/kubelet-csr-approver
+---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -13,7 +22,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: postfinance
-        namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -24,7 +32,7 @@ spec:
       retries: 3
   valuesFrom:
     - kind: ConfigMap
-      name: kubelet-csr-approver-helm-values
+      name: kubelet-csr-approver-values
   values:
     metrics:
       enable: true

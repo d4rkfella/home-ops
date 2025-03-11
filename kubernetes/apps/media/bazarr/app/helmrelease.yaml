@@ -135,7 +135,7 @@ spec:
         controller: bazarr
         ports:
           http:
-            port: 4180
+            port: &port 4180
 
     route:
       app:

@@ -145,7 +145,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 4180
+            port: &port 4180
 
     route:
       app:

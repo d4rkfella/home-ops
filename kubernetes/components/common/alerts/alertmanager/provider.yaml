@@ -6,33 +6,9 @@ metadata:
   name: alertmanager
 spec:
   type: alertmanager
-  address: https://alertmanager-operated.observability.svc.cluster.local:8082/api/v2/alerts/
-  certSecretRef:
-    name: internal-ca-crt
+  address: https://alertmanager.darkfellanetwork.com/api/v2/alerts/
   secretRef:
     name: oidc-jwt
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: internal-ca-crt
-stringData:
-  ca.crt: |
-    -----BEGIN CERTIFICATE-----
-    MIICXTCCAeOgAwIBAgIUVRl+sJWzZ0ijVOrMY7EsVHuI21swCgYIKoZIzj0EAwMw
-    XDERMA8GA1UEBhMIQnVsZ2FyaWExDjAMBgNVBAcTBVNvZmlhMRUwEwYDVQQKEwxE
-    YXJrZmVsbGFORVQxIDAeBgNVBAMTF0RhcmtmZWxsYU5FVCBSb290IENBIHYxMB4X
-    DTI1MDEyMjIwNDUxNloXDTM1MDEyMDIwNDU0NlowXDERMA8GA1UEBhMIQnVsZ2Fy
-    aWExDjAMBgNVBAcTBVNvZmlhMRUwEwYDVQQKEwxEYXJrZmVsbGFORVQxIDAeBgNV
-    BAMTF0RhcmtmZWxsYU5FVCBSb290IENBIHYxMHYwEAYHKoZIzj0CAQYFK4EEACID
-    YgAEz7MYMB+SFpUDzykHwQD62/v3ihL+XblywIbLC24JJk3X/zjpGB194Ou3v3wm
-    3xnvLfCp07KO3s73530Z/OkKBP2fjx1FajQpW/wA6lFG5toKpIPSg+ApCFW5ks63
-    lcnBo2YwZDAOBgNVHQ8BAf8EBAMCAQYwEgYDVR0TAQH/BAgwBgEB/wIBAjAdBgNV
-    HQ4EFgQUu3vcT3VCckiK9XXxUI/Rl7X91LgwHwYDVR0jBBgwFoAUu3vcT3VCckiK
-    9XXxUI/Rl7X91LgwCgYIKoZIzj0EAwMDaAAwZQIxALwmMVB2+nWpEZNmBHfM+7eW
-    kBxXWG7bBmmwZXchy+CnSmkfLKhQoGtS8xtDxlbDhwIwaIYhPnlK4iDI7FhkC+mQ
-    Z+RJYaoznQKSEGYFNmRP1zJaUFG26T5x1wwtTcvgfVo8
-    -----END CERTIFICATE-----
 ---
 apiVersion: v1
 kind: ServiceAccount

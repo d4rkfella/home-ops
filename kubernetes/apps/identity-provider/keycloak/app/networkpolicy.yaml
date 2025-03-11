@@ -9,10 +9,8 @@ spec:
     matchLabels:
       app: keycloak
   ingress:
-    - fromEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: cilium-envoy
-            io.kubernetes.pod.namespace: kube-system
+    - fromCIDRSet:
+        - cidr: "192.168.91.51/32"
       toPorts:
         - ports:
             - port: "80"

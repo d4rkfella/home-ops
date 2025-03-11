@@ -27,7 +27,9 @@ gatewayAPI:
 envoy:
   rollOutPods: true
 hubble:
-  enabled: false
+  enabled: true
+  ui:
+    enabled: true
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: 172.16.0.0/16

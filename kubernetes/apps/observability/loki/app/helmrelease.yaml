@@ -83,17 +83,10 @@ spec:
         - name: bearer-token
           mountPath: /etc/secrets/client-secret
           readOnly: true
-        - name: internal-root-ca
-          mountPath: /etc/ssl/certs/internal-root-ca.crt
-          subPath: ca.crt
-          readOnly: true
       extraVolumes:
         - name: bearer-token
           secret:
             secretName: oidc-jwt
-        - name: internal-root-ca
-          secret:
-            secretName: internal-ca-crt
       #extraContainers:
         #- name: oauth-proxy
           #image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033

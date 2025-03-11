@@ -72,10 +72,6 @@ spec:
             secret:
               secretName: *secret
               defaultMode: 256
-          - name: &tls alertmanager-internal-tls
-            secret:
-              secretName: *tls
-              defaultMode: 256
         containers:
           - name: oauth-proxy
             image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
@@ -100,18 +96,11 @@ spec:
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: *secret
-                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
-                readOnly: true
-              - name: *tls
-                mountPath: /etc/server-tls
-                readOnly: true
         securityContext:
-          runAsGroup: 65534
+          runAsGroup: 65532
           runAsNonRoot: true
-          runAsUser: 65534
-          fsGroup: 65534
+          runAsUser: 65532
+          fsGroup: 65532
           fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
@@ -123,7 +112,7 @@ spec:
       service:
         selector:
           k8s-app: kube-scheduler
-    kubeControllerManager: &kubeControllerManager
+    kubeControllerManager:
       service:
         selector:
           k8s-app: kube-controller-manager
@@ -168,7 +157,7 @@ spec:
             vault.hashicorp.com/agent-inject-token: "true"
             vault.hashicorp.com/role: "prometheus"
             vault.hashicorp.com/agent-inject-containers: "prometheus"
-            vault.hashicorp.com/agent-run-as-group: "65534"
+            vault.hashicorp.com/agent-run-as-group: "65532"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
         additionalAlertManagerConfigs:
           - scheme: https
@@ -178,17 +167,17 @@ spec:
             timeout: 10s
             api_version: v2
             tls_config:
-              server_name: alertmanager-operated
+              server_name: alertmanager.darkfellanetwork.com
               insecure_skip_verify: false
             relabel_configs:
             - source_labels: [__meta_kubernetes_service_name]
               separator: ;
-              regex: alertmanager-operated
+              regex: alertmanager.darkfellanetwork.com
               replacement: $1
               action: keep
             - source_labels: [__meta_kubernetes_pod_container_port_number]
               separator: ;
-              regex: "8082"
+              regex: "443"
               replacement: $1
               action: keep
             kubernetes_sd_configs:
@@ -257,10 +246,6 @@ spec:
             secret:
               secretName: *secret
               defaultMode: 256
-          - name: &tls prometheus-internal-tls
-            secret:
-              secretName: *tls
-              defaultMode: 256
         hostAliases:
           - ip: "192.168.91.51"
             hostnames:
@@ -290,27 +275,16 @@ spec:
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: *tls
-                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
-                readOnly: true
-              - name: *tls
-                mountPath: /etc/server-tls
-                readOnly: true
         volumeMounts:
           - name: *secret
             mountPath: /etc/secrets/client_secret
             subPath: client_secret
             readOnly: true
-          - name: *tls
-            mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-            subPath: ca.crt
-            readOnly: true
         securityContext:
-          runAsGroup: 65534
+          runAsGroup: 65532
           runAsNonRoot: true
-          runAsUser: 65534
-          fsGroup: 65534
+          runAsUser: 65532
+          fsGroup: 65532
           fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault

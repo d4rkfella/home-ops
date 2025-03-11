@@ -9,8 +9,8 @@ spec:
     matchLabels:
       app: keycloak
   ingress:
-    - fromCIDRSet:
-        - cidr: "192.168.91.51/32"
+    - fromEntities:
+        - ingress
       toPorts:
         - ports:
             - port: "80"

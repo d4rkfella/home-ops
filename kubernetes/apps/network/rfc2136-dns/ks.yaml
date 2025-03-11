@@ -13,7 +13,7 @@ spec:
       app.kubernetes.io/name: *app
   interval: 1h
   retryInterval: 2m
-  path: ./kubernetes/apps/network/rfc2136/app
+  path: ./kubernetes/apps/network/rfc2136-dns/app
   prune: true
   sourceRef:
     kind: GitRepository

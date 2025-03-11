@@ -5,6 +5,8 @@ kind: Kustomization
 namespace: network
 components:
   - ../../components/common
+  - ../../components/repos/app-template
 resources:
-  - ./ingress-nginx/ks.yaml
-  - ./external-dns/ks.yaml
+  - ./cloudflare-tunnel/ks.yaml
+  - ./cloudflare-dns/ks.yaml
+  - ./rfc2136-dns/ks.yaml

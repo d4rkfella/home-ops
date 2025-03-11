@@ -3,7 +3,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app external-dns
+  name: &app rfc2136-dns
   namespace: &ns network
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled

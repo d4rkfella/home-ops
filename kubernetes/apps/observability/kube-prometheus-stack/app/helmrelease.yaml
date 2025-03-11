@@ -171,7 +171,6 @@ spec:
             timeout: 10s
             api_version: v2
             tls_config:
-              server_name: alertmanager.darkfellanetwork.com
               insecure_skip_verify: false
             static_configs:
               - targets:
@@ -215,21 +214,11 @@ spec:
             scheme: https
             authorization:
               credentials_file: /vault/secrets/token
-            kubernetes_sd_configs:
-              - role: endpoints
-                namespaces:
-                  names:
-                    - vault
-            relabel_configs:
-              - source_labels: [__meta_kubernetes_endpoint_port_name]
-                regex: "https"
-                action: keep
-              - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-                regex: vault-agent-injector
-                action: drop
             tls_config:
-              server_name: vault.darkfellanetwork.com
               insecure_skip_verify: false
+            static_configs:
+              - targets:
+                - "vault.darkfellanetwork.com"
         volumes:
           - name: &secret prometheus-secret
             secret:

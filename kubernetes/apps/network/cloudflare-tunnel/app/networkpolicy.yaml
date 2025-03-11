@@ -36,10 +36,8 @@ spec:
               protocol: UDP
             - port: "853"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            app.kubernetes.io/name: ingress-nginx
-            app.kubernetes.io/instance: ingress-nginx-cloudflare
+    - toEntities:
+        - ingress
       toPorts:
         - ports:
             - port: "443"

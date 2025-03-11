@@ -175,7 +175,7 @@ spec:
               insecure_skip_verify: false
             static_configs:
               - targets:
-                - "https://alertmanager.darkfellanetwork.com"
+                - "alertmanager.darkfellanetwork.com"
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
               client_secret_file: /etc/secrets/client_secret

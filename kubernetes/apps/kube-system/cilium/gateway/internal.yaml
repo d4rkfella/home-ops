@@ -36,6 +36,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: darkfellanet-tls
-        options:
-          minProtocolVersion: "TLSv1_3"
-          maxProtocolVersion: "TLSv1_3"

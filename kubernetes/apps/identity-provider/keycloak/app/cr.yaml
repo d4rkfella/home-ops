@@ -82,10 +82,6 @@ spec:
 
   startOptimized: true
 
-  additionalOptions:
-    - name: https-protocols
-      value: "TLSv1.3"
-
   #bootstrapAdmin:
     #user:
       #secret: *secret
@@ -97,9 +93,8 @@ spec:
     hostname: https://accounts.darkfellanetwork.com
 
   http:
-    httpEnabled: false
-    httpsPort: 443
-    tlsSecret: keycloak-tls
+    httpEnabled: true
+    httpPort: 80
 
   ingress:
     enabled: false

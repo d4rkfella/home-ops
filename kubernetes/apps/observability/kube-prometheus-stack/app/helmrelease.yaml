@@ -45,21 +45,14 @@ spec:
         targetPort: oauth-proxy
       serviceMonitor:
         selfMonitor: false
-      ingress:
-        enabled: true
-        annotations:
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          cert-manager.io/private-key-encoding: PKCS8
-        ingressClassName: internal
-        tls:
-          - hosts: &host ["alertmanager.darkfellanetwork.com"]
-            secretName: alertmanager-tls
-        hosts: *host
-        pathType: Prefix
+      route:
+        main:
+          enabled: true
+          hostnames: ["alertmanager.darkfellanetwork.com"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       alertmanagerSpec:
         listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
@@ -157,21 +150,14 @@ spec:
         targetPort: oauth-proxy
       serviceMonitor:
         selfMonitor: false
-      ingress:
-        enabled: true
-        annotations:
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-          cert-manager.io/private-key-encoding: PKCS8
-        ingressClassName: internal
-        tls:
-          - hosts: &host ["prometheus.darkfellanetwork.com"]
-            secretName: prometheus-tls
-        hosts: *host
-        pathType: Prefix
+      route:
+        main:
+          enabled: true
+          hostnames: ["prometheus.darkfellanetwork.com"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       prometheusSpec:
         listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"

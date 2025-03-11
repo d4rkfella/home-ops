@@ -292,21 +292,14 @@ spec:
       - vonage-status-panel
     serviceMonitor:
       enabled: true
-    ingress:
-      enabled: true
-      annotations:
-        cert-manager.io/cluster-issuer: zerossl-prod
-        cert-manager.io/private-key-rotation-policy: Always
-        cert-manager.io/private-key-algorithm: ECDSA
-        cert-manager.io/private-key-size: "384"
-        cert-manager.io/private-key-encoding: PKCS8
-      ingressClassName: internal
-      tls:
-        - hosts:
-            - &host "grafana.darkfellanetwork.com"
-          secretName: grafana-tls
-      hosts:
-        - *host
+    route:
+      main:
+        enabled: true
+        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
     persistence:
       enabled: false
     testFramework:

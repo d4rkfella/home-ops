@@ -218,7 +218,7 @@ spec:
               insecure_skip_verify: false
             static_configs:
               - targets:
-                - "vault.darkfellanetwork.com"
+                - "vault.darkfellanetwork.com:8200"
         volumes:
           - name: &secret prometheus-secret
             secret:

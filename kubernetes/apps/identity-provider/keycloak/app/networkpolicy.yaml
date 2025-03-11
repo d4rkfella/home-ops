@@ -15,4 +15,4 @@ spec:
             io.kubernetes.pod.namespace: kube-system
       toPorts:
         - ports:
-            - port: "443"
+            - port: "80"

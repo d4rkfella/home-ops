@@ -9,9 +9,12 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: flux-operator
+      namespace: *ns
   interval: 1h
   path: ./kubernetes/apps/flux-system/flux-instance/app
-  prune: false
+  prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository

@@ -21,8 +21,9 @@ cluster:
   name: main
 endpointRoutes:
   enabled: true
-envoy:
+gatewayAPI:
   enabled: true
+  enableAlpn: true
 hubble:
   enabled: false
 ipam:
@@ -36,10 +37,21 @@ l2announcements:
   enabled: true
 socketLB:
   enabled: true
-localRedirectPolicy: false
+localRedirectPolicy: true
 operator:
-  replicas: 1
+  dashboards:
+    enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  replicas: 2
   rollOutPods: true
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
@@ -50,14 +62,15 @@ securityContext:
       - NET_ADMIN
       - NET_RAW
       - IPC_LOCK
+      - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID
       - SETUID
-      - SYS_RESOURCE
-      - SYS_ADMIN
     cleanCiliumState:
       - NET_ADMIN
-      - SYS_RESOURCE
       - SYS_ADMIN
+      - SYS_RESOURCE

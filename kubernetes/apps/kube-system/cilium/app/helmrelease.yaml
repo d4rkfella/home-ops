@@ -51,48 +51,11 @@ spec:
           enabled: true
         dashboards:
           enabled: true
-          annotations:
-            grafana_folder: Cilium
       relay:
         enabled: true
         rollOutPods: true
         prometheus:
           serviceMonitor:
             enabled: true
-
-      ui:
-        enabled: true
-        rollOutPods: true
-        ingress:
-          enabled: true
-          annotations:
-            cert-manager.io/cluster-issuer: zerossl-prod
-            cert-manager.io/private-key-rotation-policy: Always
-            cert-manager.io/private-key-algorithm: ECDSA
-            cert-manager.io/private-key-size: "384"
-          className: internal
-          tls:
-            - hosts: &host ["hubble.darkfellanetwork.com"]
-              secretName: hubble-tls
-          hosts: *host
-
     operator:
-      prometheus:
-        enabled: true
-        serviceMonitor:
-          enabled: true
-      dashboards:
-        enabled: true
-        annotations:
-            grafana_folder: Cilium
-
-    prometheus:
-      enabled: true
-      serviceMonitor:
-        enabled: true
-        trustCRDsExist: true
-
-    dashboards:
-      enabled: true
-      annotations:
-            grafana_folder: Cilium
+      tolerations: []

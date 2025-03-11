@@ -121,26 +121,18 @@ spec:
             enabled: true
             port: *torrentPort
             protocol: UDP
-    ingress:
+
+    route:
       app:
-        annotations:
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          cert-manager.io/private-key-encoding: PKCS8
-        className: internal
-        tls:
-          - hosts:
-              - &host "{{ .Release.Name }}.darkfellanetwork.com"
-            secretName: "{{ .Release.Name }}-tls"
-        hosts:
-          - host: *host
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:

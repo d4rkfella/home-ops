@@ -63,7 +63,7 @@ spec:
         ruler:
           enable_api: true
           enable_alertmanager_v2: true
-          alertmanager_url: https://alertmanager-operated.observability.svc.cluster.local:8082
+          alertmanager_url: https://alertmanager.darkfellanetwork.com
           storage:
               type: local
               local:

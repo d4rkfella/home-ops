@@ -22,6 +22,7 @@ spec:
       gatus:
         annotations:
           reloader.stakater.com/auto: "true"
+
         initContainers:
           init-db:
             image:
@@ -71,6 +72,7 @@ spec:
               limits:
                 memory: 256Mi
             securityContext: *securityContext
+
         containers:
           app:
             image:
@@ -124,20 +126,23 @@ spec:
               readiness: *probes
             securityContext: *securityContext
             resources: *resources
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 65534
-        runAsGroup: 65534
-        fsGroup: 65534
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: gatus
         ports:
           http:
             port: *port
+
     serviceMonitor:
       app:
         serviceName: gatus
@@ -147,29 +152,19 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-    ingress:
+
+    route:
       app:
-        annotations:
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            more_set_headers "access-control-allow-origin https://status.darkfellanetwork.com";
-            more_set_headers "Content-Security-Policy: default-src 'none'; script-src 'self' 'sha256-vOq0p1C22jhkdRTdIHA8DSPgcwXkh5mq8FK4cumu/wU='; style-src https://status.darkfellanetwork.com/css/custom.css https://status.darkfellanetwork.com/css/app.css; img-src 'self'; connect-src https://status.darkfellanetwork.com; manifest-src 'self'";
-          cert-manager.io/cluster-issuer: zerossl-prod
-          cert-manager.io/private-key-rotation-policy: Always
-          cert-manager.io/private-key-algorithm: ECDSA
-          cert-manager.io/private-key-size: "384"
-          cert-manager.io/private-key-encoding: PKCS8
-        className: external
-        tls:
-          - hosts:
-              - &host "status.darkfellanetwork.com"
-            secretName: gatus-tls
-        hosts:
-          - host: *host
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames: ["status.darkfellanetwork.com"]
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
     serviceAccount:
       create: true
       name: gatus

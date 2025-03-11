@@ -173,24 +173,9 @@ spec:
             tls_config:
               server_name: alertmanager.darkfellanetwork.com
               insecure_skip_verify: false
-            relabel_configs:
-            - source_labels: [__meta_kubernetes_service_name]
-              separator: ;
-              regex: alertmanager.darkfellanetwork.com
-              replacement: $1
-              action: keep
-            - source_labels: [__meta_kubernetes_pod_container_port_number]
-              separator: ;
-              regex: "443"
-              replacement: $1
-              action: keep
-            kubernetes_sd_configs:
-            - role: endpoints
-              kubeconfig_file: ""
-              follow_redirects: true
-              enable_http2: true
-              namespaces:
-                own_namespace: true
+            static_configs:
+              - targets:
+                - "https://alertmanager.darkfellanetwork.com"
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
               client_secret_file: /etc/secrets/client_secret

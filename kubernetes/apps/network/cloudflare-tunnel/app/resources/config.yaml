@@ -1,6 +1,6 @@
 ---
 originRequest:
-  matchSNItoHost: true
+  originServerName: external.darkfellanetwork.com
 
 ingress:
   - hostname: darkfellanetwork.com

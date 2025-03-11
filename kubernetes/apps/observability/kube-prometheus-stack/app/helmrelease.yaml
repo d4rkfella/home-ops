@@ -96,6 +96,10 @@ spec:
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
+              - name: *secret
+                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true
@@ -274,6 +278,10 @@ spec:
               - name: *secret
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
+                readOnly: true
+              - name: *secret
+                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
                 readOnly: true
         volumeMounts:
           - name: *secret

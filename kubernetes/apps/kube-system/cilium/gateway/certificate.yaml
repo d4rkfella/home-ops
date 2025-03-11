@@ -11,7 +11,7 @@ spec:
     algorithm: ECDSA
     rotationPolicy: Always
     encoding: PKCS8
-    size: 384
+    size: 256
   commonName: darkfellanetwork.com
   dnsNames:
     - darkfellanetwork.com

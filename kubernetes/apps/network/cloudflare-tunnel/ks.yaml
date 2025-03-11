@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: external-dns-cloudflare
   interval: 1h
-  path: ./kubernetes/apps/cloudflare/cloudflare-tunnel/app
+  path: ./kubernetes/apps/network/cloudflare-tunnel/app
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -3,15 +3,14 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": ["Process YAML custom dependencies"],
+      "description": ["Process annotated dependencies"],
      "fileMatch": [
         "(^|/).+\\.env$",
         "(^|/).+\\.ya?ml(?:\\.j2)?$"
       ],
       "matchStrings": [
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)",
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\n.+?\"(?<currentValue>\\S+)\""
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },

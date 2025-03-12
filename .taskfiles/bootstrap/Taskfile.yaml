@@ -29,14 +29,14 @@ tasks:
     internal: true
     cmd: |
       export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
-        sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.secret.sops.yaml | \
+        sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml | \
             /usr/local/bin/envsubst | \
                 talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
     requires:
       vars: ['IP']
     preconditions:
       - test -f {{.CLUSTER_DIR}}/talosconfig
-      - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.secret.sops.yaml
+      - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml
 
   etcd:
     internal: true

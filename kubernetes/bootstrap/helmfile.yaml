@@ -23,6 +23,10 @@ repositories:
     url: ghcr.io/external-secrets/charts
     oci: true
 
+  - name: app-template
+    url: ghcr.io/bjw-s/helm
+    oci: true
+
   - name: postfinance
     url: https://postfinance.github.io/kubelet-csr-approver
 
@@ -36,58 +40,105 @@ repositories:
     url: https://helm.releases.hashicorp.com
 
 releases:
-  - name: kube-prometheus-stack-crds
-    namespace: observability
-    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
-    version: 18.0.1
-    hooks:
-    - events: ["prepare"]
-      showlogs: true
-      command: kubectl
-      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
 
   - name: cilium
     namespace: kube-system
+    atomic: true
     chart: cilium/cilium
     version: 1.17.1
-    values:
-      - ../apps/kube-system/cilium/app/helm-values.yaml
-    needs:
-      - observability/kube-prometheus-stack-crds
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/helm/values.yaml']
+    hooks:
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=kube-system
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/networks.yaml
+        showlogs: true
 
   - name: coredns
     namespace: kube-system
     atomic: true
     chart: coredns/coredns
     version: 1.39.1
-    values: ['../apps/kube-system/coredns/app/helm/values.yaml']
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/coredns/app/helm/values.yaml']
     needs: ['kube-system/cilium']
 
   - name: kubelet-csr-approver
     namespace: kube-system
+    atomic: true
     chart: postfinance/kubelet-csr-approver
     version: 1.2.6
-    values:
-      - ../apps/kube-system/kubelet-csr-approver/app/helm-values.yaml
-    needs:
-      - kube-system/coredns
-      - kube-system/cilium
-      - observability/kube-prometheus-stack-crds
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/kubelet-csr-approver/app/helm/values.yaml']
+    needs: ['kube-system/coredns']
 
   - name: cert-manager
     namespace: cert-manager
     atomic: true
     chart: jetstack/cert-manager
     version: v1.17.1
-    values: ['../apps/cert-manager/cert-manager/app/helm/values.yaml']
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace {{ .Release.Namespace }} &>/dev/null; then
+              echo "Namespace {{ .Release.Namespace }} does not exist. Creating it..."
+              kubectl create namespace {{ .Release.Namespace }}
+            else
+              echo "Namespace {{ .Release.Namespace }} already exists."
+            fi
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd clusterissuers.cert-manager.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=kube-system
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/networks.yaml
+        showlogs: true
 
   - name: external-secrets
     namespace: external-secrets
     atomic: true
     chart: external-secrets/external-secrets
     version: 0.14.4
-    values: ['../apps/external-secrets/external-secrets/app/helm/values.yaml']
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/app/helm/values.yaml']
     hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace {{ .Release.Namespace }} &>/dev/null; then
+              echo "Namespace {{ .Release.Namespace }} does not exist. Creating it..."
+              kubectl create namespace {{ .Release.Namespace }}
+            else
+              echo "Namespace {{ .Release.Namespace }} already exists."
+            fi
+        showlogs: true
       - # Wait for external-secrets CRDs to be available
         events: ['postsync']
         command: bash
@@ -103,53 +154,82 @@ releases:
           - --namespace=external-secrets
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename=../apps/external-secrets/external-secrets/app/clustersecretstore.yaml
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/app/clustersecretstore.yaml
         showlogs: true
     needs: ['cert-manager/cert-manager']
 
   - name: zfs-localpv
     namespace: openebs-system
+    atomic: true
     chart: zfs-localpv/zfs-localpv
     version: 2.7.1
-    values:
-      - ../apps/openebs-system/zfs-localpv/app/helm-values.yaml
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/helm/values.yaml']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace {{ .Release.Namespace }} &>/dev/null; then
+              echo "Namespace {{ .Release.Namespace }} does not exist. Creating it..."
+              kubectl create namespace {{ .Release.Namespace }}
+            else
+              echo "Namespace {{ .Release.Namespace }} already exists."
+            fi
+        showlogs: true
+
+  - name: vault
+    namespace: vault
+    atomic: true
+    chart: vault/vault
+    version: 0.29.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/helm/values.yaml']
     hooks:
     - events: ["prepare"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace {{ .Release.Namespace }} &>/dev/null; then
+            echo "Namespace {{ .Release.Namespace }} does not exist. Creating it..."
+            kubectl create namespace {{ .Release.Namespace }}
+          else
+            echo "Namespace {{ .Release.Namespace }} already exists."
+          fi
       showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          vault operator init -format=json -key-shares=1 -key-threshold=1 > /tmp/vault-keys.json
+          vault operator unseal $(cat /tmp/vault-keys.json | jq -r .unseal_keys_b64[0]) || true
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          export AWS_ENDPOINT_URL=https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+          export AWS_SHARED_CREDENTIALS_FILE={{ requiredEnv "ROOT_DIR" }}/.aws/credentials
+          LATEST_SNAPSHOT=$(aws s3 ls s3://hashicorp-vault-backup/ --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2 | grep vaultsnapshot- | sort | tail -n 1 | awk '{print $4}')
+          aws s3 cp s3://hashicorp-vault-backup/$LATEST_SNAPSHOT . --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2
+          export VAULT_TOKEN=$(cat /tmp/vault-keys.json | jq -r .root_token)
+          vault operator raft snapshot restore -force $LATEST_SNAPSHOT
+      showlogs: true
+
+  - name: multus
+    namespace: kube-system
+    atomic: true
+    chart: app-template/app-template
+    version: 3.7.2
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/helm/values.yaml']
+    hooks:
+    - events: ["postsync"]
       command: kubectl
-      args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
-
-  #- name: vault
-    #namespace: vault
-    #chart: vault/vault
-    #version: 0.29.1
-    #values:
-      #- ../apps/secrets-management/hashicorp-vault/app/helm-values.yaml
-    #hooks:
-    #- events: ["prepare"]
-      #showlogs: true
-      #command: kubectl
-      #args: [ "create", "ns",  "{{`{{ .Release.Namespace }}`}}" ]
-
-  - name: flux-operator
-    namespace: flux-system
-    atomic: true
-    chart: controlplaneio/flux-operator
-    version: 0.17.0
-    values: ['../apps/flux-system/flux-operator/app/helm/values.yaml']
-    needs: ['external-secrets/external-secrets']
-
-  - name: flux-instance
-    namespace: flux-system
-    atomic: true
-    chart: controlplaneio/flux-instance
-    version: 0.17.0
-    values: ['../apps/flux-system/flux-instance/app/helm/values.yaml']
-    needs: ['flux-system/flux-operator']
-
-  #- name: multus
-    #namespace: kube-system
-    #chart: oci://ghcr.io/bjw-s/helm/app-template
-    #version: 3.6.1
-    #values:
-      #- ../apps/kube-system/multus/app/helm-values.yaml
+      args:
+      - apply
+      - --server-side
+      - --field-manager=kustomize-controller
+      - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/rbac.yaml
+      showlogs: true

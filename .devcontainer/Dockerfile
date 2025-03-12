@@ -19,17 +19,22 @@ ARG FLUX_VERSION=v2.5.1
 # renovate: datasource=github-releases depName=hadolint/hadolint
 ARG HADOLINT_VERSION=v2.12.0
 
+ARG TALOS_VERSION=v1.9.5
+
 WORKDIR /tmp
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
-    curl \
-    gnupg \
-    ca-certificates \
-    cosign \
-    coreutils \
-    unzip && \
+RUN apk add --no-cache \
+        curl \
+        gnupg \
+        ca-certificates \
+        coreutils \
+        libuuid \
+        libblkid \
+        wipefs \
+        unzip && \
+    apk add --no-cache --virtual .build-deps \
+        cosign \
+        crane && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
@@ -80,7 +85,20 @@ RUN apk update && \
     #Download hadolint
     curl -fsSL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64" && \
     #Set permissions
-    chmod +x /usr/local/bin/*
+    chmod +x /usr/local/bin/* && \
+    set -e && \
+    echo "Fetching ZFS image for Talos version: $TALOS_VERSION..." && \
+    ZFS_IMAGE=$(crane export "ghcr.io/siderolabs/extensions:${TALOS_VERSION}" | tar x -O image-digests | grep zfs | awk '{print $1}') && \
+    echo "Verifying ZFS image signature..." && \
+    cosign verify \
+      --certificate-identity-regexp '@siderolabs\.com$' \
+      --certificate-oidc-issuer https://accounts.google.com \
+      "$ZFS_IMAGE" >/dev/null 2>&1 && \
+    echo "Installing ZFS from $ZFS_IMAGE..." && \
+    crane export "$ZFS_IMAGE" | tar --strip-components=1 -x -C / && \
+    echo "ZFS tools installed successfully!" && \
+    apk del --purge .build-deps && \
+    rm -rf /root/.cache /root/.cargo /tmp/*
 
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/

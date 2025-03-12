@@ -17,8 +17,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-12T10:04:36Z"
-    mac: ENC[AES256_GCM,data:UeuywQSYvcINkR5cu0JMzkUkQkuI5vUlVEs0yFGJ1A+0OWbQVyroFliPwJE2571VrgcNH1C9qtTKYc8SrvQRkgUgjSyqTuWIPnhfz72Qy2Ii3giAD8+bgGAI1QfJcY5CvGkYnutGm2mGewckLv2/lg32OQQBO/aqqVWhLwIN+po=,iv:1V8erDfOogsh7HhZBepcgZ4t41QFD82DdDeIEb663gM=,tag:HAkBag0Cff+Z+74lSPd6/w==,type:str]
+    lastmodified: "2025-03-12T11:32:05Z"
+    mac: ENC[AES256_GCM,data:2I+O3QYXVP41VBzRhzZ1I3qdh6w6ljV7G0wlaHKVldNVl1C5m+FU02GUqZXfGqz8253hZAYLSKdAfSrxOrPZEkDYSVJ4ts30SB90ODuAx3WOC9VqMGdR2fmLzuWBpkaqokgcXxRXSCOyOHl/8lsWyhTEIUwevkXE0NdHAWQ/5YA=,iv:0+5aGe+vaFtcDf5PIikfScWPfqcTSielq5AAKVf8c7g=,tag:B8AWQu0FxyR5SOe2zgu/3w==,type:str]
     pgp: []
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
@@ -43,8 +43,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-12T10:04:36Z"
-    mac: ENC[AES256_GCM,data:UeuywQSYvcINkR5cu0JMzkUkQkuI5vUlVEs0yFGJ1A+0OWbQVyroFliPwJE2571VrgcNH1C9qtTKYc8SrvQRkgUgjSyqTuWIPnhfz72Qy2Ii3giAD8+bgGAI1QfJcY5CvGkYnutGm2mGewckLv2/lg32OQQBO/aqqVWhLwIN+po=,iv:1V8erDfOogsh7HhZBepcgZ4t41QFD82DdDeIEb663gM=,tag:HAkBag0Cff+Z+74lSPd6/w==,type:str]
+    lastmodified: "2025-03-12T11:32:05Z"
+    mac: ENC[AES256_GCM,data:2I+O3QYXVP41VBzRhzZ1I3qdh6w6ljV7G0wlaHKVldNVl1C5m+FU02GUqZXfGqz8253hZAYLSKdAfSrxOrPZEkDYSVJ4ts30SB90ODuAx3WOC9VqMGdR2fmLzuWBpkaqokgcXxRXSCOyOHl/8lsWyhTEIUwevkXE0NdHAWQ/5YA=,iv:0+5aGe+vaFtcDf5PIikfScWPfqcTSielq5AAKVf8c7g=,tag:B8AWQu0FxyR5SOe2zgu/3w==,type:str]
     pgp: []
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
@@ -117,7 +117,6 @@ machine:
             - amd_pstate.shared_mem=1
             - -lockdown
             - lockdown=integrity
-            - module_blacklist=mpt3sas,nvme
         image: factory.talos.dev/installer-secureboot/${TALOS_SCHEMATIC_ID}:${TALOS_VERSION}
         wipe: false
     files:
@@ -278,8 +277,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-12T10:04:36Z"
-    mac: ENC[AES256_GCM,data:UeuywQSYvcINkR5cu0JMzkUkQkuI5vUlVEs0yFGJ1A+0OWbQVyroFliPwJE2571VrgcNH1C9qtTKYc8SrvQRkgUgjSyqTuWIPnhfz72Qy2Ii3giAD8+bgGAI1QfJcY5CvGkYnutGm2mGewckLv2/lg32OQQBO/aqqVWhLwIN+po=,iv:1V8erDfOogsh7HhZBepcgZ4t41QFD82DdDeIEb663gM=,tag:HAkBag0Cff+Z+74lSPd6/w==,type:str]
+    lastmodified: "2025-03-12T11:32:05Z"
+    mac: ENC[AES256_GCM,data:2I+O3QYXVP41VBzRhzZ1I3qdh6w6ljV7G0wlaHKVldNVl1C5m+FU02GUqZXfGqz8253hZAYLSKdAfSrxOrPZEkDYSVJ4ts30SB90ODuAx3WOC9VqMGdR2fmLzuWBpkaqokgcXxRXSCOyOHl/8lsWyhTEIUwevkXE0NdHAWQ/5YA=,iv:0+5aGe+vaFtcDf5PIikfScWPfqcTSielq5AAKVf8c7g=,tag:B8AWQu0FxyR5SOe2zgu/3w==,type:str]
     pgp: []
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true

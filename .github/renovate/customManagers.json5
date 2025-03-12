@@ -4,9 +4,9 @@
     {
       "customType": "regex",
       "description": ["Process YAML custom dependencies"],
-      "fileMatch": [
-        "(^|/)kubernetes/.+\\.env$",
-        "(^|/)kubernetes/.+\\.ya?ml$"
+     "fileMatch": [
+        "(^|/).+\\.env$",
+        "(^|/).+\\.ya?ml(?:\\.j2)?$"
       ],
       "matchStrings": [
         "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)",

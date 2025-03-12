@@ -19,7 +19,7 @@ spec:
     - name: keycloak
       namespace: idp
   path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/app
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -26,7 +26,7 @@ spec:
       GATUS_PATH: /identity
       GATUS_PORT: "32400"
       GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].MediaContainer.claimed == true"]'
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

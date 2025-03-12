@@ -30,7 +30,7 @@ spec:
       GATUS_NAME: Sonarr
       GATUS_PATH: /ping
       GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].status == OK"]'
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

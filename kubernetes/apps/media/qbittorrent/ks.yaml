@@ -25,7 +25,7 @@ spec:
       GATUS_NAME: qBittorrent
       GATUS_PATH: /api/v2/app/version
       GATUS_STATUS: "401"
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -51,7 +51,7 @@ spec:
   timeout: 5m
   retryInterval: 2m
   path: ./kubernetes/apps/media/qbittorrent/qbitmanage
-  prune: false
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -4,8 +4,26 @@
     {
       "description": ["Actions Runner Controller Group"],
       "groupName": "Actions Runner Controller",
-      "matchPackagePatterns": ["gha-runner-scale-set"],
+      "matchPackageNames": ["/gha-runner-scale-set-controller/", "/gha-runner-scale-set/"],
       "matchDatasources": ["docker", "helm"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
+      "description": ["CoreDNS Group"],
+      "groupName": "CoreDNS",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/coredns/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
+      "description": ["External Secrets Operator Group"],
+      "groupName": "External Secrets Operator",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/external-secrets/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }
@@ -13,8 +31,8 @@
     {
       "description": ["Flux Operator Group"],
       "groupName": "Flux Operator",
-      "matchPackagePatterns": ["flux-operator", "flux-instance"],
       "matchDatasources": ["docker"],
+      "matchPackageNames": ["/flux-operator/", "/flux-instance/"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }

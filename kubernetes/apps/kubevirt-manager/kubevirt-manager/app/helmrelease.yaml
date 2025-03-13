@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/kubevirt-manager
-              tag: v1.5.0@sha256:11e2cbcfaabb680fe93c2ee5828d09c3f9022b82328436213dfe95e69adc1898
+              tag: v1.5.0@sha256:baeda2c2ac8d7b2645f7cf3225549a003cd414fc14ffb817e9edde4e77cf200f
             env:
               OIDC_DISCOVERY: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration"
               OIDC_REDIRECT_URI: "https://kubevirt-manager.darkfellanetwork.com/callback"

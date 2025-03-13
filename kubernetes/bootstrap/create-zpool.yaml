@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: create-zpool
+spec:
+  containers:
+  - name: create-zpool
+    image: ghcr.io/d4rkfella/create-zpool:1.0.0@sha256:34a4d3e3538650a5eecac12376c681944f8913c89859e470b3f4c28cd9248695
+    securityContext:
+      privileged: true
+    env:
+    - name: DEVICES
+      value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd"
+    - name: ASHIFT
+      value: "12"
+    - name: POOL_NAME
+      value: "ssd_pool"
+    - name: TALOS_VERSION
+      value: "v1.9.5"
+    resources:
+      limits:
+        cpu: "1"
+        memory: "512Mi"
+      requests:
+        cpu: "500m"
+        memory: "256Mi"
+    volumeMounts:
+    - name: dev
+      mountPath: /dev
+  volumes:
+  - name: dev
+    hostPath:
+      path: /dev
+  restartPolicy: Never

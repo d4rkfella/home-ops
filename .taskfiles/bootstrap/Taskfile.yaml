@@ -6,8 +6,6 @@ version: '3'
 vars:
   KUBERNETES_VERSION:
     sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
-  TALOS_CONTROLLER:
-    sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
   TALOS_SCHEMATIC_ID:
     sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
   TALOS_VERSION:
@@ -40,14 +38,14 @@ tasks:
 
   etcd:
     internal: true
-    cmd: until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
+    cmd: until talosctl --nodes {{.IP}} bootstrap; do sleep 10; done
     preconditions:
       - test -f {{.CLUSTER_DIR}}/talosconfig
       - talosctl config info &>/dev/null
 
   conf:
     internal: true
-    cmd: talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force --force-context-name main {{.CLUSTER_DIR}}
+    cmd: talosctl kubeconfig --nodes {{.IP}} --force --force-context-name main {{.CLUSTER_DIR}}
     preconditions:
       - test -f {{.CLUSTER_DIR}}/talosconfig
       - talosctl config info &>/dev/null
@@ -56,15 +54,9 @@ tasks:
     internal: true
     cmds:
       - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
-      - helmfile --quiet --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --skip-diff-on-install --suppress-diff
-      - sops --decrypt {{.CLUSTER_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace vault
-      - sops --decrypt {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
-      - kubectl apply --server-side --filename {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
       - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
     preconditions:
       - test -f {{.CLUSTER_DIR}}/kubeconfig
       - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
-      - test -f {{.CLUSTER_DIR}}/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml
-      - test -f {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuer.secret.sops.yaml
-      - test -f {{.CLUSTER_DIR}}/apps/cert-manager/cert-manager/issuers/issuers.yaml
       - talosctl config info &>/dev/null

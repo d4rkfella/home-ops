@@ -10,12 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/cert-manager
     - ../../../../components/gatus/internal
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   path: ./kubernetes/apps/secrets-management/hashicorp-vault/app
   postBuild:
     substitute:
@@ -24,7 +19,6 @@ spec:
       GATUS_PATH: /v1/sys/health
       GATUS_PORT: "8200"
       GATUS_CONDITIONS: '["[BODY].initialized == true", "[BODY].sealed == false"]'
-      DNS_NAMES: "['vault.darkfellanetwork.com']"
   prune: false
   sourceRef:
     kind: GitRepository

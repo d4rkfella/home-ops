@@ -113,6 +113,19 @@ spec:
         http:
           url: "https://go.microsoft.com/fwlink/?linkid=2293312&clcid=0x409&culture=en-us&country=us"
   - metadata:
+      name: windows-server-2025-autounattend
+    spec:
+      storage:
+        storageClassName: openebs-zfs-1m
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Mi
+      source:
+        http:
+          url: "https://go.microsoft.com/fwlink/?linkid=2293312&clcid=0x409&culture=en-us&country=us"
+  - metadata:
       name: windows-server-2025-os-disk
     spec:
       storage:

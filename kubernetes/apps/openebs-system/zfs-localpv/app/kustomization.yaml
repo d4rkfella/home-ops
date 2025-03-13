@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
+  - ./storageclass.yaml
+  - ./volumesnapshotclass.yaml
 configMapGenerator:
   - name: zfs-localpv-values
     files:

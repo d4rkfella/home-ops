@@ -62,7 +62,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/jellyseerr-distroless
-              tag: v2.5.0@sha256:e60e5230e7228d4f93de7385e8a4144264c824121e2fac607232ce4be8301194
+              tag: v2.5.0@sha256:7ffd6fe948f547cdaea6402cebd8b7a7a9c2a5fbab97b1fcba5d91cc8605f8a6
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"

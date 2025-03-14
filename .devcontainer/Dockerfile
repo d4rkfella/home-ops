@@ -122,7 +122,7 @@ RUN apk update && \
     yq \
     gnupg \
     expect \
-    virt-viewer \
+    tigervnc \
     xdotool \
     docker-cli && \
     addgroup -g $USER_GID $USERNAME && \

@@ -29,9 +29,8 @@ RUN apk add --no-cache \
         ca-certificates \
         coreutils \
         expect \
+        cosign \
         unzip && \
-    apk add --no-cache --virtual .build-deps \
-        cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
@@ -82,9 +81,7 @@ RUN apk add --no-cache \
     #Download hadolint
     curl -fsSL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64" && \
     #Set permissions
-    chmod +x /usr/local/bin/* && \
-    apk del --purge .build-deps && \
-    rm -rf /root/.cache /root/.cargo /tmp/*
+    chmod +x /usr/local/bin/*
 
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /usr/local/aws-cli/ /usr/local/aws-cli/
 COPY --from=ghcr.io/d4rkfella/aws-cli-alpine:2.22.35 /aws-cli-bin/ /usr/local/bin/
@@ -124,6 +121,7 @@ RUN apk update && \
     direnv \
     yq \
     gnupg \
+    expect \
     docker-cli && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

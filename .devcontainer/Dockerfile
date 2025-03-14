@@ -122,6 +122,7 @@ RUN apk update && \
     yq \
     gnupg \
     expect \
+    virt-viewer \
     docker-cli && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

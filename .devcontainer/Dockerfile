@@ -28,13 +28,10 @@ RUN apk add --no-cache \
         gnupg \
         ca-certificates \
         coreutils \
-        libuuid \
-        libblkid \
-        wipefs \
+        expect
         unzip && \
     apk add --no-cache --virtual .build-deps \
         cosign \
-        crane && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
@@ -86,17 +83,6 @@ RUN apk add --no-cache \
     curl -fsSL -o /usr/local/bin/hadolint "https://github.com/hadolint/hadolint/releases/download/${HADOLINT_VERSION}/hadolint-Linux-x86_64" && \
     #Set permissions
     chmod +x /usr/local/bin/* && \
-    set -e && \
-    echo "Fetching ZFS image for Talos version: $TALOS_VERSION..." && \
-    ZFS_IMAGE=$(crane export "ghcr.io/siderolabs/extensions:${TALOS_VERSION}" | tar x -O image-digests | grep zfs | awk '{print $1}') && \
-    echo "Verifying ZFS image signature..." && \
-    cosign verify \
-      --certificate-identity-regexp '@siderolabs\.com$' \
-      --certificate-oidc-issuer https://accounts.google.com \
-      "$ZFS_IMAGE" >/dev/null 2>&1 && \
-    echo "Installing ZFS from $ZFS_IMAGE..." && \
-    crane export "$ZFS_IMAGE" | tar --strip-components=1 -x -C / && \
-    echo "ZFS tools installed successfully!" && \
     apk del --purge .build-deps && \
     rm -rf /root/.cache /root/.cargo /tmp/*
 

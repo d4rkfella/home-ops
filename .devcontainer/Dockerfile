@@ -31,7 +31,7 @@ RUN apk add --no-cache \
         expect \
         unzip && \
     apk add --no-cache --virtual .build-deps \
-        cosign \
+        cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \

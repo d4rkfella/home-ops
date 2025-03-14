@@ -28,7 +28,7 @@ RUN apk add --no-cache \
         gnupg \
         ca-certificates \
         coreutils \
-        expect
+        expect \
         unzip && \
     apk add --no-cache --virtual .build-deps \
         cosign \

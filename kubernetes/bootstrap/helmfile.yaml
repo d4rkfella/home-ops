@@ -315,7 +315,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: app-template/app-template
-    version: 3.7.2
+    version: 3.7.3
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/helm/values.yaml']
     needs: ['kube-system/cilium']
     hooks:

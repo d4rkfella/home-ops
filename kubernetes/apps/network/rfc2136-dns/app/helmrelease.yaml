@@ -50,7 +50,7 @@ spec:
     extraVolumes:
       - configMap:
           defaultMode: 420
-          name: internal-external-dns-configmap
+          name: external-dns-configmap
         name: kerberos-config-volume
     extraVolumeMounts:
       - mountPath: /etc/krb5.conf

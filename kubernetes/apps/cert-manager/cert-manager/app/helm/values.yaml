@@ -40,6 +40,6 @@ cainjector:
         dnsNames:
           - cert-manager-metrics
 hostAliases:
-  - ip: "192.168.91.51"
+  - ip: "192.168.91.53"
     hostnames:
       - vault.darkfellanetwork.com

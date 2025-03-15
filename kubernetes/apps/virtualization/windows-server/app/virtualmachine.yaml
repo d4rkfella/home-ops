@@ -64,23 +64,22 @@ spec:
             - disk:
                 bus: virtio
               name: os-disk
-              bootOrder: 2
+              bootOrder: 1
             - disk:
                 bus: virtio
               name: wds
             - name: iso
-              bootOrder: 1
+              bootOrder: 2
               cdrom:
                 readonly: true
                 bus: sata
-            - name: virtio-drivers
-              bootOrder: 3
-              cdrom:
-                readonly: true
-                bus: sata
-            - name: sysprep
-              cdrom:
-                bus: sata
+            #- name: virtio-drivers
+              #cdrom:
+                #readonly: true
+                #bus: sata
+            #- name: sysprep
+              #cdrom:
+                #bus: sata
         machine:
           type: q35
         resources:
@@ -89,10 +88,10 @@ spec:
           limits:
             memory: 4Gi
       volumes:
-      - name: sysprep
-        sysprep:
-          secret:
-            name: sysprep-secret
+      #- name: sysprep
+        #sysprep:
+          #secret:
+            #name: sysprep-secret
       - dataVolume:
           name: windows-server-2025-iso
         name: iso
@@ -102,9 +101,9 @@ spec:
       - dataVolume:
           name: windows-server-2025-wds
         name: wds
-      - dataVolume:
-          name: windows-virtio-drivers
-        name: virtio-drivers
+      #- dataVolume:
+          #name: windows-virtio-drivers
+        #name: virtio-drivers
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2025-iso

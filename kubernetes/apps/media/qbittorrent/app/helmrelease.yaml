@@ -141,12 +141,11 @@ spec:
       media:
         type: nfs
         server: 192.168.91.40
-        path: /mnt/exos20/data
+        path: /mnt/exos20/data/downloads/torrents
         advancedMounts:
           qbittorrent:
             app:
               - path: /data/downloads/torrents
-                subPath: downloads/torrents
 
       addons:
         type: emptyDir

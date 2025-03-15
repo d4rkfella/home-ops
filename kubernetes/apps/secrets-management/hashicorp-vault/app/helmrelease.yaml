@@ -38,5 +38,3 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: vault-values
-  values:
-    activeVaultPodOnly: true

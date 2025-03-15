@@ -73,10 +73,10 @@ spec:
               cdrom:
                 readonly: true
                 bus: sata
-            #- name: virtio-drivers
-              #cdrom:
-                #readonly: true
-                #bus: sata
+            - name: virtio-drivers
+              cdrom:
+                readonly: true
+                bus: sata
             #- name: sysprep
               #cdrom:
                 #bus: sata
@@ -101,9 +101,9 @@ spec:
       - dataVolume:
           name: windows-server-2025-wds
         name: wds
-      #- dataVolume:
-          #name: windows-virtio-drivers
-        #name: virtio-drivers
+      - dataVolume:
+          name: windows-virtio-drivers
+        name: virtio-drivers
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2025-iso

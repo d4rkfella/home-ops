@@ -29,6 +29,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: dragonfly-operator
   healthCheckExprs:
     - apiVersion: dragonflydb.io/v1alpha1
       kind: Dragonfly
@@ -42,6 +44,3 @@ spec:
     namespace: flux-system
   targetNamespace: *ns
   wait: true
-  dependsOn:
-    - name: dragonfly-operator
-      namespace: database

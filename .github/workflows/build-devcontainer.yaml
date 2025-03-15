@@ -7,18 +7,32 @@ on:
     paths:
       - '.devcontainer/Dockerfile'
 
+permissions:
+  id-token: write
+  packages: write
+  contents: read
+  attestations: write
+
 jobs:
   build:
     runs-on: ubuntu-24.04
-    permissions:
-      packages: write
-      id-token: write
+    env:
+      REGISTRY: ghcr.io
+      IMAGE_NAME: devcontainer
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@4d991eb9b905ef189e4c376166672c3f2f230481 # v2.11.0
+      with:
+        egress-policy: audit
+
     - name: Checkout code
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 #v4.2.2
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+
+    - name: Set up Cosign
+      uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
 
     - name: Log in to GitHub Container Registry (GHCR)
       uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
@@ -27,16 +41,9 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
 
-    - name: Set up Cosign
-      uses: sigstore/cosign-installer@d7d6bc7722e3daa8354c50bcb52f4837da5e9b6a # v3.8.1
-
     - name: Image version
       shell: bash
       run: echo "VERSION=$(cat .devcontainer/version.txt)" >> $GITHUB_ENV
-
-    - name: Lowercase repository owner
-      shell: bash
-      run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
     - name: Build and Push Docker Image
       id: build-and-push
@@ -44,23 +51,31 @@ jobs:
       with:
         push: true
         tags: |
-            ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:latest
-            ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer:${{ env.VERSION }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
         platforms: linux/amd64
         file: .devcontainer/Dockerfile
         context: .
 
+    - name: Attest
+      uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+      id: attest
+      with:
+        subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        subject-digest: ${{ steps.build-and-push.outputs.digest }}
+        push-to-registry: true
+
     - name: Sign the image
       run: |
         cosign sign --yes \
-          ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer@${{ steps.build-and-push.outputs.digest }}
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
       env:
         COSIGN_EXPERIMENTAL: 1
 
     - name: Verify the pushed tags
       run: |
         cosign verify --certificate-oidc-issuer "https://token.actions.githubusercontent.com" \
-          --certificate-identity "https://github.com/d4rkfella/home-ops/.github/workflows/build-devcontainer.yaml@refs/heads/main" \
-          ghcr.io/${{ env.LOWERCASE_REPO_OWNER }}/devcontainer@${{ steps.build-and-push.outputs.digest }}
+          --certificate-identity-regexp "https://github.com/d4rkfella/*" \
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
       env:
         COSIGN_EXPERIMENTAL: 1

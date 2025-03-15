@@ -6,7 +6,7 @@ instance:
     version: 2.5.1
     registry: "ghcr.io/fluxcd"
   cluster:
-    networkPolicy: true
+    networkPolicy: false
   storage:
     class: openebs-zfs-128k
     size: 20Gi

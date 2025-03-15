@@ -67,7 +67,7 @@ spec:
           serviceAccountName: oidc-jwt-fetcher
           containers:
           - name: oidc-jwt-fetcher
-            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:6e60e5ba25b7992e8bafcf9923938aff1c23fa6acd99a532df6f01ba3bfe8796
+            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:latest@sha256:1d7b0fa326c1d417a558a805fb6cc81829697736e4ee7f47bf80269fa9a6eb7b
             imagePullPolicy: IfNotPresent
             env:
               - name: CLIENT_ID

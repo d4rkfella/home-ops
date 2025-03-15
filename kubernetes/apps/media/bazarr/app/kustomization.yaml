@@ -5,11 +5,3 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
-configMapGenerator:
-  - name: bazarr-gatus-ep
-    files:
-      - resources/gatus-ep.yaml
-generatorOptions:
-  disableNameSuffixHash: true
-  annotations:
-    kustomize.toolkit.fluxcd.io/substitute: disabled

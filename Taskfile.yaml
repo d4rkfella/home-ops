@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+set: [pipefail]
+shopt: [globstar]
+
+vars:
+  CLUSTER_DIR: '{{.ROOT_DIR}}/kubernetes'
+  BOOTSTRAP_DIR: '{{.CLUSTER_DIR}}/bootstrap'
+
+env:
+  KUBECONFIG: '{{.CLUSTER_DIR}}/kubeconfig'
+  TALOSCONFIG: '{{.CLUSTER_DIR}}/talosconfig'
+  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
+
+includes:
+  bootstrap: .taskfiles/bootstrap
+  talos: .taskfiles/talos
+
+tasks:
+  default: task --list

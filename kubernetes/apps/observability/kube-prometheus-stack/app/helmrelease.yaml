@@ -1,0 +1,343 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 70.0.0
+  url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+  install:
+    crds: Skip
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: Skip
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    crds:
+      enabled: false
+    cleanPrometheusOperatorObjectNames: true
+    alertmanager:
+      service:
+        targetPort: oauth-proxy
+      serviceMonitor:
+        selfMonitor: false
+      route:
+        main:
+          enabled: true
+          hostnames: ["alertmanager.darkfellanetwork.com"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+      alertmanagerSpec:
+        listenLocal: true
+        externalUrl: "https://alertmanager.darkfellanetwork.com"
+        alertmanagerConfiguration:
+          name: alertmanager
+          global:
+            resolveTimeout: 5m
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-zfs-128k
+              resources:
+                requests:
+                  storage: 1Gi
+        volumes:
+          - name: &secret alertmanager-secret
+            secret:
+              secretName: *secret
+              defaultMode: 256
+        containers:
+          - name: oauth-proxy
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+            - --config=/etc/oauth2-proxy.cfg
+            env:
+              - name: OAUTH2_PROXY_REDIS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            ports:
+            - containerPort: 8082
+              name: oauth-proxy
+              protocol: TCP
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            volumeMounts:
+              - name: *secret
+                mountPath: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+              - name: *secret
+                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
+        securityContext:
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+          fsGroup: 65532
+          fsGroupChangePolicy: Always
+          seccompProfile:
+            type: RuntimeDefault
+    kubeApiServer:
+      serviceMonitor:
+        selector:
+          k8s-app: kube-apiserver
+    kubeScheduler:
+      service:
+        selector:
+          k8s-app: kube-scheduler
+    kubeControllerManager:
+      service:
+        selector:
+          k8s-app: kube-controller-manager
+    kubeEtcd:
+      enabled: true
+      service:
+        selector:
+          k8s-app: kube-controller-manager
+      serviceMonitor:
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_pod_node_name]
+            separator: ;
+            regex: ^(.*)$
+            targetLabel: nodename
+            replacement: $1
+            action: replace
+        metricRelabelings:
+          - action: labeldrop
+            regex: pod
+    kubeProxy:
+      enabled: false
+    prometheus:
+      service:
+        targetPort: oauth-proxy
+      serviceMonitor:
+        selfMonitor: false
+      route:
+        main:
+          enabled: true
+          hostnames: ["prometheus.darkfellanetwork.com"]
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+      prometheusSpec:
+        listenLocal: true
+        externalUrl: "https://prometheus.darkfellanetwork.com"
+        podMetadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/agent-init-first: "true"
+            vault.hashicorp.com/agent-inject-token: "true"
+            vault.hashicorp.com/role: "prometheus"
+            vault.hashicorp.com/agent-inject-containers: "prometheus"
+            vault.hashicorp.com/agent-run-as-group: "65532"
+            vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
+        additionalAlertManagerConfigs:
+          - scheme: https
+            follow_redirects: true
+            enable_http2: true
+            path_prefix: /
+            timeout: 10s
+            api_version: v2
+            tls_config:
+              insecure_skip_verify: false
+            static_configs:
+              - targets:
+                - "alertmanager.darkfellanetwork.com"
+            oauth2:
+              client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
+              client_secret_file: /etc/secrets/client_secret
+              token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+              scopes: ["openid", "profile", "email"]
+              endpoint_params:
+                grant_type: client_credentials
+        alertingEndpoints: {}
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        enableAdminAPI: false
+        enableFeatures:
+          - memory-snapshot-on-shutdown
+        retention: 14d
+        retentionSize: 70GB
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 1500Mi
+        walCompression: false
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: openebs-zfs-128k
+              resources:
+                requests:
+                  storage: 75Gi
+        additionalScrapeConfigs:
+          - job_name: vault
+            metrics_path: /v1/sys/metrics
+            params:
+              format: ['prometheus']
+            scheme: https
+            authorization:
+              credentials_file: /vault/secrets/token
+            tls_config:
+              insecure_skip_verify: false
+            static_configs:
+              - targets:
+                - "vault.darkfellanetwork.com:8200"
+        volumes:
+          - name: &secret prometheus-secret
+            secret:
+              secretName: *secret
+              defaultMode: 256
+        hostAliases:
+          - ip: "192.168.91.51"
+            hostnames:
+              - "accounts.darkfellanetwork.com"
+        containers:
+          - name: oauth-proxy
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+            args:
+            - --config=/etc/oauth2-proxy.cfg
+            env:
+              - name: OAUTH2_PROXY_REDIS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            ports:
+            - containerPort: 8082
+              name: oauth-proxy
+              protocol: TCP
+            resources: {}
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            volumeMounts:
+              - name: *secret
+                mountPath: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+              - name: *secret
+                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
+        volumeMounts:
+          - name: *secret
+            mountPath: /etc/secrets/client_secret
+            subPath: client_secret
+            readOnly: true
+        securityContext:
+          runAsGroup: 65532
+          runAsNonRoot: true
+          runAsUser: 65532
+          fsGroup: 65532
+          fsGroupChangePolicy: Always
+          seccompProfile:
+            type: RuntimeDefault
+    nodeExporter:
+      enabled: true
+      operatingSystems:
+        linux:
+          enabled: true
+        aix:
+          enabled: false
+        darwin:
+          enabled: false
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+      metricLabelsAllowlist:
+        - pods=[*]
+        - deployments=[*]
+        - persistentvolumeclaims=[*]
+        - nodes=[*]
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
+    grafana:
+      enabled: false
+      forceDeployDashboards: true
+
+    additionalPrometheusRulesMap:
+      dockerhub-rules:
+        groups:
+          - name: dockerhub
+            rules:
+              - alert: DockerhubRateLimitRisk
+                annotations:
+                  summary: Kubernetes cluster Dockerhub rate limit risk
+                expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
+                labels:
+                  severity: critical
+      oom-rules:
+        groups:
+          - name: oom
+            rules:
+              - alert: OomKilled
+                annotations:
+                  summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+                expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+                labels:
+                  severity: critical
+      zfs-rules:
+        groups:
+          - name: zfs
+            rules:
+              - alert: ZfsUnexpectedPoolState
+                annotations:
+                  summary: ZFS pool {{$labels.zpool}} on {{$labels.instance}} is in a unexpected state {{$labels.state}}
+                expr: node_zfs_zpool_state{state!="online"} > 0
+                labels:
+                  severity: critical
+    prometheusOperator:
+      serviceAccount:
+        name: prometheus-operator

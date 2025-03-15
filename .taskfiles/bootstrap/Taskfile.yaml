@@ -1,0 +1,86 @@
+
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+vars:
+  KUBERNETES_VERSION:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+  TALOS_SCHEMATIC_ID:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+  TALOS_VERSION:
+    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+
+tasks:
+  talos:
+    desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
+    prompt: Bootstrap a Talos Kubernetes cluster ... continue?
+    cmds:
+      - { task: apply-config }
+      - { task: etcd }
+      - { task: conf }
+      - { task: apps }
+    preconditions:
+      - which talosctl
+      - talosctl config info &>/dev/null
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+  apply-config:
+    internal: true
+    cmd: |
+      export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
+        sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml | \
+            /usr/local/bin/envsubst | \
+                talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
+    requires:
+      vars: ['IP']
+    preconditions:
+      - which sops
+      - which talosctl
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml
+
+  etcd:
+    internal: true
+    cmd: until talosctl --nodes {{.IP}} bootstrap; do sleep 10; done
+    preconditions:
+      - which talosctl
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - talosctl config info &>/dev/null
+
+  conf:
+    internal: true
+    cmd: talosctl kubeconfig --nodes {{.IP}} --force --force-context-name main {{.CLUSTER_DIR}}
+    preconditions:
+      - which talosctl
+      - test -f {{.CLUSTER_DIR}}/talosconfig
+      - talosctl config info &>/dev/null
+
+  apps:
+    internal: true
+    cmds:
+      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
+      - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
+    preconditions:
+      - which bash
+      - which sops
+      - which talosctl
+      - which yq
+      - which vault
+      - which kubectl
+      - which helmfile
+      - test -f {{.CLUSTER_DIR}}/kubeconfig
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
+      - talosctl config info &>/dev/null
+  flux:
+    desc: Bootstrap Flux-Operator and Flux-Instance
+    prompt: Bootstrap Flux ... continue?
+    cmds:
+      - { task: helmfile-apply }
+  helmfile-apply:
+    cmds:
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
+    preconditions:
+      - which helmfile
+      - test -f {{.CLUSTER_DIR}}/kubeconfig
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml

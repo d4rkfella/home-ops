@@ -1,0 +1,65 @@
+controllers:
+  multus:
+    type: daemonset
+    initContainers:
+      install-multus-binary:
+        image:
+          repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+          tag: v4.1.4@sha256:09fdfb7ce090ccbf8927d2728970c3cdeb5917d48209f692de849e384f00d893
+        command: ["/install_multus"]
+        args:
+          - --type
+          - thin
+        securityContext:
+          privileged: true
+        terminationMessagePolicy: FallbackToLogsOnError
+      install-cni-plugins:
+        image:
+          repository: ghcr.io/buroa/cni-plugins
+          tag: 1.6.2@sha256:fd78504277d802ec8ad8d8d8c919edfa783ca69065232e59292427f59ab76fb2
+    containers:
+      multus:
+        image:
+          repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+          tag: v4.1.4@sha256:09fdfb7ce090ccbf8927d2728970c3cdeb5917d48209f692de849e384f00d893
+        command:
+          - /thin_entrypoint
+        args:
+          - --multus-conf-file=auto
+          - --multus-autoconfig-dir=/host/etc/cni/net.d
+          - --cni-conf-dir=/host/etc/cni/net.d
+          - --cleanup-config-on-exit=true
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 50Mi
+        securityContext:
+          privileged: true
+        terminationMessagePolicy: FallbackToLogsOnError
+defaultPodOptions:
+  hostNetwork: true
+  terminationGracePeriodSeconds: 10
+persistence:
+  cni:
+    type: hostPath
+    hostPath: /etc/cni/net.d
+    advancedMounts:
+      multus:
+        multus:
+          - path: /host/etc/cni/net.d
+  cnibin:
+    type: hostPath
+    hostPath: /opt/cni/bin
+    advancedMounts:
+      multus:
+        install-multus-binary:
+          - path: /host/opt/cni/bin
+            mountPropagation: Bidirectional
+        multus:
+          - path: /host/opt/cni/bin
+        install-cni-plugins:
+          - path: /host/opt/cni/bin
+serviceAccount:
+  create: true
+  name: multus

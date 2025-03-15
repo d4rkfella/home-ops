@@ -1,0 +1,104 @@
+//devcontainer.json
+{
+    "name": "Kubernetes Management",
+
+    "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:4aae3d28ba0d07eba6f3fc3f4b58fe4da7bc1333ff6f64b98a9c4b26925d6722",
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
+    "workspaceFolder": "/project",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
+    "mounts": [
+      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "customizations": {
+      "vscode": {
+        "extensions": [
+            "signageos.signageos-vscode-sops",
+            "BriteSnow.vscode-toggle-quotes",
+            "redhat.vscode-yaml",
+            "mitchdenny.ecdc",
+            "mikestead.dotenv",
+            "fcrespo82.markdown-table-formatter",
+            "albert.TabOut",
+            "PKief.material-product-icons",
+            "editorconfig.editorconfig",
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "ms-azuretools.vscode-docker",
+            "GitHub.vscode-pull-request-github",
+            "donjayamanne.githistory",
+            "PKief.material-icon-theme",
+            "exiasr.hadolint"
+        ],
+        "settings": {
+            "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
+            "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
+            "vs-kubernetes": {
+                "vs-kubernetes.kubeconfig": "./kubernetes/kubeconfig",
+                "vs-kubernetes.crd-code-completion": "enabled"
+            },
+            "git.path": "/usr/bin/git",
+            "git.enableCommitSigning": true,
+            "docker.dockerPath": "/usr/bin/docker",
+            "terminal.integrated.defaultProfile.linux": "bash",
+            "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
+            "editor.bracketPairColorization.enabled": true,
+            "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+            "editor.fontFamily": "FiraCode Nerd Font, monospace",
+            "editor.fontLigatures": true,
+            "editor.guides.bracketPairs": true,
+            "editor.guides.bracketPairsHorizontal": true,
+            "editor.guides.highlightActiveBracketPair": true,
+            "editor.hover.delay": 1000,
+            "editor.rulers": [
+                100
+            ],
+            "editor.stickyScroll.enabled": false,
+            "explorer.autoReveal": false,
+
+            "files.associations": {
+                "**/*.json5": "jsonc"
+            },
+            "files.trimTrailingWhitespace": true,
+            "workbench.iconTheme": "material-icon-theme",
+            "material-icon-theme.files.associations": {
+                "*.secret.sops.env": "lock",
+                "*.secret.sops.yaml": "lock",
+                "helmrelease.yaml": "helm",
+                "helm-values.yaml": "helm"
+            },
+            "material-icon-theme.folders.associations": {
+                ".github/workflows": "robot",
+                "arc-system": "github",
+                "arc-runners": "github",
+                "cert-manager": "guard",
+                "external-secrets": "secure",
+                "vaultwarden": "secure",
+                "secrets-management": "secure",
+                "flux-system": "pipe",
+                "flux": "pipe",
+                "kube-system": "kubernetes",
+                "network": "connection",
+                "observability": "event",
+                "storage": "dump",
+                "system-upgrade": "update",
+                "tools": "tools",
+                "volsync-system": "aws",
+                "cloudflared": "cloudflare",
+                "talos": "linux",
+                "vault": "secure",
+                "cdi": "upload",
+                "virtualization": "Vm",
+                "kubevirt": "Vm",
+                "kubevirt-manager": "Vm",
+                "openebs-system": "dump"
+            },
+            "material-icon-theme.hidesExplorerArrows": true,
+            "sops.defaults.ageKeyFile": "./age.key",
+            "sops.creationEnabled": true,
+            "yaml.schemaStore.enable": true,
+            "yaml.schemas": {
+                "kubernetes": "./kubernetes/**/*.yaml"
+            }
+        }
+      }
+    }
+}

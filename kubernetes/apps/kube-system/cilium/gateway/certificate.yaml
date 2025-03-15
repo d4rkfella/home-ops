@@ -1,0 +1,18 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: darkfellanet
+spec:
+  secretName: darkfellanet-tls
+  issuerRef:
+    name: zerossl-prod
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    rotationPolicy: Always
+    encoding: PKCS8
+    size: 256
+  commonName: darkfellanetwork.com
+  dnsNames:
+    - darkfellanetwork.com
+    - "*.darkfellanetwork.com"

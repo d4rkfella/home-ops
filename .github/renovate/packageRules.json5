@@ -1,0 +1,34 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "packageRules": [
+    {
+      "description": ["Allowed postgresql major release"],
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["postgresql"],
+      "allowedVersions": "<18"
+    },
+    {
+      "description": ["Loose versioning for non-semver packages"],
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": ["plex"],
+      "versioning": "loose"
+    },
+    {
+      "description": ["Custom schedule for frequently updated packages"],
+      "matchDataSources": ["docker"],
+      "matchPackagePatterns": ["postgresql"],
+      "schedule": ["on the first day of the month"]
+    },
+    {
+      "matchPackageNames": ["ghcr.io/d4rkfella/keycloak"],
+      "matchDatasources": ["docker"],
+      "changelogUrl": "https://www.keycloak.org/docs/latest/release_notes/index.html"
+    },
+    {
+      "matchPackageNames": ["hashicorp/vault"],
+      "matchDatasources": ["docker"],
+      "sourceUrl": "https://github.com/hashicorp/vault",
+      "changelogUrl": "https://github.com/hashicorp/vault/blob/main/CHANGELOG.md"
+    }
+  ]
+}

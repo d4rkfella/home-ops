@@ -1,0 +1,427 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/helmfile
+
+helmDefaults:
+  cleanupOnFail: true
+  wait: true
+  waitForJobs: true
+  # waitRetries: 3 # Not supported by Helm yet
+
+releases:
+
+  - name: cilium
+    namespace: kube-system
+    atomic: true
+    chart: oci://ghcr.io/d4rkfella/charts-mirror/cilium
+    version: 1.17.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/helm/values.yaml']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            urls=$(yq -N '.crds[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/kubernetes/bootstrap/crds.yaml)
+
+            for url in $urls; do
+              echo "Applying CRD from $url"
+              kubectl apply --server-side -f $url
+            done
+            echo "All CRDs applied successfully!"
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=kube-system
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/networks.yaml
+        showlogs: true
+
+  - name: coredns
+    namespace: kube-system
+    atomic: true
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.39.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/coredns/app/helm/values.yaml']
+    needs: ['kube-system/cilium']
+
+  - name: kubelet-csr-approver
+    namespace: kube-system
+    atomic: true
+    chart: oci://ghcr.io/d4rkfella/charts-mirror/kubelet-csr-approver
+    version: 1.2.6
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/kubelet-csr-approver/app/helm/values.yaml']
+    needs: ['kube-system/coredns']
+
+  - name: cert-manager
+    namespace: cert-manager
+    atomic: true
+    chart: oci://ghcr.io/d4rkfella/charts-mirror/cert-manager
+    version: v1.17.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
+    needs: ['kube-system/kubelet-csr-approver']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
+              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            fi
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd clusterissuers.cert-manager.io certificates.cert-manager.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/clusterissuer.yaml
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=vault
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/certificate.yaml
+
+  - name: external-secrets
+    namespace: external-secrets
+    atomic: true
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 0.14.4
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/app/helm/values.yaml']
+    needs: ['vault/vault','cert-manager/cert-manager']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
+              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            fi
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd clustersecretstores.external-secrets.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=external-secrets
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/app/clustersecretstore.yaml
+        showlogs: true
+
+  - name: zfs-localpv
+    namespace: openebs-system
+    atomic: true
+    chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
+    version: 2.7.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/helm/values.yaml']
+    needs: ['kube-system/cilium','kube-system/coredns']
+    hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
+              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            fi
+        showlogs: true
+      - events: ['presync']
+        command: kubectl
+        args:
+          - apply
+          - --namespace=kube-system
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/bootstrap/create-zpool.yaml
+        showlogs: true
+      - events: ['postsync']
+        command: bash
+        args:
+          - -c
+          - until kubectl get crd volumesnapshotclasses.snapshot.storage.k8s.io &>/dev/null; do sleep 10; done
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/storageclass.yaml,{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/volumesnapshotclass.yaml
+        showlogs: true
+
+  - name: vault
+    namespace: vault
+    atomic: true
+    chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
+    version: 0.29.1
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/helm/values.yaml']
+    needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
+    hooks:
+    - events: ["prepare"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
+            kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+          fi
+      showlogs: true
+    - events: ['prepare']
+      command: bash
+      args:
+        - -c
+        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{`{{ .Release.Namespace }}`}}"
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          echo "Waiting for Vault pods to be Running..."
+          while true; do
+            VAULT_PODS=$(kubectl get pods -n vault -l app.kubernetes.io/name=vault -o jsonpath='{.items[*].status.phase}')
+            if echo "$VAULT_PODS" | grep -q "Running" && ! echo "$VAULT_PODS" | grep -q "Pending"; then
+              echo "All Vault pods are Running."
+              break
+            else
+              echo "Vault pods are not yet Running. Waiting..."
+              sleep 10
+            fi
+          done
+
+          export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
+          vault operator init > /tmp/vault-keys.json
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          echo "Waiting for Vault to become unsealed..."
+          export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
+          while true; do
+            VAULT_STATUS=$(vault status 2>/dev/null)
+            if [ $? -eq 0 ]; then
+              SEALED_STATUS=$(echo "$VAULT_STATUS" | grep "Sealed" | awk '{print $2}')
+              if [ "$SEALED_STATUS" == "false" ]; then
+                echo "Vault is unsealed. Proceeding with snapshot restoration..."
+                break
+              else
+                echo "Vault is still sealed. Retrying in 5 seconds..."
+                sleep 5
+              fi
+            else
+              echo "Error: Unable to retrieve Vault status. Retrying in 5 seconds..."
+              sleep 5
+            fi
+          done
+
+          echo "Setting up AWS and Vault environment..."
+          export AWS_ENDPOINT_URL=https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+          export AWS_SHARED_CREDENTIALS_FILE={{ requiredEnv "ROOT_DIR" }}/.aws/credentials
+          export VAULT_TOKEN=$(grep 'Initial Root Token:' /tmp/vault-keys.json | awk '{print $4}')
+
+          echo "Fetching the latest snapshot from S3..."
+          LATEST_SNAPSHOT=$(aws s3 ls s3://hashicorp-vault-backup/ --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2 | grep vaultsnapshot- | sort | tail -n 1 | awk '{print $4}')
+          aws s3 cp s3://hashicorp-vault-backup/$LATEST_SNAPSHOT . --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2
+
+          echo "Restoring Vault snapshot (with retry logic)..."
+          MAX_RETRIES=20
+          RETRY_DELAY=2
+          ATTEMPT=1
+          while [ $ATTEMPT -le $MAX_RETRIES ]; do
+            echo "Attempt $ATTEMPT of $MAX_RETRIES..."
+            vault operator raft snapshot restore -force $LATEST_SNAPSHOT
+            if [ $? -eq 0 ]; then
+              echo "Snapshot restored successfully."
+              break
+            else
+              echo "Snapshot restoration failed. Retrying in $RETRY_DELAY seconds..."
+              sleep $RETRY_DELAY
+              ATTEMPT=$((ATTEMPT + 1))
+            fi
+          done
+
+          if [ $ATTEMPT -gt $MAX_RETRIES ]; then
+            echo "Error: Failed to restore snapshot after $MAX_RETRIES attempts."
+            exit 1
+          fi
+          echo "Snapshot restoration complete."
+      showlogs: true
+
+
+  - name: multus
+    namespace: kube-system
+    atomic: true
+    chart: oci://ghcr.io/bjw-s/helm/app-template
+    version: 3.7.3
+    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/helm/values.yaml']
+    hooks:
+    - events: ["postsync"]
+      command: kubectl
+      args:
+      - apply
+      - --server-side
+      - --field-manager=kustomize-controller
+      - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/rbac.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          urls=$(yq '.resources[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt/app/kustomization.yaml {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/kustomization.yaml)
+
+          for url in $urls; do
+              if [[ "$url" =~ ^https:// ]]; then
+                  echo "Applying: $url"
+                  kubectl apply -f "$url"
+              fi
+          done
+          echo "All CRDs applied successfully!"
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - until kubectl get crd kubevirts.kubevirt.io cdis.cdi.kubevirt.io &>/dev/null; do sleep 10; done
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=kubevirt
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt/app/kubevirt.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=cdi
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/cdi.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - until kubectl get crd storageprofiles.cdi.kubevirt.io &>/dev/null; do sleep 10; done
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/storageprofile.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace virtualization &>/dev/null; then
+            kubectl create namespace virtualization
+          fi
+      showlogs: true
+    - events: ['postsync']
+      command: bash
+      args:
+        - -c
+        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/sysprep.secret.sops.yaml | kubectl apply --server-side --filename - --namespace virtualization
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          echo "Checking if all required deployments and daemonsets are running..."
+
+          KUBEVIRT_DEPLOYMENTS=("virt-operator" "virt-controller" "virt-api")
+          KUBEVIRT_DAEMONSETS=("virt-handler")
+
+          CDI_DEPLOYMENTS=("cdi-uploadproxy" "cdi-operator" "cdi-deployment" "cdi-apiserver")
+
+          check_deployment_status() {
+            NAMESPACE=$1
+            DEPLOYMENT=$2
+            echo "Checking deployment $DEPLOYMENT in namespace $NAMESPACE"
+            kubectl -n $NAMESPACE rollout status deployment/$DEPLOYMENT --timeout=2m
+            if [ $? -ne 0 ]; then
+              echo "Deployment $DEPLOYMENT in namespace $NAMESPACE is not running or failed to roll out. Exiting."
+              exit 1
+            fi
+          }
+
+          for DEPLOYMENT in "${KUBEVIRT_DEPLOYMENTS[@]}"; do
+            check_deployment_status "kubevirt" $DEPLOYMENT
+          done
+
+          for DAEMONSET in "${KUBEVIRT_DAEMONSETS[@]}"; do
+            echo "Checking daemonset $DAEMONSET in namespace kubevirt"
+            kubectl -n kubevirt rollout status daemonset/$DAEMONSET --timeout=2m
+            if [ $? -ne 0 ]; then
+              echo "Daemonset $DAEMONSET in namespace kubevirt is not running or failed to roll out. Exiting."
+              exit 1
+            fi
+          done
+
+          for DEPLOYMENT in "${CDI_DEPLOYMENTS[@]}"; do
+            check_deployment_status "cdi" $DEPLOYMENT
+          done
+
+          echo "All required deployments and daemonsets are running."
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - until kubectl get crd virtualmachines.kubevirt.io datavolumes.cdi.kubevirt.io &>/dev/null; do sleep 10; done
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=virtualization
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/multus-network.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/virtualmachine.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/vfiobinding.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/multus-network.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/virtualmachine.yaml
+      showlogs: true

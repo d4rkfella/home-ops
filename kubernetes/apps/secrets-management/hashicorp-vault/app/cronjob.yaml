@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vaultbackup
+spec:
+  concurrencyPolicy: Forbid
+  schedule: "0 7 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/agent-pre-populate-only: "true"
+            vault.hashicorp.com/agent-inject-token: "true"
+            vault.hashicorp.com/role: "vault"
+            vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
+            vault.hashicorp.com/agent-run-as-group: "65534"
+            vault.hashicorp.com/agent-inject-secret-credentials: "secrets/vault"
+            vault.hashicorp.com/agent-inject-template-credentials: |
+              {{- with secret "secrets/vault" -}}
+              [default]
+              aws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}
+              aws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}
+              {{- end }}
+        spec:
+          serviceAccountName: vault
+          volumes:
+           - name: tmp
+             emptyDir: {}
+          containers:
+          - name: vaultbackup
+            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:5fb83021c9deb084b1b2fd39b1adc5037b54004cdbc3f3e148235c7980a295ba
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: VAULT_ADDR
+                value: https://vault.darkfellanetwork.com:8200
+              - name: S3BUCKET
+                value: hashicorp-vault-backup
+              - name: S3_ENDPOINT
+                value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+              - name: AWS_CONFIG_FILE
+                value: /vault/secrets/credentials
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            volumeMounts:
+              - name: tmp
+                mountPath: /tmp
+          restartPolicy: OnFailure
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile: { type: RuntimeDefault }
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1

@@ -8,14 +8,16 @@ on:
       - '.devcontainer/Dockerfile'
 
 permissions:
-  id-token: write
-  packages: write
   contents: read
-  attestations: write
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+      packages: write
+      contents: read
+      attestations: write
     env:
       REGISTRY: ghcr.io
       IMAGE_NAME: devcontainer
@@ -41,7 +43,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: ghcr.io
 
-    - name: Image version
+    - name: Extract image version
       shell: bash
       run: echo "VERSION=$(cat .devcontainer/version.txt)" >> $GITHUB_ENV
 

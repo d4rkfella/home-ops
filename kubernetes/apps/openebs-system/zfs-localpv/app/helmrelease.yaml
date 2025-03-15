@@ -1,12 +1,19 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
 metadata:
   name: zfs-localpv
 spec:
-  interval: 12h
-  url: https://openebs.github.io/zfs-localpv
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  url: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
+  ref:
+    tag: 2.7.1
+  verify:
+    provider: cosign
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -15,13 +22,9 @@ metadata:
   name: zfs-localpv
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: zfs-localpv
-      version: 2.7.1
-      sourceRef:
-        kind: HelmRepository
-        name: zfs-localpv
+  chartRef:
+    kind: OCIRepository
+    name: zfs-localpv
   install:
     remediation:
       retries: 3

@@ -16,9 +16,6 @@ repositories:
     url: ghcr.io/coredns/charts
     oci: true
 
-  - name: cilium
-    url: https://helm.cilium.io
-
   - name: external-secrets
     url: ghcr.io/external-secrets/charts
     oci: true
@@ -27,27 +24,32 @@ repositories:
     url: ghcr.io/bjw-s/helm
     oci: true
 
-  - name: postfinance
-    url: https://postfinance.github.io/kubelet-csr-approver
-
-  - name: jetstack
-    url: https://charts.jetstack.io
-
-  - name: zfs-localpv
-    url: https://openebs.github.io/zfs-localpv
-
-  - name: vault
-    url: https://helm.releases.hashicorp.com
+  - name: charts-mirror
+    url: ghcr.io/d4rkfella/charts-mirror
+    oci: true
 
 releases:
 
   - name: cilium
     namespace: kube-system
     atomic: true
-    chart: cilium/cilium
+    chart: charts-mirror/cilium
     version: 1.17.1
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/app/helm/values.yaml']
     hooks:
+      - events: ["prepare"]
+        command: bash
+        args:
+          - -c
+          - |
+            urls=$(yq -N '.crds[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/kubernetes/bootstrap/crds.yaml)
+
+            for url in $urls; do
+              echo "Applying CRD from $url"
+              kubectl apply --server-side -f $url
+            done
+            echo "All CRDs applied successfully!"
+        showlogs: true
       - events: ['postsync']
         command: bash
         args:
@@ -75,7 +77,7 @@ releases:
   - name: kubelet-csr-approver
     namespace: kube-system
     atomic: true
-    chart: postfinance/kubelet-csr-approver
+    chart: charts-mirror/kubelet-csr-approver
     version: 1.2.6
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/kubelet-csr-approver/app/helm/values.yaml']
     needs: ['kube-system/coredns']
@@ -83,7 +85,7 @@ releases:
   - name: cert-manager
     namespace: cert-manager
     atomic: true
-    chart: jetstack/cert-manager
+    chart: charts-mirror/cert-manager
     version: v1.17.1
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/app/helm/values.yaml']
     needs: ['kube-system/kubelet-csr-approver']
@@ -94,10 +96,7 @@ releases:
           - -c
           - |
             if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" does not exist. Creating it..."
               kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
-            else
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" already exists."
             fi
         showlogs: true
       - events: ['postsync']
@@ -142,10 +141,7 @@ releases:
           - -c
           - |
             if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" does not exist. Creating it..."
               kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
-            else
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" already exists."
             fi
         showlogs: true
       - events: ['postsync']
@@ -167,7 +163,7 @@ releases:
   - name: zfs-localpv
     namespace: openebs-system
     atomic: true
-    chart: zfs-localpv/zfs-localpv
+    chart: charts-mirror/zfs-localpv
     version: 2.7.1
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/helm/values.yaml']
     needs: ['kube-system/cilium','kube-system/coredns']
@@ -178,10 +174,7 @@ releases:
           - -c
           - |
             if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" does not exist. Creating it..."
               kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
-            else
-              echo "Namespace "{{`{{ .Release.Namespace }}`}}" already exists."
             fi
         showlogs: true
       - events: ['presync']
@@ -211,7 +204,7 @@ releases:
   - name: vault
     namespace: vault
     atomic: true
-    chart: vault/vault
+    chart: charts-mirror/vault
     version: 0.29.1
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/helm/values.yaml']
     hooks:
@@ -221,10 +214,7 @@ releases:
         - -c
         - |
           if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-            echo "Namespace "{{`{{ .Release.Namespace }}`}}" does not exist. Creating it..."
             kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
-          else
-            echo "Namespace "{{`{{ .Release.Namespace }}`}}" already exists."
           fi
       showlogs: true
     - events: ['prepare']
@@ -326,4 +316,82 @@ releases:
       - --server-side
       - --field-manager=kustomize-controller
       - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/rbac.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - c
+        - |
+          urls=$(yq '.resources[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt/app/kustomization.yaml {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi-operator/app/kustomization.yaml)
+
+          for url in $urls; do
+              echo "Applying: $url"
+              kubectl apply --server-side -f "$url"
+          done
+          echo "All CRDs applied successfully!"
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - until kubectl get crd kubevirts.kubevirt.io cdis.cdi.kubevirt.io &>/dev/null; do sleep 10; done
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=kubevirt
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt/app/kubevirt.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=cdi
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/cdi.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - until kubectl get crd storageprofiles.cdi.kubevirt.io &>/dev/null; do sleep 10; done
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/storageprofile.yaml
+      showlogs: true
+    - events: ["postsync"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace virtualization &>/dev/null; then
+            kubectl create namespace virtualization
+          fi
+      showlogs: true
+    - events: ['postsync']
+      command: bash
+      args:
+        - -c
+        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/sysprep.secret.sops.yaml | kubectl apply --server-side --filename - --namespace virtualization
+      showlogs: true
+    - events: ["postsync"]
+      command: kubectl
+      args:
+        - apply
+        - --namespace=virtualization
+        - --server-side
+        - --field-manager=kustomize-controller
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/multus-network.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/virtualmachine.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/multus-network.yaml
+        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/virtualmachine.yaml
       showlogs: true

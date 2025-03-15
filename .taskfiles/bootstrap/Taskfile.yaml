@@ -21,6 +21,7 @@ tasks:
       - { task: conf }
       - { task: apps }
     preconditions:
+      - which talosctl
       - talosctl config info &>/dev/null
       - test -f {{.CLUSTER_DIR}}/talosconfig
   apply-config:
@@ -33,6 +34,8 @@ tasks:
     requires:
       vars: ['IP']
     preconditions:
+      - which sops
+      - which talosctl
       - test -f {{.CLUSTER_DIR}}/talosconfig
       - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml
 
@@ -40,6 +43,7 @@ tasks:
     internal: true
     cmd: until talosctl --nodes {{.IP}} bootstrap; do sleep 10; done
     preconditions:
+      - which talosctl
       - test -f {{.CLUSTER_DIR}}/talosconfig
       - talosctl config info &>/dev/null
 
@@ -47,6 +51,7 @@ tasks:
     internal: true
     cmd: talosctl kubeconfig --nodes {{.IP}} --force --force-context-name main {{.CLUSTER_DIR}}
     preconditions:
+      - which talosctl
       - test -f {{.CLUSTER_DIR}}/talosconfig
       - talosctl config info &>/dev/null
 
@@ -57,6 +62,13 @@ tasks:
       - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
       - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
     preconditions:
+      - which bash
+      - which sops
+      - which talosctl
+      - which yq
+      - which vault
+      - which kubectl
+      - which helmfile
       - test -f {{.CLUSTER_DIR}}/kubeconfig
       - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
       - talosctl config info &>/dev/null

@@ -1,12 +1,19 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
+# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
 metadata:
-  name: postfinance
+  name: kubelet-csr-approver
 spec:
-  interval: 12h
-  url: https://postfinance.github.io/kubelet-csr-approver
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  url: oci://ghcr.io/d4rkfella/charts-mirror/kubelet-csr-approver
+  ref:
+    tag: 1.2.6
+  verify:
+    provider: cosign
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -15,13 +22,9 @@ metadata:
   name: kubelet-csr-approver
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: kubelet-csr-approver
-      version: 1.2.6
-      sourceRef:
-        kind: HelmRepository
-        name: postfinance
+  chartRef:
+    kind: OCIRepository
+    name: kubelet-csr-approver
   install:
     remediation:
       retries: 3

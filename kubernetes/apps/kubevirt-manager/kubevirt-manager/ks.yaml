@@ -10,10 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kubevirt
-      namespace: kubevirt
-    - name: cdi-operator
-      namespace: cdi
     - name: dragonfly-cluster
       namespace: database
     - name: keycloak

@@ -161,17 +161,6 @@ cluster:
             - 172.17.0.0/16
     coreDNS:
         disabled: true
-    extraManifests:
-        # renovate: datasource=github-releases depName=kubevirt/containerized-data-importer
-        - https://github.com/kubevirt/containerized-data-importer/releases/download/v1.61.1/cdi-operator.yaml
-        # renovate: datasource=github-releases depName=kubevirt/kubevirt
-        - https://github.com/kubevirt/kubevirt/releases/download/v1.5.0-rc.2/kubevirt-operator.yaml
-        # renovate: datasource=github-releases depName=k8snetworkplumbingwg/network-attachment-definition-client
-        - https://raw.githubusercontent.com/k8snetworkplumbingwg/network-attachment-definition-client/refs/tags/v1.7.5/artifacts/networks-crd.yaml
-        # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
-        - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
-        # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
-        - https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.80.1/stripped-down-crds.yaml
     token: ENC[AES256_GCM,data:kV1hHu/ufMnfbXecl+zm7Nj1TIbatY0=,iv:B0jHzLIEcR6iaazsCHWmdwg5Q+lMk6o24YuuxQ9ayjE=,tag:IUopBbmPmSoXhgY2p8WlCg==,type:str]
     secretboxEncryptionSecret: ENC[AES256_GCM,data:gkljXi7+tFO+/3qagzHp7tsPaJGqdV47n7g1HRR7kNYoQJAY+qXz4QFtq1Y=,iv:8lgo8q9pc7miJe1+ZPABdehOXMIIdWOqAlNQLZc6aJA=,tag:E/zB6pX/+qpfJV7ZLFzEAA==,type:str]
     ca:
@@ -229,8 +218,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-12T16:04:40Z"
-    mac: ENC[AES256_GCM,data:PRmx/pG7zpDcgozEqOVNR5xWWXcS7l7CysbqRDSTwr2stO708MrsgdKTWq+2D3qtijhGyR9pTJGt5IBn1yyGzALheSirmPvvZYFg68yYm0ru8dMPFGLlJvhj6KHhLqvngTq8qBaLJNlN/sfJhPQDorw7lmEZcph08go7QSTUOVo=,iv:+nD7ITQlClCwch8ANyWFZQF+b1QupWIR766s8x24n5o=,tag:6o+uT3cWfZ8kGDizofJDqQ==,type:str]
+    lastmodified: "2025-03-14T22:26:28Z"
+    mac: ENC[AES256_GCM,data:9jjrISO3PSFkAVj5DHdQXhLWfLajuBTMWrS8cM6+RzjJaEdbR4F2XYTNQdwV+bRub8wck5j262ionL4WKgZuCspcbIqslDPUgsR7wSUr9wtmk/EPLHVYKxZg+R9NNi7Kvo5sTm+OseqIe6r8czvQXSLsvwszVYv5mN+9DuAcSYQ=,iv:ChGWcJoNRMFADO6BYlTgohGE5xEZqPaXEWdVwee/iKI=,tag:0imeNCbeZV063GwAav2diw==,type:str]
     pgp: []
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true

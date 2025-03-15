@@ -12,7 +12,7 @@ vars:
     sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
 
 tasks:
-  kubernetes:
+  talos:
     desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
     prompt: Bootstrap a Talos Kubernetes cluster ... continue?
     cmds:
@@ -72,3 +72,15 @@ tasks:
       - test -f {{.CLUSTER_DIR}}/kubeconfig
       - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
       - talosctl config info &>/dev/null
+  flux:
+    desc: Bootstrap Flux-Operator and Flux-Instance
+    prompt: Bootstrap Flux ... continue?
+    cmds:
+      - { task: helmfile-apply }
+  helmfile-apply:
+    cmds:
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
+    preconditions:
+      - which helmfile
+      - test -f {{.CLUSTER_DIR}}/kubeconfig
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml

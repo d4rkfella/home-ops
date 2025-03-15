@@ -106,32 +106,28 @@ ARG USER_GID=$USER_UID
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /usr/local/aws-cli/ /usr/local/aws-cli/
 
-RUN apk update && \
-    apk upgrade && \
-    apk add --no-cache \
-    curl \
-    jq \
-    nano \
-    bash \
-    bash-completion \
-    ca-certificates \
-    git \
-    github-cli \
-    libstdc++ \
-    direnv \
-    yq \
-    gnupg \
-    expect \
-    tigervnc \
-    xdotool \
-    docker-cli && \
+RUN apk add --no-cache \
+        curl \
+        jq \
+        nano \
+        bash \
+        bash-completion \
+        ca-certificates \
+        git \
+        github-cli \
+        libstdc++ \
+        direnv \
+        yq \
+        gnupg \
+        docker-cli && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
     addgroup -g 1001 docker && adduser $USERNAME docker && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
-    kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null
+    kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
+    helm plugin install https://github.com/databus23/helm-diff
 
 WORKDIR /project
 

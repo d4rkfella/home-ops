@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: pci-device-binder
-  namespace: kube-system
   labels:
     app: pci-binder
 spec:

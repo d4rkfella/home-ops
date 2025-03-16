@@ -36,6 +36,12 @@ spec:
               protocol: UDP
             - port: "853"
               protocol: TCP
+    - toCIDRSet:
+        - cidr: 192.168.91.51/32
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
 
     - toCIDRSet:
         - cidr: 103.21.244.0/22

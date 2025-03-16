@@ -9,8 +9,8 @@ bandwidthManager:
 bpf:
   masquerade: true
   preallocateMaps: true
-  tproxy: true
-  #datapathMode: netkit
+  tproxy: false
+  datapathMode: netkit
 cgroup:
   automount:
     enabled: false

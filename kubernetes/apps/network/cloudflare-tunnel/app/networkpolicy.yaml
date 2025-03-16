@@ -17,6 +17,8 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    - fromCIDRSet:
+        - cidr: 172.17.0.10/32
   egress:
     - toEndpoints:
         - matchLabels:

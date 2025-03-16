@@ -9,7 +9,7 @@ bandwidthManager:
 bpf:
   masquerade: true
   preallocateMaps: true
-  tproxy: false
+  tproxy: true
   datapathMode: netkit
 cgroup:
   automount:
@@ -41,7 +41,7 @@ l2announcements:
 socketLB:
   enabled: true
   hostNamespaceOnly: true
-localRedirectPolicy: false
+localRedirectPolicy: true
 operator:
   dashboards:
     enabled: true

@@ -36,8 +36,8 @@ spec:
               protocol: UDP
             - port: "853"
               protocol: TCP
-    - toEntities:
-        - ingress
+    - toCIDRSet:
+        - cidr: 172.17.183.168/32
       toPorts:
         - ports:
             - port: "443"

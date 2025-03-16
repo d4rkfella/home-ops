@@ -27,6 +27,8 @@ gatewayAPI:
   xffNumTrustedHops: 1
 envoy:
   rollOutPods: true
+egressGateway:
+  enabled: true
 hubble:
   enabled: false
 ipam:

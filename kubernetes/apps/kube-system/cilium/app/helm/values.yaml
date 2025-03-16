@@ -75,6 +75,7 @@ securityContext:
       - PERFMON
       - BPF
       - DAC_OVERRIDE
+      - SYS_ADMIN
       - FOWNER
       - SETGID
       - SETUID
@@ -83,3 +84,4 @@ securityContext:
       - SYS_RESOURCE
       - PERFMON
       - BPF
+      - SYS_ADMIN

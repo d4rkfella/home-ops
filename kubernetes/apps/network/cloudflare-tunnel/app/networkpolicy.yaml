@@ -28,10 +28,8 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
-    - toServices:
-        - k8sService:
-            namespace: kube-system
-            serviceName: cilium-gateway-external
+    - toCIDRSet:
+        - cidr: 172.17.0.0/16
     - toCIDRSet:
         - cidr: 1.1.1.1/32
       toPorts:

@@ -29,13 +29,10 @@ envoy:
   rollOutPods: true
   securityContext:
     capabilities:
-      keepCapNetBindService: true
       envoy:
         - NET_ADMIN
-        - SYS_ADMIN
         - PERFMON
         - BPF
-        - NET_BIND_SERVICE
 hubble:
   enabled: false
 ipam:
@@ -74,7 +71,6 @@ securityContext:
       - NET_ADMIN
       - NET_RAW
       - IPC_LOCK
-      - SYS_ADMIN
       - SYS_RESOURCE
       - PERFMON
       - BPF
@@ -84,5 +80,6 @@ securityContext:
       - SETUID
     cleanCiliumState:
       - NET_ADMIN
-      - SYS_ADMIN
       - SYS_RESOURCE
+      - PERFMON
+      - BPF

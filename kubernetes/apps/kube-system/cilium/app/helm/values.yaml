@@ -25,10 +25,9 @@ gatewayAPI:
   enabled: true
   enableAlpn: true
   xffNumTrustedHops: 1
+  externalTrafficPolicy: Local
 envoy:
   rollOutPods: true
-egressGateway:
-  enabled: true
 hubble:
   enabled: false
 ipam:

@@ -2,7 +2,7 @@
 cni:
   exclusive: false
 enableIPv4BIGTCP: true
-autoDirectNodeRoutes: true
+autoDirectNodeRoutes: false
 bandwidthManager:
   enabled: true
   bbr: true
@@ -25,7 +25,6 @@ gatewayAPI:
   enabled: true
   enableAlpn: true
   xffNumTrustedHops: 1
-  externalTrafficPolicy: Local
 envoy:
   rollOutPods: true
 hubble:

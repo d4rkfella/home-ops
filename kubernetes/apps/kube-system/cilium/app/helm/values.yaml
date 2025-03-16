@@ -10,7 +10,7 @@ bpf:
   masquerade: true
   preallocateMaps: true
   tproxy: true
-  datapathMode: netkit
+  #datapathMode: netkit
 cgroup:
   automount:
     enabled: false
@@ -39,7 +39,7 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: true
 socketLB:
-  enabled: false
+  enabled: true
 localRedirectPolicy: true
 operator:
   dashboards:

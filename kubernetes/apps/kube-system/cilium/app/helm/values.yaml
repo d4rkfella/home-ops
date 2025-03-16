@@ -40,7 +40,7 @@ l2announcements:
   enabled: true
 socketLB:
   enabled: true
-localRedirectPolicy: true
+localRedirectPolicy: false
 operator:
   dashboards:
     enabled: true

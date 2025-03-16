@@ -4,7 +4,7 @@ originRequest:
 
 ingress:
   - hostname: darkfellanetwork.com
-    service: &svc https://external.darkfellanetwork.com
+    service: &svc https://cilium-gateway-external.kube-system.svc.cluster.local
   - hostname: "*.darkfellanetwork.com"
     service: *svc
   - service: http_status:404

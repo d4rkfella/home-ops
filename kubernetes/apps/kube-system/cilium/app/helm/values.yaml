@@ -39,8 +39,7 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: true
 socketLB:
-  enabled: true
-  hostNamespaceOnly: true
+  enabled: false
 localRedirectPolicy: true
 operator:
   dashboards:

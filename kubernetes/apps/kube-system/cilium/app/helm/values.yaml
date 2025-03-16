@@ -34,6 +34,7 @@ envoy:
         - NET_ADMIN
         - PERFMON
         - BPF
+        - SYS_ADMIN
 hubble:
   enabled: false
 ipam:

@@ -18,12 +18,13 @@ spec:
           reloader.stakater.com/auto: "true"
         type: cronjob
         cronjob:
-          schedule: 0 0 * * *
+          schedule: 0 * * * *
+          backoffLimit: 0
           timeZone: Europe/Sofia
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 1
-
+          ttlSecondsAfterFinished: 3600
         containers:
           app:
             image:

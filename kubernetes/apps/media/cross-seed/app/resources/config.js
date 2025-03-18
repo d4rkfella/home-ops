@@ -11,7 +11,7 @@ module.exports = {
   linkType: "hardlink",
   matchMode: "partial",
   seasonFromEpisodes: 0.8,
-  outputDir: "/config",
+  outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: `https://{{ .QBITTORRENT_USERNAME }}:{{ .QBITTORRENT_PASSWORD }}@qbittorrent.darkfellanetwork.com`,
   radarr: [`https://radarr.darkfellanetwork.com/?apikey={{ .RADARR_API_KEY }}`],

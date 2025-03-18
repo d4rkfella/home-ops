@@ -7,7 +7,7 @@ module.exports = {
   includeNonVideos: true,
   includeSingleEpisodes: false,
   linkCategory: "cross-seed",
-  linkDir: "/data/downloads/torrents/cross-seed",
+  linkDirs: ["/data/downloads/torrents/cross-seed"],
   linkType: "hardlink",
   matchMode: "partial",
   seasonFromEpisodes: 0.8,

@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/sonarr-distroless
-              tag: v4.0.13.2932@sha256:9d3860a832232db6ae069ba2ba050d6ee3ae8e58274f5014edd2f26b898cc170
+              tag: v4.0.13.2932@sha256:4ab2efa668f2ab4f1447e0c38253b0560e7e0efadeee027732a72d92837456b7
             env:
               TZ: Europe/Sofia
               SONARR__APP__INSTANCENAME: Sonarr

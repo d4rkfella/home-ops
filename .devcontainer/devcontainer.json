@@ -3,8 +3,8 @@
     "name": "Kubernetes Management",
 
     "image": "ghcr.io/d4rkfella/devcontainer:v1.0.0@sha256:c71289857e91d5de54b2d7c7f0cb602c8257590abd422b2314bb1514a4fa7df7",
-    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceFolder": "/project",
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
     "mounts": [
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"

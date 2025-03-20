@@ -115,7 +115,8 @@ RUN apk add --no-cache \
         direnv \
         yq \
         gnupg \
-        docker-cli && \
+        docker-cli \
+        cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
     addgroup -g 1000 docker && adduser $USERNAME docker && \

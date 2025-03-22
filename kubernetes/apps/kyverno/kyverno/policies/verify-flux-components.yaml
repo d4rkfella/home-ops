@@ -23,6 +23,7 @@ spec:
             - "ghcr.io/fluxcd/image-reflector-controller:*"
             - "ghcr.io/fluxcd/image-automation-controller:*"
             - "ghcr.io/d4rkfella/autobrr:*"
+            - "ghcr.io/home-operations/actions-runner:*"
           attestors:
             - entries:
                 - keyless:

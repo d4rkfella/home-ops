@@ -4,7 +4,7 @@ metadata:
   name: verify-images
 spec:
   validationFailureAction: enforce
-  background: false
+  background: true
   webhookTimeoutSeconds: 30
   failurePolicy: Fail
   rules:

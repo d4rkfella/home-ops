@@ -1,0 +1,69 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-images
+spec:
+  webhookConfiguration:
+    failurePolicy: Fail
+    timeoutSeconds: 30
+  background: true
+  rules:
+    - name: verify-cosign-signature
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      verifyImages:
+        - imageReferences:
+          - "ghcr.io/fluxcd/source-controller*"
+          - "ghcr.io/fluxcd/kustomize-controller*"
+          - "ghcr.io/fluxcd/helm-controller*"
+          - "ghcr.io/fluxcd/notification-controller*"
+          failureAction: Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subject: "https://github.com/fluxcd/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+        - imageReferences:
+          - "ghcr.io/d4rkfella/autobrr-distroless*"
+          - "ghcr.io/d4rkfella/qbittorrent-distroless*"
+          - "ghcr.io/d4rkfella/radarr-distroless*"
+          - "ghcr.io/d4rkfella/sonarr-distroless*"
+          - "ghcr.io/d4rkfella/prowlarr-distroless*"
+          - "ghcr.io/d4rkfella/jellyseerr-distroless*"
+          - "ghcr.io/d4rkfella/bazarr-distroless*"
+          failureAction: Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subject: "https://github.com/d4rkfella/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+        - imageReferences:
+          - "ghcr.io/home-operations/plex*"
+          - "ghcr.io/home-operations/actions-runner*"
+          - "ghcr.io/home-operations/postgres-init*"
+          - "ghcr.io/home-operations/cni-plugins*"
+          failureAction: Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subject: "https://github.com/home-operations/containers/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+        - imageReferences:
+          - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
+          failureAction: Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subject: "https://github.com/controlplaneio-fluxcd/flux-operator/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev

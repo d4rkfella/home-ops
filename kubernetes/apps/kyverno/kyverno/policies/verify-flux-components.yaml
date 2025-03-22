@@ -1,7 +1,7 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: verify-flux-images
+  name: verify-images
 spec:
   validationFailureAction: enforce
   background: false
@@ -22,10 +22,16 @@ spec:
             - "ghcr.io/fluxcd/notification-controller:*"
             - "ghcr.io/fluxcd/image-reflector-controller:*"
             - "ghcr.io/fluxcd/image-automation-controller:*"
+            - "ghcr.io/d4rkfella/autobrr:*"
           attestors:
             - entries:
                 - keyless:
                     subject: "https://github.com/fluxcd/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev
+                - keyless:
+                    subject: "https://github.com/d4rkfella/*"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev

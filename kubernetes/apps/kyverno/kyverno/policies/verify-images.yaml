@@ -36,6 +36,7 @@ spec:
           - "ghcr.io/d4rkfella/prowlarr-distroless*"
           - "ghcr.io/d4rkfella/jellyseerr-distroless*"
           - "ghcr.io/d4rkfella/bazarr-distroless*"
+          - "ghcr.io/d4rkfella/keycloak*"
           failureAction: Enforce
           attestors:
             - entries:

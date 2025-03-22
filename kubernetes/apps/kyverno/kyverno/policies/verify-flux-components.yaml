@@ -3,7 +3,6 @@ kind: ClusterPolicy
 metadata:
   name: verify-images
 spec:
-  validationFailureAction: enforce
   background: true
   webhookTimeoutSeconds: 30
   failurePolicy: Fail
@@ -42,3 +41,5 @@ spec:
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
+      validate:
+        failureAction: Enforce

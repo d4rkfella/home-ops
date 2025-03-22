@@ -3,9 +3,10 @@ kind: ClusterPolicy
 metadata:
   name: verify-images
 spec:
-  background: true
-  webhookTimeoutSeconds: 30
-  failurePolicy: Fail
+  webhookConfiguration:
+    failurePolicy: Fail
+    timeoutSeconds: 30
+  background: false
   rules:
     - name: verify-cosign-signature
       match:
@@ -13,22 +14,13 @@ spec:
           - resources:
               kinds:
                 - Pod
-                - DaemonSet
-                - Deployment
-                - Job
-                - ReplicaSet
-                - ReplicationController
-                - StatefulSet
       verifyImages:
         - imageReferences:
-            - "ghcr.io/fluxcd/source-controller:*"
-            - "ghcr.io/fluxcd/kustomize-controller:*"
-            - "ghcr.io/fluxcd/helm-controller:*"
-            - "ghcr.io/fluxcd/notification-controller:*"
-            - "ghcr.io/fluxcd/image-reflector-controller:*"
-            - "ghcr.io/fluxcd/image-automation-controller:*"
-            - "ghcr.io/d4rkfella/autobrr:*"
-            - "ghcr.io/home-operations/actions-runner:*"
+          - "ghcr.io/fluxcd/source-controller*"
+          - "ghcr.io/fluxcd/kustomize-controller*"
+          - "ghcr.io/fluxcd/helm-controller*"
+          - "ghcr.io/fluxcd/notification-controller*"
+          failureAction: Enforce
           attestors:
             - entries:
                 - keyless:
@@ -36,10 +28,6 @@ spec:
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
-                - keyless:
-                    subject: "https://github.com/d4rkfella/*"
-                    issuer: "https://token.actions.githubusercontent.com"
-                    rekor:
-                      url: https://rekor.sigstore.dev
-      validate:
-        failureAction: Enforce
+        - imageReferences:
+          - "ghcr.io/d4rkfella/autobrr-distroless*"
+          failureAction: Enforce

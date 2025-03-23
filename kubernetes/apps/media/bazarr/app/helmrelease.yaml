@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2-beta.28@sha256:7533adedeeaa7afcac7cd53a1ec4d389303fae9150164c81c237773386b62a5d
+              tag: v1.5.2-beta.28@sha256:d34ff5d2e1eb854f92560c890fa91a92b165c3d21f6558d4ccb7e4c0b8b4f10d
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

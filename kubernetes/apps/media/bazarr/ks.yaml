@@ -27,6 +27,8 @@ spec:
       GATUS_CONDITIONS: '["[STATUS] == 401"]'
       GATUS_PATH: /api/system/status
       VOLSYNC_CAPACITY: 2Gi
+      VOLSYNC_PUID: '65532'
+      VOLSYNC_PGID: '65532'
   prune: true
   sourceRef:
     kind: GitRepository

@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: v1.5.2@sha256:6d4fc26cfc22cc9aea3a798db64b354bd7bf6a0e700251e4d325bbe284f44d32
+              tag: v1.5.2@sha256:452456c6841ec31999f538886fbfb6e13efc4a5a973f60e1d189ca0c19190430
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"
@@ -124,9 +124,9 @@ spec:
             - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
-        runAsUser: 2000
-        runAsGroup: 2000
-        fsGroup: 2000
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 

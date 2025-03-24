@@ -33,7 +33,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/wolfi-qbit-base
-              tag: latest
+              tag: latest@sha256:e357c13cc76324714295a159d608fb8bc3c81cb66bfd170f7f9d7008c06a1e11
             env:
               UMASK: "022"
               TZ: Europe/Sofia

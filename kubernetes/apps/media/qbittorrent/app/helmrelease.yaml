@@ -32,8 +32,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/qbittorrent-distroless
-              tag: 5.0.4@sha256:9fd8dda90052d8c4e364257c6270e1af22794b35f180e71f63d8debeeb22e802
+              repository: ghcr.io/d4rkfella/wolfi-qbit-base
+              tag: latest
             env:
               UMASK: "022"
               TZ: Europe/Sofia

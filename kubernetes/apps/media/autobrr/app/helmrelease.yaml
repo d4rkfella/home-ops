@@ -58,7 +58,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/autobrr-distroless
-              tag: v1.60.0@sha256:0311a01260caef908650ca6a3f06bf00592975251d661fb5019336a61c71829d
+              tag: v1.60.0@sha256:dd9916bf0be828bc3afaf289015edf22ea4d0db9c70d3885c060bfd00a02c993
             env:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"

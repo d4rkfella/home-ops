@@ -151,7 +151,7 @@ spec:
         advancedMounts:
           jellyseerr:
             app:
-              - path: /app/config
+              - path: /usr/lib/Jellyseerr/config
 
       cache:
         enabled: true
@@ -162,14 +162,14 @@ spec:
         advancedMounts:
           jellyseerr:
             app:
-              - path: /app/config/cache
+              - path: /usr/lib/Jellyseerr/config/cache
 
       logs:
         type: emptyDir
         advancedMounts:
           jellyseerr:
             app:
-              - path: /app/config/logs
+              - path: /usr/lib/Jellyseerr/config/logs
 
       tmp:
         type: emptyDir

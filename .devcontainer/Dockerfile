@@ -116,6 +116,7 @@ RUN apk add --no-cache \
         yq \
         gnupg \
         docker-cli \
+        fzf \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

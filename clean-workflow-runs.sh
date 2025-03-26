@@ -2,21 +2,26 @@
 
 # Delete workflow runs - dwr
 
-# Given an "owner/repo" name, such as "qmacro/thinking-aloud",
-# retrieve the workflow runs for that repo and present them in a
-# list. Selected runs will be deleted. Uses the GitHub API.
-
-# Requires gh (GitHub CLI) and jq (JSON processor)
-
-# First version
-
 set -o errexit
 set -o pipefail
 
 declare repo=${1:?No owner/repo specified}
+declare delete_all=false
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --all)
+            delete_all=true
+            shift
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
 
 jqscript() {
-
     cat <<EOF
       def symbol:
         sub("skipped"; "SKIP") |
@@ -25,7 +30,6 @@ jqscript() {
 
       def tz:
         gsub("[TZ]"; " ");
-
 
       .workflow_runs[]
         | [
@@ -37,42 +41,41 @@ jqscript() {
           ]
         | @tsv
 EOF
+}
 
+getruns() {
+    gh api --paginate "/repos/$repo/actions/runs" \
+        | jq -r -f <(jqscript)
 }
 
 selectruns() {
-
-  gh api --paginate "/repos/$repo/actions/runs" \
-    | jq -r -f <(jqscript) \
-    | fzf --multi
-
+    if [[ "$delete_all" == true ]]; then
+        getruns
+    else
+        getruns | fzf --multi
+    fi
 }
 
 deleterun() {
-
-  local run id result
-  run=$1
-  id="$(cut -f 3 <<< "$run")"
-  gh api -X DELETE "/repos/$repo/actions/runs/$id"
-  [[ $? = 0 ]] && result="OK!" || result="BAD"
-  printf "%s\t%s\n" "$result" "$run"
-
+    local run id result
+    run=$1
+    id="$(cut -f 3 <<< "$run")"
+    if gh api -X DELETE "/repos/$repo/actions/runs/$id"; then
+        printf "OK!\t%s\n" "$run"
+    else
+        printf "BAD\t%s\n" "$run" >&2
+    fi
 }
 
 deleteruns() {
-
-  local id
-  while read -r run; do
-    deleterun "$run"
-    sleep 0.25
-  done
-
+    while read -r run; do
+        deleterun "$run"
+        sleep 0.25
+    done
 }
 
 main() {
-
-  selectruns | deleteruns
-
+    selectruns | deleteruns
 }
 
 main

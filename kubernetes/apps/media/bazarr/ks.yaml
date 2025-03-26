@@ -10,7 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/volsync
     - ../../../../components/gatus/internal
   dependsOn:
     - name: cloudnative-pg-cluster
@@ -26,9 +25,6 @@ spec:
       GATUS_NAME: Bazarr
       GATUS_CONDITIONS: '["[STATUS] == 401"]'
       GATUS_PATH: /api/system/status
-      VOLSYNC_CAPACITY: 2Gi
-      VOLSYNC_PUID: '65532'
-      VOLSYNC_PGID: '65532'
   prune: true
   sourceRef:
     kind: GitRepository

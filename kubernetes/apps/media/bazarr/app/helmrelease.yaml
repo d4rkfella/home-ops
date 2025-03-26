@@ -151,7 +151,7 @@ spec:
 
     persistence:
       config:
-        existingClaim: *app
+        type: emptyDir
         advancedMounts:
           bazarr:
             app:

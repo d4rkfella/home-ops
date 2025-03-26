@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: 1.5.2@sha256:305e978918cfcb3202e36f8e2ed167c13ae6532cfb2f1ddf338deea9f9c8d034
+              tag: 1.5.2@sha256:ca6e3d000498b9dbfa4bded3400a87a7e06a8fd0c8ef6062dafcdfe6dc50fefc
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"
@@ -151,7 +151,7 @@ spec:
 
     persistence:
       config:
-        type: emptyDir
+        existingClaim: *app
         advancedMounts:
           bazarr:
             app:

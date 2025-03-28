@@ -73,7 +73,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/prowlarr-distroless
-              tag: 1.32.2@sha256:fd4815966a4d295ae05c50783ff069366891b7120f7cc8a1ec571407c790f93a
+              tag: 1.32.2@sha256:d4105839c96279971a06f84bb1cb93dcc213f85e2a9ac1ca4a4adf35b06b505b
             env:
               TZ: Europe/Sofia
               PROWLARR__APP__INSTANCENAME: Prowlarr

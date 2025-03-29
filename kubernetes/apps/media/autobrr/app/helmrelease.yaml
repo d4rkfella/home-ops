@@ -29,7 +29,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.0@sha256:d81f6a08d6245062d153294dc39ccf0025e6944cccce3ec9e09b706957f22f28
+              tag: 1.0.0@sha256:37311518017741400575975dfe323b95d9bbb70a7092b5a8e4de1964772af63a
             env:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local

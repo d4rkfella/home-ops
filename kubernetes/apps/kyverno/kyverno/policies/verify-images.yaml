@@ -37,24 +37,12 @@ spec:
           - "ghcr.io/d4rkfella/jellyseerr-distroless*"
           - "ghcr.io/d4rkfella/bazarr-distroless*"
           - "ghcr.io/d4rkfella/keycloak*"
+          - "ghcr.io/d4rkfella/postgres-init*"
           failureAction: Enforce
           attestors:
             - entries:
                 - keyless:
                     subject: "https://github.com/d4rkfella/*"
-                    issuer: "https://token.actions.githubusercontent.com"
-                    rekor:
-                      url: https://rekor.sigstore.dev
-        - imageReferences:
-          - "ghcr.io/home-operations/plex*"
-          - "ghcr.io/home-operations/actions-runner*"
-          - "ghcr.io/home-operations/postgres-init*"
-          - "ghcr.io/home-operations/cni-plugins*"
-          failureAction: Enforce
-          attestors:
-            - entries:
-                - keyless:
-                    subject: "https://github.com/home-operations/containers/*"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev

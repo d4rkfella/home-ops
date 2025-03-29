@@ -30,16 +30,16 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:latest@sha256:5fb83021c9deb084b1b2fd39b1adc5037b54004cdbc3f3e148235c7980a295ba
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:c1fed68e0f07c831d84e408c430422c5c2733fa51b7e6763614e6af8e2821286
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
                 value: https://vault.darkfellanetwork.com:8200
               - name: S3BUCKET
                 value: hashicorp-vault-backup
-              - name: S3_ENDPOINT
+              - name: AWS_ENDPOINT_URL
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-              - name: AWS_CONFIG_FILE
+              - name: AWS_SHARED_CREDENTIALS_FILE
                 value: /vault/secrets/credentials
             securityContext:
               allowPrivilegeEscalation: false

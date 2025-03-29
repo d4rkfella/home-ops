@@ -37,6 +37,7 @@ spec:
   values:
     githubConfigUrl: https://github.com/d4rkfella/home-ops
     githubConfigSecret: arc-runners-secret
+    namespaceOverride: arc-runners
     minRunners: 1
     maxRunners: 3
     containerMode:
@@ -51,7 +52,7 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.323.0@sha256:6d878ca00ecd301a5e5dab006d3ea96083e92f64e364a578f7b42bbc47ba738e
+            image: ghcr.io/actions/actions-runner:2.323.0@sha256:831a2607a2618e4b79d9323b4c72330f3861768a061c2b92a845e9d214d80e5b
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER

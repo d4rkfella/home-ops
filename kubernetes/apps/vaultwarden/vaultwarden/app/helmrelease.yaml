@@ -37,6 +37,7 @@ spec:
             env:
               INIT_POSTGRES_DBNAME: vaultwarden
               INIT_POSTGRES_HOST: postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_SSLMODE: require
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

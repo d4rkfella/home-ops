@@ -31,6 +31,7 @@ spec:
             env:
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_PORT: &dbPort 5432
+              INIT_POSTGRES_SSLMODE: require
               INIT_POSTGRES_DBNAME: &dbName gatus
               INIT_POSTGRES_SUPER_USER: postgres-db-manager
               INIT_POSTGRES_SUPER_PASS:

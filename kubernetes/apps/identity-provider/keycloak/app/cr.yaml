@@ -32,6 +32,8 @@ spec:
                 value: &dbHost postgres-v17-rw.database.svc.cluster.local
               - name: INIT_POSTGRES_PORT
                 value: '5432'
+              - name: INIT_POSTGRES_SSLMODE
+                value: require
               - name: INIT_POSTGRES_DBNAME
                 value: &dbName keycloak
               - name: INIT_POSTGRES_SUPER_USER

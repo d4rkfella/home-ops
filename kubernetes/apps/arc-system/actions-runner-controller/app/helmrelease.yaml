@@ -31,7 +31,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/template/metadata/labels/app.kubernetes.io~1version
-                value: 0.10.1
+                value: 0.11.0
   driftDetection:
     mode: enabled
   install:
@@ -57,4 +57,10 @@ spec:
         drop:
         - ALL
       readOnlyRootFilesystem: true
-    watchSingleNamespace: arc-runners
+    flags:
+      watchSingleNamespace: arc-runners
+    namespaceOverride: arc-system
+    image:
+      repository: "ghcr.io/d4rkfella/actions-runner-controller"
+      pullPolicy: IfNotPresent
+      tag: "0.11.0@sha256:1d68779cf1f7405f92a8d05aa796dc04786b678de29fc2cb7d077918117b3e0a"

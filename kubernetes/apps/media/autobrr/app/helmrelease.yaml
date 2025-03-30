@@ -33,7 +33,7 @@ spec:
             env:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
-              INIT_POSTGRES_SSLMODE: require
+              INIT_POSTGRES_SSLMODE: asd
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

@@ -30,7 +30,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:c1fed68e0f07c831d84e408c430422c5c2733fa51b7e6763614e6af8e2821286
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:655eb512c2d56e549763f118bf4386923c0a62541f9e3b93fddbd34da6a838be
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
@@ -41,6 +41,8 @@ spec:
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               - name: AWS_SHARED_CREDENTIALS_FILE
                 value: /vault/secrets/credentials
+              - name: AWS_REGION
+                value: auto
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

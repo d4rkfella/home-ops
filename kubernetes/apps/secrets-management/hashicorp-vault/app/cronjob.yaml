@@ -48,12 +48,12 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
-              requests:
-                cpu: 200m
-                memory: 100m
               limits:
-                cpu: 500m
-                memory: 1G
+                cpu: "1"
+                memory: "1.5Gi"
+              requests:
+                cpu: "500m"
+                memory: "1Gi"
             volumeMounts:
               - name: tmp
                 mountPath: /tmp

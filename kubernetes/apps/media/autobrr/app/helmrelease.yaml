@@ -34,6 +34,7 @@ spec:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_SSLMODE: verify-full
+              INIT_POSTGRES_SSLROOTCERT: /etc/ssl/certs/postgres-ca.crt
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
@@ -193,6 +194,10 @@ spec:
         advancedMounts:
           autobrr:
             app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: ca.crt
+                readOnly: true
+            init-db:
               - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true

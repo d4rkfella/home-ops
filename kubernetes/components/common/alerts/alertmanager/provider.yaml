@@ -89,8 +89,8 @@ spec:
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
+            runAsUser: 65532
+            runAsGroup: 65532
             seccompProfile: { type: RuntimeDefault }
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

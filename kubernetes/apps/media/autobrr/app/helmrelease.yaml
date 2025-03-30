@@ -69,7 +69,7 @@ spec:
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
-              AUTOBRR__POSTGRES_DATABASE: *dbName
+              AUTOBRR__POSTGRES_DATABASE: autobrr
               AUTOBRR__POSTGRES_HOST: *dbHost
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_SSLMODE: verify-full

@@ -92,5 +92,5 @@ spec:
             runAsUser: 65532
             runAsGroup: 65532
             seccompProfile: { type: RuntimeDefault }
-  successfulJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 2
   failedJobsHistoryLimit: 1

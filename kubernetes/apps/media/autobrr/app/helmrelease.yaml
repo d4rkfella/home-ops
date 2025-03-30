@@ -32,9 +32,8 @@ spec:
               tag: 1.0.0@sha256:ae1bcd0514ec250291ec13999e180bbaa69ad3fb5d1763dfa303bbe49d016446
             env:
               INIT_POSTGRES_DBNAME: &dbName autobrr
-              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.loca
               INIT_POSTGRES_SSLMODE: required
-              INIT_POSTGRES_PORT: 65538
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

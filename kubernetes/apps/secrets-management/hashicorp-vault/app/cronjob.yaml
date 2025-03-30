@@ -51,6 +51,9 @@ spec:
               requests:
                 cpu: 200m
                 memory: 100m
+              limits:
+                cpu: 500m
+                memory: 500m
             volumeMounts:
               - name: tmp
                 mountPath: /tmp

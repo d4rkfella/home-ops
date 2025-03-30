@@ -34,7 +34,7 @@ spec:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_SSLMODE: required
-              INIT_POSTGRES_PORT: test
+              INIT_POSTGRES_PORT: 65538
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

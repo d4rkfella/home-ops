@@ -33,7 +33,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.0@sha256:a7bca8507c2d274878993efffd6f04ef4cfe4f1e9ba13d60a5083c9b5c3880ae
+              tag: 1.0.0@sha256:802778edcb15202c9b752718d6867f7239588bfc73368b571ec4aca8915a8961
             env:
               INIT_POSTGRES_DBNAME: vaultwarden
               INIT_POSTGRES_HOST: postgres-v17-rw.database.svc.cluster.local

@@ -31,7 +31,7 @@ spec:
               repository: ghcr.io/d4rkfella/postgres-init
               tag: 1.0.0@sha256:7c9844444a8ebae6b6d73a57b983b96bb1c1422a4ad44126fa1317c5b89be056
             env:
-              #INIT_POSTGRES_DBNAME: &dbName autobrr
+              INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_SSLMODE: require
               INIT_POSTGRES_USER:
@@ -69,7 +69,7 @@ spec:
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
-              AUTOBRR__POSTGRES_DATABASE: autobrr
+              AUTOBRR__POSTGRES_DATABASE: *dbName
               AUTOBRR__POSTGRES_HOST: *dbHost
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_SSLMODE: verify-full

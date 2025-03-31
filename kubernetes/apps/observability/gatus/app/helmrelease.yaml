@@ -27,7 +27,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.0@sha256:5c0df8f0a72057960e9ff31da64a08ec27e5fc79320732ec079d8acd96c54d87
+              tag: 1.0.0@sha256:fb65bbe20af28f08ee7b609afb7a07e2c952aacd535ac8ba5f6925f4bedd9c2a
             env:
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_PORT: &dbPort 5432

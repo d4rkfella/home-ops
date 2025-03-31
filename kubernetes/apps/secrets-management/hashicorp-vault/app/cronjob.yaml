@@ -45,6 +45,8 @@ spec:
                 value: auto
               - name: S3_CHECKSUM_ALGORITHM
                 value: CRC32
+              - name: AWS_LOG_LEVEL
+                value: error
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

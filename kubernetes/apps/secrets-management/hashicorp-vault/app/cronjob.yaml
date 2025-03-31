@@ -30,7 +30,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:7c1c07471bb8f24cc944bb677e95397c65532363da8cdae2f8431eec718cf886
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:8be1d097e2c0c88e368198b164bc2428b1d2d55e3db36fd8108ec697a17093e4
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
@@ -43,6 +43,8 @@ spec:
                 value: /vault/secrets/credentials
               - name: AWS_REGION
                 value: auto
+              - name: S3_CHECKSUM_ALGORITHM
+                value: CRC32
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

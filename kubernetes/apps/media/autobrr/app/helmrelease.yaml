@@ -35,7 +35,7 @@ spec:
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_SSLMODE: require
               INIT_POSTGRES_SSLROOTCERT: /etc/ssl/certs/postgres-ca.crt
-              INIT_POSTGRES_PORT: asd
+              INIT_POSTGRES_PORT: 66000
               INIT_POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

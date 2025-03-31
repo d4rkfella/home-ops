@@ -46,7 +46,11 @@ spec:
                     name: *secret
                     key: &pgPass POSTGRES_PASSWORD
               INIT_POSTGRES_SUPER_USER: postgres-db-manager
-              INIT_POSTGRES_SUPER_PASS: test
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

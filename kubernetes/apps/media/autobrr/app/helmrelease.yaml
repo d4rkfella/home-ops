@@ -29,11 +29,11 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.0@sha256:5c0df8f0a72057960e9ff31da64a08ec27e5fc79320732ec079d8acd96c54d87
+              tag: 1.0.0@sha256:9ea238df9ab5ed98eac0a8acfe0e8573e40f48f8e6ce50ef38f984133436b5b7
             env:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
-              INIT_POSTGRES_SSLMODE: verify-full
+              INIT_POSTGRES_SSLMODE: asd
               INIT_POSTGRES_SSLROOTCERT: /etc/ssl/certs/postgres-ca.crt
               INIT_POSTGRES_USER:
                 valueFrom:

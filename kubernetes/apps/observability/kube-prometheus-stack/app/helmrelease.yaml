@@ -170,6 +170,11 @@ spec:
             vault.hashicorp.com/agent-inject-containers: "prometheus"
             vault.hashicorp.com/agent-run-as-group: "65532"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
+            vault.hashicorp.com/agent-inject-secret-prometheus-client_secret: "secrets/data/prometheus"
+            vault.hashicorp.com/agent-inject-template-api-token: |
+              {{- with secret "secrets/data/prometheus" -}}
+              {{ .Data.data.client_secret }}
+              {{- end }}
         additionalAlertManagerConfigs:
           - scheme: https
             follow_redirects: true
@@ -184,7 +189,7 @@ spec:
                 - "alertmanager.darkfellanetwork.com"
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
-              client_secret_file: /etc/secrets/client_secret
+              client_secret_file: /vault/secrets/client_secret
               token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
               scopes: ["openid", "profile", "email"]
               endpoint_params:

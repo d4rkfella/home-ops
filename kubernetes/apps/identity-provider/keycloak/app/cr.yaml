@@ -25,7 +25,7 @@ spec:
 
         initContainers:
           - name: init-db
-            image: "ghcr.io/d4rkfella/postgres-init:1.0.0@sha256:735ead03c87b19979db5718fcb9a0c1e8c8e89ef17c60956a541e7adb7c32162"
+            image: "ghcr.io/d4rkfella/postgres-init:1.0.0@sha256:838373b450de49fa93014266c61bd083bc4cab257d2b174429a476bd4be27eb5"
             imagePullPolicy: IfNotPresent
             env:
               - name: INIT_POSTGRES_HOST

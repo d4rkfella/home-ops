@@ -41,8 +41,8 @@ spec:
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               - name: AWS_SHARED_CREDENTIALS_FILE
                 value: /vault/secrets/credentials
-              #- name: S3_CHECKSUM_ALGORITHM
-                #value: CRC32
+              - name: S3_CHECKSUM_ALGORITHM
+                value: CRC32
               - name: PUSHOVER_USER_KEY
                 valueFrom:
                   secretKeyRef:

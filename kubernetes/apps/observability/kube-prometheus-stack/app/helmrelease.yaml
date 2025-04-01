@@ -27,7 +27,7 @@ spec:
   - kustomize:
       patches:
       - target:
-          group: monitoring.coreos.com/v1
+          group: monitoring.coreos.com
           kind: Prometheus
           name: kube-prometheus-stack
         patch: |

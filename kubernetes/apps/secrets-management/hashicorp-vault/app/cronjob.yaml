@@ -8,21 +8,6 @@ spec:
   jobTemplate:
     spec:
       template:
-        metadata:
-          annotations:
-            vault.hashicorp.com/agent-inject: "true"
-            vault.hashicorp.com/agent-pre-populate-only: "true"
-            vault.hashicorp.com/agent-inject-token: "true"
-            vault.hashicorp.com/role: "vault"
-            vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
-            vault.hashicorp.com/agent-run-as-group: "65532"
-            vault.hashicorp.com/agent-inject-secret-credentials: "secrets/vault"
-            vault.hashicorp.com/agent-inject-template-credentials: |
-              {{- with secret "secrets/vault" -}}
-              [default]
-              aws_access_key_id = {{ .Data.data.AWS_ACCESS_KEY_ID }}
-              aws_secret_access_key = {{ .Data.data.AWS_SECRET_ACCESS_KEY }}
-              {{- end }}
         spec:
           serviceAccountName: vault
           volumes:
@@ -30,29 +15,21 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:c2fe50d3252a6d6e4817f347271d672a59471e3c1e7786f76f6c6d05d9b9213d
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:e4b9c2c185df65f0029aae680c32ca2ebb6eeff93a7a87f4b37afca3f116d15e
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
                 value: https://vault.darkfellanetwork.com:8200
-              - name: S3BUCKET
-                value: hashicorp-vault-backup
+              - name: VAULT_SECRET_PATH
+                value: secrets/data/vault
+              - name: VAULT_K8S_ROLE
+                value: vault
               - name: AWS_ENDPOINT_URL
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-              - name: AWS_SHARED_CREDENTIALS_FILE
-                value: /vault/secrets/credentials
+              - name: S3BUCKET
+                value: hashicorp-vault-backup
               - name: S3_CHECKSUM_ALGORITHM
                 value: CRC32
-              - name: PUSHOVER_USER_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret vault-backup-secret
-                    key: PUSHOVER_USER_KEY
-              - name: PUSHOVER_API_TOKEN
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_API_TOKEN
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

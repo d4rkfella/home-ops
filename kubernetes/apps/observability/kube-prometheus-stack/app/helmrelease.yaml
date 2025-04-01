@@ -172,7 +172,7 @@ spec:
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
             vault.hashicorp.com/agent-inject-secret-client_secret: "secrets/data/prometheus"
             vault.hashicorp.com/agent-inject-template-client_secret: |
-               {{`{{- .Data.data.client_secret -}}`}}
+              {{`{{- .Data.data.client_secret -}}`}}
         additionalAlertManagerConfigs:
           - scheme: https
             follow_redirects: true

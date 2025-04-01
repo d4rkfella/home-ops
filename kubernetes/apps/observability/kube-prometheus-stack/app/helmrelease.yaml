@@ -23,6 +23,16 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kube-prometheus-stack
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          group: monitoring.coreos.com/v1
+          kind: Prometheus
+          name: kube-prometheus-stack
+        patch: |
+          - op: remove
+            path: /spec/alerting
   install:
     crds: Skip
     remediation:

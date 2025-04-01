@@ -170,7 +170,10 @@ spec:
             vault.hashicorp.com/agent-inject-containers: "prometheus"
             vault.hashicorp.com/agent-run-as-group: "65532"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
-            vault.hashicorp.com/agent-inject-secret-prometheus-client_secret: "secrets/data/prometheus/client_secret"
+            vault.hashicorp.com/agent-inject-template-client_secret: |
+              {{`{{- with secret "secrets/data/prometheus" -}}`}}
+              {{`{{ .Data.data.client_secret }}`}}
+              {{`{{- end }}`}}
         additionalAlertManagerConfigs:
           - scheme: https
             follow_redirects: true

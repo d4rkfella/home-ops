@@ -7,7 +7,6 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./vault.secret.sops.yaml
-  - ./externalsecret.yaml
   - ./cronjob.yaml
 configMapGenerator:
   - name: vault-values

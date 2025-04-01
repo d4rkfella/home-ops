@@ -179,7 +179,25 @@ spec:
               scopes: ["openid", "profile", "email"]
               endpoint_params:
                 grant_type: client_credentials
-        alertingEndpoints: {}
+        alertingEndpoints:
+          - scheme: https
+            follow_redirects: true
+            enable_http2: true
+            path_prefix: /
+            timeout: 10s
+            api_version: v2
+            tls_config:
+              insecure_skip_verify: false
+            static_configs:
+              - targets:
+                - "alertmanager.darkfellanetwork.com"
+            oauth2:
+              client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
+              client_secret_file: /etc/secrets/client_secret
+              token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+              scopes: ["openid", "profile", "email"]
+              endpoint_params:
+                grant_type: client_credentials
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: oidc-jwt-fetcher
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-access-role
+rules:
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  resourceNames: ["oidc-jwt"]
+  verbs: ["patch", "get", "update"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: secret-access-binding
+subjects:
+- kind: ServiceAccount
+  name: oidc-jwt-fetcher
+roleRef:
+  kind: ClusterRole
+  name: secret-access-role
+  apiGroup: rbac.authorization.k8s.io

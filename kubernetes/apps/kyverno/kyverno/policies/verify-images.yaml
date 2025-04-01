@@ -38,6 +38,10 @@ spec:
           - "ghcr.io/d4rkfella/bazarr-distroless*"
           - "ghcr.io/d4rkfella/keycloak*"
           - "ghcr.io/d4rkfella/postgres-init*"
+          - "ghcr.io/d4rkfella/vault-backup*"
+          - "ghcr.io/d4rkfella/oidc-jwt-fetcher*"
+          - "ghcr.io/d4rkfella/actions-runner-controller*"
+          - "ghcr.io/d4rkfella/kubevirt-manager*"
           failureAction: Enforce
           attestors:
             - entries:

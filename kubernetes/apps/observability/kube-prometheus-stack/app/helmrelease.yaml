@@ -165,7 +165,7 @@ spec:
             follow_redirects: true
             enable_http2: true
             path_prefix: /
-            timeout: 10s
+            timeout: 30s
             api_version: v2
             tls_config:
               insecure_skip_verify: false

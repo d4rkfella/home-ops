@@ -184,7 +184,7 @@ releases:
     namespace: vault
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
-    version: 0.29.1
+    version: 0.30.0
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/helm/values.yaml']
     needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
     hooks:

@@ -15,7 +15,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:211e88969c7cc8f84cba507202d278528b46805be5f1dda06865194ef1acd59e
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:06ac779d6e79bbe9898125c7c49b5de8477851b136b95aa9c38c06435667e1db
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
@@ -29,7 +29,7 @@ spec:
               - name: S3BUCKET
                 value: hashicorp-vault-backup
               - name: S3_CHECKSUM_ALGORITHM
-                value: CRC32
+                value: SHA256
               - name: DEBUG_MODE
                 value: "true"
             securityContext:

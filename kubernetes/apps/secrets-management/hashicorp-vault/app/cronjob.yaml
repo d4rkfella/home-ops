@@ -15,7 +15,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:47bccdc3462184fdf2cc50135c8bec43e7cb425ea5210eecc859f4cb84c87080
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:b4c0a5863aad9c8ced33ccfddb427916bb2043ab2dd6ed8bd017b1a69d8a38de
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR

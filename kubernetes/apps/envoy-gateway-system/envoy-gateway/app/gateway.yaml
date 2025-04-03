@@ -3,7 +3,7 @@ kind: Gateway
 metadata:
   name: envoy-gateway
 spec:
-  gatewayClassName: internal-eg
+  gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
       value: 192.168.91.65

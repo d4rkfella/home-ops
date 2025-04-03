@@ -3,7 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml  - ./helmrelease.yaml
+  - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
+  - ./helmrelease.yaml
   - ./gatewayclass.yaml
   - ./certificate.yaml
   - ./internal.yaml

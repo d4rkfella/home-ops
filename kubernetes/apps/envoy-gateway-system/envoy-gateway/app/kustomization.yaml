@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./gatewayclass.yaml
-  - ./certificate
+  - ./certificate.yaml
   - ./internal.yaml
   - ./external.yaml
 #configMapGenerator:

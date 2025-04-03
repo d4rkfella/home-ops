@@ -30,6 +30,14 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: envoy-gateway-system
+            gateway.envoyproxy.io/owning-gateway-name: external
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
 
     - toCIDRSet:
         - cidr: 103.21.244.0/22

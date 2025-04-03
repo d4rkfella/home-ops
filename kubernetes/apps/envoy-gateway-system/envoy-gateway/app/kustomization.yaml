@@ -5,7 +5,9 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./gatewayclass.yaml
-  - ./gateway.yaml
+  - ./certificate
+  - ./internal.yaml
+  - ./external.yaml
 #configMapGenerator:
   #- name: envoy-gateway-values
     #files:

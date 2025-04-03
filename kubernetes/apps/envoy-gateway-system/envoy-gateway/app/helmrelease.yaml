@@ -12,8 +12,8 @@ spec:
   url: oci://docker.io/envoyproxy/gateway-helm
   ref:
     tag: v0.0.0-latest
-  verify:
-    provider: cosign
+  #verify:
+    #provider: cosign
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2

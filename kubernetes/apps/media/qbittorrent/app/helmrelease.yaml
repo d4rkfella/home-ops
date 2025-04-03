@@ -129,7 +129,7 @@ spec:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: internal
-            namespace: kube-system
+            namespace: external-gateway-system
             sectionName: https
         rules:
           - backendRefs:

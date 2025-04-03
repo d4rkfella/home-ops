@@ -161,7 +161,7 @@ spec:
         hostnames: ["status.darkfellanetwork.com"]
         parentRefs:
           - name: external
-            namespace: kube-system
+            namespace: external-gateway-system
             sectionName: https
         rules:
           - backendRefs:

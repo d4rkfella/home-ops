@@ -30,8 +30,6 @@ spec:
                 value: hashicorp-vault-backup
               - name: S3_CHECKSUM_ALGORITHM
                 value: SHA256
-              - name: DEBUG_MODE
-                value: "true"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

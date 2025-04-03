@@ -176,7 +176,7 @@ spec:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: external
-            namespace: external-gateway-system
+            namespace: envoy-gateway-system
             sectionName: https
         rules:
           - backendRefs:

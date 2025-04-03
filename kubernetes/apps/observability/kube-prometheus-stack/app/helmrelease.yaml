@@ -60,7 +60,7 @@ spec:
           hostnames: ["alertmanager.darkfellanetwork.com"]
           parentRefs:
             - name: internal
-              namespace: external-gateway-system
+              namespace: envoy-gateway-system
               sectionName: https
       alertmanagerSpec:
         listenLocal: true
@@ -158,7 +158,7 @@ spec:
           hostnames: ["prometheus.darkfellanetwork.com"]
           parentRefs:
             - name: internal
-              namespace: external-gateway-system
+              namespace: envoy-gateway-system
               sectionName: https
       prometheusSpec:
         listenLocal: true

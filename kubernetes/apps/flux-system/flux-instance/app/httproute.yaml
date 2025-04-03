@@ -8,7 +8,7 @@ spec:
   hostnames: ["flux-webhook.darkfellanetwork.com"]
   parentRefs:
     - name: external
-      namespace: external-gateway-system
+      namespace: envoy-gateway-system
       sectionName: https
   rules:
     - backendRefs:

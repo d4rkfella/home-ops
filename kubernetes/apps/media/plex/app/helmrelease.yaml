@@ -42,7 +42,7 @@ spec:
                     scheme: HTTPS
                     path: /identity
                     port: 32400
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 2
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3

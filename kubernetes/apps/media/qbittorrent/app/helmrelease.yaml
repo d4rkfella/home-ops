@@ -50,7 +50,7 @@ spec:
               readiness: &probes
                 enabled: true
                 spec:
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 2
                   periodSeconds: 10
                   failureThreshold: 3
               liveness: *probes

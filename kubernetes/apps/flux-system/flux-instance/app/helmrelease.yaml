@@ -26,6 +26,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-instance
+  driftDetection:
+    mode: enabled
   install:
     remediation:
       retries: 3

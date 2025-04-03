@@ -25,6 +25,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: external-dns
+  driftDetection:
+    mode: enabled
   install:
     crds: CreateReplace
     disableSchemaValidation: true # Ref: https://github.com/kubernetes-sigs/external-dns/issues/5206

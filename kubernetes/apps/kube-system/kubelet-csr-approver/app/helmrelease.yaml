@@ -25,6 +25,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kubelet-csr-approver
+  driftDetection:
+    mode: enabled
   install:
     remediation:
       retries: 3

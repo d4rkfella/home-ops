@@ -25,6 +25,8 @@ spec:
   chartRef:
     kind: OCIRepository
     name: vault
+  driftDetection:
+    mode: enabled
   maxHistory: 3
   install:
     remediation:

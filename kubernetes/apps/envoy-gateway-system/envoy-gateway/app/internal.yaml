@@ -6,7 +6,7 @@ spec:
   gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
-      value: 192.168.91.65
+      value: 192.168.91.52
   listeners:
     - name: http
       protocol: HTTP

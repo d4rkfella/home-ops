@@ -67,6 +67,17 @@ spec:
             - name: internal
               namespace: envoy-gateway-system
               sectionName: https
+          rules:
+          - backendRefs:
+              - group: ''
+                kind: Service
+                name: alertmanager-operated
+                port: 9093
+                weight: 1
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /api
 
       alertmanagerSpec:
         externalUrl: "https://alertmanager.darkfellanetwork.com"

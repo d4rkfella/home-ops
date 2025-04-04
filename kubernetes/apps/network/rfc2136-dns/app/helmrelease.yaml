@@ -24,6 +24,8 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    image:
+      tag: v0.15.1
     fullnameOverride: *app
     provider:
       name: rfc2136

@@ -64,7 +64,7 @@ spec:
                 requests:
                   storage: 1Gi
     kubeApiServer:
-      serviceMonitor:
+      service:
         selector:
           k8s-app: kube-apiserver
     kubeScheduler:

@@ -35,7 +35,3 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-
-  valuesFrom:
-    - kind: ConfigMap
-      name: envoy-gateway-values

@@ -1,9 +1,0 @@
-config:
-  dns_resolution_config:
-    dns_resolver_options:
-      use_tcp_for_dns_lookups: false
-      no_default_search_domain: true
-    resolvers:
-      - socket_address:
-          address: "172.17.0.10"
-          port_value: 53

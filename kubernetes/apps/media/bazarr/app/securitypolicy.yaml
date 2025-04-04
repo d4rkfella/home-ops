@@ -10,6 +10,8 @@ spec:
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+      authorizationEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
+      tokenEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
     clientID: "5a89be8c-9525-4990-bebf-78d7875a9e01"
     clientSecret:
       name: "bazarr-oidc-secret"

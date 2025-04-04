@@ -73,7 +73,7 @@ spec:
                   value: /
         api:
           enabled: true
-          hostnames: ["alertmanager.darkfellanetwork.com"]
+          hostnames: ["alertmanager-api.darkfellanetwork.com"]
           parentRefs:
             - name: internal
               namespace: envoy-gateway-system

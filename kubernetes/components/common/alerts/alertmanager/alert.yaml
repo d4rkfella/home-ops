@@ -6,7 +6,7 @@ metadata:
 spec:
   providerRef:
     name: alertmanager
-  eventSeverity: info
+  eventSeverity: error
   eventSources:
     - kind: FluxInstance
       name: "*"

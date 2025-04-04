@@ -56,6 +56,9 @@ spec:
   jwt:
     providers:
     - name: keycloak
+      extractFrom:
+        cookies:
+        - AccessToken-fa8d3906-58d9-4889-a59b-37f09e28f608
       audiences: ["b257908e-34ad-4933-98a0-ca00ff6fcfdd", "46f5398b-91b2-4706-bfc3-5f2f4ad624fc", "1ec97925-af53-40cf-aee1-d9eae03ddebd"]
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs

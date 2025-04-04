@@ -18,28 +18,3 @@ spec:
     cookieDomain: "bazarr.darkfellanetwork.com"
     refreshToken: true
     scopes: ["openid", "profile", "email"]
-  jwt:
-    providers:
-    - name: keycloak
-      remoteJWKS:
-        backendSettings:
-          retry:
-            numRetries: 3
-            perRetry:
-              backOff:
-                baseInterval: 1s
-                maxInterval: 5s
-            retryOn:
-              triggers: ["5xx", "gateway-error", "reset"]
-        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
-  authorization:
-    defaultAction: Deny
-    rules:
-    - name: "allow"
-      action: Allow
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: preferred_username
-            values: ["darkfella"]

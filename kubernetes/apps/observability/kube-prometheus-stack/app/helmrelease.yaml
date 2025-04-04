@@ -172,8 +172,8 @@ spec:
               defaultMode: 256
         volumeMounts:
           - name: *secret
-            mountPath: /vault/secrets/client_secret
-            subPath: client_secret
+            mountPath: /vault/secrets/client-secret
+            subPath: client-secret
             readOnly: true
         hostAliases:
           - ip: "192.168.91.51"

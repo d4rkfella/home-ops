@@ -70,7 +70,7 @@ spec:
             matches:
               - path:
                   type: PathPrefix
-                  value: /#
+                  value: /
         api:
           enabled: true
           hostnames: ["alertmanager.darkfellanetwork.com"]

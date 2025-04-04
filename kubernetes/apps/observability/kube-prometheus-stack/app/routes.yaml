@@ -2,10 +2,29 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: alertmanager-api
+  name: prometheus
 spec:
   hostnames:
-    - alertmanager-api.darkfellanetwork.com
+    - prometheus.darkfellanetwork.com
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: internal
+      namespace: envoy-gateway-system
+      sectionName: https
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: prometheus-api
+spec:
+  hostnames:
+    - prometheus-api.darkfellanetwork.com
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
@@ -36,3 +55,22 @@ spec:
       - path:
           type: PathPrefix
           value: /
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: alertmanager-api
+spec:
+  hostnames:
+    - alertmanager-api.darkfellanetwork.com
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: internal
+      namespace: envoy-gateway-system
+      sectionName: https
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /api

@@ -6,13 +6,13 @@ spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: kube-prometheus-stack-alertmanager
+      name: alertmanager
   jwt:
     providers:
     - name: keycloak
       extractFrom:
         cookies:
-        - AccessToken-5d351a15
+        - AccessToken-fa8d3906-58d9-4889-a59b-37f09e28f608
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
   authorization:
@@ -24,8 +24,9 @@ spec:
         jwt:
           provider: keycloak
           claims:
-          - name: preferred_username
-            values: ["darkfella"]
+          - name: groups
+            valueType: StringArray
+            values: ["Admins"]
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
@@ -37,6 +38,9 @@ spec:
     redirectURL: "https://alertmanager.darkfellanetwork.com/oauth2/callback"
     logoutPath: "/logout"
     cookieDomain: "alertmanager.darkfellanetwork.com"
+    cookieNames:
+      accessToken: "AccessToken-fa8d3906-58d9-4889-a59b-37f09e28f608"
+      idToken: "IdToken-fa8d3906-58d9-4889-a59b-37f09e28f608"
     refreshToken: true
     scopes: ["openid", "profile", "email"]
 ---
@@ -48,7 +52,7 @@ spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: kube-prometheus-stack-alertmanager-api
+      name: alertmanager-api
   jwt:
     providers:
     - name: keycloak
@@ -67,3 +71,77 @@ spec:
           - name: groups
             valueType: StringArray
             values: ["Prometheus_Service_Account", "Admins", "FluxAlerts_Service_Account"]
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: prometheus
+  jwt:
+    providers:
+    - name: keycloak
+      extractFrom:
+        cookies:
+        - AccessToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c
+      remoteJWKS:
+        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+  authorization:
+    defaultAction: Deny
+    rules:
+    - name: "allow"
+      action: Allow
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: groups
+            valueType: StringArray
+            values: ["Admins"]
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+      authorizationEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
+      tokenEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+    clientID: "b257908e-34ad-4933-98a0-ca00ff6fcfdd"
+    clientSecret:
+      name: "prometheus-secret"
+    redirectURL: "https://prometheus.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"
+    cookieDomain: "prometheus.darkfellanetwork.com"
+    cookieNames:
+      accessToken: "AccessToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c"
+      idToken: "IdToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c"
+    refreshToken: true
+    scopes: ["openid", "profile", "email"]
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus-api
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: prometheus-api
+  jwt:
+    providers:
+    - name: keycloak
+      audiences: ["46f5398b-91b2-4706-bfc3-5f2f4ad624fc"]
+      remoteJWKS:
+        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+  authorization:
+    defaultAction: Deny
+    rules:
+    - name: "allow"
+      action: Allow
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: groups
+            valueType: StringArray
+            values: ["Admins"]

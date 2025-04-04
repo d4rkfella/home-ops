@@ -9,6 +9,7 @@ resources:
   - ./certificate.yaml
   - ./internal.yaml
   - ./external.yaml
+  - ./clienttrafficpolicy.yaml
 #configMapGenerator:
   #- name: envoy-gateway-values
     #files:

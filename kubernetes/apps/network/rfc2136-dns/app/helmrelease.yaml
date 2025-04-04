@@ -25,8 +25,7 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
-    provider:
-      name: rfc2136
+    provider: rfc2136
     env:
       - name: KERBEROS_PASSWORD
         valueFrom:

@@ -12,7 +12,7 @@ spec:
     - name: keycloak
       extractFrom:
         cookies:
-        - IdToken-5b6bc89a
+        - AccessToken-5b6bc89a
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
   authorization:

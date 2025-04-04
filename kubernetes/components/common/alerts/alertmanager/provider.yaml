@@ -6,6 +6,6 @@ metadata:
   name: alertmanager
 spec:
   type: alertmanager
-  address: https://alertmanager.darkfellanetwork.com/api/v2/alerts/
+  address: https://alertmanager-api.darkfellanetwork.com/api/v2/alerts/
   secretRef:
     name: oidc-jwt

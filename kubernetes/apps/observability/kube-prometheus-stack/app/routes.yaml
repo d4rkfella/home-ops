@@ -14,7 +14,13 @@ spec:
       sectionName: https
   rules:
     - matches:
-      - path:
+      - backendRefs:
+        - group: ''
+          kind: Service
+          name: kube-prometheus-stack-prometheus
+          port: 9090
+          weight: 1
+        path:
           type: PathPrefix
           value: /
 ---
@@ -33,7 +39,13 @@ spec:
       sectionName: https
   rules:
     - matches:
-      - path:
+      - backendRefs:
+        - group: ''
+          kind: Service
+          name: kube-prometheus-stack-prometheus
+          port: 9090
+          weight: 1
+        path:
           type: PathPrefix
           value: /api
 ---
@@ -52,7 +64,13 @@ spec:
       sectionName: https
   rules:
     - matches:
-      - path:
+      - backendRefs:
+        - group: ''
+          kind: Service
+          name: kube-prometheus-stack-alertmanager
+          port: 9093
+          weight: 1
+        path:
           type: PathPrefix
           value: /
 ---
@@ -71,6 +89,12 @@ spec:
       sectionName: https
   rules:
     - matches:
-      - path:
+      - backendRefs:
+        - group: ''
+          kind: Service
+          name: kube-prometheus-stack-alertmanager
+          port: 9093
+          weight: 1
+        path:
           type: PathPrefix
           value: /api

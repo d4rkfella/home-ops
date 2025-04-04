@@ -5,7 +5,7 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/target: &hostname internal.darkfellanetwork.com
 spec:
-  gatewayClassName: envoy-gateway.envoy-gateway-system
+  gatewayClassName: envoy-gateway
   addresses:
     - type: IPAddress
       value: 192.168.91.52

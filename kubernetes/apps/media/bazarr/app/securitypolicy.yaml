@@ -41,5 +41,5 @@ spec:
         jwt:
           provider: keycloak
           claims:
-          - name: user.name
-            values: ["test"]
+          - name: preferred_username
+            values: ["darkfella"]

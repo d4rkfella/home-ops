@@ -13,16 +13,10 @@ spec:
       namespace: envoy-gateway-system
       sectionName: https
   rules:
-    - backendRefs:
-        - group: ''
-          kind: Service
-          name: alertmanager-operated
-          port: 9093
-          weight: 1
-      matches:
-        - path:
-            type: PathPrefix
-            value: /api
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /api
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
@@ -38,13 +32,7 @@ spec:
       namespace: envoy-gateway-system
       sectionName: https
   rules:
-    - backendRefs:
-        - group: ''
-          kind: Service
-          name: kube-prometheus-stack-alertmanager
-          port: 9093
-          weight: 1
-      matches:
-        - path:
-            type: PathPrefix
-            value: /
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /

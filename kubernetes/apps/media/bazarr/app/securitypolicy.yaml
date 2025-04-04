@@ -10,10 +10,11 @@ spec:
   jwt:
     providers:
     - name: keycloak
+      extractFrom:
+        cookies:
+        - IdToken-5b6bc89a
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
-      extractFrom:
-        cookies: ["AccessToken-5b6bc89a	"]
   authorization:
     defaultAction: Deny
     rules:

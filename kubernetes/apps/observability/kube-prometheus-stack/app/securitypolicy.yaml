@@ -27,6 +27,14 @@ spec:
           claims:
           - name: preferred_username
             values: ["darkfella"]
+    - name: "allow"
+      action: Allow
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: groups
+            values: ["Prometheus_Service_Account"]
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"

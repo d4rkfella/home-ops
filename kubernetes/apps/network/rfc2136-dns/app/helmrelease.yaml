@@ -41,6 +41,7 @@ spec:
       - --rfc2136-host=dc01.darkfellanetwork.com
       - --rfc2136-port=53
       - --rfc2136-zone=darkfellanetwork.com
+      - --rfc2136-kerberos-realm=DARKFELLANETWORK.COM
       - --rfc2136-kerberos-username=externaldns_service
       - --rfc2136-kerberos-password=$(KERBEROS_PASSWORD)
       - --rfc2136-tsig-axfr

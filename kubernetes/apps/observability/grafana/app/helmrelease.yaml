@@ -110,7 +110,7 @@ spec:
             type: prometheus
             uid: prometheus
             access: proxy
-            url: https://prometheus-api.darkfellanetwork.com
+            url: https://prometheus.darkfellanetwork.com
             jsonData:
               timeInterval: 1m
               oauthPassThru: true

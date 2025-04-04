@@ -30,7 +30,7 @@ metadata:
   name: prometheus-api
 spec:
   hostnames:
-    - prometheus-api.darkfellanetwork.com
+    - prometheus.darkfellanetwork.com
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

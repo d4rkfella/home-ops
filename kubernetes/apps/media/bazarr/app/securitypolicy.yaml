@@ -25,7 +25,7 @@ spec:
           provider: keycloak
           claims:
           - name: preferred_username
-            values: ["darkfella"]
+            values: ["darkfellaa"]
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"

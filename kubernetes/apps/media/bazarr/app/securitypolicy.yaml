@@ -1,0 +1,20 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: bazarr
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: bazarr
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+    clientID: "5a89be8c-9525-4990-bebf-78d7875a9e01"
+    clientSecret:
+      name: "bazarr-oidc-secret"
+    redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"
+    cookieDomain: "bazarr.darkfellanetwork.com"
+    refreshToken: true
+    scopes: ["openid", "profile", "email"]

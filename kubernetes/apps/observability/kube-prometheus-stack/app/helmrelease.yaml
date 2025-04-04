@@ -61,7 +61,6 @@ spec:
               namespace: envoy-gateway-system
               sectionName: https
       alertmanagerSpec:
-        listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         alertmanagerConfiguration:
           name: alertmanager

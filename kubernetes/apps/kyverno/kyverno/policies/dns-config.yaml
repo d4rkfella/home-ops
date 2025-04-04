@@ -19,3 +19,18 @@ spec:
             options:
               - name: ndots
                 value: "2"
+  - name: add-ndots-2
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+          names:
+            - envoy-envoy-gateway-system-*
+    mutate:
+      patchStrategicMerge:
+        spec:
+          dnsConfig:
+            options:
+              - name: ndots
+                value: "1"

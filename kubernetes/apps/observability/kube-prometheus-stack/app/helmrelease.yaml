@@ -123,7 +123,7 @@ spec:
                 - "alertmanager-api.darkfellanetwork.com"
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
-              client_secret_file: /vault/secrets/client_secret
+              client_secret_file: /vault/secrets/client-secret
               token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
               scopes: ["openid", "profile", "email"]
               endpoint_params:

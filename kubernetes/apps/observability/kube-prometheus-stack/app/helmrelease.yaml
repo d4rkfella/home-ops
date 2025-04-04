@@ -121,11 +121,6 @@ spec:
             static_configs:
               - targets:
                 - "alertmanager.darkfellanetwork.com"
-            relabel_configs:
-              - source_labels: [__address__]
-                regex: "(.*)"
-                replacement: "alertmanager-api.darkfellanetwork.com"
-                target_label: __address__
             oauth2:
               client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
               client_secret_file: /vault/secrets/client-secret

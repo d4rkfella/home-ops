@@ -7,6 +7,22 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: bazarr
+  jwt:
+    providers:
+    - name: keycloak
+      remoteJWKS:
+        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+  authorization:
+    defaultAction: Deny
+    rules:
+    - name: "allow"
+      action: Allow
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: preferred_username
+            values: ["darkfella"]
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"

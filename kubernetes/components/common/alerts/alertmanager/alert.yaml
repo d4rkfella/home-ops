@@ -5,7 +5,7 @@ metadata:
   name: alertmanager
 spec:
   providerRef:
-    name: alert-manager
+    name: alertmanager
   eventSeverity: info
   eventSources:
     - kind: FluxInstance

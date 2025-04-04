@@ -80,7 +80,7 @@ metadata:
   name: alertmanager-api
 spec:
   hostnames:
-    - alertmanager-api.darkfellanetwork.com
+    - alertmanager.darkfellanetwork.com
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

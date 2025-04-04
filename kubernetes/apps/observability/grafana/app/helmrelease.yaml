@@ -126,7 +126,7 @@ spec:
             type: alertmanager
             uid: alertmanager
             access: proxy
-            url: https://alertmanager-api.darkfellanetwork.com
+            url: https://alertmanager.darkfellanetwork.com
             jsonData:
               oauthPassThru: true
               implementation: prometheus

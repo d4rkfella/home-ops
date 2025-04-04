@@ -50,8 +50,6 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      serviceMonitor:
-        selfMonitor: false
       alertmanagerSpec:
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         alertmanagerConfiguration:
@@ -96,8 +94,6 @@ spec:
     kubeProxy:
       enabled: false
     prometheus:
-      serviceMonitor:
-        selfMonitor: false
       prometheusSpec:
         externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:

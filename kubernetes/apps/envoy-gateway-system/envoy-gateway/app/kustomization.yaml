@@ -10,9 +10,9 @@ resources:
   - ./internal.yaml
   - ./external.yaml
   - ./clienttrafficpolicy.yaml
-#configMapGenerator:
-  #- name: envoy-gateway-values
-    #files:
-      #- values.yaml=./helm/values.yaml
-#configurations:
-  #- ./helm/kustomizeconfig.yaml
+configMapGenerator:
+  - name: envoy-gateway-values
+    files:
+      - values.yaml=./helm/values.yaml
+configurations:
+  - ./helm/kustomizeconfig.yaml

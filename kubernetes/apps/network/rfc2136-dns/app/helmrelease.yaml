@@ -25,7 +25,8 @@ spec:
       retries: 3
   values:
     fullnameOverride: *app
-    provider: rfc2136
+    provider:
+      name: rfc2136
     env:
       - name: KERBEROS_PASSWORD
         valueFrom:
@@ -45,8 +46,8 @@ spec:
     triggerLoopOnEvent: true
     policy: sync
     sources: ["gateway-httproute", "service"]
-    txtOwnerId: main
-    txtPrefix: k8s.main.
+    txtOwnerId: default
+    txtPrefix: k8s.
     domainFilters: ["darkfellanetwork.com"]
     serviceMonitor:
       enabled: true

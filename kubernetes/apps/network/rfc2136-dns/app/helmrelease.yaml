@@ -33,6 +33,8 @@ spec:
           secretKeyRef:
             name: external-dns-secret
             key: KERBEROS_PASSWORD
+      - name: KRB5_CONFIG
+        value: /etc/krb5.conf
 
     extraArgs:
       - --rfc2136-gss-tsig
@@ -41,7 +43,6 @@ spec:
       - --rfc2136-zone=darkfellanetwork.com
       - --rfc2136-kerberos-username=externaldns_service
       - --rfc2136-kerberos-password=$(KERBEROS_PASSWORD)
-      - --rfc2136-kerberos-realm=DARKFELLANETWORK.COM
       - --rfc2136-tsig-axfr
     triggerLoopOnEvent: true
     policy: sync

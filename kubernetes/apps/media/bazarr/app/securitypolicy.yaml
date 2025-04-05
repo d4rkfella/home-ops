@@ -21,6 +21,7 @@ spec:
     refreshToken: true
     scopes: ["openid", "profile", "email"]
   extAuth:
+    failOpen: true
     http:
       backendRefs:
         - group: ''

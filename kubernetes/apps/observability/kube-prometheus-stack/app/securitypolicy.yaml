@@ -117,7 +117,7 @@ spec:
       name: "prometheus-secret"
     redirectURL: "https://prometheus.darkfellanetwork.com/oauth2/callback"
     logoutPath: "/logout"
-    cookieDomain: "prometheus.darkfellanetwork.com"
+    cookieDomain: "darkfellanetwork.com"
     cookieNames:
       accessToken: "AccessToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c"
       idToken: "IdToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c"

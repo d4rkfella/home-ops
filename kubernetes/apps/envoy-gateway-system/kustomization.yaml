@@ -5,5 +5,7 @@ kind: Kustomization
 namespace: envoy-gateway-system
 components:
   - ../../components/common
+  - ../../components/repos/app-template
 resources:
   - ./envoy-gateway/ks.yaml
+  - ./ext-authz/ks.yaml

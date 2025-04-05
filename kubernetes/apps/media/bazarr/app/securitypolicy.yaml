@@ -28,7 +28,3 @@ spec:
           name: ext-authz
           namespace: envoy-gateway-system
           port: 8080
-    headersToExtAuth:
-      - Authorization
-      - :method
-      - :path

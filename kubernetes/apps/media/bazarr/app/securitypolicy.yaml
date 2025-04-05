@@ -21,12 +21,12 @@ spec:
     refreshToken: true
     scopes: ["openid", "profile", "email"]
   extAuth:
+    failOpen: false
     http:
       backendRefs:
-        - name: keycloak-service
+        - group: ''
+          kind: Service
+          name: keycloak-service
           namespace: idp
           port: 80
-      headersToExtAuth:
-        - authorization
-      failOpen: false
-      path: "/realms/DarkfellaNET/protocol/openid-connect/token/introspect"
+      path: /realms/DarkfellaNET/protocol/openid-connect/token/introspect

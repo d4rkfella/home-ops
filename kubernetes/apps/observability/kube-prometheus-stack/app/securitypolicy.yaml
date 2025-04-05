@@ -13,6 +13,9 @@ spec:
       extractFrom:
         cookies:
         - AccessToken-fa8d3906-58d9-4889-a59b-37f09e28f608
+        headers:
+          - name: Authorization
+            valuePrefix: "Bearer "
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
   authorization:

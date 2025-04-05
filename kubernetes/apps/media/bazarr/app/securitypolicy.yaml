@@ -20,3 +20,15 @@ spec:
     cookieDomain: "bazarr.darkfellanetwork.com"
     refreshToken: true
     scopes: ["openid", "profile", "email"]
+  extAuth:
+    http:
+      backendRefs:
+        - group: ''
+          kind: Service
+          name: ext-authz
+          namespace: envoy-gateway-system
+          port: 8080
+    headersToExtAuth:
+      - Authorization
+      - :method
+      - :path

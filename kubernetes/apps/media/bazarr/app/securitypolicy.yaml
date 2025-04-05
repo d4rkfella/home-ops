@@ -30,3 +30,6 @@ spec:
           namespace: idp
           port: 80
       path: /realms/DarkfellaNET/protocol/openid-connect/token/introspect
+    headersToExtAuth:
+        - Authorization
+        - Cookie

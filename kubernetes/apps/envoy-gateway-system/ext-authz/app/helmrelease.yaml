@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/ext-authz
-              tag: 1.0.0@sha256:38fffdce8db4f4bc1208e5170b3a3adac46793d45ea589e0783fbd32f03b8ed8
+              tag: 1.0.0@sha256:97acb0f1c6635c6c697d203532c7913d5bca1321213c8639b1316e99c0d0c0fd
             env:
               KEYCLOAK_URL: "https://accounts.darkfellanetwork.com"
               KEYCLOAK_REALM: "DarkfellaNET"

@@ -58,7 +58,7 @@ spec:
     - name: keycloak
       extractFrom:
         cookies:
-        - AccessToken-fa8d3906-58d9-4889-a59b-37f09e28f608
+        - AccessToken-2a91e585-e2e0-4ca0-bf1d-b4916e77c95c
         headers:
           - name: Authorization
             valuePrefix: "Bearer "

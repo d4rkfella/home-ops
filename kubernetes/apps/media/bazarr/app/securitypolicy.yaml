@@ -7,19 +7,19 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: bazarr
-  #oidc:
-    #provider:
-      #issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-      #authorizationEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
-      #tokenEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
-    #clientID: "5a89be8c-9525-4990-bebf-78d7875a9e01"
-    #clientSecret:
-      #name: "bazarr-oidc-secret"
-    #redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
-    #logoutPath: "/logout"
-    #cookieDomain: "bazarr.darkfellanetwork.com"
-    #refreshToken: true
-    #scopes: ["openid", "profile", "email"]
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+      authorizationEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
+      tokenEndpoint: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+    clientID: "5a89be8c-9525-4990-bebf-78d7875a9e01"
+    clientSecret:
+      name: "bazarr-oidc-secret"
+    redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"
+    cookieDomain: "bazarr.darkfellanetwork.com"
+    refreshToken: true
+    scopes: ["openid", "profile", "email"]
   extAuth:
     failOpen: true
     http:
@@ -29,4 +29,4 @@ spec:
           name: ext-authz
           namespace: envoy-gateway-system
           port: 8080
-      #path: /authz
+      path: /authz

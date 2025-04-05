@@ -22,11 +22,11 @@ spec:
     scopes: ["openid", "profile", "email"]
   extAuth:
     http:
-      service:
-        name: keycloak-service
-        namespace: idp
-        port: 80
-        path: /realms/DarkfellaNET/authz/entitlement/5a89be8c-9525-4990-bebf-78d7875a9e01
+      backendRefs:
+        - name: keycloak-service
+          namespace: idp
+          port: 80
       headersToExtAuth:
         - authorization
       failOpen: false
+      path: "/realms/DarkfellaNET/protocol/openid-connect/token/introspect"

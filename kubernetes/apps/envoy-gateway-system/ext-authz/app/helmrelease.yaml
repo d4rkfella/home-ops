@@ -41,7 +41,10 @@ spec:
                   secretKeyRef:
                     name: ext-authz-secret
                     key: client-secret
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m

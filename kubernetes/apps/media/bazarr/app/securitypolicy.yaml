@@ -7,25 +7,6 @@ spec:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
       name: bazarr
-  jwt:
-    providers:
-    - name: keycloak
-      extractFrom:
-        cookies:
-        - AccessToken-5b6bc89a
-      remoteJWKS:
-        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
-  authorization:
-    defaultAction: Deny
-    rules:
-    - name: "allow"
-      action: Allow
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: preferred_username
-            values: ["darkfella"]
   oidc:
     provider:
       issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
@@ -39,3 +20,13 @@ spec:
     cookieDomain: "bazarr.darkfellanetwork.com"
     refreshToken: true
     scopes: ["openid", "profile", "email"]
+  extAuth:
+    http:
+      service:
+        name: keycloak-service
+        namespace: idp
+        port: 80
+        path: /realms/DarkfellaNET/authz/entitlement/5a89be8c-9525-4990-bebf-78d7875a9e01
+      headersToExtAuth:
+        - authorization
+      failOpen: false

@@ -63,8 +63,6 @@ spec:
             fallthrough in-addr.arpa
         - name: forward
           parameters: . 192.168.91.41
-          configBlock: |-
-            prefer_loopback
         - name: cache
           parameters: 30
         - name: loop

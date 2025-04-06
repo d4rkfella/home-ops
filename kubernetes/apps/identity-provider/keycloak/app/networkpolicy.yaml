@@ -50,7 +50,7 @@ spec:
           - kube-apiserver
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "8088"
               protocol: TCP
   egress:
     - toEntities:

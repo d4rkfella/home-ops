@@ -96,11 +96,11 @@ spec:
       enabled: true
       flavor: cilium
       metrics:
-        podSelector: app.kubernetes.io/name=prometheus
+        podSelector: "app.kubernetes.io/name: prometheus"
         namespaceSelector: observability
       alertmanager:
         port: 8082
-        podSelector: app.kubernetes.io/name=alertmanager
+        podSelector: "app.kubernetes.io/name: alertmanager"
         namespaceSelector: observability
       egressKubeApiserver:
         enabled: true

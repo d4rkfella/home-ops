@@ -30,6 +30,8 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
+            cnpg.io/cluster: postgres-v17
+            cnpg.io/instanceRole: primary
             io.kubernetes.pod.namespace: database
       toPorts:
         - ports:

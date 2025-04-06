@@ -10,6 +10,9 @@ spec:
   tls:
     minVersion: "1.3"
     ecdhCurves: ["X25519"]
+    session:
+      resumption:
+        stateless: {}
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway

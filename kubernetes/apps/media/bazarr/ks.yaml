@@ -24,7 +24,7 @@ spec:
     substitute:
       APP: *app
       GATUS_NAME: Bazarr
-      GATUS_CONDITIONS: '["[STATUS] == 200"]'
+      GATUS_CONDITIONS: '["[STATUS] == 404"]'
       GATUS_PATH: /api/system/status
       VOLSYNC_CAPACITY: 2Gi
       VOLSYNC_PUID: '65532'

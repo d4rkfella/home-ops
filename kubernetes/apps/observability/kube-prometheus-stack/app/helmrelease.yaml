@@ -117,34 +117,10 @@ spec:
           fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
-    kubeApiServer:
-      serviceMonitor:
-        selector:
-          k8s-app: kube-apiserver
-    kubeScheduler:
-      service:
-        selector:
-          k8s-app: kube-scheduler
-    kubeControllerManager:
-      service:
-        selector:
-          k8s-app: kube-controller-manager
     kubeEtcd:
-      enabled: true
       service:
         selector:
-          k8s-app: kube-controller-manager
-      serviceMonitor:
-        relabelings:
-          - sourceLabels: [__meta_kubernetes_pod_node_name]
-            separator: ;
-            regex: ^(.*)$
-            targetLabel: nodename
-            replacement: $1
-            action: replace
-        metricRelabelings:
-          - action: labeldrop
-            regex: pod
+          component: kube-apiserver
     kubeProxy:
       enabled: false
     prometheus:

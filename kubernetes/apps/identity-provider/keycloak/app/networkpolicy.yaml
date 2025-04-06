@@ -12,7 +12,7 @@ spec:
     - fromEndpoints:
         - matchLabels:
             gateway.envoyproxy.io/owning-gateway-name: external
-            io.kubernetes.pod.namespace: envoy-gateway-system
+            namespace: envoy-gateway-system
       toPorts:
         - ports:
             - port: "80"
@@ -20,7 +20,7 @@ spec:
   egress:
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
+            namespace: kube-system
             k8s-app: kube-dns
       toPorts:
         - ports:
@@ -30,8 +30,6 @@ spec:
               protocol: TCP
     - toEndpoints:
         - matchLabels:
-            cnpg.io/cluster: postgres-v17
-            cnpg.io/instancerole: primary
             namespace: database
       toPorts:
         - ports:

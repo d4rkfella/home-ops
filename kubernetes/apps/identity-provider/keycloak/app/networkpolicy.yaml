@@ -15,7 +15,7 @@ spec:
             io.kubernetes.pod.namespace: envoy-gateway-system
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "80"
               protocol: TCP
   egress:
     - toEndpoints:
@@ -33,3 +33,7 @@ spec:
             cnpg.io/cluster: postgres-v17
             cnpg.io/instancerole: primary
             io.kubernetes.pod.namespace: database
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP

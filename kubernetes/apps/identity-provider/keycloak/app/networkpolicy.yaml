@@ -1,9 +1,8 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: keycloak-ingress-policy
+  name: keycloak
 spec:
   endpointSelector:
     matchLabels:
@@ -36,4 +35,27 @@ spec:
       toPorts:
         - ports:
             - port: "5432"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: keycloak-operator
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: keycloak-operator
+  ingress:
+    - fromCIDRSet:
+        - cidr: 192.168.91.9/32
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+  egress:
+    - toCIDRSet:
+        - cidr: 192.168.91.9/32
+      toPorts:
+        - ports:
+            - port: "6443"
               protocol: TCP

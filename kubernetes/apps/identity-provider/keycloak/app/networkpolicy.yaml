@@ -53,8 +53,9 @@ spec:
             - port: "8080"
               protocol: TCP
   egress:
-    - toCIDRSet:
-        - cidr: 192.168.91.9/32
+    - toEndpoints:
+        - matchLabels:
+            reserved: kube-apiserver
       toPorts:
         - ports:
             - port: "6443"

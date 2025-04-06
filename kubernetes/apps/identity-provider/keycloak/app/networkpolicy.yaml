@@ -53,9 +53,8 @@ spec:
             - port: "8080"
               protocol: TCP
   egress:
-    - toEndpoints:
-        - matchLabels:
-            reserved: kube-apiserver
+    - toEntities:
+          - kube-apiserver
       toPorts:
         - ports:
             - port: "6443"

@@ -16,6 +16,14 @@ spec:
         - ports:
             - port: "80"
               protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/instance: kube-prometheus-stack
+            io.kubernetes.pod.namespace: observability
+      toPorts:
+        - ports:
+            - port: "9000"
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:

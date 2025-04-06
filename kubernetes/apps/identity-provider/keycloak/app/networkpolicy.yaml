@@ -32,7 +32,7 @@ spec:
         - matchLabels:
             cnpg.io/instancename: postgres-v17-1
             cnpg.io/instancerole: primary
-            io.kubernetes.pod.namespace: database
+            namespace: database
       toPorts:
         - ports:
             - port: "5432"

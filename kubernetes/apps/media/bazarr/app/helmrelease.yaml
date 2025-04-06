@@ -11,8 +11,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: app-template
-  driftDetection:
-    mode: enabled
   install:
     remediation:
       retries: 3
@@ -59,10 +57,24 @@ spec:
               capabilities: { drop: ["ALL"] }
 
         containers:
+          oauth2-proxy:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.8.2@sha256:6005571974de24cf03182c4e5aab66b683ff47fa68ef767729dca205b6c375b6
+            args:
+              - --config=/etc/oauth2-proxy.cfg
+            env:
+              OAUTH2_PROXY_REDIS_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: DRAGONFLY_PASSWORD
+            securityContext: *securityContext
+
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: 1.5.2@sha256:11273da5803903e92215aad11377de6ef6343ce60e363128145e01c3a5f64c98
+              tag: 1.5.2@sha256:a5c7a13fa49173edfc841f155fab0d515c059b35784dbcc658ae92625edac0b1
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"
@@ -87,7 +99,7 @@ spec:
                   httpGet:
                     path: /health
                     port: 6767
-                  initialDelaySeconds: 2
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -124,14 +136,14 @@ spec:
         controller: bazarr
         ports:
           http:
-            port: &port 6767
+            port: &port 4180
 
     route:
       app:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: internal
-            namespace: envoy-gateway-system
+            namespace: kube-system
             sectionName: https
         rules:
           - backendRefs:
@@ -175,3 +187,23 @@ spec:
           bazarr:
             app:
               - path: /data/media
+
+      oauth2-proxy-config:
+        type: secret
+        name: *secret
+        advancedMounts:
+          bazarr:
+            oauth2-proxy:
+              - path: /etc/oauth2-proxy.cfg
+                subPath: oauth2-proxy.cfg
+                readOnly: true
+
+      darkfellanet-root-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          bazarr:
+            oauth2-proxy:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true

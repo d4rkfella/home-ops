@@ -92,6 +92,21 @@ spec:
         - name: bearer-token
           secret:
             secretName: oidc-jwt
+    networkPolicy:
+      enabled: true
+      flavor: cilium
+      metrics:
+        podSelector: app.kubernetes.io/name=prometheus
+        namespaceSelector: observability
+      ingress:
+        podSelector: app.kubernetes.io/instance=promtail
+        namespaceSelector: observability
+      alertmanager:
+        port: 8082
+        podSelector: app.kubernetes.io/name=alertmanager
+        namespaceSelector: observability
+      egressKubeApiserver:
+        enabled: true
       #extraContainers:
         #- name: oauth-proxy
           #image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033

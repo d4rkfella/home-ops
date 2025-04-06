@@ -8,6 +8,7 @@ resources:
   - ./httproute.yaml
   - ./prometheusrule.yaml
   - ./receiver.yaml
+  - ./podmonitor.yaml
 configMapGenerator:
   - name: flux-instance-values
     files:

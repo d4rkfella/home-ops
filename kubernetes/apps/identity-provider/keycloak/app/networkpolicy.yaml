@@ -46,8 +46,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: keycloak-operator
   ingress:
-    - fromCIDRSet:
-        - cidr: 192.168.91.9/32
+    - fromEntities:
+          - kube-apiserver
       toPorts:
         - ports:
             - port: "8080"

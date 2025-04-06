@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: keycloak
+spec:
+  endpoints:
+    - port: management
+      path: /metrics
+  jobLabel: keycloak
+  namespaceSelector:
+    matchNames:
+      - idp
+  selector:
+    matchLabels:
+      app: keycloak
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/managed-by: keycloak-operator

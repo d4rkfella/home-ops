@@ -98,9 +98,6 @@ spec:
       metrics:
         podSelector: app.kubernetes.io/name=prometheus
         namespaceSelector: observability
-      ingress:
-        podSelector: app.kubernetes.io/instance=promtail
-        namespaceSelector: observability
       alertmanager:
         port: 8082
         podSelector: app.kubernetes.io/name=alertmanager

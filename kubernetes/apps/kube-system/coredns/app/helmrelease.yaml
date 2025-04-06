@@ -57,15 +57,14 @@ spec:
         - name: prometheus
           parameters: 0.0.0.0:9153
         - name: kubernetes
-          parameters: cluster.local in-addr.arpa ip6.arpa
+          parameters: cluster.local in-addr.arpa
           configBlock: |-
             pods insecure
-            fallthrough in-addr.arpa ip6.arpa
+            fallthrough in-addr.arpa
         - name: forward
+          parameters: . 192.168.91.41
           configBlock: |-
-             . 192.168.91.41 {
-                 prefer_loopback
-             }
+            prefer_loopback
         - name: cache
           parameters: 30
         - name: loop

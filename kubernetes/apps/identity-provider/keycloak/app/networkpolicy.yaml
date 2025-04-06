@@ -52,5 +52,5 @@ spec:
           - kube-apiserver
       toPorts:
         - ports:
-            - port: "6444"
+            - port: "6443"
               protocol: TCP

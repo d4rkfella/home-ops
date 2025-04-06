@@ -97,11 +97,11 @@ spec:
       flavor: cilium
       metrics:
         podSelector: "app.kubernetes.io/name: prometheus"
-        namespaceSelector: observability
+        namespaceSelector: "io.kubernetes.pod.namespace: observability"
       alertmanager:
         port: 8082
         podSelector: "app.kubernetes.io/name: alertmanager"
-        namespaceSelector: observability
+        namespaceSelector: "io.kubernetes.pod.namespace: observability"
       egressKubeApiserver:
         enabled: true
       #extraContainers:

@@ -45,6 +45,9 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: prometheus-values
   values:
     crds:
       enabled: false

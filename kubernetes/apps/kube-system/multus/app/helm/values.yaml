@@ -63,7 +63,8 @@ persistence:
   tmp:
     type: emptyDir
     advancedMounts:
-      install-cni-plugins: []
+      install-cni-plugins:
+        - path: /tmp
 serviceAccount:
   create: true
   name: multus

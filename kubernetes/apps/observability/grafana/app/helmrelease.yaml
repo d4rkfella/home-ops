@@ -162,6 +162,12 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
+        keycloak:
+          # renovate: depName="KeyCloak Metrics"
+          gnetID: 14390
+          revision: 7
+          datasource:
+            - { name: DS_PROMETHEUS, value:Prometheus }
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038

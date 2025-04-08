@@ -11,5 +11,8 @@ configMapGenerator:
   - name: multus-values
     files:
       - values.yaml=./helm/values.yaml
+generatorOptions:
+  annotations:
+      kustomize.toolkit.fluxcd.io/substitute: enabled
 configurations:
   - ./helm/kustomizeconfig.yaml

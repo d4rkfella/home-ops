@@ -21,6 +21,6 @@ spec:
   timeout: 5m
   retryInterval: 2m
 postBuild:
-    substitute:
-      # renovate: datasource=github-releases depName=containernetworking/plugins
-      CNI_PLUGINS_VERSION: "v1.6.2"
+  substitute:
+    # renovate: datasource=github-releases depName=containernetworking/plugins
+    CNI_PLUGINS_VERSION: "v1.6.2"

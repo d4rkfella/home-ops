@@ -14,7 +14,7 @@ spec:
     required: true
     attestations:
       - name: slsa-provenance
-        predicateType: https://slsa.dev/provenance/v1
+        predicateType: https://slsa.dev/provenance/v0.2
         policy:
           type: cue
           data: |

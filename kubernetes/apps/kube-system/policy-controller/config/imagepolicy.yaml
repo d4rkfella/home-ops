@@ -10,9 +10,9 @@ spec:
         url: https://fulcio.sigstore.dev
         identities:
           - issuer: "https://token.actions.githubusercontent.com"
-            subjectRegExp: "https://github.com/d4rkfella/*/.github/workflows/apko-build.yaml@refs/heads/main"
+            subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/apko-buil.yaml@refs/heads/main"
           - issuer: "https://token.actions.githubusercontent.com"
-            subjectRegExp: "https://github.com/d4rkfella/*/.github/workflows/build.yaml@refs/heads/main"
+            subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/build.yaml@refs/heads/main"
 ---
 apiVersion: policy.sigstore.dev/v1alpha1
 kind: ClusterImagePolicy

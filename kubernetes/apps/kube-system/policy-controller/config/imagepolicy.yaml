@@ -1,22 +1,26 @@
-apiVersion: policy.sigstore.dev/v1beta1
+apiVersion: policy.sigstore.dev/v1alpha1
 kind: ClusterImagePolicy
 metadata:
-  name: enforce-sig-and-slsa
+  name: d4rkfella-slsa-policy
 spec:
   images:
-  - glob: "ghcr.io/d4rkfella/**"
+    - glob: "ghcr.io/d4rkfella/*"
   authorities:
-  - keyless:
-      url: https://github.com/d4rkfella/*/.github/workflows/apko-build.yaml
-      identities:
-        - issuer: https://token.actions.githubusercontent.com
-          subjectRegExp: ^https://github.com/d4rkfella/[^/]+/.github/workflows/apko-build.yaml@refs/heads/main$
-    required: true
-    attestations:
-      - name: slsa-provenance
-        predicateType: https://slsa.dev/provenance/v0.2
-        policy:
-          type: cue
-          data: |
-            predicate.buildDefinition.externalParameters.repository =~ "^https://github\.com/d4rkfella/[^/]+$"
-            predicate.runDetails.builder.id =~ "^https://github\.com/d4rkfella/[^/]+/.github/workflows/apko-build\.yaml@refs/heads/main$"
+    - keyless:
+        url: https://fulcio.sigstore.dev
+        identities:
+          - issuer: https://token.actions.githubusercontent.com
+            subject: "d4rkfella/*/.github/workflows/apko-build.yaml@refs/heads/main"
+  attestations:
+    - name: slsa
+      predicateType: https://slsa.dev/provenance/v0.2
+      policy:
+        type: cue
+        data: |
+          predicateType: "https://slsa.dev/provenance/v0.2"
+          predicate: {
+            builder: {
+              id: =~"https://github.com/d4rkfella/.*/.github/workflows/apko-build.yaml@refs/heads/main"
+            }
+            buildType: =~"https://github.com/slsa-framework/slsa-github-generator/container@.*"
+          }

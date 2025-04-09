@@ -11,6 +11,7 @@ spec:
       identities:
         - issuer: https://token.actions.githubusercontent.com
           subjectRegExp: ^https://github.com/d4rkfella/[^/]+/.github/workflows/apko-build.yaml@refs/heads/main$
+      deny: true
     attestations:
       - name: slsa-provenance
         predicateType: https://slsa.dev/provenance/v1

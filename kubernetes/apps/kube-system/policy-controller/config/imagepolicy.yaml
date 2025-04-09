@@ -13,6 +13,19 @@ spec:
             subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/apko-build.yaml@refs/heads/main"
           - issuer: "https://token.actions.githubusercontent.com"
             subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/build.yaml@refs/heads/main"
+      attestations:
+      - name: slsa
+        predicateType: slsa
+        policy:
+          type: cue
+          data: |
+            predicateType: "https://slsa.dev/provenance/v0.2"
+            predicate: {
+              builder: {
+                id: =~"https://github.com/d4rkfella/.*/.github/workflows/apko-build.yaml@refs/heads/main"
+              }
+              buildType: =~"https://github.com/slsa-framework/slsa-github-generator/container@.*"
+            }
 ---
 apiVersion: policy.sigstore.dev/v1alpha1
 kind: ClusterImagePolicy

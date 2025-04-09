@@ -15,7 +15,7 @@ spec:
             subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/build.yaml@refs/heads/main"
       attestations:
       - name: slsa
-        predicateType: slsa
+        predicateType: slsaprovenance
         policy:
           type: cue
           data: |

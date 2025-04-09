@@ -1,26 +1,26 @@
 apiVersion: policy.sigstore.dev/v1alpha1
 kind: ClusterImagePolicy
 metadata:
-  name: d4rkfella-slsa-policy
+  name: signature-and-slsa-verification
 spec:
   images:
-    - glob: "ghcr.io/d4rkfella/*"
+    - glob: "ghcr.io/d4rkfella/**"
   authorities:
     - keyless:
         url: https://fulcio.sigstore.dev
         identities:
-          - issuer: https://token.actions.githubusercontent.com
-            subject: "d4rkfella/*/.github/workflows/apko-build.yaml@refs/heads/main"
-  attestations:
-    - name: slsa
-      predicateType: https://slsa.dev/provenance/v0.2
-      policy:
-        type: cue
-        data: |
-          predicateType: "https://slsa.dev/provenance/v0.2"
-          predicate: {
-            builder: {
-              id: =~"https://github.com/d4rkfella/.*/.github/workflows/apko-build.yaml@refs/heads/main"
-            }
-            buildType: =~"https://github.com/slsa-framework/slsa-github-generator/container@.*"
-          }
+          - issuer: "https://token.actions.githubusercontent.com"
+            subjectRegExp: "https://github.com/d4rkfella/*/.github/workflows/apko-build.yaml@refs/heads/main"
+          - issuer: "https://token.actions.githubusercontent.com"
+            subjectRegExp: "https://github.com/d4rkfella/*/.github/workflows/build.yaml@refs/heads/main"
+---
+apiVersion: policy.sigstore.dev/v1alpha1
+kind: ClusterImagePolicy
+metadata:
+  name: catch-all-policy
+spec:
+  images:
+    - glob: "**"
+  authorities:
+    - static:
+        action: pass

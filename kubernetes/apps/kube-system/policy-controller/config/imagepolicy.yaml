@@ -22,7 +22,7 @@ spec:
             predicateType: "https://slsa.dev/provenance/v0.2"
             predicate: {
               builder: {
-                id: =~"https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yml@refs/heads/main"
+                id: =~"https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main"
               }
               buildType: =~"https://github.com/slsa-framework/slsa-github-generator/container@.*"
             }

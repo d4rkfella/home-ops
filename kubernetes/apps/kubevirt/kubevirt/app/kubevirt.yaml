@@ -16,7 +16,6 @@ spec:
     developerConfiguration:
       useEmulation: false
       featureGates:
-        - Root
         - HostDevices
         - DataVolumes
         - VMPersistentState

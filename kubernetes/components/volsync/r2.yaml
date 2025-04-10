@@ -40,9 +40,9 @@ spec:
     storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
     accessModes: ["${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"]
     moverSecurityContext:
-      runAsUser: ${VOLSYNC_PUID:=2000}
-      runAsGroup: ${VOLSYNC_PGID:=2000}
-      fsGroup: ${VOLSYNC_PGID:=2000}
+      runAsUser: ${VOLSYNC_PUID:=65532}
+      runAsGroup: ${VOLSYNC_PGID:=65532}
+      fsGroup: ${VOLSYNC_PGID:=65532}
     retain:
       daily: 7
 ---
@@ -65,9 +65,9 @@ spec:
     accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
     capacity: "${VOLSYNC_CAPACITY:=5Gi}"
     moverSecurityContext:
-      runAsUser: ${VOLSYNC_PUID:=2000}
-      runAsGroup: ${VOLSYNC_PGID:=2000}
-      fsGroup: ${VOLSYNC_PGID:=2000}
+      runAsUser: ${VOLSYNC_PUID:=65532}
+      runAsGroup: ${VOLSYNC_PGID:=65532}
+      fsGroup: ${VOLSYNC_PGID:=65532}
     enableFileDeletion: true
     cleanupCachePVC: true
     cleanupTempPVC: true

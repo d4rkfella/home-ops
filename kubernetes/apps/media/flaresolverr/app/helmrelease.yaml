@@ -25,11 +25,31 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/byparr
-              tag: 1.1.1@sha256:e2b2b4bfc79d0caa0952cb842210e9a07568f8559f40585367bbc2a2f7e6ea7d
+              repository: ghcr.io/flaresolverr/flaresolverr
+              tag: v3.3.21@sha256:f104ee51e5124d83cf3be9b37480649355d223f7d8f9e453d0d5ef06c6e3b31b
             env:
               TZ: Europe/Sofia
-              USE_HEADLESS: "1"
+              PORT: &port 80
+              HOST: "0.0.0.0"
+              TEST_URL: https://www.google.com
+              BROWSER_TIMEOUT: 40000
+              HEADLESS: true
+              LOG_LEVEL: info
+              LOG_HTML: false
+              CAPTCHA_SOLVER: none
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
@@ -38,13 +58,13 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 2048Mi
+                memory: 1024Mi
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: false
-        runAsUser: 0
-        runAsGroup: 65532
-        fsGroup: 65532
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     service:
@@ -52,7 +72,7 @@ spec:
         controller: flaresolverr
         ports:
           http:
-            port: 8191
+            port: *port
     persistence:
       tmp:
         type: emptyDir

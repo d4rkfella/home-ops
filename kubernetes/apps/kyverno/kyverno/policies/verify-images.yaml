@@ -42,9 +42,6 @@ spec:
             - predicateType: https://slsa.dev/provenance/v0.2
               conditions:
                 - all:
-                  - key: "{{ attestation.predicateType }}"
-                    operator: Equals
-                    value: "https://slsa.dev/provenance/v0.2"
                   - key: "{{ attestation.predicate.buildType }}"
                     operator: Equals
                     value: "https://github.com/slsa-framework/slsa-github-generator/container@.*"

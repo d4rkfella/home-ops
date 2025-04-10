@@ -65,7 +65,7 @@ spec:
         controller: flaresolverr
         ports:
           http:
-            port: *port
+            port: 8191
     persistence:
       tmp:
         type: emptyDir

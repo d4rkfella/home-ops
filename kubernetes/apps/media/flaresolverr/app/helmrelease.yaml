@@ -25,8 +25,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/flaresolverr/flaresolverr
-              tag: v3.3.21@sha256:f104ee51e5124d83cf3be9b37480649355d223f7d8f9e453d0d5ef06c6e3b31b
+              repository: ghcr.io/d4rkfella/byparr
+              tag: 1.1.1@sha256:a41ba576841bc0417e2dea4213c0a88506a0c457c7f5f598d75a5fbd62edc1a9
             env:
               TZ: Europe/Sofia
               PORT: &port 80

@@ -29,27 +29,28 @@ spec:
                     rekor:
                       url: https://rekor.sigstore.dev
         - imageReferences:
-          - "ghcr.io/d4rkfella/autobrr-distroless*"
-          - "ghcr.io/d4rkfella/qbittorrent-distroless*"
-          - "ghcr.io/d4rkfella/radarr-distroless*"
-          - "ghcr.io/d4rkfella/sonarr-distroless*"
-          - "ghcr.io/d4rkfella/prowlarr-distroless*"
-          - "ghcr.io/d4rkfella/jellyseerr-distroless*"
-          - "ghcr.io/d4rkfella/bazarr-distroless*"
-          - "ghcr.io/d4rkfella/keycloak*"
-          - "ghcr.io/d4rkfella/postgres-init*"
-          - "ghcr.io/d4rkfella/vault-backup*"
-          - "ghcr.io/d4rkfella/oidc-jwt-fetcher*"
-          - "ghcr.io/d4rkfella/actions-runner-controller*"
-          - "ghcr.io/d4rkfella/kubevirt-manager*"
+          - "ghcr.io/d4rkfella/**"
           failureAction: Enforce
           attestors:
             - entries:
                 - keyless:
-                    subject: "https://github.com/d4rkfella/*"
+                    subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
+          attestations:
+            - predicateType: https://slsa.dev/provenance/v0.2
+              conditions:
+                - all:
+                  - key: "{{ attestation.predicateType }}"
+                    operator: Equals
+                    value: "https://slsa.dev/provenance/v0.2"
+                  - key: "{{ attestation.predicate.buildType }}"
+                    operator: Equals
+                    value: "https://github.com/slsa-framework/slsa-github-generator/container@.*"
+                  - key: "{{ attestation.predicate.builder.id }}"
+                    operator: Equals
+                    value: "https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main"
         - imageReferences:
           - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce

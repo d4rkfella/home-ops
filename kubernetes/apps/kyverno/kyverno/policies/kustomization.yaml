@@ -7,4 +7,4 @@ resources:
   - ./hostpath-readonly.yaml
   - ./allow-only-vault-provider.yaml
   #- ./default-deny.yaml
-  #- ./verify-images.yaml
+  - ./verify-images.yaml

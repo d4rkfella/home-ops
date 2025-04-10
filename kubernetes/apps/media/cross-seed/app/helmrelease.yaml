@@ -109,3 +109,10 @@ spec:
         path: /mnt/exos20/data/downloads/torrents
         globalMounts:
           - path: /data/downloads/torrents
+
+      game-library:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/SMB/LaunchBox
+        globalMounts:
+          - path: /data/LaunchBox

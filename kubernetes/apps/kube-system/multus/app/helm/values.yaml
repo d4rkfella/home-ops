@@ -40,10 +40,7 @@ controllers:
 defaultPodOptions:
   hostNetwork: true
   terminationGracePeriodSeconds: 10
-  dnsPolicy: "None"
-  dnsConfig:
-    nameservers:
-      - 192.168.91.1
+  dnsPolicy: "Default"
 persistence:
   cni:
     type: hostPath

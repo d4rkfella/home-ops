@@ -22,8 +22,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/cross-seed/cross-seed
-              tag: 6.11.2@sha256:0befc4ff8989f283319a20151271cc9dba99215b7c381e018fdf15702c785e3f
+              repository: ghcr.io/d4rkfella/cross-seed
+              tag: 6.11.2@sha256:889ede586385358364b33daf56561109577b91bde697092b216bf74e2e95ff4b
             args: ["daemon", "-v"]
             env:
               TZ: Europe/Sofia

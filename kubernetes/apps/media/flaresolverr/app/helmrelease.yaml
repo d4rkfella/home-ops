@@ -26,7 +26,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/byparr
-              tag: 1.1.1@sha256:4dad24ee6efcdc63d56673d5a8a093586b8bd33568747cc7f55318f5950f969d
+              tag: 1.1.1@sha256:578a9e8e0ad9b3472c51a7642d8329b01157ca1bc5fdb7c51d9367efb9ea2b27
             env:
               TZ: Europe/Sofia
               USE_HEADLESS: "1"

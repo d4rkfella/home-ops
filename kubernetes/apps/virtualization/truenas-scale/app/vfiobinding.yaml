@@ -16,7 +16,7 @@ spec:
       priorityClassName: system-node-critical
       restartPolicy: Always
       initContainers:
-        - name: pci-bind
+        - name: pci-rebind
           image: ghcr.io/d4rkfella/talos-vfio-binding:1.0.0@sha256:60a680d17bc8354583e0ec7a068aaf0f329295c28f5eefecd2c52c9452f5f1e6
           env:
             - name: PCI_IDS
@@ -31,7 +31,7 @@ spec:
             - mountPath: /sys
               name: sysfs
       containers:
-        - name: placeholder
+        - name: Idle
           image: busybox:latest
           command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
           securityContext:

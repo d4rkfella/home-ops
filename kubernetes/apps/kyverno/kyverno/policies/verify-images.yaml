@@ -42,12 +42,12 @@ spec:
             - predicateType: https://slsa.dev/provenance/v0.2
               conditions:
                 - all:
-                  - key: "{{ attestation.predicate.buildType }}"
+                  - key: "{{ regex_match('^https://github.com/slsa-framework/slsa-github-generator/container@.*','{{ buildType}}') }}"
                     operator: Equals
-                    value: "https://github.com/slsa-framework/slsa-github-generator/container@.*"
-                  - key: "{{ attestation.predicate.builder.id }}"
+                    value: true
+                  - key: "{{ regex_match('^https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main','{{ builder.id}}') }}"
                     operator: Equals
-                    value: "https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main"
+                    value: true
         - imageReferences:
           - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce

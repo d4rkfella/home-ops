@@ -26,10 +26,9 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/byparr
-              tag: 1.1.1@sha256:fe4b4c7c845b4c041a966b18f18708e8d5eab33674fabfc24b138314ec76b1fa
+              tag: 1.1.1@sha256:78f78a671ec782ef9fa793b2f3d18e0c1c360258b85d9ed13024bb170cb29f31
             env:
               TZ: Europe/Sofia
-              USE_HEADLESS: "1"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false

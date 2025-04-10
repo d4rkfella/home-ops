@@ -29,14 +29,7 @@ spec:
               tag: 1.1.1@sha256:a41ba576841bc0417e2dea4213c0a88506a0c457c7f5f598d75a5fbd62edc1a9
             env:
               TZ: Europe/Sofia
-              PORT: &port 80
-              HOST: "0.0.0.0"
-              TEST_URL: https://www.google.com
-              BROWSER_TIMEOUT: 40000
-              HEADLESS: true
-              LOG_LEVEL: info
-              LOG_HTML: false
-              CAPTCHA_SOLVER: none
+              UV_NO_CACHE: true
             probes:
               liveness: &probes
                 enabled: true
@@ -62,9 +55,9 @@ spec:
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
     service:

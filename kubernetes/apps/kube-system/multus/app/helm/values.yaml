@@ -39,7 +39,7 @@ controllers:
         terminationMessagePolicy: FallbackToLogsOnError
 defaultPodOptions:
   hostNetwork: true
-  terminationGracePeriodSeconds: 10
+  terminationGracePeriodSeconds: 15
   dnsPolicy: "Default"
 persistence:
   cni:

@@ -31,6 +31,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: policy-controller
   path: ./kubernetes/apps/kube-system/policy-controller/config
   prune: true
   sourceRef:

@@ -31,7 +31,7 @@ spec:
             - mountPath: /sys
               name: sysfs
       containers:
-        - name: Idle
+        - name: idle container
           image: busybox:latest
           command: ["sh", "-c", "echo 'DaemonSet active but idle'; sleep infinity"]
           securityContext:

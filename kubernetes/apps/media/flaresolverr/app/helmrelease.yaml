@@ -26,10 +26,9 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/byparr
-              tag: 1.1.1@sha256:a41ba576841bc0417e2dea4213c0a88506a0c457c7f5f598d75a5fbd62edc1a9
+              tag: 1.1.1@sha256:fe4b4c7c845b4c041a966b18f18708e8d5eab33674fabfc24b138314ec76b1fa
             env:
               TZ: Europe/Sofia
-              UV_NO_CACHE: true
             probes:
               liveness: &probes
                 enabled: true

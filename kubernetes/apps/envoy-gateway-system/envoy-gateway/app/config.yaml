@@ -1,0 +1,15 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+  name: envoy-proxy-config
+  namespace: envoy-gateway-system
+spec:
+  bootstrap:
+    type: Merge
+    value: |
+      static_resources:
+        clusters:
+        - name: xds_cluster
+          dns_lookup_family: V4_ONLY
+        - name: wasm_cluster
+          dns_lookup_family: V4_ONLY

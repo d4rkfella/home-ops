@@ -6,10 +6,10 @@ metadata:
 spec:
   bootstrap:
     type: JSONPatch
-    value: |
-      static_resources:
-        clusters:
-        - name: xds_cluster
-          dns_lookup_family: V4_ONLY
-        - name: wasm_cluster
-          dns_lookup_family: V4_ONLY
+    jsonPatches:
+      - op: add
+        path: /static_resources/clusters/1/dns_lookup_family
+        value: V4_ONLY
+      - op: add
+        path: /static_resources/clusters/2/dns_lookup_family
+        value: V4_ONLY

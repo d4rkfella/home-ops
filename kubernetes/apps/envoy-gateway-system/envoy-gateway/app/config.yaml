@@ -5,7 +5,7 @@ metadata:
   namespace: envoy-gateway-system
 spec:
   bootstrap:
-    type: Merge
+    type: JSONPatch
     value: |
       static_resources:
         clusters:

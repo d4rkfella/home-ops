@@ -48,19 +48,6 @@ spec:
             envFrom:
             - secretRef:
                 name: "{{ .Release.Name }}-secret"
-            probes:
-              readiness: &probes
-                enabled: false
-                spec:
-                  initialDelaySeconds: 2
-                  periodSeconds: 10
-                  failureThreshold: 3
-              liveness: *probes
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

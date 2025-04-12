@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbittorrent-distroless
-              tag: 5.0.4@sha256:ee3743ada732d1a6c861094723055af5e0f9c9945d8641c39bd6ac88d521f158
+              tag: 5.0.4@sha256:fb426d59a7df1f704aa0c1f433f52bb253b902f544a2b42619ff6de3437002eb
             env:
               UMASK: "022"
               TZ: Europe/Sofia
@@ -48,6 +48,19 @@ spec:
             envFrom:
             - secretRef:
                 name: "{{ .Release.Name }}-secret"
+            probes:
+              readiness: &probes
+                enabled: false
+                spec:
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  failureThreshold: 3
+              liveness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

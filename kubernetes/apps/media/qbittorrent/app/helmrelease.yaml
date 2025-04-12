@@ -50,7 +50,7 @@ spec:
                 name: "{{ .Release.Name }}-secret"
             probes:
               readiness: &probes
-                enabled: true
+                enabled: false
                 spec:
                   initialDelaySeconds: 2
                   periodSeconds: 10

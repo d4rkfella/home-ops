@@ -313,15 +313,14 @@ spec:
         groups:
           - name: oom
             rules:
-            - alert: OomKilled
-              annotations:
-                summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} was OOMKilled.
-              expr: |
-                increase(kube_pod_container_status_restarts_total[10m]) >= 1
-                and on(namespace, pod, container)
-                max_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+            - alert: ContainerOOMKilled
+              expr: kube_pod_container_status_terminated_reason{reason="OOMKilled"} > 0
+              for: 5m
               labels:
                 severity: critical
+              annotations:
+                summary: "Container was OOMKilled (pod {{ $labels.pod }})"
+                description: "Container in pod {{ $labels.namespace }}/{{ $labels.pod }} was OOMKilled."
       zfs-rules:
         groups:
           - name: zfs

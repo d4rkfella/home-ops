@@ -124,7 +124,6 @@ spec:
         path: /mnt/exos20/data/media
         globalMounts:
           - path: /data/media
-            readOnly: true
 
       cert:
         type: secret

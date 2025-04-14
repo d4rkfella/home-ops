@@ -85,6 +85,8 @@ spec:
         ports:
           http:
             port: *port
+          https:
+            port: 443
 
     serviceMonitor:
       app:

@@ -28,8 +28,8 @@ securityContext:
   enabled: true
   readOnlyRootFilesystem: true
   runAsNonRoot: true
-  runAsUser: 1000
-  runAsGroup: 1000
+  runAsUser: 65532
+  runAsGroup: 65532
   seccompProfile:
     type: RuntimeDefault
 podSpecExtra:

@@ -4,6 +4,7 @@ kind: HelmRelease
 metadata:
   name: &app jellyfin
 spec:
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template

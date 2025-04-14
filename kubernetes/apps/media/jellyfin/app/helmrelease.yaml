@@ -108,13 +108,13 @@ spec:
       tmp:
         type: emptyDir
 
-      transcode:
+      cache:
         type: persistentVolumeClaim
         size: 150Gi
         storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
         globalMounts:
-          - path: /transcode
+          - path: /cache
 
       media:
         type: nfs

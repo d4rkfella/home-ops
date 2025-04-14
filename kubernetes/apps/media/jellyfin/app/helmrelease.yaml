@@ -123,3 +123,11 @@ spec:
         globalMounts:
           - path: /data/media
             readOnly: true
+
+      cert:
+        type: secret
+        name: jellyfin-tls
+        globalMounts:
+          - path: /etc/ssl/certs/jellyfin-keystore.p12
+            subPath: keystore.p12
+            readOnly: true

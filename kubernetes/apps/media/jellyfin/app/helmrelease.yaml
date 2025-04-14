@@ -87,6 +87,9 @@ spec:
             port: *port
           https:
             port: 443
+          discovery:
+            port: 7359
+            protocol: UDP
 
     serviceMonitor:
       app:

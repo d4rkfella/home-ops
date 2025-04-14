@@ -98,7 +98,12 @@ spec:
 
     persistence:
       config:
-        existingClaim: *app
+        type: persistentVolumeClaim
+        size: 50Gi
+        storageClass: openebs-zfs-128k
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /config
 
       tmp:
         type: emptyDir

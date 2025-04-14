@@ -59,10 +59,10 @@ spec:
               requests:
                 nvidia.com/gpu: 1
                 cpu: 100m
-                memory: 512Mi
+                memory: 256Mi
               limits:
                 nvidia.com/gpu: 1
-                memory: 768Mi
+                memory: 256Mi
 
     defaultPodOptions:
       runtimeClassName: nvidia

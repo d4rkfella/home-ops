@@ -63,10 +63,10 @@ spec:
                 cpu: 100m
               limits:
                 memory: 6Gi
-                nvidia.com/gpu: 1
+                #nvidia.com/gpu: 1
 
     defaultPodOptions:
-      runtimeClassName: nvidia
+      #runtimeClassName: nvidia
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

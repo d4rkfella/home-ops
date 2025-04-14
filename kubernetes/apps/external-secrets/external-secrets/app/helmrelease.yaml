@@ -38,3 +38,42 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: external-secrets-values
+  values:
+    installCRDs: true
+    image:
+      repository: ghcr.io/external-secrets/external-secrets
+    extraArgs:
+      enable-secrets-caching: "true"
+      enable-managed-secrets-caching: "true"
+    webhook:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+    certController:
+      image:
+        repository: ghcr.io/external-secrets/external-secrets
+      serviceMonitor:
+        enabled: true
+        interval: 1m
+    serviceMonitor:
+      enabled: true
+      interval: 1m
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      enabled: true
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    podSpecExtra:
+      hostAliases:
+        - ip: "192.168.91.53"
+          hostnames:
+            - "vault.darkfellanetwork.com"

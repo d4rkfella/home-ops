@@ -20,7 +20,7 @@ spec:
       retries: 3
   values:
     image:
-      tag: v0.15.1
+      tag: v0.16.1
     fullnameOverride: *app
     provider:
       name: rfc2136

@@ -90,7 +90,7 @@
             "material-icon-theme.hidesExplorerArrows": true,
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,
-            "yaml.schemaStore.enable": true,
+            "yaml.schemaStore.enable": false,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"
             }

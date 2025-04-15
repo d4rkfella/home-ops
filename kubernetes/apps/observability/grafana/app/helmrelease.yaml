@@ -56,10 +56,7 @@ spec:
       GF_SERVER_ROOT_URL: https://grafana.darkfellanetwork.com
     grafana.ini:
       auth:
-        oauth_auto_login: true
         disable_login_form: true
-        oauth_skip_org_role_update_sync: false
-        skip_org_role_sync: false
       auth.generic_oauth:
           name: Keycloak-OAuth
           enabled: true
@@ -76,8 +73,11 @@ spec:
           signout_redirect_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.darkfellanetwork.com%2Flogin"
           role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
           role_attribute_strict: true
+          auto_login: true
+          allow_sign_up: false
           allow_assign_grafana_admin: true
           use_pkce: true
+          skip_org_role_sync: false
       users:
         auto_assign_org: true
         auto_assign_org_role: Viewer

@@ -95,11 +95,15 @@ spec:
       app:
         serviceName: jellyfin
         endpoints:
-          - port: http
-            scheme: http
+          - port: https
+            scheme: https
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
+            relabelings:
+            - sourceLabels: [__param_target]
+              targetLabel: __address__
+              replacement: jellyfin.darkfellanetwork.com
 
     persistence:
       config:

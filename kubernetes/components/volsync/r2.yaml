@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/external-secrets.io/externalsecret_v1beta1.json
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
@@ -20,7 +19,6 @@ spec:
     - extract:
         key: "secrets/volsync/${APP}"
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/volsync.backube/replicationsource_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationSource
 metadata:
@@ -46,7 +44,6 @@ spec:
     retain:
       daily: 7
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/volsync.backube/replicationdestination_v1alpha1.json
 apiVersion: volsync.backube/v1alpha1
 kind: ReplicationDestination
 metadata:

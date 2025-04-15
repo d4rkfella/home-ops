@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliumloadbalancerippool_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
 kind: CiliumLoadBalancerIPPool
 metadata:
@@ -10,7 +9,6 @@ spec:
     - start: 192.168.91.50
       stop: 192.168.91.99
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliuml2announcementpolicy_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy
 metadata:

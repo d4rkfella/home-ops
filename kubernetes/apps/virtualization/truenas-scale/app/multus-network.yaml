@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
@@ -33,7 +32,6 @@ spec:
       }
     }
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:

@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -34,7 +33,6 @@ spec:
             - port: "8200"
               protocol: TCP
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -59,7 +57,6 @@ spec:
           - port: "6443"
             protocol: TCP
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.darkfellanetwork.com/cilium.io/ciliumnetworkpolicy_v2.json
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:

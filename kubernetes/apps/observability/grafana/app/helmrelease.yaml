@@ -154,6 +154,10 @@ spec:
           revision: 6
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
+        jellyfin:
+          url: https://raw.githubusercontent.com/d4rkfella/jellyfin/main/grafana-dashboard.json
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         keycloak:
           # renovate: depName="KeyCloak Metrics"
           gnetID: 14390

@@ -1,5 +1,5 @@
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
+apiVersion: cdi.kubevirt.io/v1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-1m
@@ -9,7 +9,7 @@ spec:
       - ReadWriteMany
       volumeMode: Filesystem
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
+apiVersion: cdi.kubevirt.io/v1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-128k
@@ -19,7 +19,7 @@ spec:
       - ReadWriteMany
       volumeMode: Filesystem
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
+apiVersion: cdi.kubevirt.io/v1
 kind: StorageProfile
 metadata:
   name: openebs-zfs-32k

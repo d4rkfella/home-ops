@@ -51,8 +51,6 @@ spec:
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,panodata-map-panel
-      GF_SECURITY_ANGULAR_SUPPORT_ENABLED: false
       GF_SERVER_ROOT_URL: https://grafana.darkfellanetwork.com
     grafana.ini:
       auth:
@@ -253,9 +251,6 @@ spec:
         labelValue: ""
     plugins:
       - grafana-clock-panel
-      - grafana-piechart-panel
-      - grafana-worldmap-panel
-      - natel-discrete-panel
       - vonage-status-panel
     serviceMonitor:
       enabled: true

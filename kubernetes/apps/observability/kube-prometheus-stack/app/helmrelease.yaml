@@ -193,13 +193,6 @@ spec:
                 requests:
                   storage: 75Gi
         additionalScrapeConfigs:
-          - job_name: jellyfin
-            metrics_path: /metrics
-            params:
-              format: ['prometheus']
-            scheme: https
-            static_configs:
-              - targets: ['jellyfin.darkfellanetwork.com']
           - job_name: vault
             metrics_path: /v1/sys/metrics
             params:

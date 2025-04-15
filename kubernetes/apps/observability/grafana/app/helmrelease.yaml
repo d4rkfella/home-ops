@@ -74,7 +74,7 @@ spec:
         role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
         role_attribute_strict: true
         auto_login: true
-        allow_sign_up: false
+        allow_sign_up: true
         allow_assign_grafana_admin: true
         use_pkce: true
         skip_org_role_sync: false

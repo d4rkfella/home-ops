@@ -4,6 +4,14 @@ kube-state-metrics:
     - --custom-resource-state-only=false
   rbac:
     extraRules:
+      - apiGroups: ["coordination.k8s.io"]
+        resources:
+          - leases
+        verbs: ["list", "watch"]
+      - apiGroups: ["admissionregistration.k8s.io"]
+        resources:
+          - mutatingwebhookconfigurations
+        verbs: ["list", "watch"]
       - apiGroups: ["networking.k8s.io"]
         resources:
           - ingresses
@@ -30,6 +38,7 @@ kube-state-metrics:
           - configmaps
           - limitranges
           - secrets
+          - persistentvolumeclaims
         verbs: ["list", "watch"]
       - apiGroups: ["apps"]
         resources:

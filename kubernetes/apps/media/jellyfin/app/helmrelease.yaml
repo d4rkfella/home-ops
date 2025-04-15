@@ -95,11 +95,11 @@ spec:
       app:
         serviceName: jellyfin
         endpoints:
-          - port: http
-            scheme: http
+          - port: https
+            scheme: https
             path: /metrics
             interval: 1m
-            scrapeTimeout: 30s
+            scrapeTimeout: 20s
             tlsConfig:
               serverName: jellyfin.darkfellanetwork.com
 

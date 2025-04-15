@@ -100,10 +100,8 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-            relabelings:
-            - sourceLabels: [__param_target]
-              targetLabel: __address__
-              replacement: jellyfin.darkfellanetwork.com
+            tlsConfig:
+              serverName: jellyfin.darkfellanetwork.com
 
     persistence:
       config:

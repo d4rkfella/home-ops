@@ -92,11 +92,12 @@ spec:
             protocol: UDP
 
     serviceMonitor:
+      enabled: false
       app:
         serviceName: jellyfin
         endpoints:
-          - port: http
-            scheme: http
+          - port: https
+            scheme: https
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s

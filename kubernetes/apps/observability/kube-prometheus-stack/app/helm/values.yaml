@@ -4,6 +4,19 @@ kube-state-metrics:
     - --custom-resource-state-only=false
   rbac:
     extraRules:
+      - apiGroups: ["networking.k8s.io"]
+        resources:
+          - ingresses
+        verbs: ["list", "watch"]
+      - apiGroups: ["policy"]
+        resources:
+          - poddisruptionbudgets
+        verbs: ["list", "watch"]
+      - apiGroups: ["storage.k8s.io"]
+        resources:
+          - volumeattachments
+          - storageclasses
+        verbs: ["list", "watch"]
       - apiGroups: [""]
         resources:
           - pods
@@ -12,6 +25,7 @@ kube-state-metrics:
           - namespaces
           - replicationcontrollers
           - persistentvolumes
+          - resourcequotas
         verbs: ["list", "watch"]
       - apiGroups: ["apps"]
         resources:

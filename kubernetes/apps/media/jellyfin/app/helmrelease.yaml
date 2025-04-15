@@ -91,18 +91,17 @@ spec:
             port: 7359
             protocol: UDP
 
-    serviceMonitor:
-      enabled: false
-      app:
-        serviceName: jellyfin
-        endpoints:
-          - port: https
-            scheme: https
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
-            tlsConfig:
-              serverName: jellyfin.darkfellanetwork.com
+    #serviceMonitor:
+      #app:
+        #serviceName: jellyfin
+        #endpoints:
+          #- port: https
+            #scheme: https
+            #path: /metrics
+            #interval: 1m
+            #scrapeTimeout: 10s
+            #tlsConfig:
+              #serverName: jellyfin.darkfellanetwork.com
 
     persistence:
       config:

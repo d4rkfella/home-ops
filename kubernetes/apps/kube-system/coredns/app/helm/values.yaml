@@ -30,6 +30,8 @@ servers:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: forward
+        parameters: darkfellanetwork.com 192.168.91.41
+      - name: forward
         parameters: . 192.168.91.1
       - name: cache
         parameters: 30

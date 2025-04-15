@@ -4,7 +4,7 @@ kube-state-metrics:
   # retain any existing kube-state-metrics configuration.
   collectors: [ ]
   extraArgs:
-    - --custom-resource-state-only=true
+    - --custom-resource-state-only=false
   rbac:
     extraRules:
       - apiGroups:

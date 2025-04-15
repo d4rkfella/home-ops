@@ -137,7 +137,7 @@ spec:
 
     route:
       app:
-        hostnames: ["requests.darkfellanetwork.com"]
+        hostnames: ["requestss.darkfellanetwork.com"]
         parentRefs:
           - name: external
             namespace: envoy-gateway-system

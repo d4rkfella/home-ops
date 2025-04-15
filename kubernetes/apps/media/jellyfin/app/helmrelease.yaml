@@ -35,6 +35,7 @@ spec:
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
               JELLYFIN_PublishedServerUrl: https://jellyfin.darkfellanetwork.com
+              HEALTHCHECK_URL: https://jellyfin.darkfellanetwork.com/health
               TZ: Europe/Sofia
             probes:
               liveness: &probes

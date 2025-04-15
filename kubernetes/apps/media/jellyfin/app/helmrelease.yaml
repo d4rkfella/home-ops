@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/jellyfin
-              tag: 10.10.7@sha256:1ef3119178ab4f38dc220e684c3353a49874fef210d65d15966baf1b78d3224f
+              tag: 10.10.7@sha256:e76d921204bd5bd07ae1dde391cea9887fb2cd2061f004e0d4fa097e8a5abbb8
               pullPolicy: IfNotPresent
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
@@ -35,7 +35,6 @@ spec:
               JELLYFIN_FFmpeg__probesize: 50000000
               JELLYFIN_FFmpeg__analyzeduration: 50000000
               JELLYFIN_PublishedServerUrl: https://jellyfin.darkfellanetwork.com
-              HEALTHCHECK_URL: https://jellyfin.darkfellanetwork.com/health
               TZ: Europe/Sofia
             probes:
               liveness: &probes

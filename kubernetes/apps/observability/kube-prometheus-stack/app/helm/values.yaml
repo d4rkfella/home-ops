@@ -26,6 +26,10 @@ kube-state-metrics:
           - replicationcontrollers
           - persistentvolumes
           - resourcequotas
+          - endpoints
+          - configmaps
+          - limitranges
+          - secrets
         verbs: ["list", "watch"]
       - apiGroups: ["apps"]
         resources:

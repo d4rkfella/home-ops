@@ -102,6 +102,10 @@ spec:
             scrapeTimeout: 20s
             tlsConfig:
               serverName: jellyfin.darkfellanetwork.com
+        relabelings:
+          - sourceLabels: [__meta_kubernetes_service_annotation_external_dns_alpha_kubernetes_io_hostname]
+            targetLabel: __address__
+            replacement: jellyfin.darkfellanetwork.com:443
 
     persistence:
       config:

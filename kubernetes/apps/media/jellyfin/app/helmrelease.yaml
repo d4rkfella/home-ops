@@ -96,7 +96,7 @@ spec:
         serviceName: jellyfin
         endpoints:
           - port: http
-            scheme: https
+            scheme: http
             path: /metrics
             interval: 1m
             scrapeTimeout: 30s

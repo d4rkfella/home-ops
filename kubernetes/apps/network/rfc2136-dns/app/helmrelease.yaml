@@ -20,7 +20,9 @@ spec:
       retries: 3
   values:
     image:
-      tag: v0.16.1
+      repository: ghcr.io/d4rkfella/external-dns
+      tag: 0.16.1
+      pullPolicy: IfNotPresent
     fullnameOverride: *app
     provider:
       name: rfc2136

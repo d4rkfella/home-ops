@@ -62,7 +62,9 @@ spec:
             pods insecure
             fallthrough in-addr.arpa
         - name: forward
-          parameters: . 192.168.91.41
+          parameters:
+            - darkfellanetwork.com 192.168.91.41
+            - . 192.168.91.1
         - name: cache
           parameters: 30
         - name: loop

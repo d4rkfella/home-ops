@@ -99,7 +99,7 @@ spec:
             scheme: https
             path: /metrics
             interval: 1m
-            scrapeTimeout: 10s
+            scrapeTimeout: 30s
             tlsConfig:
               serverName: jellyfin.darkfellanetwork.com
 

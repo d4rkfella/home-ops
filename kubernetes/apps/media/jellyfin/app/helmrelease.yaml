@@ -95,7 +95,7 @@ spec:
       app:
         serviceName: jellyfin
         endpoints:
-          - port: 443
+          - port: https
             scheme: https
             path: /metrics
             interval: 1m

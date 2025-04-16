@@ -20,9 +20,7 @@ spec:
       retries: 3
   values:
     image:
-      repository: ghcr.io/d4rkfella/external-dns
-      tag: 0.16.1@sha256:0a2eb5826a448d5187f786c8fa1e86fa388dd8cfc311c489e2016ab6527bf0a1
-      pullPolicy: IfNotPresent
+      tag: 0.15.1
     fullnameOverride: *app
     provider:
       name: rfc2136

@@ -35,7 +35,7 @@ spec:
               - --web.listen-address=:8080
               - --web.config.file=/etc/web-config.yaml
               - --exporter.disable-openvpn
-              - --exporter.instance-label=router
+              - --exporter.instance-label='router'
             env:
               TZ: Europe/Sofia
               OPNSENSE_EXPORTER_OPS_API_KEY:

@@ -58,7 +58,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/ombi
-              tag: 4.47.1@sha256:4fc9e67101a8e2b8c881305652a2a054bfe0534fc1f097e04d656c36425b71b3
+              tag: 4.47.1@sha256:8ffb0e0959d9be6cc3e0e9162cec1dfccf71f4b58c55e7b0e4207fb0fe92ee53
               pullPolicy: IfNotPresent
             env:
               TZ: Europe/Sofia
@@ -118,13 +118,17 @@ spec:
         size: 50Gi
         storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          ombi:
+            app:
+              - path: /config
 
       database-config:
         type: secret
         name: ombi-secret
-        globalMounts:
-          - path: /config/database.json
-            subPath: database.json
-            readOnly: true
+        advancedMounts:
+          ombi:
+            app:
+              - path: /config/database.json
+                subPath: database.json
+                readOnly: true

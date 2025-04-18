@@ -111,7 +111,7 @@ spec:
             subPath: tls.crt
             readOnly: true
           - path: /etc/ssl/private/opnsense-exporter.key
-            subPath: tls.crt
+            subPath: tls.key
             readOnly: true
       web-config:
         type: secret

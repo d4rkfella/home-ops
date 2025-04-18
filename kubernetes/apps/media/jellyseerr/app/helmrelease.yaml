@@ -34,7 +34,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.0@sha256:0e0405ba85960c75ce4025c4cd989780e1928f7d255e2d082cb00ce98cb997fe
+              tag: 1.0.1@sha256:7b5db7d321baea6cc3e1fb0e3c7df4e86ef8460c1d7d36a669fce177fac8597d
             env:
               INIT_POSTGRES_DBNAME: &dbName jellyseerr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local

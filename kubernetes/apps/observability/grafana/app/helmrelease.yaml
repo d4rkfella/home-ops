@@ -142,7 +142,8 @@ spec:
       default:
         opnsense:
           url: https://raw.githubusercontent.com/AthennaMind/opnsense-exporter/main/deploy/grafana/dashboard-v1.json
-          datasource: Prometheus
+          datasource:
+            - { name: DS_PROMETHEUS-K0, value: Prometheus }
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/overview.json
           datasource: Prometheus

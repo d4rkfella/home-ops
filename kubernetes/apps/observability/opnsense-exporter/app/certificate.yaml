@@ -1,0 +1,24 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: opnsense-exporter-tls
+  namespace: database
+spec:
+  secretName: opnsense-exporter-tls
+  duration: 2160h
+  renewBefore: 360h
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS8
+    rotationPolicy: Always
+    size: 384
+  dnsNames:
+    - opnsense-exporter
+    - opnsense-exporter.observability
+    - opnsense-exporter.observability.svc
+    - opnsense-exporter.observability.svc.cluster.local
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

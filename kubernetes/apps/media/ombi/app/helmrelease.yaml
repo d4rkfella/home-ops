@@ -58,7 +58,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/ombi
-              tag: 4.47.1@sha256:8ffb0e0959d9be6cc3e0e9162cec1dfccf71f4b58c55e7b0e4207fb0fe92ee53
+              tag: 4.47.1@sha256:f93aa2474e601c7f53715f99729fffd42df8ff08b7f6628d51aacfc413aff302
               pullPolicy: IfNotPresent
             env:
               TZ: Europe/Sofia

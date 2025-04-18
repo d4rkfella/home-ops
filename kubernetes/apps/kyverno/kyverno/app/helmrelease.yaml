@@ -33,6 +33,17 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+        - target:
+            kind: Deployment
+            name: kyverno-admission-controller
+          patch: |
+            - op: replace
+              path: /spec/template/spec/containers/0/resources/limits
+              value:
+                memory: "1024Mi"
   values:
     crds:
       install: true
@@ -40,12 +51,6 @@ spec:
       enabled: true
     admissionController:
       replicas: 1
-      resources:
-        limits:
-          memory: 3072Mi
-        requests:
-          cpu: 100m
-          memory: 1024Mi
       rbac:
         clusterRole:
           extraResources:

@@ -40,6 +40,12 @@ spec:
       enabled: true
     admissionController:
       replicas: 1
+      resources:
+        limits:
+          memory: 3072Mi
+        requests:
+          cpu: 100m
+          memory: 1024Mi
       rbac:
         clusterRole:
           extraResources:

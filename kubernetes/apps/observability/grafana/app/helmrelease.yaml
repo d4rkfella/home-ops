@@ -140,6 +140,9 @@ spec:
               path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
+        opnsense:
+          url: https://raw.githubusercontent.com/AthennaMind/opnsense-exporter/main/deploy/grafana/dashboard-v1.json
+          datasource: Prometheus
         cert-manager:
           url: https://raw.githubusercontent.com/monitoring-mixins/website/master/assets/cert-manager/dashboards/overview.json
           datasource: Prometheus

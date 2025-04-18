@@ -96,6 +96,7 @@ spec:
                 name: *secret
                 key: password
             tlsConfig:
+              serverName: opnsense-exporter.observability.svc.cluster.local
               ca:
                 secret:
                   name: opnsense-exporter-tls

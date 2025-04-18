@@ -32,7 +32,7 @@ spec:
               - --runtime.gomaxprocs=2
               - --opnsense.protocol=https
               - --opnsense.address=router.darkfellanetwork.com
-              - --exporter.instance-label=router
+              - --exporter.instance-label="router"
               - --web.listen-address=:8080
               - --web.config.file=/etc/web-config.yaml
               - --exporter.disable-openvpn

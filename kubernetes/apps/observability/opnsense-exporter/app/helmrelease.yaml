@@ -102,12 +102,6 @@ spec:
                   name: opnsense-exporter-tls
                   key: ca.crt
               insecureSkipVerify: false
-            metricRelabelings:
-              - sourceLabels: [opnsense_instance]
-                targetLabel: opnsense_instance
-                regex: '"?(.*)"?'
-                replacement: '$1'
-
 
     persistence:
       tls:

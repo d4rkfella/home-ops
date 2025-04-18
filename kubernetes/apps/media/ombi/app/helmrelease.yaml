@@ -132,3 +132,10 @@ spec:
               - path: /config/database.json
                 subPath: database.json
                 readOnly: true
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          ombi:
+            app:
+              - path: /tmp

@@ -52,9 +52,18 @@ spec:
             probes:
               liveness: &probes
                 enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 8080
+                    scheme: HTTPS
+                    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUNYVENDQWVPZ0F3SUJBZ0lVVlJsK3NKV3paMGlqVk9yTVk3RXNWSHVJMjFzd0NnWUlLb1pJemowRUF3TXcKWERFUk1BOEdBMVVFQmhNSVFuVnNaMkZ5YVdFeERqQU1CZ05WQkFjVEJWTnZabWxoTVJVd0V3WURWUVFLRXd4RQpZWEpyWm1Wc2JHRk9SVlF4SURBZUJnTlZCQU1URjBSaGNtdG1aV3hzWVU1RlZDQlNiMjkwSUVOQklIWXhNQjRYCkRUSTFNREV5TWpJd05EVXhObG9YRFRNMU1ERXlNREl3TkRVME5sb3dYREVSTUE4R0ExVUVCaE1JUW5Wc1oyRnkKYVdFeERqQU1CZ05WQkFjVEJWTnZabWxoTVJVd0V3WURWUVFLRXd4RVlYSnJabVZzYkdGT1JWUXhJREFlQmdOVgpCQU1URjBSaGNtdG1aV3hzWVU1RlZDQlNiMjkwSUVOQklIWXhNSFl3RUFZSEtvWkl6ajBDQVFZRks0RUVBQ0lECllnQUV6N01ZTUIrU0ZwVUR6eWtId1FENjIvdjNpaEwrWGJseXdJYkxDMjRKSmszWC96anBHQjE5NE91M3Yzd20KM3hudkxmQ3AwN0tPM3M3MzUzMFovT2tLQlAyZmp4MUZhalFwVy93QTZsRkc1dG9LcElQU2crQXBDRlc1a3M2MwpsY25CbzJZd1pEQU9CZ05WSFE4QkFmOEVCQU1DQVFZd0VnWURWUjBUQVFIL0JBZ3dCZ0VCL3dJQkFqQWRCZ05WCkhRNEVGZ1FVdTN2Y1QzVkNja2lLOVhYeFVJL1JsN1g5MUxnd0h3WURWUjBqQkJnd0ZvQVV1M3ZjVDNWQ2NraUsKOVhYeFVJL1JsN1g5MUxnd0NnWUlLb1pJemowRUF3TURhQUF3WlFJeEFMd21NVkIyK25XcEVaTm1CSGZNKzdlVwprQnhYV0c3YkJtbXdaWGNoeStDblNta2ZMS2hRb0d0Uzh4dER4bGJEaHdJd2FJWWhQbmxLNGlESTdGaGtDK21RClorUkpZYW96blFLU0VHWUZObVJQMXpKYVVGRzI2VDV4MXd3dFRjdmdmVm84Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
               readiness: *probes
-              startup:
-                enabled: false
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -78,7 +87,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: 8080
+            port: *port
 
     serviceMonitor:
       app:
@@ -115,6 +124,7 @@ spec:
           - path: /etc/ssl/private/opnsense-exporter.key
             subPath: tls.key
             readOnly: true
+
       web-config:
         type: secret
         name: *secret

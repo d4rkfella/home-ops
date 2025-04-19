@@ -52,18 +52,25 @@ radarr:
         assign_scores_to:
           - name: SQP-3
 
+      # Unwanted
       - trash_ids:
-          - 2899d84dc9372de3408e6d8cc18e9666 # x264
+          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         assign_scores_to:
           - name: SQP-3
-            #score: 0
-
+            score: 0
       - trash_ids:
           - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
         assign_scores_to:
           - name: SQP-3
+
+      # Enable x264 releases
+      - trash_ids:
+          - 2899d84dc9372de3408e6d8cc18e9666 # x264
+        assign_scores_to:
+          - name: SQP-3
             score: 0
 
+      # Optional
       - trash_ids:
           - b17886cb4158d9fea189859409975758 # HDR10+ Boost
           - 55a5b50cb416dea5a50c4955896217ab # DV HDR10+ Boost
@@ -80,6 +87,8 @@ radarr:
         assign_scores_to:
           - name: SQP-3
 
+      # Optional SDR
+      # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB
       - trash_ids:
           - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
         assign_scores_to:

@@ -30,9 +30,11 @@ radarr:
               - WEBDL-2160p
               - WEBRip-2160p
               - Remux-2160p
+          - name: WEB|Remux|1080p
+            qualities:
               - WEBDL-1080p
               - WEBRip-1080p
-          - name: Remux-1080p
+              - Remux-1080p
 
     include:
       - template: radarr-quality-definition-sqp-uhd

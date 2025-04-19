@@ -8,10 +8,10 @@ radarr:
     replace_existing_custom_formats: true
 
     media_naming:
-      folder: plex-tmdb
+      folder: jellyfin-tmdb
       movie:
         rename: true
-        standard: plex-tmdb
+        standard: jellyfin-tmdb
 
     quality_profiles:
       - name: SQP-3
@@ -94,7 +94,7 @@ sonarr:
     replace_existing_custom_formats: true
 
     media_naming:
-      series: plex-tvdb
+      series: jellyfin-tvdb
       season: default
       episodes:
         rename: true

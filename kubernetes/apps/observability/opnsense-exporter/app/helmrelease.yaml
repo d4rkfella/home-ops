@@ -86,7 +86,7 @@ spec:
           - port: http
             scheme: https
             path: /metrics
-            interval: 2m
+            interval: 30s
             scrapeTimeout: 10s
             basicAuth:
               username:

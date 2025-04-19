@@ -73,6 +73,29 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /oauth2/ping
+                    port: &port 4180
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /oauth2/ready
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
             securityContext: *securityContext
 
           app:
@@ -136,7 +159,7 @@ spec:
                 spec:
                   httpGet:
                     path: /alive
-                    port: 4180
+                    port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -168,7 +191,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port 4180
+            port: *port
 
     route:
       app:
@@ -194,7 +217,7 @@ spec:
             app:
               - path: /data
 
-      oauth2-proxy-config:
+      secrets:
         type: secret
         name: *secret
         advancedMounts:
@@ -203,23 +226,10 @@ spec:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-
-      postgres-ca:
-        type: secret
-        name: *secret
-        advancedMounts:
-          vaultwarden:
+              - path: /etc/ssl/certs/Internal-Root-CA.crt
+                subPath: ca.crt
+                readOnly: true
             app:
               - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: postgres-ca.crt
-                readOnly: true
-
-      internal-ca:
-        type: secret
-        name: *secret
-        advancedMounts:
-          vaultwarden:
-            oauth2-proxy:
-              - path: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
                 readOnly: true

@@ -93,8 +93,28 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
+            livenessProbe:
+              httpGet:
+                path: /oauth2/ping
+                port: &port 8082
+                scheme: HTTP
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            readinessProbe:
+              httpGet:
+                path: /oauth2/ready
+                port: *port
+                scheme: HTTP
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
             ports:
-            - containerPort: 8082
+            - containerPort: *port
               name: oauth-proxy
               protocol: TCP
             securityContext:
@@ -168,7 +188,6 @@ spec:
               scopes: ["openid", "profile", "email"]
               endpoint_params:
                 grant_type: client_credentials
-        alertingEndpoints: []
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
@@ -230,8 +249,28 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: DRAGONFLY_PASSWORD
+            livenessProbe:
+              httpGet:
+                path: /oauth2/ping
+                port: *port
+                scheme: HTTP
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            readinessProbe:
+              httpGet:
+                path: /oauth2/ready
+                port: *port
+                scheme: HTTP
+              initialDelaySeconds: 5
+              timeoutSeconds: 1
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
             ports:
-            - containerPort: 8082
+            - containerPort: *port
               name: oauth-proxy
               protocol: TCP
             resources: {}

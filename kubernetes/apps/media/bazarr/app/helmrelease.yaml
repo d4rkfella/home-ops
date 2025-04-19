@@ -75,8 +75,8 @@ spec:
                 spec:
                   httpGet:
                     path: /oauth2/ping
-                    port: 4180
-                  initialDelaySeconds: 5
+                    port: &port 4180
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -86,8 +86,8 @@ spec:
                 spec:
                   httpGet:
                     path: /oauth2/ready
-                    port: 4180
-                  initialDelaySeconds: 5
+                    port: *port
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -120,7 +120,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/system/ping
-                    port: 4180
+                    port: *port
                   initialDelaySeconds: 5
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -158,7 +158,7 @@ spec:
         controller: bazarr
         ports:
           http:
-            port: &port 4180
+            port: *port
 
     route:
       app:
@@ -210,7 +210,7 @@ spec:
             app:
               - path: /data/media
 
-      oauth2-proxy-config:
+      secrets:
         type: secret
         name: *secret
         advancedMounts:
@@ -219,13 +219,6 @@ spec:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-
-      darkfellanet-root-ca:
-        type: secret
-        name: *secret
-        advancedMounts:
-          bazarr:
-            oauth2-proxy:
               - path: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true

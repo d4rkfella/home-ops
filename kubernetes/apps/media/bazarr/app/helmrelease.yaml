@@ -55,7 +55,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
-        containers:
           oauth2-proxy:
             image:
               repository: quay.io/oauth2-proxy/oauth2-proxy
@@ -92,7 +91,9 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
             securityContext: *securityContext
+            restartPolicy: Always
 
+        containers:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr-distroless

@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/jellyseerr
-              tag: 2.5.2@sha256:729dfcf95b500806b05bdadb6a11c55fe94cfac48a0abcb134dcfcf998558c13
+              tag: 2.5.2@sha256:9a11e853d1e66f32f4c3735bc9db39e33a1e2b5cc2483615dfd2a661344c5ca7
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"
@@ -86,6 +86,24 @@ spec:
               DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
               DB_LOG_QUERIES: "false"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext: *securityContext
             resources:
               requests:

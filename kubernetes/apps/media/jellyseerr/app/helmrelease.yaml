@@ -1,0 +1,191 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app jellyseerr
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  driftDetection:
+    mode: enabled
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  dependsOn:
+    - name: volsync
+      namespace: volsync-system
+
+  values:
+    controllers:
+      jellyseerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/d4rkfella/postgres-init
+              tag: 1.0.1@sha256:3f0afb2a62c2b56c9072ccb499e6ce6d5bd9c87d85e5f39df58333435d0c4025
+            env:
+              INIT_POSTGRES_DBNAME: &dbName jellyseerr
+              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              INIT_POSTGRES_SSLMODE: require
+              INIT_POSTGRES_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret jellyseerr-secret
+                    key: &pgUser POSTGRES_USERNAME
+              INIT_POSTGRES_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: &pgPass POSTGRES_PASSWORD
+              INIT_POSTGRES_SUPER_USER: postgres-db-manager
+              INIT_POSTGRES_SUPER_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: POSTGRES_SUPER_PASS
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/jellyseerr
+              tag: 2.5.2@sha256:6fa910b95983110a446b844632b6309a96c27c485be42251bb105beec342e8d0
+            env:
+              TZ: Europe/Sofia
+              LOG_LEVEL: "info"
+              PORT: &port 80
+              DB_TYPE: postgres
+              DB_HOST: *dbHost
+              DB_NAME: *dbName
+              DB_USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgUser
+              DB_PASS:
+                valueFrom:
+                  secretKeyRef:
+                    name: *secret
+                    key: *pgPass
+              DB_USE_SSL: "true"
+              DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
+              DB_LOG_QUERIES: "false"
+              DB_SSL_REJECT_UNAUTHORIZED: "true"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext: *securityContext
+            resources:
+              requests:
+                cpu: 10m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      hostAliases:
+        - ip: "192.168.91.52"
+          hostnames:
+            - "radarr.darkfellanetwork.com"
+            - "sonarr.darkfellanetwork.com"
+        - ip: "192.168.91.75"
+          hostnames:
+            - "jellyfin.darkfellanetwork.com"
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile: { type: RuntimeDefault }
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        hostnames: ["requests.darkfellanetwork.com"]
+        parentRefs:
+          - name: external
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+
+    persistence:
+      config:
+        existingClaim: *app
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /usr/lib/Jellyseerr/config
+
+      cache:
+        enabled: true
+        type: persistentVolumeClaim
+        size: 20Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /usr/lib/Jellyseerr/config/cache
+
+      logs:
+        type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /usr/lib/Jellyseerr/config/logs
+
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /tmp
+
+      postgres-ca:
+        type: secret
+        name: *secret
+        advancedMounts:
+          jellyseerr:
+            app:
+              - path: /etc/ssl/certs/postgres-ca.crt
+                subPath: ca.crt
+                readOnly: true

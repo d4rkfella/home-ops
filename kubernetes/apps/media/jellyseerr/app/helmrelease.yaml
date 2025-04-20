@@ -86,24 +86,24 @@ spec:
               DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
               DB_LOG_QUERIES: "false"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/v1/status
-                    port: *port
-                  initialDelaySeconds: 2
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
+            #probes:
+              #liveness: &probes
+                #enabled: true
+                #custom: true
+                #spec:
+                  #httpGet:
+                    #path: /api/v1/status
+                    #port: *port
+                  #initialDelaySeconds: 2
+                  #periodSeconds: 10
+                  #timeoutSeconds: 1
+                  #failureThreshold: 3
+              #readiness: *probes
+              #startup:
+                #enabled: true
+                #spec:
+                  #failureThreshold: 30
+                  #periodSeconds: 10
             securityContext: *securityContext
             resources:
               requests:

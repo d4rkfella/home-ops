@@ -174,12 +174,12 @@ spec:
             app:
               - path: /usr/lib/jellyseerr/config/logs
 
-      tmp:
+      next-cache:
         type: emptyDir
         advancedMounts:
           jellyseerr:
             app:
-              - path: /tmp
+              - path: /usr/lib/jellyseerr/.next/cache
 
       postgres-ca:
         type: secret

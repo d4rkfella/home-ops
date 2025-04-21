@@ -86,7 +86,6 @@ spec:
               DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
               DB_LOG_QUERIES: "false"
               DB_SSL_REJECT_UNAUTHORIZED: "true"
-              NEXT_CACHE_DIR: /tmp/.next/cache
             probes:
               liveness: &probes
                 enabled: true

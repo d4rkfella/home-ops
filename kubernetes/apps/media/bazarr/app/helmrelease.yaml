@@ -96,8 +96,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/bazarr
-              tag: 1.5.1
+              repository: ghcr.io/d4rkfella/bazarr-distroless
+              tag: 1.5.2@sha256:f79d294c539fb9b80ccb60173dd310462a47767009f0994d3155fcc82389a4f5
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

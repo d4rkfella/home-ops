@@ -1,0 +1,53 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &name apk-repository-runner
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+  driftDetection:
+    mode: enabled
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    githubConfigUrl: https://github.com/d4rkfella/apk-repository
+    githubConfigSecret: arc-runners-secret
+    namespaceOverride: arc-runners
+    minRunners: 1
+    maxRunners: 3
+    containerMode:
+      type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: openebs-zfs-128k
+        resources:
+          requests:
+            storage: 50Gi
+    template:
+      spec:
+        containers:
+          - name: runner
+            image: ghcr.io/actions/actions-runner:2.323.0@sha256:831a2607a2618e4b79d9323b4c72330f3861768a061c2b92a845e9d214d80e5b
+            command: ["/home/runner/run.sh"]
+            env:
+              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+                value: "false"
+              - name: NODE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+        securityContext:
+          fsGroup: 123
+        serviceAccountName: *name
+    controllerServiceAccount:
+      name: actions-runner-controller
+      namespace: arc-system

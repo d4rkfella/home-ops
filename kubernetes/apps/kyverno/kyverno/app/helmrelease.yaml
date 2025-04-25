@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/kyverno/charts/kyverno
   ref:
-    tag: 3.3.7
+    tag: 3.4.0
   verify:
     provider: cosign
 ---

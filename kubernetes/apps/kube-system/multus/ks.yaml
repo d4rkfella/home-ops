@@ -22,4 +22,4 @@ spec:
   postBuild:
     substitute:
       # renovate: datasource=github-releases depName=containernetworking/plugins
-      CNI_PLUGINS_VERSION: "v1.6.2"
+      CNI_PLUGINS_VERSION: v1.7.1

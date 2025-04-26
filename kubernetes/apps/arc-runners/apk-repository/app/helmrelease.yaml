@@ -29,24 +29,38 @@ spec:
     namespaceOverride: arc-runners
     minRunners: 1
     maxRunners: 3
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: openebs-zfs-128k
-        resources:
-          requests:
-            storage: 50Gi
     template:
       spec:
+        securityContext:
+          fsGroup: 1001
         containers:
-          - name: runner
-            image: ghcr.io/actions/actions-runner:2.323.0
-            command: ["/home/runner/run.sh"]
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "true"
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          env:
+            - name: ACTIONS_RUNNER_CONTAINER_HOOKS
+              value: /home/runner/k8s/index.js
+            - name: ACTIONS_RUNNER_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+              value: "true"
+          volumeMounts:
+            - name: work
+              mountPath: /home/runner/_work
         serviceAccountName: *name
+        volumes:
+        - name: work
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 50Gi
+                storageClassName: openebs-zfs-128k
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

@@ -23,7 +23,6 @@ WORKDIR /tmp
 
 RUN apk add --no-cache \
         curl \
-        gnupg \
         ca-certificates \
         coreutils \
         expect \

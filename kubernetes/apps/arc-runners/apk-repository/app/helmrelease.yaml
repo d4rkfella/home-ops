@@ -44,8 +44,11 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.hostIP
-        securityContext:
-          fsGroup: 123
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1001
+              runAsGroup: 1001
+              fsGroup: 1001
         serviceAccountName: *name
     controllerServiceAccount:
       name: actions-runner-controller

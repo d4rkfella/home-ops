@@ -22,7 +22,7 @@ spec:
     cleanupOnFail: true
     remediation:
       strategy: rollback
-      retries: 4
+      retries: 3
   values:
     githubConfigUrl: https://github.com/d4rkfella/apk-repository
     githubConfigSecret: arc-runners-secret
@@ -31,17 +31,11 @@ spec:
     maxRunners: 3
     containerMode:
       type: dind
-      kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: openebs-zfs-128k
-        resources:
-          requests:
-            storage: 50Gi
     template:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/actions-runner:2.323.0@sha256:ce124079566d65b7fd7ef605e0ab23421a10bb9ebe753c9268565b5023c3b71d
+            image: ghcr.io/d4rkfella/actions-runner:2.323.0@sha256:248e62946530adb85e3b73c700f8e021ebc3241dc471750aa2a8c9f54afb9453
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
@@ -51,7 +45,10 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
         securityContext:
-          fsGroup: 123
+          runAsNonRoot: true
+          runAsUser: 1001
+          runAsGroup: 1001
+          fsGroup: 1001
         serviceAccountName: *name
     controllerServiceAccount:
       name: actions-runner-controller

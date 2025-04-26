@@ -27,6 +27,7 @@ RUN apk add --no-cache \
         coreutils \
         expect \
         cosign \
+        gnupg \
         unzip && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \

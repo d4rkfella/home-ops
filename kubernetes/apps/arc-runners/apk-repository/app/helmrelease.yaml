@@ -22,7 +22,7 @@ spec:
     cleanupOnFail: true
     remediation:
       strategy: rollback
-      retries: 3
+      retries: 4
   values:
     githubConfigUrl: https://github.com/d4rkfella/apk-repository
     githubConfigSecret: arc-runners-secret

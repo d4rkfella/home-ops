@@ -30,7 +30,7 @@ spec:
     minRunners: 1
     maxRunners: 3
     containerMode:
-      type: kubernetes
+      type: dind
       kubernetesModeWorkVolumeClaim:
         accessModes: ["ReadWriteOnce"]
         storageClassName: openebs-zfs-128k

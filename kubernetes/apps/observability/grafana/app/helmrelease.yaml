@@ -253,7 +253,7 @@ spec:
     plugins:
       - grafana-clock-panel
       - vonage-status-panel
-      - https://grafana.com/api/plugins/victoriametrics-logs-datasource/versions/0.16.3/download
+      - victoriametrics-logs-datasource
     serviceMonitor:
       enabled: true
       metricRelabelings:

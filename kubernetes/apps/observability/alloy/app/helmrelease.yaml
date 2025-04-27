@@ -41,6 +41,24 @@ spec:
         create: false
         name: alloy-configmap
         key: config.alloy
+      storagePath: /var/lib/alloy
+      enableReporting: false
+      mounts:
+        extra:
+          - name: alloy
+            mountPath: /var/lib/alloy
     controller:
       podAnnotations:
         configmap.reloader.stakater.com/reload: alloy-configmap
+      type: "statefulset"
+      replicas: 1
+      enableStatefulSetAutoDeletePVC: true
+      volumeClaimTemplates:
+        - metadata:
+            name: alloy
+          spec:
+            accessModes: [ReadWriteOnce]
+            storageClassName: openebs-zfs-128k
+            resources:
+              requests:
+                storage: 5Gi

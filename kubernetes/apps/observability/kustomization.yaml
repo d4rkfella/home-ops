@@ -8,7 +8,7 @@ components:
 resources:
   - ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
-  - ./loki/ks.yaml
+  - ./victorialogs/ks.yaml
   - ./alloy/ks.yaml
   - ./gatus/ks.yaml
   - ./opnsense-exporter/ks.yaml

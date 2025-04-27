@@ -111,13 +111,10 @@ spec:
               timeInterval: 1m
               oauthPassThru: true
             isDefault: true
-          - name: Loki
-            type: loki
-            uid: loki
+          - name: VictoriaLogs
+            type: victorialogs-datasource
             access: proxy
-            url: http://loki-headless.observability.svc.cluster.local:3100
-            jsonData:
-              maxLines: 250
+            url: http://victoria-logs-server.observability.svc:9428
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
@@ -256,8 +253,12 @@ spec:
     plugins:
       - grafana-clock-panel
       - vonage-status-panel
+      - https://github.com/VictoriaMetrics/victorialogs-datasource/releases/download/v0.4.0/victorialogs-datasource-v0.4.0.zip;victorialogs-datasource
     serviceMonitor:
       enabled: true
+      metricRelabelings:
+        - action: labeldrop
+          regex: (pod)
     route:
       main:
         enabled: true

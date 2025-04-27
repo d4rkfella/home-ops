@@ -76,6 +76,8 @@ machine:
             - amd_pstate.shared_mem=1
             - lsm=landlock,lockdown,yama,apparmor,bpf
             - lsm.debug
+            - -lockdown
+            - lockdown=integrity
             - module_blacklist=mpt3sas
             - spec_rstack_overflow=microcode
             - zfs.zfs_arc_shrinker_limit=0

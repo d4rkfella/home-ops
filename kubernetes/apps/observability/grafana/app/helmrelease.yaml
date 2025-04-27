@@ -112,9 +112,10 @@ spec:
               oauthPassThru: true
             isDefault: true
           - name: VictoriaLogs
-            type: victorialogs-datasource
+            type: victoriametrics-logs-datasource
             access: proxy
             url: http://victoria-logs-server.observability.svc:9428
+            isDefault: true
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager

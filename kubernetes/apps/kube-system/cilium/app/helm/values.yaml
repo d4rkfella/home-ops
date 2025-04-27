@@ -9,7 +9,7 @@ bandwidthManager:
 bpf:
   masquerade: true
   preallocateMaps: true
-  tproxy: false
+  tproxy: true
   datapathMode: netkit
 l7Proxy: true
 cgroup:
@@ -37,6 +37,7 @@ l2announcements:
   enabled: true
 socketLB:
   enabled: true
+  terminatePodConnections: true
 localRedirectPolicy: true
 operator:
   dashboards:
@@ -57,22 +58,20 @@ routingMode: native
 securityContext:
   capabilities:
     ciliumAgent:
+      - BPF
       - CHOWN
+      - DAC_OVERRIDE
+      - FOWNER
+      - IPC_LOCK
       - KILL
       - NET_ADMIN
       - NET_RAW
-      - IPC_LOCK
-      - SYS_RESOURCE
       - PERFMON
-      - BPF
-      - DAC_OVERRIDE
-      - SYS_ADMIN
-      - FOWNER
       - SETGID
       - SETUID
+      - SYS_ADMIN
+      - SYS_RESOURCE
     cleanCiliumState:
       - NET_ADMIN
-      - SYS_RESOURCE
-      - PERFMON
-      - BPF
       - SYS_ADMIN
+      - SYS_RESOURCE

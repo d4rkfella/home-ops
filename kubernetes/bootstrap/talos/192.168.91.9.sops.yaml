@@ -69,6 +69,9 @@ machine:
             - -lockdown
             - lockdown=integrity
             - module_blacklist=mpt3sas
+            - spec_rstack_overflow=microcode
+            - zfs.zfs_arc_shrinker_limit=0
+            - zfs.zfs_arc_max=34359738368
         image: factory.talos.dev/installer-secureboot/${TALOS_SCHEMATIC_ID}:${TALOS_VERSION}
         wipe: false
     files:
@@ -86,33 +89,19 @@ machine:
         servers:
             - time.cloudflare.com
     sysctls:
-        # Watchdog
-        fs.inotify.max_user_watches: 1048576
-        # Watchdog
-        fs.inotify.max_user_instances: 8192
-        # 10Gb/s
-        net.core.default_qdisc: fq
-        # 10Gb/s | Cloudflared / QUIC
-        net.core.rmem_max: 67108864
-        # 10Gb/s | Cloudflared / QUIC
-        net.core.wmem_max: 67108864
-        # 10Gb/s
+        fs.inotify.max_queued_events: "65536"
+        fs.inotify.max_user_watches: "1048576"
+        fs.inotify.max_user_instances: "8192"
+        net.core.default_qdisc: fq_codel
+        net.core.rmem_max: "67108864"
+        net.core.wmem_max: "67108864"
         net.ipv4.tcp_congestion_control: bbr
-        # TCP Fast Open
-        net.ipv4.tcp_fastopen: 3
-        # 10Gb/s
-        net.ipv4.tcp_rmem: 4096 87380 33554432
-        # 10Gb/s
-        net.ipv4.tcp_wmem: 4096 65536 33554432
-        # 10Gb/s
-        net.ipv4.tcp_window_scaling: 1
-        # Postgres
-        vm.nr_hugepages: 29696
-        net.core.bpf_jit_harden: 1
-        user.max_user_namespaces: 11255
+        net.ipv4.tcp_rmem: 4096 131072 33554432
+        net.ipv4.tcp_wmem: 4096 131072 33554432
+        vm.nr_hugepages: "29696"
+        net.core.bpf_jit_harden: "1"
+        user.max_user_namespaces: "49152"
     sysfs:
-        module.zfs.parameters.zfs_arc_max: 34359738368
-        module.zfs.parameters.zfs_arc_sys_free: 15125558643
         kernel.mm.ksm.run: 1
     features:
         rbac: true
@@ -204,10 +193,6 @@ cluster:
             listen-metrics-urls: http://0.0.0.0:2381
     allowSchedulingOnControlPlanes: true
 sops:
-    kms: []
-    gcp_kms: []
-    azure_kv: []
-    hc_vault: []
     age:
         - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
           enc: |
@@ -218,9 +203,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-03-14T22:26:28Z"
-    mac: ENC[AES256_GCM,data:9jjrISO3PSFkAVj5DHdQXhLWfLajuBTMWrS8cM6+RzjJaEdbR4F2XYTNQdwV+bRub8wck5j262ionL4WKgZuCspcbIqslDPUgsR7wSUr9wtmk/EPLHVYKxZg+R9NNi7Kvo5sTm+OseqIe6r8czvQXSLsvwszVYv5mN+9DuAcSYQ=,iv:ChGWcJoNRMFADO6BYlTgohGE5xEZqPaXEWdVwee/iKI=,tag:0imeNCbeZV063GwAav2diw==,type:str]
-    pgp: []
+    lastmodified: "2025-04-27T09:30:15Z"
+    mac: ENC[AES256_GCM,data:qElDT0i4yw+W76ogXc+3Eh20TI3HYhGZbA9ZH3SqpS8GoZLUibErSwl1AZrNvh1nC5FeyMGY0bnFkVneL39Avij6K/gUUyu1yeDSCH2P+he5SrS6L6CYErm5uDqJMoKgCSCbD9ct26kw6dXLoOarcOnrYb9F8NjufbU2tHgzaXg=,iv:L5WsdGkuMAxIrd4hvIBQAFrWZYlmrtG3OsQc25rcE/Q=,tag:7X4Fw+AMqZm+RHeIUseJ9w==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
-    version: 3.9.4
+    version: 3.10.2

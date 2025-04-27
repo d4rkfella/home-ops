@@ -12,6 +12,8 @@ spec:
   ref:
     tag: 1.0.2
   url: oci://ghcr.io/d4rkfella/charts-mirror/alloy
+  verify:
+    provider: cosign
 ---
 # yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2

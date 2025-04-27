@@ -111,7 +111,7 @@ spec:
         allocateLoadBalancerNodePorts: false
         externalTrafficPolicy: Local
         annotations:
-          lbipam.cilium.io/ips: 192.168.91.55
+          lbipam.cilium.io/ips: 192.168.91.55, ::ffff:192.168.91.55
         ports:
           bittorrent-tcp:
             enabled: true

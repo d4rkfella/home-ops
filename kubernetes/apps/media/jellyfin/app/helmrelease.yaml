@@ -60,9 +60,13 @@ spec:
               limits:
                 nvidia.com/gpu: 1
                 memory: 4Gi
-
+        pod:
+          runtimeClassName: nvidia
+          tolerations:
+            - key: nvidia.com/gpu
+              operator: Exists
+              effect: NoSchedule
     defaultPodOptions:
-      runtimeClassName: nvidia
       securityContext:
         runAsUser: 65532
         runAsGroup: 65532

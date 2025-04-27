@@ -7,12 +7,20 @@ machine:
             provider: luks2
             keys:
                 - slot: 0
-                  tpm: {}
+                  tpm:
+                    checkSecurebootStatusOnEnroll: true
+            options:
+                - no_read_workqueue
+                - no_write_workqueue
         state:
             provider: luks2
             keys:
                 - slot: 0
-                  tpm: {}
+                  tpm:
+                    checkSecurebootStatusOnEnroll: true
+            options:
+                - no_read_workqueue
+                - no_write_workqueue
     type: controlplane
     token: ENC[AES256_GCM,data:+UnneYKCQMiPszzGenEcnYP5xyU9Onc=,iv:H5LV9NCIe66opQJ3/JsWQnF95FhD9JSzysl4UHo81Pw=,tag:CnIeSl9KI8a2RR+FafcUXg==,type:str]
     ca:
@@ -66,8 +74,8 @@ machine:
             - iommu=pt
             - amd_pstate=guided
             - amd_pstate.shared_mem=1
-            - -lockdown
-            - lockdown=integrity
+            - lsm=landlock,lockdown,yama,apparmor,bpf
+            - lsm.debug
             - module_blacklist=mpt3sas
             - spec_rstack_overflow=microcode
             - zfs.zfs_arc_shrinker_limit=0
@@ -83,6 +91,7 @@ machine:
             nfsvers=4.2
             hard=True
             noatime=True
+            nodiratime=True
             nconnect=16
     time:
         disabled: false
@@ -103,6 +112,9 @@ machine:
         user.max_user_namespaces: "49152"
     sysfs:
         kernel.mm.ksm.run: 1
+    udev:
+        rules:
+            - SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="none"
     features:
         rbac: true
         stableHostname: true
@@ -203,8 +215,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-27T09:30:15Z"
-    mac: ENC[AES256_GCM,data:qElDT0i4yw+W76ogXc+3Eh20TI3HYhGZbA9ZH3SqpS8GoZLUibErSwl1AZrNvh1nC5FeyMGY0bnFkVneL39Avij6K/gUUyu1yeDSCH2P+he5SrS6L6CYErm5uDqJMoKgCSCbD9ct26kw6dXLoOarcOnrYb9F8NjufbU2tHgzaXg=,iv:L5WsdGkuMAxIrd4hvIBQAFrWZYlmrtG3OsQc25rcE/Q=,tag:7X4Fw+AMqZm+RHeIUseJ9w==,type:str]
+    lastmodified: "2025-04-27T10:44:20Z"
+    mac: ENC[AES256_GCM,data:d9c0mpp5GojtGu7vKH7/ZnhcGhSuwLb0zPVw/OjumbwYDcdQOltn7RSkosK3PmnTYEEAa418y7UcLS+PmbXWciA9GsfXSKBlrujh0j/o5V4Oq+HuDHKwROECXJTj4eDue5H8TivgZFDUV/XgBpSh8zCvcHrBWD+ro6GwR1cElHo=,iv:/7ep/1m61whPIy4GdpjVtgeyOuu5WUwdB+CyUuRd7pU=,tag:F7e7ac2r+8aWYECkTgeUjQ==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2

@@ -20,7 +20,7 @@ tasks:
       export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
         sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml | \
             /usr/local/bin/envsubst | \
-                talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
+                talosctl apply-config --nodes {{.IP}} --file /dev/stdin
     requires:
       vars: ['IP']
     preconditions:

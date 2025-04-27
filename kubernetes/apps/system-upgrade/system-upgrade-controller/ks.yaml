@@ -45,7 +45,7 @@ spec:
   retryInterval: 2m
   postBuild:
     substitute:
-      TALOS_SCHEMATIC_ID: 6bfbf280cb22cafe0f47d4771fe2f10cf0af657ebb49d4ce6298b3eedc4884ac
+      TALOS_SCHEMATIC_ID: 59f5bb87fbc1be4a090e94f23bdafe0096c191db81e41cf80519f930d0c23906
       # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
       TALOS_VERSION: v1.9.5
       # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet

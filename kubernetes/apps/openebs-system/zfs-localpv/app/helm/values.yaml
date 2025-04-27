@@ -8,3 +8,5 @@ crds:
       enabled: true
 zfsNode:
   encrKeysDir: /var/openebs/keys
+backupGC:
+  enabled: true

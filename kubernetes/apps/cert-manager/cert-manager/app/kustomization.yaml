@@ -4,8 +4,8 @@ kind: Kustomization
 resources:
   - ./rbac.yaml
   - ./issuer.secret.sops.yaml
-  - ./clusterissuer.yaml
   - ./helmrelease.yaml
+  - ./clusterissuer.yaml
   - ./prometheusrule.yaml
 configMapGenerator:
   - name: cert-manager-values

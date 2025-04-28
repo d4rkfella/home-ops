@@ -2,10 +2,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./certificate.yaml
-  - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./vault.secret.sops.yaml
+  - ./certificate.yaml
+  - ./helmrelease.yaml
   - ./cronjob.yaml
 configMapGenerator:
   - name: vault-values

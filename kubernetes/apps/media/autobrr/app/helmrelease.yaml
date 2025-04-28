@@ -67,6 +67,8 @@ spec:
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__HOST: 0.0.0.0
               AUTOBRR__PORT: &port 80
+              AUTOBRR__METRICS_HOST: 0.0.0.0
+              AUTOBRR__METRICS_PORT: &metricsPort 9094
               AUTOBRR__LOG_PATH: /config/log
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
@@ -155,6 +157,8 @@ spec:
         ports:
           http:
             port: *port
+          metrics:
+            port: *metricsPort
 
     serviceMonitor:
       app:

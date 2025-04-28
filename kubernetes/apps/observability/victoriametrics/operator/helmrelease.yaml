@@ -43,9 +43,9 @@ spec:
       - name: VM_ENABLEDPROMETHEUSCONVERTER_PROBE
         value: "false"
       - name: VM_ENABLEDPROMETHEUSCONVERTER_SCRAPECONFIG
-        value: "false"
+        value: "true"
       - name: VM_ENABLEDPROMETHEUSCONVERTER_SERVICESCRAPE
-        value: "false"
+        value: "true"
     fullnameOverride: vm-operator
     operator:
       disable_prometheus_converter: false

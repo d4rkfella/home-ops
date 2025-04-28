@@ -25,10 +25,6 @@ spec:
     name: victoria-metrics-operator
   driftDetection:
     mode: enabled
-    ignore:
-      - paths: ["/metadata/labels/app.kubernetes.io~1name"]
-        target:
-          kind: VMServiceScrape
   install:
     crds: CreateReplace
     remediation:

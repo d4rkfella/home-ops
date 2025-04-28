@@ -59,4 +59,4 @@ spec:
           kind: ClusterIssuer
           group: cert-manager.io
     serviceMonitor:
-      enabled: true
+      enabled: false

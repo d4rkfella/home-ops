@@ -37,7 +37,7 @@ spec:
   values:
     env:
       - name: VM_ENABLEDPROMETHEUSCONVERTER_ALERTMANAGERCONFIG
-        value: "true"
+        value: "false"
       - name: VM_ENABLEDPROMETHEUSCONVERTER_PODMONITOR
         value: "true"
       - name: VM_ENABLEDPROMETHEUSCONVERTER_PROBE

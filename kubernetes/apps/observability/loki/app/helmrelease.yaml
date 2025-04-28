@@ -76,6 +76,8 @@ spec:
             credentials_file: /etc/secrets/client-secret/token
       limits_config:
         retention_period: 14d
+        ingestion_rate_mb: 10
+        ingestion_burst_size_mb: 20
     singleBinary:
       replicas: 1
       persistence:

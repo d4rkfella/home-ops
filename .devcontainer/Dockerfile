@@ -120,7 +120,7 @@ RUN apk add --no-cache \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    addgroup -g 1000 docker && adduser $USERNAME docker && \
+    addgroup -g 1001 docker && adduser $USERNAME docker && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

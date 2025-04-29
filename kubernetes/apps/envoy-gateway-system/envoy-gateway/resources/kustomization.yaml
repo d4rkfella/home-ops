@@ -2,10 +2,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./helmrelease.yaml
-  - ./gatewayclass.yaml
   - ./certificate.yaml
-  - ./internal.yaml
+  - ./gatewayclass.yaml
   - ./external.yaml
+  - ./internal.yaml
+  - ./redirect.yaml
   - ./clienttrafficpolicy.yaml
-  - ./config.yaml
+  - ./httproute.yaml

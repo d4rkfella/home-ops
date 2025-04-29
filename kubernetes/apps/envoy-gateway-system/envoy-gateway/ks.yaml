@@ -2,13 +2,40 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app envoy-gateway
+  name: &app envoy-gateway-controller
   namespace: &ns envoy-gateway-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/envoy-gateway-system/envoy-gateway/app
+  path: ./kubernetes/apps/envoy-gateway-system/envoy-gateway/controller
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *ns
+  interval: 1h
+  timeout: 5m
+  retryInterval: 2m
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *ns
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app envoy-gateway-resources
+  namespace: &ns envoy-gateway-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: envoy-gateway-controller
+  path: ./kubernetes/apps/envoy-gateway-system/envoy-gateway/resources
   prune: true
   sourceRef:
     kind: GitRepository

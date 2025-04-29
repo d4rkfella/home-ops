@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://docker.io/envoyproxy/gateway-helm
   ref:
-    tag: v0.0.0-latest
+    tag: v1.3.2
   #verify:
     #provider: cosign
 ---

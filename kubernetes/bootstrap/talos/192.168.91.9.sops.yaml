@@ -1,3 +1,24 @@
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 5m
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmRG1CTHpDWDNPOUp2Y3R6
+            Y29UYmlCRlNUMkNQMDRQT3pQNDNXVlAzbENJCk04U09GSnNlK0F4WXd2QTVDUy9D
+            ZkhHbTFJWUt4MGpISkNleUVjZ3p5TkUKLS0tIDgxV1JjWEZMNUswK2ZyUmFlZWI0
+            WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
+            MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-04-29T10:06:10Z"
+    mac: ENC[AES256_GCM,data:Ic9kQ1lv+Pekfpj7/UIxheRWrTcYx3cJ29Jj4nq+HTnFHzkH0UE9N7ZsNjxQORe+J9UsPVgYa2TBD1VUebjVslZgRI+KOl0nj/lYFhwpEkw0hSYKVWGUdf6BoMmdzf6HSVueBaDkFbOTgCubn05Hb1MAT6xGHHYtoDy4ouwcYsY=,iv:6isSU0byVXeCbise+uzRlr6E09D1WTdmDo+5xwvBW/E=,tag:auqzuoahA4bbSmUZxAVBXg==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.10.2
+---
 version: v1alpha1
 debug: false
 persist: true
@@ -54,15 +75,12 @@ machine:
         interfaces:
             - interface: eth0
               dhcp: true
-              mtu: 1500
               vip:
                 ip: 192.168.91.10
             - interface: eth1
               dhcp: false
-              mtu: 1500
             - interface: br0
               dhcp: false
-              mtu: 1500
               bridge:
                 stp:
                     enabled: false
@@ -220,8 +238,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-28T19:46:26Z"
-    mac: ENC[AES256_GCM,data:zvC/+x7QteL8oYuwtL71msnbdTsqzUaruYZRDyIjqv+rM6F2Ddexx5QfrWyvuxsAeeC7TNQLYxNsi5oobwKld8X2FYPafbe6jb1EKCmE3GtGVGz8rIjdZ1uIM5Gf1A7xFz5bqE7B+IqSq8+xxYo7dsZK/GmXvnjK6YfeCgoyXAE=,iv:4ICgNzNWH5JEKWPT+A3Nm8ZxcSqdxpIIF9MN9/O8im0=,tag:W3lDy5fNh9ajV6v8jgNsCg==,type:str]
+    lastmodified: "2025-04-29T10:06:10Z"
+    mac: ENC[AES256_GCM,data:Ic9kQ1lv+Pekfpj7/UIxheRWrTcYx3cJ29Jj4nq+HTnFHzkH0UE9N7ZsNjxQORe+J9UsPVgYa2TBD1VUebjVslZgRI+KOl0nj/lYFhwpEkw0hSYKVWGUdf6BoMmdzf6HSVueBaDkFbOTgCubn05Hb1MAT6xGHHYtoDy4ouwcYsY=,iv:6isSU0byVXeCbise+uzRlr6E09D1WTdmDo+5xwvBW/E=,tag:auqzuoahA4bbSmUZxAVBXg==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2

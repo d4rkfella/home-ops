@@ -13,7 +13,7 @@ module.exports = {
   seasonFromEpisodes: 0.8,
   outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
-  torrentClients: [`https://{{ .QBITTORRENT_USERNAME }}:{{ .QBITTORRENT_PASSWORD }}@qbittorrent.darkfellanetwork.com`],
+  torrentClients: [`qbittorrent:https://{{ .QBITTORRENT_USERNAME }}:{{ .QBITTORRENT_PASSWORD }}@qbittorrent.darkfellanetwork.com`],
   radarr: [`https://radarr.darkfellanetwork.com/?apikey={{ .RADARR_API_KEY }}`],
   skipRecheck: true,
   sonarr: [`https://sonarr.darkfellanetwork.com/?apikey={{ .SONARR_API_KEY }}`],

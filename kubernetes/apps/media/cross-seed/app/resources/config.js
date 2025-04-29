@@ -5,7 +5,7 @@ module.exports = {
   duplicateCategories: false,
   flatLinking: false,
   includeNonVideos: true,
-  includeSingleEpisodes: false,
+  includeSingleEpisodes: true,
   linkCategory: "cross-seed",
   linkDirs: ["/data/downloads/torrents/cross-seed", "/data/LaunchBox"],
   linkType: "hardlink",

@@ -54,12 +54,15 @@ machine:
         interfaces:
             - interface: eth0
               dhcp: true
+              mtu: 1500
               vip:
                 ip: 192.168.91.10
             - interface: eth1
               dhcp: false
+              mtu: 1500
             - interface: br0
               dhcp: false
+              mtu: 1500
               bridge:
                 stp:
                     enabled: false
@@ -217,8 +220,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-27T10:44:20Z"
-    mac: ENC[AES256_GCM,data:d9c0mpp5GojtGu7vKH7/ZnhcGhSuwLb0zPVw/OjumbwYDcdQOltn7RSkosK3PmnTYEEAa418y7UcLS+PmbXWciA9GsfXSKBlrujh0j/o5V4Oq+HuDHKwROECXJTj4eDue5H8TivgZFDUV/XgBpSh8zCvcHrBWD+ro6GwR1cElHo=,iv:/7ep/1m61whPIy4GdpjVtgeyOuu5WUwdB+CyUuRd7pU=,tag:F7e7ac2r+8aWYECkTgeUjQ==,type:str]
+    lastmodified: "2025-04-28T19:46:26Z"
+    mac: ENC[AES256_GCM,data:zvC/+x7QteL8oYuwtL71msnbdTsqzUaruYZRDyIjqv+rM6F2Ddexx5QfrWyvuxsAeeC7TNQLYxNsi5oobwKld8X2FYPafbe6jb1EKCmE3GtGVGz8rIjdZ1uIM5Gf1A7xFz5bqE7B+IqSq8+xxYo7dsZK/GmXvnjK6YfeCgoyXAE=,iv:4ICgNzNWH5JEKWPT+A3Nm8ZxcSqdxpIIF9MN9/O8im0=,tag:W3lDy5fNh9ajV6v8jgNsCg==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2

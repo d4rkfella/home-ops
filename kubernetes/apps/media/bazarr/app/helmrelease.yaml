@@ -160,9 +160,10 @@ spec:
         ports:
           http:
             port: *port
+
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        hostnames: ["bazarr.darkfellanetwork.com"]
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

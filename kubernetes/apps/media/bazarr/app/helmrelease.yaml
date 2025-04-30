@@ -160,7 +160,6 @@ spec:
         ports:
           http:
             port: *port
-
     route:
       app:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]

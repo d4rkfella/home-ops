@@ -26,7 +26,7 @@ spec:
                 value: vault
               - name: AWS_ENDPOINT_URL
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-              - name: S3BUCKET
+              - name: S3_BUCKET
                 value: hashicorp-vault-backup
               - name: S3_CHECKSUM_ALGORITHM
                 value: SHA256

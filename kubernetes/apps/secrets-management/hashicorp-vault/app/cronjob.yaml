@@ -24,7 +24,7 @@ spec:
                 value: secrets/data/vault
               - name: VAULT_KUBERNETES_ROLE
                 value: vault
-              - name: AWS_ENDPOINT_URL
+              - name: AWS_ENDPOINT
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               - name: S3_BUCKET
                 value: hashicorp-vault-backup

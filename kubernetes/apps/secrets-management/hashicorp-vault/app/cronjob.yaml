@@ -15,14 +15,14 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.1@sha256:96091cf280e5993a60003dca7d8045c3bf73d260a205d0800c967c29d69ed4c9
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:02da4674533ec3d717a324d3eee7a143a519fcf6043b5fe9fa12bfad00ca6adb
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
                 value: https://vault.darkfellanetwork.com:8200
               - name: VAULT_SECRET_PATH
                 value: secrets/data/vault
-              - name: VAULT_K8S_ROLE
+              - name: VAULT_KUBERNETES_ROLE
                 value: vault
               - name: AWS_ENDPOINT_URL
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com

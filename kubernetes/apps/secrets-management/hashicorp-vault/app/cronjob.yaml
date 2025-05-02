@@ -15,7 +15,7 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:02da4674533ec3d717a324d3eee7a143a519fcf6043b5fe9fa12bfad00ca6adb
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:92e759ce1459cc6056b074635f6e42b865b513b734a6389fcde346171f4412bb
             imagePullPolicy: IfNotPresent
             env:
               - name: VAULT_ADDR
@@ -30,6 +30,8 @@ spec:
                 value: hashicorp-vault-backup
               - name: S3_CHECKSUM_ALGORITHM
                 value: SHA256
+              - name: PUSHOVER_ENABLE
+                value: "true"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

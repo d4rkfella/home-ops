@@ -32,6 +32,8 @@ spec:
                 value: SHA256
               - name: PUSHOVER_ENABLE
                 value: "true"
+              - name: AWS_REGION
+                value: us-east-1
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

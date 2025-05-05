@@ -15,25 +15,23 @@ spec:
              emptyDir: {}
           containers:
           - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:92de4fd71e56300f4ae57ef1b0f2ae5ff874d832a1c74e77ea8aa7c231da72a0
+            image: ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:3a009256eff3b192a65347b18ce38cf1dadd5d304316b5dc0a94ba5c063b61fd
             imagePullPolicy: IfNotPresent
+            args: ["backup"]
             env:
-              - name: VAULT_ADDR
+              - name: VAULT_ADDRESS
                 value: https://vault.darkfellanetwork.com:8200
-              - name: VAULT_SECRET_PATH
-                value: secrets/data/vault
-              - name: VAULT_KUBERNETES_ROLE
+              - name: VAULT_K8S_AUTH_ENABLED
+                value: "true"
+              - name: VAULT_К8S_ROLE
                 value: vault
-              - name: AWS_ENDPOINT
+              - name: S3_ENPOINT
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               - name: S3_BUCKET
                 value: hashicorp-vault-backup
-              - name: S3_CHECKSUM_ALGORITHM
-                value: SHA256
-              - name: PUSHOVER_ENABLE
-                value: "true"
-              - name: AWS_REGION
-                value: us-east-1
+            envFrom:
+              - secretRef:
+                  name: vault-backup-secret
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

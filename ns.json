@@ -1,0 +1,67 @@
+{
+    "apiVersion": "v1",
+    "kind": "Namespace",
+    "metadata": {
+        "annotations": {
+            "kustomize.toolkit.fluxcd.io/prune": "disabled",
+            "volsync.backube/privileged-movers": "true"
+        },
+        "creationTimestamp": "2025-03-15T11:11:40Z",
+        "deletionTimestamp": "2025-05-04T05:07:35Z",
+        "labels": {
+            "k8slens-edit-resource-version": "v1",
+            "kubernetes.io/metadata.name": "system-upgrade",
+            "kustomize.toolkit.fluxcd.io/name": "cluster-apps",
+            "kustomize.toolkit.fluxcd.io/namespace": "flux-system",
+            "policy.sigstore.dev/include": "true"
+        },
+        "name": "system-upgrade",
+        "resourceVersion": "57877101",
+        "uid": "603f0a99-c8d6-4f46-9efe-63b7fcab1dbd"
+    },
+    "spec": {
+        "finalizers": [
+            "kubernetes"
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastTransitionTime": "2025-05-04T05:07:41Z",
+                "message": "All resources successfully discovered",
+                "reason": "ResourcesDiscovered",
+                "status": "False",
+                "type": "NamespaceDeletionDiscoveryFailure"
+            },
+            {
+                "lastTransitionTime": "2025-05-04T05:07:41Z",
+                "message": "All legacy kube types successfully parsed",
+                "reason": "ParsedGroupVersions",
+                "status": "False",
+                "type": "NamespaceDeletionGroupVersionParsingFailure"
+            },
+            {
+                "lastTransitionTime": "2025-05-04T05:07:41Z",
+                "message": "All content successfully deleted, may be waiting on finalization",
+                "reason": "ContentDeleted",
+                "status": "False",
+                "type": "NamespaceDeletionContentFailure"
+            },
+            {
+                "lastTransitionTime": "2025-05-04T05:07:41Z",
+                "message": "Some resources are remaining: pods. has 1 resource instances",
+                "reason": "SomeResourcesRemain",
+                "status": "True",
+                "type": "NamespaceContentRemaining"
+            },
+            {
+                "lastTransitionTime": "2025-05-04T05:07:41Z",
+                "message": "Some content in the namespace has finalizers remaining: batch.kubernetes.io/job-tracking in 1 resource instances",
+                "reason": "SomeFinalizersRemain",
+                "status": "True",
+                "type": "NamespaceFinalizersRemaining"
+            }
+        ],
+        "phase": "Terminating"
+    }
+}

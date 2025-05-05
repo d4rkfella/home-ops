@@ -23,7 +23,7 @@ spec:
                 value: https://vault.darkfellanetwork.com:8200
               - name: VAULT_K8S_AUTH_ENABLED
                 value: "true"
-              - name: VAULT_К8S_ROLE
+              - name: VAULT_K8S_ROLE
                 value: vault
               - name: S3_ENPOINT
                 value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com

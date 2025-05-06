@@ -24,8 +24,8 @@ spec:
               - name: OIDC_CLIENT_SECRET
                 valueFrom:
                   secretKeyRef:
-                    - name: oidc-jwt-fetcher-secret
-                      key: token
+                    name: oidc-jwt-fetcher-secret
+                    key: client_secret
               - name: OIDC_TOKEN_URL
                 value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
               - name: OIDC_SCOPES

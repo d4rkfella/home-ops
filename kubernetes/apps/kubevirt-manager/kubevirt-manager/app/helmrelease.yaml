@@ -85,7 +85,7 @@ spec:
         externalTrafficPolicy: Local
         annotations:
           external-dns.alpha.kubernetes.io/hostname: kubevirt-manager.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.91.64, ::ffff:192.168.91.64
+          lbipam.cilium.io/ips: 192.168.91.64
         ports:
           http:
             port: 443

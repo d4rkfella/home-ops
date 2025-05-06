@@ -12,16 +12,6 @@ spec:
         metadata:
           labels:
             app.kubernetes.io/name: *app
-          annotations:
-            vault.hashicorp.com/agent-inject: "true"
-            vault.hashicorp.com/role: "oidc-jwt-fetcher"
-            vault.hashicorp.com/agent-pre-populate-only: "true"
-            vault.hashicorp.com/service: "https://vault.darkfellanetwork.com:8200"
-            vault.hashicorp.com/agent-inject-secret-client_secret: "secrets/flux-alerts"
-            vault.hashicorp.com/agent-inject-template-client_secret: |
-              {{- with secret "secrets/flux-alerts" -}}
-              {{ .Data.data.client_secret }}
-              {{- end }}
         spec:
           serviceAccountName: oidc-jwt-fetcher
           containers:
@@ -29,13 +19,16 @@ spec:
             image: ghcr.io/d4rkfella/oidc-jwt-fetcher:1.0.1@sha256:d0be535b8524563367dc63c66cbe341e1f9eb413167a2627e74fbb441061a42e
             imagePullPolicy: IfNotPresent
             env:
-              - name: CLIENT_ID
+              - name: OIDC_CLIENT_ID
                 value: "1ec97925-af53-40cf-aee1-d9eae03ddebd"
-              - name: CLIENT_SECRET_FILE
-                value: "/vault/secrets/client_secret"
-              - name: TOKEN_ENDPOINT_URL
+              - name: OIDC_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    - name: oidc-jwt-fetcher-secret
+                      key: token
+              - name: OIDC_TOKEN_URL
                 value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
-              - name: SCOPE
+              - name: OIDC_SCOPES
                 value: "openid profile email"
             securityContext:
               allowPrivilegeEscalation: false

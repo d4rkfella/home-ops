@@ -10,12 +10,10 @@ spec:
   addresses:
     - type: IPAddress
       value: 192.168.91.51
-    - type: IPAddress
-      value: ::ffff:192.168.91.51
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
-      lbipam.cilium.io/ips: 192.168.91.51, ::ffff:192.168.91.51
+      lbipam.cilium.io/ips: 192.168.91.51
   listeners:
     - name: http
       protocol: HTTP

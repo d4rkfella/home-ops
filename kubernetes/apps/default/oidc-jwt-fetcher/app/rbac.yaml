@@ -13,7 +13,7 @@ rules:
   verbs: ["list"]
 - apiGroups: [""]
   resources: ["secrets"]
-  resourceNames: ["oidc-jwt"]
+  resourceNames: ["oidc-token-secret"]
   verbs: ["patch", "get", "update"]
 - apiGroups: [""]
   resources: ["secrets"]

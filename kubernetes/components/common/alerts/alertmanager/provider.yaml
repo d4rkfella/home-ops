@@ -7,4 +7,4 @@ spec:
   type: alertmanager
   address: https://alertmanager.darkfellanetwork.com/api/v2/alerts/
   secretRef:
-    name: oidc-jwt
+    name: oidc-token-secret

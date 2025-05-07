@@ -180,7 +180,7 @@ spec:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: Prometheus
         flux-logs:
-          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
+          url: https://raw.githubusercontent.com/d4rkfella/grafana-dashboards/main/flux/logs.json
           datasource: Loki
         kubernetes-api-server:
           # renovate: depName="Kubernetes / System / API Server"

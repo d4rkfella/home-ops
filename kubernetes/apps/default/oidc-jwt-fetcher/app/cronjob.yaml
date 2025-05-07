@@ -17,7 +17,7 @@ spec:
           serviceAccountName: oidc-jwt-fetcher
           containers:
           - name: oidc-jwt-fetcher
-            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:1.0.0@sha256:2fb91b78a650fdb8ab70520f264c2910f0ac62864743b33b217e37505e9a3883
+            image: ghcr.io/d4rkfella/oidc-jwt-fetcher:1.0.0@sha256:1d6c05cee1a82699b2c7e0b8267cff7219c739ca27518e79a689917dbcb97e1e
             imagePullPolicy: IfNotPresent
             env:
               - name: OIDC_CLIENT_ID
@@ -31,6 +31,8 @@ spec:
                 value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
               - name: OIDC_SCOPES
                 value: "openid profile email"
+              - name: TARGET_NAMESPACES
+                value: default
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -45,5 +47,5 @@ spec:
             runAsUser: 65532
             runAsGroup: 65532
             seccompProfile: { type: RuntimeDefault }
-  successfulJobsHistoryLimit: 0
+  successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

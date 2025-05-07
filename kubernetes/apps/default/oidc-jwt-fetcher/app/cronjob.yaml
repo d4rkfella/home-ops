@@ -31,8 +31,6 @@ spec:
                 value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
               - name: OIDC_SCOPES
                 value: "openid profile email"
-              - name: TARGET_NAMESPACES
-                value: default
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

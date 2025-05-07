@@ -108,3 +108,62 @@ instance:
         target:
           kind: Deployment
           name: helm-controller
+      # Add app.kubernetes.io/name label to kustomize-controller pods
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: kustomize-controller
+          spec:
+            template:
+              metadata:
+                labels:
+                  app.kubernetes.io/name: kustomize-controller
+        target:
+          kind: Deployment
+          name: kustomize-controller
+
+      # Add app.kubernetes.io/name label to helm-controller pods
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: helm-controller # Match target name
+          spec:
+            template:
+              metadata:
+                labels:
+                  app.kubernetes.io/name: helm-controller
+        target:
+          kind: Deployment
+          name: helm-controller
+
+      # Add app.kubernetes.io/name label to source-controller pods
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: source-controller # Match target name
+          spec:
+            template:
+              metadata:
+                labels:
+                  app.kubernetes.io/name: source-controller
+        target:
+          kind: Deployment
+          name: source-controller
+
+      # Add app.kubernetes.io/name label to notification-controller pods
+      - patch: |
+          apiVersion: apps/v1
+          kind: Deployment
+          metadata:
+            name: notification-controller
+          spec:
+            template:
+              metadata:
+                labels:
+                  app.kubernetes.io/name: notification-controller
+        target:
+          kind: Deployment
+          name: notification-controller

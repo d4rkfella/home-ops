@@ -2,21 +2,21 @@
 installCRDs: true
 image:
   repository: ghcr.io/external-secrets/external-secrets
-  tag: v0.16.1@sha256:31e3431814feec71860d30520ec437006a60e0f30f5a67ef2a06fa94823692b5
+  tag: v0.16.2@sha256:bf08e22f09fe2467d62ee54b54906c065d1fcb366ff47b1dbe18186b1788d649
 extraArgs:
   enable-secrets-caching: "true"
   enable-managed-secrets-caching: "true"
 webhook:
   image:
     repository: ghcr.io/external-secrets/external-secrets
-    tag: v0.16.1@sha256:31e3431814feec71860d30520ec437006a60e0f30f5a67ef2a06fa94823692b5
+    tag: v0.16.2@sha256:bf08e22f09fe2467d62ee54b54906c065d1fcb366ff47b1dbe18186b1788d649
   serviceMonitor:
     enabled: true
     interval: 1m
 certController:
   image:
     repository: ghcr.io/external-secrets/external-secrets
-    tag: v0.16.1@sha256:31e3431814feec71860d30520ec437006a60e0f30f5a67ef2a06fa94823692b5
+    tag: v0.16.2@sha256:bf08e22f09fe2467d62ee54b54906c065d1fcb366ff47b1dbe18186b1788d649
   serviceMonitor:
     enabled: true
     interval: 1m

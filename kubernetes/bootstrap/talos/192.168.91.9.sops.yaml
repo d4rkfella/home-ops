@@ -13,8 +13,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-29T10:06:10Z"
-    mac: ENC[AES256_GCM,data:Ic9kQ1lv+Pekfpj7/UIxheRWrTcYx3cJ29Jj4nq+HTnFHzkH0UE9N7ZsNjxQORe+J9UsPVgYa2TBD1VUebjVslZgRI+KOl0nj/lYFhwpEkw0hSYKVWGUdf6BoMmdzf6HSVueBaDkFbOTgCubn05Hb1MAT6xGHHYtoDy4ouwcYsY=,iv:6isSU0byVXeCbise+uzRlr6E09D1WTdmDo+5xwvBW/E=,tag:auqzuoahA4bbSmUZxAVBXg==,type:str]
+    lastmodified: "2025-05-08T07:47:23Z"
+    mac: ENC[AES256_GCM,data:ONAR7uQQvnq8ikamypkbIRRW0Xpuipf9CMj2PD3HU07/xRGY5LmVAhV7RSSzTHfyGZRazYDahr1M/jBcSvDI7aFxQuvOJDq/aIfuu+/4jv1BsvtmkY/oxfQELNL/V8S1bjElVqzfE/CmOiSkqr2qZYlvn8/7I7rLFxwQpXkcbkU=,iv:s4eMpP1CH+A+Dyvk+O0gKPVAtZuRAGfubNemCUO/CKU=,tag:dZh0Gkw9bWVHk+KwsGLiUA==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2
@@ -78,7 +78,7 @@ machine:
               vip:
                 ip: 192.168.91.10
             - interface: eth1
-              dhcp: false
+              ignore: true
             - interface: br0
               dhcp: false
               bridge:
@@ -90,6 +90,7 @@ machine:
         diskSelector:
             model: CT1000P3PSSD8
         extraKernelArgs:
+            - -selinux
             - net.ifnames=0
             - amd_iommu=on
             - iommu=pt
@@ -238,8 +239,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-04-29T10:06:10Z"
-    mac: ENC[AES256_GCM,data:Ic9kQ1lv+Pekfpj7/UIxheRWrTcYx3cJ29Jj4nq+HTnFHzkH0UE9N7ZsNjxQORe+J9UsPVgYa2TBD1VUebjVslZgRI+KOl0nj/lYFhwpEkw0hSYKVWGUdf6BoMmdzf6HSVueBaDkFbOTgCubn05Hb1MAT6xGHHYtoDy4ouwcYsY=,iv:6isSU0byVXeCbise+uzRlr6E09D1WTdmDo+5xwvBW/E=,tag:auqzuoahA4bbSmUZxAVBXg==,type:str]
+    lastmodified: "2025-05-08T07:47:23Z"
+    mac: ENC[AES256_GCM,data:ONAR7uQQvnq8ikamypkbIRRW0Xpuipf9CMj2PD3HU07/xRGY5LmVAhV7RSSzTHfyGZRazYDahr1M/jBcSvDI7aFxQuvOJDq/aIfuu+/4jv1BsvtmkY/oxfQELNL/V8S1bjElVqzfE/CmOiSkqr2qZYlvn8/7I7rLFxwQpXkcbkU=,iv:s4eMpP1CH+A+Dyvk+O0gKPVAtZuRAGfubNemCUO/CKU=,tag:dZh0Gkw9bWVHk+KwsGLiUA==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2

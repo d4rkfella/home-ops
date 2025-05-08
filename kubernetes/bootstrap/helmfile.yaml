@@ -33,7 +33,7 @@ releases:
         command: bash
         args:
           - -c
-          - until kubectl get crd ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io &>/dev/null; do sleep 10; done
+          - until kubectl get crd ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io kubevirts.kubevirt.io cdis.cdi.kubevirt.io &>/dev/null; do sleep 10; done
         showlogs: true
       - events: ['postsync']
         command: kubectl
@@ -143,7 +143,7 @@ releases:
     namespace: openebs-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
-    version: 2.7.1
+    version: 2.8.0-develop
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/app/helm/values.yaml']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
@@ -247,37 +247,10 @@ releases:
             fi
           done
 
-          echo "Setting up AWS and Vault environment..."
-          export AWS_ENDPOINT_URL=https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-          export AWS_SHARED_CREDENTIALS_FILE={{ requiredEnv "ROOT_DIR" }}/.aws/credentials
           export VAULT_TOKEN=$(grep 'Initial Root Token:' /tmp/vault-keys.json | awk '{print $4}')
 
-          echo "Fetching the latest snapshot from S3..."
-          LATEST_SNAPSHOT=$(aws s3 ls s3://hashicorp-vault-backup/ --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2 | grep vaultsnapshot- | sort | tail -n 1 | awk '{print $4}')
-          aws s3 cp s3://hashicorp-vault-backup/$LATEST_SNAPSHOT . --endpoint-url=$AWS_ENDPOINT_URL --profile cloudflare-r2
+          vault-backup restore --force --config={{ requiredEnv "ROOT_DIR" }}/.vault/vault-backup.yaml --vault-token=$VAULT_TOKEN
 
-          echo "Restoring Vault snapshot (with retry logic)..."
-          MAX_RETRIES=20
-          RETRY_DELAY=2
-          ATTEMPT=1
-          while [ $ATTEMPT -le $MAX_RETRIES ]; do
-            echo "Attempt $ATTEMPT of $MAX_RETRIES..."
-            vault operator raft snapshot restore -force $LATEST_SNAPSHOT
-            if [ $? -eq 0 ]; then
-              echo "Snapshot restored successfully."
-              break
-            else
-              echo "Snapshot restoration failed. Retrying in $RETRY_DELAY seconds..."
-              sleep $RETRY_DELAY
-              ATTEMPT=$((ATTEMPT + 1))
-            fi
-          done
-
-          if [ $ATTEMPT -gt $MAX_RETRIES ]; then
-            echo "Error: Failed to restore snapshot after $MAX_RETRIES attempts."
-            exit 1
-          fi
-          echo "Snapshot restoration complete."
       showlogs: true
 
 
@@ -295,27 +268,6 @@ releases:
       - --server-side
       - --field-manager=kustomize-controller
       - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/rbac.yaml
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - |
-          urls=$(yq '.resources[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt/app/kustomization.yaml {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi/app/kustomization.yaml)
-
-          for url in $urls; do
-              if [[ "$url" =~ ^https:// ]]; then
-                  echo "Applying: $url"
-                  kubectl apply -f "$url"
-              fi
-          done
-          echo "All CRDs applied successfully!"
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - until kubectl get crd kubevirts.kubevirt.io cdis.cdi.kubevirt.io &>/dev/null; do sleep 10; done
       showlogs: true
     - events: ["postsync"]
       command: kubectl
@@ -424,4 +376,21 @@ releases:
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/vfiobinding.yaml
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/multus-network.yaml
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/virtualmachine.yaml
+      showlogs: true
+
+  - name: envoy-gateway-controller
+    namespace: envoy-gateway-system
+    atomic: true
+    chart: oci://docker.io/envoyproxy/gateway-helm/envoy-gateway
+    version: v1.3.2
+    needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
+    hooks:
+    - events: ["prepare"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
+            kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+          fi
       showlogs: true

@@ -86,6 +86,9 @@ RUN aws --version
 COPY --from=ghcr.io/siderolabs/talosctl:v1.9.5 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
+COPY --from=ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:299fc8785dee80013e28971a7d7444c836feb4a6e283a893844260779f96f080 /usr/bin/vault-backup /usr/local/bin/vault-backup
+RUN vault-backup --version
+
 COPY --from=ghcr.io/helmfile/helmfile:v1.0.0 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 

@@ -59,7 +59,7 @@ spec:
                 memory: 512Mi
               limits:
                 nvidia.com/gpu: 1
-                memory: 4Gi
+                memory: 8Gi
         pod:
           runtimeClassName: nvidia
           tolerations:

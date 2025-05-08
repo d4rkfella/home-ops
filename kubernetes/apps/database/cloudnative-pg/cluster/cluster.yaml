@@ -77,7 +77,7 @@ spec:
       endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
       # Note: serverName version needs to be inclemented
       # when recovering from an existing cnpg cluster
-      serverName: postgres17-v8
+      serverName: postgres17-v1
       s3Credentials:
         accessKeyId:
           name: *secret
@@ -89,7 +89,7 @@ spec:
   # cluster when recovering from an existing cnpg cluster
   bootstrap:
     recovery:
-      source: &previousCluster postgres17-v7
+      source: &previousCluster postgres17-v8
   externalClusters:
     - name: *previousCluster
       barmanObjectStore:

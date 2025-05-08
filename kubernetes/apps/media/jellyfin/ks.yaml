@@ -8,6 +8,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   dependsOn:
     - name: volsync
       namespace: volsync-system
@@ -15,6 +17,11 @@ spec:
       namespace: kube-system
   interval: 1h
   path: ./kubernetes/apps/media/jellyfin/app
+  postBuild:
+    substitute:
+      VOLSYNC_CAPACITY: 16Gi
+      VOLSYNC_PUID: '65532'
+      VOLSYNC_PGID: '65532'
   prune: true
   sourceRef:
     kind: GitRepository

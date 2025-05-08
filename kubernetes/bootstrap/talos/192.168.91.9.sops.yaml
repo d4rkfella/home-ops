@@ -13,8 +13,50 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-05-08T07:47:23Z"
-    mac: ENC[AES256_GCM,data:ONAR7uQQvnq8ikamypkbIRRW0Xpuipf9CMj2PD3HU07/xRGY5LmVAhV7RSSzTHfyGZRazYDahr1M/jBcSvDI7aFxQuvOJDq/aIfuu+/4jv1BsvtmkY/oxfQELNL/V8S1bjElVqzfE/CmOiSkqr2qZYlvn8/7I7rLFxwQpXkcbkU=,iv:s4eMpP1CH+A+Dyvk+O0gKPVAtZuRAGfubNemCUO/CKU=,tag:dZh0Gkw9bWVHk+KwsGLiUA==,type:str]
+    lastmodified: "2025-05-08T10:40:34Z"
+    mac: ENC[AES256_GCM,data:h2c1X2tgFgHhC8j0M54A4ZB4ffrrvMaSMeli0dD5mKo6fXYlAVJa8gE/s5MJm337V2jlQKJ8E0Yo5Zm0dZNNB1x1qhoiTYhr4pLKKMYacij7TZ5IGYHgB+7nGhTnfdTQAVI1N5Hs47XO4GNqLzDoYmh2I0wj/lSfbz4TqaWoNK4=,iv:nfsN9/Uuc/FZF1g3LB0/kvf/wB1h+y7RPgiGtbbbfOg=,tag:fInaaizWp8H6IJdK5EOkaA==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.10.2
+---
+apiVersion: v1alpha1
+kind: PCIDriverRebindConfig
+name: "0000:05:00.0"
+targetDriver: vfio-pci
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmRG1CTHpDWDNPOUp2Y3R6
+            Y29UYmlCRlNUMkNQMDRQT3pQNDNXVlAzbENJCk04U09GSnNlK0F4WXd2QTVDUy9D
+            ZkhHbTFJWUt4MGpISkNleUVjZ3p5TkUKLS0tIDgxV1JjWEZMNUswK2ZyUmFlZWI0
+            WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
+            MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-05-08T10:40:34Z"
+    mac: ENC[AES256_GCM,data:h2c1X2tgFgHhC8j0M54A4ZB4ffrrvMaSMeli0dD5mKo6fXYlAVJa8gE/s5MJm337V2jlQKJ8E0Yo5Zm0dZNNB1x1qhoiTYhr4pLKKMYacij7TZ5IGYHgB+7nGhTnfdTQAVI1N5Hs47XO4GNqLzDoYmh2I0wj/lSfbz4TqaWoNK4=,iv:nfsN9/Uuc/FZF1g3LB0/kvf/wB1h+y7RPgiGtbbbfOg=,tag:fInaaizWp8H6IJdK5EOkaA==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.10.2
+---
+apiVersion: v1alpha1
+kind: PCIDriverRebindConfig
+name: 0000:0a:00.0
+targetDriver: vfio-pci
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBmRG1CTHpDWDNPOUp2Y3R6
+            Y29UYmlCRlNUMkNQMDRQT3pQNDNXVlAzbENJCk04U09GSnNlK0F4WXd2QTVDUy9D
+            ZkhHbTFJWUt4MGpISkNleUVjZ3p5TkUKLS0tIDgxV1JjWEZMNUswK2ZyUmFlZWI0
+            WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
+            MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-05-08T10:40:34Z"
+    mac: ENC[AES256_GCM,data:h2c1X2tgFgHhC8j0M54A4ZB4ffrrvMaSMeli0dD5mKo6fXYlAVJa8gE/s5MJm337V2jlQKJ8E0Yo5Zm0dZNNB1x1qhoiTYhr4pLKKMYacij7TZ5IGYHgB+7nGhTnfdTQAVI1N5Hs47XO4GNqLzDoYmh2I0wj/lSfbz4TqaWoNK4=,iv:nfsN9/Uuc/FZF1g3LB0/kvf/wB1h+y7RPgiGtbbbfOg=,tag:fInaaizWp8H6IJdK5EOkaA==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2
@@ -52,9 +94,8 @@ machine:
         - 192.168.91.10
     kubelet:
         image: ghcr.io/siderolabs/kubelet:${KUBERNETES_VERSION}
-        extraArgs:
-            rotate-server-certificates: "true"
         extraConfig:
+            serverTLSBootstrap: true
             maxPods: 250
             shutdownGracePeriod: 120s
             shutdownGracePeriodCriticalPods: 120s
@@ -64,8 +105,6 @@ machine:
             featureGates:
                 UserNamespacesSupport: true
                 UserNamespacesPodSecurityStandards: true
-                CPUManager: true
-                CPUManagerPolicyOptions: true
         nodeIP:
             validSubnets:
                 - 192.168.91.0/24
@@ -239,8 +278,8 @@ sops:
             WUFZQmhYSFZDYVpUWU1VY0dWWHRmVm8K6s3W9sBZ0rBJJhIH5/V5TthCC7Muzrly
             MEwIxpdvrT5slv1+hqog0mAkE6S6guZvAEtO4m7SruLgWCqnpYMK4g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-05-08T07:47:23Z"
-    mac: ENC[AES256_GCM,data:ONAR7uQQvnq8ikamypkbIRRW0Xpuipf9CMj2PD3HU07/xRGY5LmVAhV7RSSzTHfyGZRazYDahr1M/jBcSvDI7aFxQuvOJDq/aIfuu+/4jv1BsvtmkY/oxfQELNL/V8S1bjElVqzfE/CmOiSkqr2qZYlvn8/7I7rLFxwQpXkcbkU=,iv:s4eMpP1CH+A+Dyvk+O0gKPVAtZuRAGfubNemCUO/CKU=,tag:dZh0Gkw9bWVHk+KwsGLiUA==,type:str]
+    lastmodified: "2025-05-08T10:40:34Z"
+    mac: ENC[AES256_GCM,data:h2c1X2tgFgHhC8j0M54A4ZB4ffrrvMaSMeli0dD5mKo6fXYlAVJa8gE/s5MJm337V2jlQKJ8E0Yo5Zm0dZNNB1x1qhoiTYhr4pLKKMYacij7TZ5IGYHgB+7nGhTnfdTQAVI1N5Hs47XO4GNqLzDoYmh2I0wj/lSfbz4TqaWoNK4=,iv:nfsN9/Uuc/FZF1g3LB0/kvf/wB1h+y7RPgiGtbbbfOg=,tag:fInaaizWp8H6IJdK5EOkaA==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.10.2

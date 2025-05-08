@@ -74,8 +74,8 @@ releases:
         args:
           - -c
           - |
-            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+              kubectl create namespace "{{ .Release.Namespace }}"
             fi
         showlogs: true
       - events: ['postsync']
@@ -119,8 +119,8 @@ releases:
         args:
           - -c
           - |
-            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+              kubectl create namespace "{{ .Release.Namespace }}"
             fi
         showlogs: true
       - events: ['postsync']
@@ -152,8 +152,8 @@ releases:
         args:
           - -c
           - |
-            if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-              kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+              kubectl create namespace "{{ .Release.Namespace }}"
             fi
         showlogs: true
       - events: ['presync']
@@ -193,15 +193,15 @@ releases:
       args:
         - -c
         - |
-          if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-            kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+            kubectl create namespace "{{ .Release.Namespace }}"
           fi
       showlogs: true
     - events: ['prepare']
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{`{{ .Release.Namespace }}`}}"
+        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/secrets-management/hashicorp-vault/app/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{ .Release.Namespace }}"
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -249,7 +249,7 @@ releases:
 
           export VAULT_TOKEN=$(grep 'Initial Root Token:' /tmp/vault-keys.json | awk '{print $4}')
 
-          vault-backup restore --force --config={{ requiredEnv "ROOT_DIR" }}/.vault/vault-backup.yaml --vault-token=$VAULT_TOKEN
+          vault-backup restore --force --config=/project/.vault/vault-backup.yaml --vault-token=$VAULT_TOKEN
 
       showlogs: true
 
@@ -260,6 +260,7 @@ releases:
     chart: oci://ghcr.io/bjw-s-labs/helm/app-template
     version: 3.7.3
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/app/helm/values.yaml']
+    needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
     - events: ["postsync"]
       command: kubectl
@@ -325,35 +326,73 @@ releases:
 
           KUBEVIRT_DEPLOYMENTS=("virt-operator" "virt-controller" "virt-api")
           KUBEVIRT_DAEMONSETS=("virt-handler")
-
           CDI_DEPLOYMENTS=("cdi-uploadproxy" "cdi-operator" "cdi-deployment" "cdi-apiserver")
 
-          check_deployment_status() {
-            NAMESPACE=$1
-            DEPLOYMENT=$2
-            echo "Checking deployment $DEPLOYMENT in namespace $NAMESPACE"
-            kubectl -n $NAMESPACE rollout status deployment/$DEPLOYMENT --timeout=2m
-            if [ $? -ne 0 ]; then
-              echo "Deployment $DEPLOYMENT in namespace $NAMESPACE is not running or failed to roll out. Exiting."
-              exit 1
-            fi
+          MAX_ATTEMPTS=12
+          SLEEP_INTERVAL="30s"
+
+          check_and_retry_deployment_status() {
+            local NAMESPACE=$1
+            local DEPLOYMENT_NAME=$2
+            local ATTEMPTS=0
+
+            echo "Checking deployment $DEPLOYMENT_NAME in namespace $NAMESPACE..."
+            while true; do
+              kubectl -n "$NAMESPACE" rollout status "deployment/$DEPLOYMENT_NAME" --timeout=1m
+              if [ $? -eq 0 ]; then
+                echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE is running."
+                return 0 # Success
+              fi
+
+              ATTEMPTS=$((ATTEMPTS + 1))
+              if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+                echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE failed to roll out after $MAX_ATTEMPTS attempts. Exiting."
+                exit 1 # Failed after max attempts
+              fi
+
+              echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE not ready yet. Retrying in $SLEEP_INTERVAL (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."
+              sleep "$SLEEP_INTERVAL"
+            done
           }
 
+          # --- Function to check and retry daemonset status ---
+          check_and_retry_daemonset_status() {
+            local NAMESPACE=$1
+            local DAEMONSET_NAME=$2
+            local ATTEMPTS=0
+
+            echo "Checking daemonset $DAEMONSET_NAME in namespace $NAMESPACE..."
+            while true; do
+              kubectl -n "$NAMESPACE" rollout status "daemonset/$DAEMONSET_NAME" --timeout=1m
+              if [ $? -eq 0 ]; then
+                echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE is running."
+                return 0 # Success
+              fi
+
+              ATTEMPTS=$((ATTEMPTS + 1))
+              if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
+                echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE failed to roll out after $MAX_ATTEMPTS attempts. Exiting."
+                exit 1 # Failed after max attempts
+              fi
+
+              echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE not ready yet. Retrying in $SLEEP_INTERVAL (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."
+              sleep "$SLEEP_INTERVAL"
+            done
+          }
+
+          # --- Check Kubevirt Deployments ---
           for DEPLOYMENT in "${KUBEVIRT_DEPLOYMENTS[@]}"; do
-            check_deployment_status "kubevirt" $DEPLOYMENT
+            check_and_retry_deployment_status "kubevirt" "$DEPLOYMENT"
           done
 
+          # --- Check Kubevirt Daemonsets ---
           for DAEMONSET in "${KUBEVIRT_DAEMONSETS[@]}"; do
-            echo "Checking daemonset $DAEMONSET in namespace kubevirt"
-            kubectl -n kubevirt rollout status daemonset/$DAEMONSET --timeout=2m
-            if [ $? -ne 0 ]; then
-              echo "Daemonset $DAEMONSET in namespace kubevirt is not running or failed to roll out. Exiting."
-              exit 1
-            fi
+            check_and_retry_daemonset_status "kubevirt" "$DAEMONSET"
           done
 
+          # --- Check CDI Deployments ---
           for DEPLOYMENT in "${CDI_DEPLOYMENTS[@]}"; do
-            check_deployment_status "cdi" $DEPLOYMENT
+            check_and_retry_deployment_status "cdi" "$DEPLOYMENT"
           done
 
           echo "All required deployments and daemonsets are running."
@@ -373,7 +412,6 @@ releases:
         - --field-manager=kustomize-controller
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/multus-network.yaml
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/app/virtualmachine.yaml
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/vfiobinding.yaml
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/multus-network.yaml
         - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/app/virtualmachine.yaml
       showlogs: true
@@ -381,16 +419,16 @@ releases:
   - name: envoy-gateway-controller
     namespace: envoy-gateway-system
     atomic: true
-    chart: oci://docker.io/envoyproxy/gateway-helm/envoy-gateway
+    chart: oci://docker.io/envoyproxy/gateway-helm
     version: v1.3.2
-    needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
+    needs: ['cert-manager/cert-manager','kube-system/cilium']
     hooks:
     - events: ["prepare"]
       command: bash
       args:
         - -c
         - |
-          if ! kubectl get namespace "{{`{{ .Release.Namespace }}`}}" &>/dev/null; then
-            kubectl create namespace "{{`{{ .Release.Namespace }}`}}"
+          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+            kubectl create namespace "{{ .Release.Namespace }}"
           fi
       showlogs: true

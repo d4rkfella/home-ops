@@ -90,7 +90,7 @@ spec:
             storage: 3Gi
       source:
         http:
-          url: "https://download.sys.truenas.net/TrueNAS-SCALE-ElectricEel/24.10.2/TrueNAS-SCALE-24.10.2.iso"
+          url: "https://download.sys.truenas.net/TrueNAS-SCALE-Fangtooth/25.04.0/TrueNAS-SCALE-25.04.0.iso"
   - metadata:
       name: truenas-scale-os-disk
     spec:

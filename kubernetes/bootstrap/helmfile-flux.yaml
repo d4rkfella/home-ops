@@ -14,6 +14,16 @@ releases:
     chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     version: 0.17.0
     values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/flux-system/flux-operator/app/helm/values.yaml']
+    hooks:
+    - events: ["prepare"]
+      command: bash
+      args:
+        - -c
+        - |
+          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
+            kubectl create namespace "{{ .Release.Namespace }}"
+          fi
+      showlogs: true
 
   - name: flux-instance
     namespace: flux-system

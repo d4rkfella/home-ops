@@ -87,22 +87,22 @@ spec:
           limits:
             memory: 4Gi
       volumes:
-      #- name: sysprep
-        #sysprep:
-          #secret:
-            #name: sysprep-secret
-      #- dataVolume:
-          #name: windows-server-2025-iso
-        #name: iso
+      - name: sysprep
+        sysprep:
+          secret:
+            name: sysprep-secret
+      - dataVolume:
+          name: windows-server-2025-iso
+        name: iso
       - dataVolume:
           name: windows-server-2025-os-disk
         name: os-disk
       - dataVolume:
           name: windows-server-2025-wds
         name: wds
-      #- dataVolume:
-          #name: windows-virtio-drivers
-        #name: virtio-drivers
+      - dataVolume:
+          name: windows-virtio-drivers
+        name: virtio-drivers
   dataVolumeTemplates:
   - metadata:
       name: windows-server-2025-iso

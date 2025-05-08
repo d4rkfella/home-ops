@@ -102,9 +102,6 @@ ARG USERNAME=vscode
 ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 
-COPY --from=build /usr/local/bin/ /usr/local/bin/
-COPY --from=build /usr/local/aws-cli/ /usr/local/aws-cli/
-
 RUN apk add --no-cache \
         curl \
         jq \

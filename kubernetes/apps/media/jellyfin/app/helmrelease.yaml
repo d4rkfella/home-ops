@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/jellyfin
-              tag: 10.10.7@sha256:8b68a6ae8f0cf25542c95bdb2db40356402679b5530d7a13c6c9391aa04ac700
+              tag: 10.10.7@sha256:51c9c5a6a38c50a883d9a4fe3b0ad7dae438048d9c0458890dc07eb2cc295b1f
               pullPolicy: IfNotPresent
             env:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"

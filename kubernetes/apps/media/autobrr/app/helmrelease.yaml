@@ -30,7 +30,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.1@sha256:3f0afb2a62c2b56c9072ccb499e6ce6d5bd9c87d85e5f39df58333435d0c4025
+              tag: 1.0.1@sha256:a6a69842203fe3e03afd06d8cf75e77b4169cda65fc5ac3e25ccfefe790dba84
             env:
               INIT_POSTGRES_DBNAME: &dbName autobrr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
@@ -60,8 +60,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/autobrr-distroless
-              tag: 1.62.0@sha256:261770a569528ab3b6b62d12adc844f5b80495b67af743cb9f1a0d26e39a309c
+              repository: ghcr.io/d4rkfella/autobrr
+              tag: 1.62.0@sha256:ad000a015fab970bc72ad3eba859e6a315ea4b0f261aed01973e6ac3334c413d
             env:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"

@@ -28,7 +28,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.1@sha256:3f0afb2a62c2b56c9072ccb499e6ce6d5bd9c87d85e5f39df58333435d0c4025
+              tag: 1.0.1@sha256:a6a69842203fe3e03afd06d8cf75e77b4169cda65fc5ac3e25ccfefe790dba84
             env:
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               INIT_POSTGRES_PORT: &dbPort 5432
@@ -96,8 +96,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/bazarr-distroless
-              tag: 1.5.2@sha256:c173aaaea498d9b3e7ac79b2159e75fb7e570006ffcf3bdd6060c600f91b0e54
+              repository: ghcr.io/d4rkfella/bazarr
+              tag: 1.5.2@sha256:07b2665853856dc0e22cfdd76522dd60bcef51e826bbe842563dc8c656995060
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

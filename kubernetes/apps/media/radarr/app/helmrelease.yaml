@@ -31,7 +31,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.1@sha256:3f0afb2a62c2b56c9072ccb499e6ce6d5bd9c87d85e5f39df58333435d0c4025
+              tag: 1.0.1@sha256:a6a69842203fe3e03afd06d8cf75e77b4169cda65fc5ac3e25ccfefe790dba84
             env:
               INIT_POSTGRES_DBNAME: &dbName radarr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
@@ -98,8 +98,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/radarr-distroless
-              tag: 5.22.4@sha256:8d7a4da11b35d03891c37165cea5180e25766a3f34d635768f4cfd964b3f282c
+              repository: ghcr.io/d4rkfella/radarr
+              tag: 5.22.4@sha256:3ee7cb2e09da5cb2a22649f27f56df570c4e24c9ac07cad0b6f38996fc5ca168
             env:
               TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr

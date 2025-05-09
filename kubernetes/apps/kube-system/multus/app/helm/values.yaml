@@ -16,7 +16,7 @@ controllers:
       install-cni-plugins:
         image:
           repository: ghcr.io/d4rkfella/cni-plugins-install
-          tag: 1.0.2@sha256:8050eb2cc8b2a43685fae2764c7a327a23207d0c94d2b884e2f8e0ea984c5ae3
+          tag: 1.0.2@sha256:f0839eb98e6a65f8e921569ceb00d179b5644ae31f9da23d64b03e758ebd3e78
         env:
           # renovate: datasource=github-releases depName=containernetworking/plugins
           CNI_PLUGINS_VERSION: v1.7.1
@@ -24,7 +24,7 @@ controllers:
       multus:
         image:
           repository: ghcr.io/d4rkfella/multus-cni
-          tag: 4.2.0@sha256:74e3accfe2854e0960beaa2adce5009d0a34d50223b639fa48bb6eb31291b25d
+          tag: 4.2.0@sha256:a214d208a7a1d49d1d2b06875b3ffaf5f202880012adbb4d3cbc9c69a61587b3
         args:
           - --multus-conf-file=auto
           - --multus-autoconfig-dir=/host/etc/cni/net.d

@@ -76,7 +76,6 @@ spec:
       config:
         type: emptyDir
         globalMounts:
-          - path: /app/config
           - path: /config
 
       config-file:

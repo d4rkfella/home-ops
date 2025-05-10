@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbit_manage
-              tag: v4.3.0@sha256:bcafbec56e819b232f7dbf3347f350417172b901723e0b7a0db6a98d5e1f9292
+              tag: v4.3.0@sha256:86ab59d4fcad017edbaf1002f80930ef176c26782497cd510b7cd08a7f2c6597
             env:
               TZ: Europe/Sofia
               QBT_RUN: true
@@ -50,10 +50,10 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1Gi
-            #lifecycle:
-              #postStart:
-                #exec:
-                  #command: ["/bin/sh", "-c", "cp /tmp/config.yml /config/config.yml"]
+            lifecycle:
+              postStart:
+                exec:
+                  command: ["/bin/sh", "-c", "cp /tmp/config.yml /config/config.yml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -82,7 +82,7 @@ spec:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /config/config.yml
+          - path: /tmp/config.yml
             subPath: config.yml
             readOnly: true
 

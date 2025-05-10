@@ -19,7 +19,7 @@ spec:
     cleanupOnFail: true
     remediation:
       strategy: rollback
-      retriesagf: 3
+      retries: 3
   values:
     controllers:
       autobrr:

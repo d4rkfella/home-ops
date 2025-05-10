@@ -31,7 +31,7 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.1@sha256:a6a69842203fe3e03afd06d8cf75e77b4169cda65fc5ac3e25ccfefe790dba84
+              tag: 1.0.1@sha256:50e410d36dfc131c39d71ee273a8957244d81b8cac4416ffe57431a79fc65c04
             env:
               INIT_POSTGRES_DBNAME: &dbName prowlarr
               INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
@@ -99,7 +99,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/prowlarr
-              tag: 1.35.1@sha256:59f6c6535e82952248f11098db1f6aed2ecce155631866230da15222b6645e0f
+              tag: 1.35.1@sha256:0de98349a69f2913b2440b084f3ba34281088c2ade6a47d79ef6a386f51a7366
             env:
               TZ: Europe/Sofia
               PROWLARR__APP__INSTANCENAME: Prowlarr

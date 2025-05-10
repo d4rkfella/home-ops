@@ -29,8 +29,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/stuffanthings/qbit_manage
-              tag: v4.2.2@sha256:33e483453bdf2ed34c12809bfdde69fd5d03eca65920599857027bfb37384bd0
+              repository: ghcr.io/d4rkfella/qbit_manage
+              tag: v4.3.0@sha256:bcafbec56e819b232f7dbf3347f350417172b901723e0b7a0db6a98d5e1f9292
             env:
               TZ: Europe/Sofia
               QBT_RUN: true

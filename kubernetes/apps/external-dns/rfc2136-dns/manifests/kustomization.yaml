@@ -5,7 +5,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
 configMapGenerator:
-  - name: rfc2136-dns
+  - name: rfc2136-dns-configmap
     files:
       - config/krb5.conf
 generatorOptions:

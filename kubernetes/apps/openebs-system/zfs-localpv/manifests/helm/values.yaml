@@ -5,9 +5,20 @@ crds:
     enabled: true
   csi:
     volumeSnapshots:
-      enabled: false
+      enabled: true
 zfsNode:
   encrKeysDir: /var/openebs/keys
+zfsController:
+  snapshotter:
+    image:
+      registry: registry.k8s.io/
+      repository: sig-storage/csi-snapshotter
+      tag: v8.2.1
+  snapshotController:
+    image:
+      registry: registry.k8s.io/
+      repository: sig-storage/snapshot-controller
+      tag: v8.2.1
 zfs:
   bin: /usr/local/sbin/zfs
 

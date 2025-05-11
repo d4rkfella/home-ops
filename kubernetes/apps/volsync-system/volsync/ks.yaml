@@ -7,9 +7,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: snapshot-controller
-      namespace: kube-system
   path: ./kubernetes/apps/volsync-system/volsync/manifests
   prune: true
   sourceRef:

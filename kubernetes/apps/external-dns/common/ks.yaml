@@ -5,7 +5,7 @@ kind: Kustomization
 metadata:
   name: external-dns-common
 spec:
-  path: ./kubernetes/apps/network/external-dns/common
+  path: ./kubernetes/apps/external-dns/common/manifests
   prune: true
   sourceRef:
     kind: GitRepository

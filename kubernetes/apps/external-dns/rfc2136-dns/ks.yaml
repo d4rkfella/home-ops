@@ -7,7 +7,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/network/external-dns/rfc2136
+  path: ./kubernetes/apps/external-dns/rfc2136-dns/manifests
   prune: true
   sourceRef:
     kind: GitRepository

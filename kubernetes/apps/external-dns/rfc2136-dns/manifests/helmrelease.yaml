@@ -28,7 +28,7 @@ spec:
       - name: KERBEROS_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: external-dns-secret
+            name: rfc2136-dns-secret
             key: KERBEROS_PASSWORD
       - name: KRB5_CONFIG
         value: /etc/krb5.conf
@@ -53,7 +53,7 @@ spec:
     extraVolumes:
       - configMap:
           defaultMode: 420
-          name: external-dns-configmap
+          name: rfc2136-dns-configmap
         name: kerberos-config-volume
     extraVolumeMounts:
       - mountPath: /etc/krb5.conf

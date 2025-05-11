@@ -7,3 +7,5 @@ resources:
   - ./kubevirt-instance/ks.yaml
 components:
   - ../../components/common
+transformers:
+  - ./transformers

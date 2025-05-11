@@ -5,7 +5,7 @@ crds:
     enabled: true
   csi:
     volumeSnapshots:
-      enabled: true
+      enabled: false
 zfsNode:
   encrKeysDir: /var/openebs/keys
   driverRegistrar:

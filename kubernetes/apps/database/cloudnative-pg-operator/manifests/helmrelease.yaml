@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: cloudnative-pg
+  name: cloudnative-pg-operator
 spec:
   interval: 1h
   layerSelector:
@@ -22,8 +22,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: cloudnative-pg
-    namespace: database
+    name: cloudnative-pg-operator
   driftDetection:
     mode: enabled
   install:

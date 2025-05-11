@@ -8,7 +8,17 @@ crds:
       enabled: true
 zfsNode:
   encrKeysDir: /var/openebs/keys
+  driverRegistrar:
+    image:
+      registry: registry.k8s.io/
+      repository: sig-storage/csi-node-driver-registrar
+      tag: v2.13.0
 zfsController:
+  resizer:
+    image:
+      registry: registry.k8s.io/
+      repository: sig-storage/csi-resizer
+      tag: v1.13.2
   snapshotter:
     image:
       registry: registry.k8s.io/
@@ -19,6 +29,11 @@ zfsController:
       registry: registry.k8s.io/
       repository: sig-storage/snapshot-controller
       tag: v8.2.1
+  provisioner:
+    image:
+      registry: registry.k8s.io/
+      repository: sig-storage/csi-provisioner
+      tag: v5.2.0
 zfs:
   bin: /usr/local/sbin/zfs
 

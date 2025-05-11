@@ -13,7 +13,6 @@ spec:
     - apiVersion: dragonflydb.io/v1alpha1
       kind: Dragonfly
       current: status.phase == "ready"
-  interval: 10m
   path: ./kubernetes/apps/database/dragonfly-cluster/manifests
   prune: true
   sourceRef:
@@ -21,3 +20,6 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: true
+  interval: 1h
+  timeout: 5m
+  retryInterval: 2m

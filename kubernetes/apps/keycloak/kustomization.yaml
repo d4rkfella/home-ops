@@ -6,6 +6,6 @@ resources:
   - ./keycloak-operator/ks.yaml
   - ./keycloak-instance/ks.yaml
 components:
-  - ../../../components/common
+  - ../../components/common
 transformers:
   - ./transformers

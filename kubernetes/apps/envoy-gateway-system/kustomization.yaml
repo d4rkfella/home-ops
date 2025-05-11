@@ -4,7 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./envoy-gateway-controller/ks.yaml
-  - ./envoy-gateway-resources/ks.yaml
+  - ./envoy-gateway-instance/ks.yaml
 components:
   - ../../components/common
 transformers:

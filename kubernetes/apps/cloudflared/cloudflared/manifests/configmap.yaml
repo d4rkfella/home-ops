@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-configmap
+data:
+  config.yaml: |
+    ---
+    originRequest:
+      matchSNItoHost: true
+
+    ingress:
+      - hostname: darkfellanetwork.com
+        service: &svc https://envoy-envoy-gateway-system-external-7d05cf23.envoy-gateway-system.svc.cluster.local
+      - hostname: "*.darkfellanetwork.com"
+        service: *svc
+      - service: http_status:404

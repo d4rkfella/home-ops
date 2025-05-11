@@ -1,6 +1,6 @@
 ---
 creation_rules:
-  - path_regex: kubernetes/bootstrap/talos/.+\.sops\.yaml
+  - path_regex: talos/.+\.sops\.yaml
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     key_groups:

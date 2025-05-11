@@ -1,0 +1,15 @@
+feature:
+  storageCapacity: true
+crds:
+  zfsLocalPv:
+    enabled: true
+  csi:
+    volumeSnapshots:
+      enabled: false
+zfsNode:
+  encrKeysDir: /var/openebs/keys
+zfs:
+  bin: /usr/local/sbin/zfs
+
+backupGC:
+  enabled: true

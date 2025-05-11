@@ -1,8 +1,11 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: cdi
+resources:
+  - ./namespace.yaml
+  - ./cdi-operator/ks.yaml
+  - ./cdi-instance/ks.yaml
 components:
   - ../../components/common
-resources:
-  - ./cdi/ks.yaml
+transformers:
+  - ./transformers

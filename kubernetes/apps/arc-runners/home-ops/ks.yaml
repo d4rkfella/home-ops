@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app arc-runners
-  namespace: &ns arc-runners
 spec:
   commonMetadata:
     labels:
@@ -13,12 +12,11 @@ spec:
       namespace: arc-system
   interval: 1h
   retryInterval: 2m
-  path: ./kubernetes/apps/arc-runners/home-ops/app
+  path: ./kubernetes/apps/arc-runners/home-ops/manifests
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
   timeout: 5m
   wait: false

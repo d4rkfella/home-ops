@@ -1,0 +1,44 @@
+---
+installCRDs: true
+image:
+  repository: ghcr.io/external-secrets/external-secrets
+certController:
+  image:
+    repository: ghcr.io/external-secrets/external-secrets
+extraArgs:
+  enable-secrets-caching: "true"
+  enable-managed-secrets-caching: "true"
+serviceMonitor:
+  enabled: true
+  interval: 1m
+grafanaDashboard:
+  enabled: true
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  enabled: true
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
+podSpecExtra:
+  hostAliases:
+    - ip: "192.168.91.53"
+      hostnames:
+        - "vault.darkfellanetwork.com"
+webhook:
+  certManager:
+    enabled: true
+    cert:
+      issuerRef:
+        name: vault-issuer
+        kind: ClusterIssuer
+        group: cert-manager.io
+      duration: 2160h # 90d
+  image:
+    repository: ghcr.io/external-secrets/external-secrets
+  lookaheadInterval: 240h # 10d

@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app sonarr
-  namespace: &ns media
 spec:
   commonMetadata:
     labels:
@@ -12,7 +11,7 @@ spec:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: *app
-      namespace: *ns
+      namespace: media
   components:
     - ../../../../components/gatus/internal
   dependsOn:
@@ -20,9 +19,9 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-    - name: keycloak
-      namespace: idp
-  path: ./kubernetes/apps/media/sonarr/app
+    - name: keycloak-instance
+      namespace: keycloak
+  path: ./kubernetes/apps/media/sonarr/manifests
   postBuild:
     substitute:
       APP: *app
@@ -34,7 +33,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
   interval: 1h
   timeout: 5m
   retryInterval: 2m

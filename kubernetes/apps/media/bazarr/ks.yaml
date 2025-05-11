@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app bazarr
-  namespace: &ns media
 spec:
   commonMetadata:
     labels:
@@ -16,9 +15,9 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-    - name: keycloak
-      namespace: idp
-  path: ./kubernetes/apps/media/bazarr/app
+    - name: keycloak-instance
+      namespace: keycloak
+  path: ./kubernetes/apps/media/bazarr/manifests
   postBuild:
     substitute:
       APP: *app
@@ -33,7 +32,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
   wait: false
   interval: 31m
   timeout: 5m

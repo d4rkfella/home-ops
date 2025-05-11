@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app kubevirt-manager
-  namespace: &ns kubevirt-manager
 spec:
   commonMetadata:
     labels:
@@ -11,15 +10,14 @@ spec:
   dependsOn:
     - name: dragonfly-cluster
       namespace: database
-    - name: keycloak
-      namespace: idp
-  path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/app
+    - name: keycloak-instance
+      namespace: keycloak
+  path: ./kubernetes/apps/kubevirt-manager/kubevirt-manager/manifests
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
   wait: false
   interval: 1h
   timeout: 5m

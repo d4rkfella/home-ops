@@ -3,7 +3,6 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app autobrr
-  namespace: &ns media
 spec:
   commonMetadata:
     labels:
@@ -13,9 +12,9 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: keycloak
-      namespace: idp
-  path: ./kubernetes/apps/media/autobrr/app
+    - name: keycloak-instance
+      namespace: keycloak
+  path: ./kubernetes/apps/media/autobrr/manifests
   postBuild:
     substitute:
       APP: *app
@@ -29,7 +28,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *ns
   wait: false
   interval: 1h
   timeout: 5m

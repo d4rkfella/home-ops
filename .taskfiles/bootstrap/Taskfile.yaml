@@ -5,11 +5,11 @@ version: '3'
 
 vars:
   KUBERNETES_VERSION:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 0).spec.postBuild.substitute.KUBERNETES_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
   TALOS_SCHEMATIC_ID:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 0).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
   TALOS_VERSION:
-    sh: yq 'select(document_index == 1).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller/ks.yaml
+    sh: yq 'select(document_index == 0).spec.postBuild.substitute.TALOS_VERSION' {{.CLUSTER_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
 
 tasks:
   talos:
@@ -28,7 +28,7 @@ tasks:
     internal: true
     cmd: |
       export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
-        sops --decrypt {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml | \
+        sops --decrypt {{.ROOT_DIR}}/talos/{{.IP}}.sops.yaml | \
             /usr/local/bin/envsubst | \
                 talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
     requires:
@@ -37,7 +37,7 @@ tasks:
       - which sops
       - which talosctl
       - test -f {{.CLUSTER_DIR}}/talosconfig
-      - test -f {{.BOOTSTRAP_DIR}}/talos/{{.IP}}.sops.yaml
+      - test -f {{.ROOT_DIR}}/talos/{{.IP}}.sops.yaml
 
   etcd:
     internal: true

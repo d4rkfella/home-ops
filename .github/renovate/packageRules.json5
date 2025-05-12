@@ -2,6 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "packageRules": [
     {
+      "matchPaths": ["kubernetes/apps/openebs-system/external-snapshotter-crd"],
+      "matchUpdateTypes": ["minor", "patch"],
+    },
+    {
+      "matchPaths": ["kubernetes/apps/openebs-system/external-snapshotter-crd"],
+      "matchUpdateTypes": ["major"],
+    },
+    {
       "description": ["Allowed postgresql major release"],
       "matchDatasources": ["docker"],
       "matchPackagePatterns": ["postgresql"],

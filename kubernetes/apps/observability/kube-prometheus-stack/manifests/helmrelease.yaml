@@ -306,6 +306,8 @@ spec:
 
     kubelet:
       serviceMonitor:
+        interval: 1m
+        scrapeTimeout: 10s
         cAdvisorMetricRelabelings:
           # Drop less useful container CPU metrics.
           - sourceLabels: [__name__]

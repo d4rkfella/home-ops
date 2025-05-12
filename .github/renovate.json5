@@ -19,13 +19,6 @@
     'github>d4rkfella/home-ops//.github/renovate/packageRules.json5',
     'github>d4rkfella/home-ops//.github/renovate/semanticCommits.json5',
   ],
-  {
-  "enabled": true,
-  "versioning": "git",
-  "managerFilePatterns": [
-    "/(^|/)\\.gitmodules$/"
-  ]
-}
   dependencyDashboardTitle: 'Renovate Dashboard 🤖',
   suppressNotifications: [
     'prEditedNotification',

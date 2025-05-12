@@ -87,10 +87,10 @@ spec:
           limits:
             memory: 4Gi
       volumes:
-      - name: sysprep
-        sysprep:
-          secret:
-            name: sysprep-secret
+      #- name: sysprep
+        #sysprep:
+          #secret:
+            #name: sysprep-secret
       - dataVolume:
           name: windows-server-2025-iso
         name: iso

@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./grafana/ks.yaml
+  - ./robusta/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./alloy/ks.yaml
   - ./gatus/ks.yaml

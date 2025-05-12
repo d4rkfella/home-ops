@@ -69,7 +69,7 @@ spec:
               namespace: envoy-gateway-system
               sectionName: https
       alertmanagerSpec:
-        listenLocal: false
+        listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
         alertmanagerConfiguration:
           name: alertmanager
@@ -154,7 +154,7 @@ spec:
               namespace: envoy-gateway-system
               sectionName: https
       prometheusSpec:
-        listenLocal: false
+        listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:
           annotations:
@@ -287,27 +287,6 @@ spec:
           fsGroupChangePolicy: Always
           seccompProfile:
             type: RuntimeDefault
-
-    # managed by Robusta
-    defaultRules:
-      rules:
-        alertmanager: false
-        etcd: false
-        configReloaders: false
-        general: false
-        kubeApiserverSlos: false
-        kubeControllerManager: false
-        kubeProxy: false
-        kubernetesApps: false
-        kubernetesResources: false
-        kubernetesStorage: false
-        kubernetesSystem: false
-        kubeSchedulerAlerting: false
-        kubeStateMetrics: false
-        network: false
-        nodeExporterAlerting: false
-        prometheus: false
-        prometheusOperator: false
 
     kubeApiServer:
       serviceMonitor:

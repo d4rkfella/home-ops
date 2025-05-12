@@ -20,6 +20,8 @@ instance:
     ref: refs/heads/main
     path: kubernetes/flux/cluster
     interval: 1h
+    gitImplementation: go-git
+    recurseSubmodules: true
   commonMetadata:
     labels:
       app.kubernetes.io/name: flux

@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/ocirepository-source-v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: prometheus-smartctl-exporter
+spec:
+  interval: 2h
+  layerSelector:
+    mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip"
+    operation: copy
+  url: oci://ghcr.io/prometheus-community/charts/prometheus-smartctl-exporter
+  ref:
+    tag: 0.15.1
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app smartctl-exporter
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: prometheus-smartctl-exporter
+  driftDetection:
+    mode: enabled
+    ignore:
+      # Ignore "validated" annotation which is not inserted during install
+      - paths: ["/metadata/annotations/prometheus-operator-validated"]
+        target:
+          kind: PrometheusRule
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: *app
+    serviceMonitor:
+      enabled: true
+    prometheusRules:
+      enabled: false
+    image:
+      repository: ghcr.io/home-operations/smartctl-exporter
+      tag: 0.14

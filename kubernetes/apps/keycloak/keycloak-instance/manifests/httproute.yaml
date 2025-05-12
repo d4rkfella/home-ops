@@ -12,5 +12,5 @@ spec:
   rules:
     - backendRefs:
         - name: keycloak-service
-          namespace: idp
+          namespace: keycloak
           port: 80

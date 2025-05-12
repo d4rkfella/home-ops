@@ -54,9 +54,9 @@ spec:
       targetPath: sinksConfig[1].pushover_sink.user
   values:
     clusterName: main
-    # globalConfig:
-      # alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
-      # prometheus_url: http://vmsingle-stack.observability.svc.cluster.local:8429
+    globalConfig:
+      alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
+      prometheus_url: http://prometheus-operated.observability.svc.cluster.local:9090
     sinksConfig:
       - robusta_sink:
           name: robusta_ui_sink

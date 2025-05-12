@@ -237,6 +237,12 @@ spec:
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
             - { name: VAR_REPLICATIONDESTNAME, value: .*-dst }
+        smartctl-exporter:
+          # renovate: depName="SMARTctl Exporter Dashboard"
+          gnetId: 22604
+          revision: 2
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
     sidecar:
       dashboards:
         enabled: true

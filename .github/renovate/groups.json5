@@ -76,6 +76,22 @@
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }
+    },
+    {
+      "description": ["OpenEBS Group"],
+      "groupName": "OpenEBS",
+      "matchPackagePatterns": [
+        "sig-storage/csi-node-driver-registrar",
+        "sig-storage/csi-resizer",
+        "sig-storage/csi-snapshotter",
+        "sig-storage/snapshot-controller",
+        "sig-storage/csi-provisioner",
+        "kubernetes-csi/external-snapshotter"
+      ],
+      "matchDatasources": ["github-tags", "docker"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
     }
   ]
 }

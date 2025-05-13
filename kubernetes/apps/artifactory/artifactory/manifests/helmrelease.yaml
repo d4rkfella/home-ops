@@ -69,7 +69,7 @@ spec:
     nginx:
       enabled: true
       service:
-        type: LoadBalancer
+        type: ClusterIP
       http:
         enabled: true
         externalPort: 80

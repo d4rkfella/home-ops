@@ -27,6 +27,8 @@ spec:
       retries: 3
   values:
     artifactory:
+      masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+      joinKey: EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
       name: artifactory
       replicaCount: 1
       persistence:

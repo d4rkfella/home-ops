@@ -14,7 +14,7 @@ spec:
   interval: 1h
   chart:
     spec:
-      chart: artifactory
+      chart: artifactory-oss
       version: "107.111.7"
       sourceRef:
         kind: HelmRepository

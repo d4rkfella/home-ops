@@ -85,6 +85,44 @@ spec:
         limits:
           memory: "500Mi"
           cpu: "200m"
+      livenessProbe:
+        enabled: true
+        config: |
+          exec:
+            command:
+              - sh
+              - -c
+              - curl -s -k --fail --max-time {{ .Values.probes.timeoutSeconds }} {{ include "nginx.scheme" . }}://localhost:{{ include "nginx.port" . }}/artifactory/api/v1/system/liveness
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+      readinessProbe:
+        enabled: true
+        config: |
+          exec:
+            command:
+              - sh
+              - -c
+              - curl -s -k --fail --max-time {{ .Values.probes.timeoutSeconds }} {{ include "nginx.scheme" . }}://localhost:{{ include "nginx.port" . }}/artifactory/api/v1/system/readiness
+          initialDelaySeconds: 60
+          periodSeconds: 20
+          timeoutSeconds: 10
+          failureThreshold: 6
+          successThreshold: 1
+      startupProbe:
+        enabled: true
+        config: |
+          exec:
+            command:
+              - sh
+              - -c
+              - curl -s -k --fail --max-time {{ .Values.probes.timeoutSeconds }} {{ include "nginx.scheme" . }}://localhost:{{ include "nginx.port" . }}/artifactory/api/v1/system/readiness
+          initialDelaySeconds: 30
+          failureThreshold: 30
+          periodSeconds: 10
+          timeoutSeconds: 10
 
     # Disable unnecessary components
     access:

@@ -54,6 +54,8 @@ spec:
           value: "/var/opt/jfrog/artifactory"
         - name: JFROG_HOME
           value: "/var/opt/jfrog"
+        - name: JF_SHARED_JFROGURL
+          value: "http://artifactory:8081"
       waitForDatabase: true
       deleteDBPropertiesOnStartup: true
 
@@ -136,6 +138,28 @@ spec:
           failureThreshold: 30
           periodSeconds: 10
           timeoutSeconds: 10
+
+    router:
+      enabled: true
+      service:
+        type: ClusterIP
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "100m"
+        limits:
+          memory: "512Mi"
+          cpu: "200m"
+      extraEnvironmentVariables:
+        - name: JF_SHARED_JFROGURL
+          value: "http://artifactory:8081"
+        - name: JF_SHARED_NODE_ID
+          value: "artifactory-0"
+        - name: JF_SHARED_NODE_NAME
+          value: "artifactory-0"
+      # Disable service registry since we're running standalone
+      serviceRegistry:
+        enabled: false
 
     # Disable unnecessary components
     access:

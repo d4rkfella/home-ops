@@ -1,10 +1,10 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: pulp
+  name: pulp-operator
 spec:
   interval: 1h
-  url: https://pulp.github.io/pulp-operator-helm/
+  url: https://github.com/pulp/pulp-k8s-resources/raw/main/helm-charts/
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
@@ -15,10 +15,10 @@ spec:
   chart:
     spec:
       chart: pulp-operator
-      version: "1.0.0"
+      version: "0.3.0"
       sourceRef:
         kind: HelmRepository
-        name: pulp
+        name: pulp-operator
   values:
     operator:
       image:

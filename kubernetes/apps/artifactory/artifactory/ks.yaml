@@ -2,12 +2,12 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app pulp-operator
+  name: &app artifactory
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/pulp-system/pulp-operator/manifests
+  path: ./kubernetes/apps/artifactory/artifactory/manifests
   prune: true
   sourceRef:
     kind: GitRepository

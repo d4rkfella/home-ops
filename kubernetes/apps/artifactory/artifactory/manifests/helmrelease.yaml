@@ -1,0 +1,124 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: jfrog
+spec:
+  interval: 1h
+  url: https://charts.jfrog.io
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: artifactory
+  namespace: artifactory
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: artifactory
+      version: "107.79.0"
+      sourceRef:
+        kind: HelmRepository
+        name: jfrog
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    artifactory:
+      name: artifactory
+      replicaCount: 1
+      persistence:
+        enabled: true
+        size: 20Gi
+        mountPath: "/var/opt/jfrog/artifactory"
+      service:
+        type: ClusterIP
+        name: artifactory
+      admin:
+        username: "admin"
+        password: "change-me-please"
+      resources:
+        requests:
+          memory: "1Gi"
+          cpu: "500m"
+        limits:
+          memory: "2Gi"
+          cpu: "1"
+
+    postgresql:
+      enabled: true
+      auth:
+        username: "artifactory"
+        password: "change-me-please"
+        database: "artifactory"
+      primary:
+        persistence:
+          enabled: true
+          size: 20Gi
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+
+    nginx:
+      enabled: true
+      service:
+        type: LoadBalancer
+      http:
+        enabled: true
+        externalPort: 80
+        internalPort: 8080
+      https:
+        enabled: true
+        externalPort: 443
+        internalPort: 8443
+      resources:
+        requests:
+          memory: "250Mi"
+          cpu: "100m"
+        limits:
+          memory: "500Mi"
+          cpu: "200m"
+
+    # Disable unnecessary components
+    access:
+      enabled: false
+    metadata:
+      enabled: false
+    event:
+      enabled: false
+    jfconnect:
+      enabled: false
+    onemodel:
+      enabled: false
+    topology:
+      enabled: false
+    jfconfig:
+      enabled: false
+    observability:
+      enabled: false
+
+    # Disable mission control
+    mc:
+      enabled: false
+
+    # Disable filebeat
+    filebeat:
+      enabled: false
+
+    # Disable RTFS
+    rtfs:
+      enabled: false
+
+    # Enable wait for database
+    waitForDatabase: true
+
+    # Set probes timeout
+    probes:
+      timeoutSeconds: 5

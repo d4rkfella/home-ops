@@ -71,9 +71,15 @@ spec:
         password: "change-me-please"  # Change this!
         database: "artifactory"
       primary:
+        extendedConfiguration: |
+          listen_addresses = '*'
+          max_connections = 1500
         persistence:
           enabled: true
           size: 20Gi
+        service:
+          ports:
+            postgresql: 5432
         resources:
           requests:
             memory: "512Mi"
@@ -81,9 +87,10 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-      service:
-        port: 5432
-        name: artifactory-postgresql
+      securityContext:
+        enabled: true
+      containerSecurityContext:
+        enabled: true
 
     nginx:
       enabled: true

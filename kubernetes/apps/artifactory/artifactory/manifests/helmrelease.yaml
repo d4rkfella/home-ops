@@ -55,11 +55,13 @@ spec:
         - name: JFROG_HOME
           value: "/var/opt/jfrog"
         - name: JF_SHARED_JFROGURL
-          value: "http://artifactory.artifactory.svc.cluster.local:8081"
+          value: "http://artifactory:8081"
         - name: JF_SHARED_NODE_ID
           value: "artifactory-0"
         - name: JF_SHARED_NODE_NAME
           value: "artifactory-0"
+        - name: JF_SHARED_JOIN_KEY
+          value: "00000000000000000000000000000000"
       waitForDatabase: true
       deleteDBPropertiesOnStartup: true
       podSecurityContext:
@@ -163,7 +165,7 @@ spec:
           cpu: "200m"
       extraEnvironmentVariables:
         - name: JF_SHARED_JFROGURL
-          value: "http://artifactory.artifactory.svc.cluster.local:8081"
+          value: "http://artifactory:8081"
         - name: JF_SHARED_NODE_ID
           value: "artifactory-0"
         - name: JF_SHARED_NODE_NAME
@@ -188,7 +190,7 @@ spec:
           cpu: "200m"
       extraEnvironmentVariables:
         - name: JF_SHARED_JFROGURL
-          value: "http://artifactory.artifactory.svc.cluster.local:8081"
+          value: "http://artifactory:8081"
         - name: JF_SHARED_NODE_ID
           value: "artifactory-0"
         - name: JF_SHARED_NODE_NAME

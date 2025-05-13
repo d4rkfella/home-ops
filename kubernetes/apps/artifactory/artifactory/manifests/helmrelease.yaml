@@ -2,6 +2,7 @@ apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: jfrog
+  namespace: flux-system
 spec:
   interval: 1h
   url: https://charts.jfrog.io
@@ -16,10 +17,11 @@ spec:
   chart:
     spec:
       chart: artifactory
-      version: "107.111.7"
+      version: "107.79.0"  # Using a recent stable version
       sourceRef:
         kind: HelmRepository
         name: jfrog
+        namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -30,16 +32,19 @@ spec:
     artifactory:
       name: artifactory
       replicaCount: 1
+      masterKey: "0000000000000000000000000000000000000000000000000000000000000000"
+      joinKey: "00000000000000000000000000000000"
       persistence:
         enabled: true
         size: 20Gi
         mountPath: "/var/opt/jfrog/artifactory"
+        type: file-system
       service:
         type: ClusterIP
         name: artifactory
       admin:
         username: "admin"
-        password: "change-me-please"
+        password: "change-me-please"  # Change this!
       resources:
         requests:
           memory: "1Gi"
@@ -47,6 +52,13 @@ spec:
         limits:
           memory: "2Gi"
           cpu: "1"
+      extraEnvironmentVariables:
+        - name: ARTIFACTORY_HOME
+          value: "/var/opt/jfrog/artifactory"
+        - name: JFROG_HOME
+          value: "/var/opt/jfrog"
+      waitForDatabase: true
+      deleteDBPropertiesOnStartup: true
 
     postgresql:
       enabled: true
@@ -56,7 +68,7 @@ spec:
         tag: 16.6.0-debian-12-r2  # Explicitly set the PostgreSQL image tag
       auth:
         username: "artifactory"
-        password: "change-me-please"
+        password: "change-me-please"  # Change this!
         database: "artifactory"
       primary:
         persistence:
@@ -158,9 +170,6 @@ spec:
     rtfs:
       enabled: false
 
-    # Enable wait for database
-    waitForDatabase: true
-
     # Set probes timeout
     probes:
-      timeoutSeconds: 5
+      timeoutSeconds: 10

@@ -30,4 +30,4 @@ spec:
       enabled: true
       service:
         annotations:
-          lbipam.cilium.io/ips: 192.168.91.86
+          - lbipam.cilium.io/ips: 192.168.91.86

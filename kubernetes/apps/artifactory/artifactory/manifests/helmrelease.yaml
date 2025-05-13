@@ -50,6 +50,10 @@ spec:
 
     postgresql:
       enabled: true
+      image:
+        registry: releases-docker.jfrog.io
+        repository: bitnami/postgresql
+        tag: 16.6.0-debian-12-r2  # Explicitly set the PostgreSQL image tag
       auth:
         username: "artifactory"
         password: "change-me-please"

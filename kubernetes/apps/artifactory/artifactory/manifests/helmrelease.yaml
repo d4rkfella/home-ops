@@ -27,15 +27,18 @@ spec:
       retries: 3
   values:
     artifactory:
-      masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      joinKey: EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
       name: artifactory
       replicaCount: 1
+      joinKey: "00000000000000000000000000000000"
       persistence:
         enabled: true
         size: 20Gi
         mountPath: "/var/opt/jfrog/artifactory"
         type: file-system
+      service:
+        type: ClusterIP
+        name: artifactory
+        port: 8081
       admin:
         username: "admin"
         password: "admin"
@@ -53,8 +56,26 @@ spec:
           value: "/var/opt/jfrog"
         - name: JF_SHARED_JFROGURL
           value: "http://artifactory.artifactory.svc.cluster.local:8081"
+        - name: JF_SHARED_NODE_ID
+          value: "artifactory-0"
+        - name: JF_SHARED_NODE_NAME
+          value: "artifactory-0"
       waitForDatabase: true
       deleteDBPropertiesOnStartup: true
+      podSecurityContext:
+        enabled: true
+        runAsUser: 1030
+        runAsGroup: 1030
+        fsGroup: 1030
+      containerSecurityContext:
+        enabled: true
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        seccompProfile:
+          type: RuntimeDefault
 
     postgresql:
       enabled: true
@@ -64,7 +85,7 @@ spec:
         tag: 16.6.0-debian-12-r2
       auth:
         username: "artifactory"
-        password: "artifactory"
+        password: "change-me-please"  # Change this!
         database: "artifactory"
       primary:
         extendedConfiguration: |
@@ -91,8 +112,7 @@ spec:
     nginx:
       enabled: true
       service:
-        annotations:
-          lbipam.cilium.io/ips: 192.168.91.88
+        annotations: {}
 
     # Disable unnecessary components
     access:
@@ -131,6 +151,9 @@ spec:
     # Configure router
     router:
       enabled: true
+      service:
+        type: ClusterIP
+        port: 8082
       resources:
         requests:
           memory: "256Mi"
@@ -145,12 +168,17 @@ spec:
           value: "artifactory-0"
         - name: JF_SHARED_NODE_NAME
           value: "artifactory-0"
+        - name: JF_SHARED_JOIN_KEY
+          value: "00000000000000000000000000000000"
       serviceRegistry:
         enabled: false
 
     # Configure frontend
     frontend:
       enabled: true
+      service:
+        type: ClusterIP
+        port: 80
       resources:
         requests:
           memory: "256Mi"
@@ -161,3 +189,9 @@ spec:
       extraEnvironmentVariables:
         - name: JF_SHARED_JFROGURL
           value: "http://artifactory.artifactory.svc.cluster.local:8081"
+        - name: JF_SHARED_NODE_ID
+          value: "artifactory-0"
+        - name: JF_SHARED_NODE_NAME
+          value: "artifactory-0"
+        - name: JF_SHARED_JOIN_KEY
+          value: "00000000000000000000000000000000"

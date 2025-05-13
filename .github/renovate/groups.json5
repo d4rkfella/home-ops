@@ -90,7 +90,6 @@
         "kubernetes-csi/external-snapshotter"
       ],
       "matchDatasources": ["github-tags", "docker"],
-      "matchPaths": ["kubernetes/apps/openebs-system/**"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
       }

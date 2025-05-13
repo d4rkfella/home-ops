@@ -10,7 +10,7 @@ data:
 
     ingress:
       - hostname: darkfellanetwork.com
-        service: &svc https://envoy-envoy-gateway-system-external-7d05cf23.envoy-gateway-system.svc.cluster.local
+        service: https://envoy-envoy-gateway-system-external-7d05cf23.envoy-gateway-system.svc.cluster.local
       - hostname: "*.darkfellanetwork.com"
-        service: *svc
+        service: https://envoy-envoy-gateway-system-external-7d05cf23.envoy-gateway-system.svc.cluster.local
       - service: http_status:404

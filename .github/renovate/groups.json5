@@ -81,6 +81,7 @@
       "description": ["OpenEBS Group"],
       "groupName": "OpenEBS",
       "matchPackagePatterns": [
+        "/zfs-localpv/",
         "sig-storage/csi-node-driver-registrar",
         "sig-storage/csi-resizer",
         "sig-storage/csi-snapshotter",

@@ -27,10 +27,9 @@ spec:
       retries: 3
   values:
     artifactory:
-      global:
-        joinKeySecretName: artifactory-secret
-        masterKeySecretName: artifactory-secret
       artifactory:
+        masterKeySecretName: artifactory-secret
+        joinKeySecretName: artifactory-secret
         admin:
           secret: artifactory-secret
           dataKey: bootstrap.creds

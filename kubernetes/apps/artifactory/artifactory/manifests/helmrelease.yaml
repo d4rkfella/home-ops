@@ -73,7 +73,6 @@ spec:
       database:
         type: "postgresql"
         driver: org.postgresql.Driver
-        url: "jdbc:postgresql://postgres-v17-rw.database.svc.cluster.local:5432/artifactory"
         secrets:
           user:
             name: &secret artifactory-secret

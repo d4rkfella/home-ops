@@ -11,6 +11,6 @@ spec:
       sectionName: https
   rules:
     - backendRefs:
-        - name: artifactory-artifactory-nginx
+        - name: artifactory
           namespace: artifactory
-          port: 80
+          port: 8082

@@ -5,10 +5,11 @@ metadata:
 spec:
   hostnames: ["packages.darkfellanetwork.com"]
   parentRefs:
-    - name: internal  # Your internal Gateway
+    - name: internal
       namespace: envoy-gateway-system
       sectionName: https
   rules:
+    # Rule 1: Rewrite /wolfi-os to /artifactory/wolfi-os
     - matches:
         - path:
             type: PathPrefix
@@ -23,11 +24,9 @@ spec:
         - name: artifactory
           namespace: artifactory
           port: 8082
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
+
+    # Rule 2: Allow ALL other paths (UI, /artifactory, etc.)
+    - backendRefs:
         - name: artifactory
           namespace: artifactory
           port: 8082

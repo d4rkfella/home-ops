@@ -81,3 +81,6 @@ spec:
           password:
             name: *secret
             key: "db-password"
+          url:
+            name: *secret
+            key: "db-url"

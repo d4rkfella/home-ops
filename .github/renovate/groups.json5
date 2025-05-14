@@ -38,6 +38,15 @@
       }
     },
     {
+      "description": ["Envoy Gateway Group"],
+      "groupName": "Envoy Gateway",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["/gateway-helm/"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      }
+    },
+    {
       "description": ["Devcontainer Group"],
       "matchDatasources": ["github-releases", "docker"],
       "matchPackagePatterns": [

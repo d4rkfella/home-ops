@@ -27,6 +27,9 @@ spec:
       retries: 3
   values:
     artifactory:
+      global:
+        joinKeySecretName: artifactory-secret
+        masterKeySecretName: artifactory-secret
       artifactory:
         admin:
           secret: artifactory-secret

@@ -56,3 +56,12 @@ spec:
         - name: artifactory
           namespace: artifactory
           port: 8082
+
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /artifactory
+      backendRefs:
+        - name: artifactory
+          namespace: artifactory
+          port: 8082

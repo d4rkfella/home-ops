@@ -27,5 +27,57 @@ spec:
       retries: 3
   values:
     artifactory:
+      artifactory:
+        admin:
+          secret: artifactory-secret
+          dataKey: bootstrap.creds
+        customInitContainers: |
+          - name: "init-db"
+            image: ghcr.io/d4rkfella/postgres-init:1.0.1@sha256:50e410d36dfc131c39d71ee273a8957244d81b8cac4416ffe57431a79fc65c04
+            imagePullPolicy: IfNotPresent
+            securityContext:
+              runAsUser: 65532
+              runAsGroup: 65532
+              runAsNonRoot: true
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              seccompProfile: { type: RuntimeDefault }
+            env:
+              - name: INIT_POSTGRES_HOST
+                value: postgres-v17-rw.database.svc.cluster.local
+              - name: INIT_POSTGRES_DBNAME
+                value: artifactory
+              - name: INIT_POSTGRES_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: artifactory-secret
+                    key: db-password
+              - name: INIT_POSTGRES_SSLMODE
+                value: require
+              - name: INIT_POSTGRES_SUPER_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: artifactory-secret
+                    key: POSTGRES_SUPER_PASS
+              - name: INIT_POSTGRES_SUPER_USER
+                value: postgres-db-manager
+              - name: INIT_POSTGRES_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: artifactory-secret
+                    key: db-user
       nginx:
         enabled: false
+      postgresql:
+        enabled: false
+      database:
+        type: "postgresql"
+        driver: org.postgresql.Driver
+        url: "jdbc:postgresql://postgres-v17-rw.database.svc.cluster.local:5432/artifactory"
+        secrets:
+          user:
+            name: &secret artifactory-secret
+            key: "db-user"
+          password:
+            name: *secret
+            key: "db-password"

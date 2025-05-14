@@ -10,13 +10,13 @@ spec:
   dependsOn:
     - name: actions-runner-controller
       namespace: arc-system
-  interval: 1h
-  retryInterval: 2m
   path: ./kubernetes/apps/arc-runners/home-ops-runner/manifests
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  interval: 1h
+  retryInterval: 2m
   timeout: 5m
   wait: false

@@ -59,7 +59,7 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /ui
+            value: /
       backendRefs:
         - name: artifactory
           namespace: artifactory

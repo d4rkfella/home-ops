@@ -1,22 +1,8 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: OCIRepository
-metadata:
-  name: gha-runner-scale-set
-spec:
-  interval: 1h
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
-  ref:
-    tag: 0.11.0
-
----
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &name home-ops-runner
+  name: apk-repository-runner
 spec:
   interval: 1h
   chartRef:
@@ -33,19 +19,13 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    githubConfigUrl: https://github.com/d4rkfella/home-ops
-    githubConfigSecret: arc-runners-secret
+    githubConfigUrl: https://github.com/d4rkfella/apk-repository
+    githubConfigSecret: apk-repository-runner-secret
     namespaceOverride: arc-runners
     minRunners: 1
     maxRunners: 3
     containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
-        storageClassName: openebs-zfs-128k
-        resources:
-          requests:
-            storage: 20Gi
+      type: dind
     template:
       spec:
         containers:
@@ -59,17 +39,8 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.hostIP
-            volumeMounts:
-              - mountPath: /var/run/secrets/talos.dev
-                name: talos
-                readOnly: true
         securityContext:
           fsGroup: 123
-        serviceAccountName: *name
-        volumes:
-          - name: talos
-            secret:
-              secretName: *name
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

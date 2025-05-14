@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app arc-runners
+  name: &app apk-repository-runner
 spec:
   commonMetadata:
     labels:
@@ -12,7 +12,7 @@ spec:
       namespace: arc-system
   interval: 1h
   retryInterval: 2m
-  path: ./kubernetes/apps/arc-runners/home-ops/manifests
+  path: ./kubernetes/apps/arc-runners/apk-repository-runner/manifests
   prune: true
   sourceRef:
     kind: GitRepository

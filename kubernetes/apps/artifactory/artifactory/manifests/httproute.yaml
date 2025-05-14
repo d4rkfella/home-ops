@@ -56,11 +56,3 @@ spec:
         - name: artifactory
           namespace: artifactory
           port: 8082
-    - backendRefs:
-        - name: artifactory
-          namespace: artifactory
-          port: 8082
-      matches:
-        - path:
-            type: PathPrefix
-            value: /ui/native/wolfi-os

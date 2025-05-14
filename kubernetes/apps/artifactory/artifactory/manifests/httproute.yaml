@@ -58,7 +58,7 @@ spec:
           port: 8082
     - matches:
         - path:
-            type: PathPrefix
+            type: Exact
             value: /ui/native/wolfi-os
       backendRefs:
         - name: artifactory

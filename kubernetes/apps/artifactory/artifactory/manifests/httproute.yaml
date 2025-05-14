@@ -58,8 +58,8 @@ spec:
           port: 8082
     - matches:
         - path:
-            type: Exact
-            value: /ui/native/wolfi-os
+            type: PathPrefix
+            value: /ui
       backendRefs:
         - name: artifactory
           namespace: artifactory

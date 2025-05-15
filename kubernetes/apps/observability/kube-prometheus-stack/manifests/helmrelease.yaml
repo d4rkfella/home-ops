@@ -392,7 +392,7 @@ spec:
         - deployments
         - endpointslices
         - horizontalpodautoscalers
-        - ingresses
+        #- ingresses
         - jobs
         - leases
         - limitranges
@@ -417,11 +417,7 @@ spec:
         # - clusterrolebindings
         # - clusterroles
         # - roles
-      metricLabelsAllowlist:
-        - pods=[*]
-        - deployments=[*]
-        - persistentvolumeclaims=[*]
-        - nodes=[*]
+      metricLabelsAllowlist: []
       prometheus:
         monitor:
           enabled: true

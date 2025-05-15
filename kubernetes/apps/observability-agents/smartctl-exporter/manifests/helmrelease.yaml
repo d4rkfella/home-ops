@@ -44,5 +44,5 @@ spec:
     prometheusRules:
       enabled: false
     image:
-      repository: ghcr.io/home-operations/smartctl-exporter
-      tag: 0.14
+      repository: ghcr.io/d4rkfella/smartctl_exporter
+      tag: 0.14.0@sha256:387c92a3a18a915f03c0a7766184dbba0c9a7d829140868e61a3f1040274fa34

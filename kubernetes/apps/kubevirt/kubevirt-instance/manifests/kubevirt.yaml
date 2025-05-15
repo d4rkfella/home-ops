@@ -8,7 +8,7 @@ metadata:
 spec:
   monitorNamespace: observability
   monitorAccount: prometheus-operator
-  serviceMonitorNamespace: kubevirt
+  serviceMonitorNamespace: observability
   configuration:
     ksmConfiguration:
       nodeLabelSelector: {}

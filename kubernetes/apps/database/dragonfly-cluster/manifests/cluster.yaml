@@ -33,7 +33,7 @@ spec:
     requests:
       cpu: 500m
       memory: 500Mi
-  securityContext:
+  podSecurityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
     capabilities: { drop: ["ALL"] }

@@ -104,6 +104,13 @@ spec:
                 memory: 128Mi
         annotations:
           reloader.stakater.com/auto: "true"
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         labels:

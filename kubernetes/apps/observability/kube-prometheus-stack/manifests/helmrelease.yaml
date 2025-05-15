@@ -418,7 +418,7 @@ spec:
         # - clusterroles
         # - roles
       metricLabelsAllowlist:
-        - nodes=[kubevirt_io_schedulable]
+        - nodes=[*]
       prometheus:
         monitor:
           enabled: true

@@ -28,6 +28,10 @@ spec:
   values:
     artifactory:
       artifactory:
+        extraSystemYaml: |
+          observability:
+            consumption:
+              allow: ""
         masterKeySecretName: artifactory-secret
         joinKeySecretName: artifactory-secret
         admin:

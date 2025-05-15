@@ -24,6 +24,8 @@ cluster:
   name: main
 endpointRoutes:
   enabled: true
+ciliumEndpointSlice:
+  enabled: true
 hubble:
   enabled: false
 ipam:

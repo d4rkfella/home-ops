@@ -28,7 +28,7 @@ spec:
   values:
     artifactory:
       artifactory:
-        extraSystemYaml: |
+        extraSystemYaml:
           observability:
             consumption:
               allow: ""

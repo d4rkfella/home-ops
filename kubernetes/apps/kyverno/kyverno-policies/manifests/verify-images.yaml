@@ -34,7 +34,7 @@ spec:
           attestors:
             - entries:
                 - keyless:
-                    subjectRegExp: "https://github.com/d4rkfella/.*/.github/workflows/build.yaml@refs/heads/main"
+                    subjectRegExp: "https://github.com/d4rkfella/*"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
@@ -45,7 +45,7 @@ spec:
                   - key: "{{ regex_match('^https://github.com/slsa-framework/slsa-github-generator/container@.*','{{ buildType}}') }}"
                     operator: Equals
                     value: true
-                  - key: "{{ regex_match('^https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build).yaml@refs/heads/main','{{ builder.id}}') }}"
+                  - key: "{{ regex_match('^https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build|build-runner-image).yaml@refs/heads/main','{{ builder.id}}') }}"
                     operator: Equals
                     value: true
         - imageReferences:

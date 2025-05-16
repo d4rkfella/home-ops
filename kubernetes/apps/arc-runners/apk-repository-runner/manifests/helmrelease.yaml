@@ -44,7 +44,7 @@ spec:
             type: Unconfined
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/wolfi-runner:2.324.0@sha256:00ccdfeab66e5ca973b8d043301e71a81279194aa752ec92254a0e17ba513629
+            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:11795f5fa791211dd8ee1e96c71df26a800d34f75e74ff45794968380bfcbef7
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER

@@ -156,7 +156,6 @@ spec:
               - path: /usr/lib/jellyseerr/config
 
       cache:
-        enabled: true
         type: persistentVolumeClaim
         size: 20Gi
         accessMode: ReadWriteOnce

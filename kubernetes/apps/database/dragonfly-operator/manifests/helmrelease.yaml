@@ -23,6 +23,7 @@ spec:
   values:
     serviceAccount:
       dragonfly-operator-controller-manager:
+        enabled: true
         labels:
           app.kubernetes.io/component: rbac
           app.kubernetes.io/created-by: dragonfly-operator

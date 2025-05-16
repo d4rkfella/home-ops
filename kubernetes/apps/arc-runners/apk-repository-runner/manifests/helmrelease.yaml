@@ -39,7 +39,6 @@ spec:
       spec:
         hostUsers: false
         securityContext:
-          runAsNonRoot: true
           seccompProfile:
             type: Unconfined
         containers:

@@ -2,9 +2,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: dragonfly-operator-controller-manager
+  name: dragonfly-operator
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
@@ -22,24 +22,11 @@ spec:
       retries: 3
   values:
     serviceAccount:
-      dragonfly-operator-controller-manager:
-        labels:
-          app.kubernetes.io/component: rbac
-          app.kubernetes.io/created-by: dragonfly-operator
-          app.kubernetes.io/instance: controller-manager-sa
-          app.kubernetes.io/name: serviceaccount
-          app.kubernetes.io/part-of: dragonfly-operator
+      dragonfly-operator: {}
     controllers:
-      dragonfly-operator-controller-manager:
-        labels:
-          app.kubernetes.io/component: manager
-          app.kubernetes.io/created-by: dragonfly-operator
-          app.kubernetes.io/instance: controller-manager
-          app.kubernetes.io/name: deployment
-          app.kubernetes.io/part-of: dragonfly-operator
-          control-plane: controller-manager
+      dragonfly-operator:
         serviceAccount:
-          identifier: dragonfly-operator-controller-manager
+          identifier: dragonfly-operator
         containers:
           rbac-proxy:
             image:
@@ -120,14 +107,7 @@ spec:
 
     service:
       app:
-        labels:
-          app.kubernetes.io/component: kube-rbac-proxy
-          app.kubernetes.io/created-by: dragonfly-operator
-          app.kubernetes.io/instance: controller-manager-metrics-service
-          app.kubernetes.io/name: service
-          app.kubernetes.io/part-of: dragonfly-operator
-          control-plane: controller-manager
-        controller: dragonfly-operator-controller-manager
+        controller: dragonfly-operator
         ports:
           https:
             port: 8443

@@ -54,9 +54,9 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
             securityContext:
-              capabilities:
-                add: ["SYS_ADMIN"]
-              allowPrivilegeEscalation: false
+              #capabilities:
+                #add: ["SYS_ADMIN"]
+              allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
     controllerServiceAccount:
       name: actions-runner-controller

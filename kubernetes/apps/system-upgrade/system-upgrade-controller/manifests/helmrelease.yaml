@@ -64,3 +64,5 @@ spec:
     serviceAccount:
       system-upgrade:
         enabled: true
+      system-upgrade-test:
+        enabled: false

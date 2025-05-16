@@ -34,7 +34,7 @@ spec:
             storage: 20Gi
     template:
       spec:
-        hostUsers: false
+        hostUsers: true
         securityContext:
           fsGroup: 123
           seccompProfile: { type: RuntimeDefault }

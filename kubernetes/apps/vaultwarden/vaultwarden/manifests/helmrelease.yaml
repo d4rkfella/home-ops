@@ -207,8 +207,8 @@ spec:
                 port: *port
 
     persistence:
-      config:
-        enabled: true
+      data:
+        suffix: data
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce

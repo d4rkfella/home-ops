@@ -1,16 +1,4 @@
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  labels:
-    app.kubernetes.io/component: rbac
-    app.kubernetes.io/created-by: dragonfly-operator
-    app.kubernetes.io/instance: controller-manager-sa
-    app.kubernetes.io/name: serviceaccount
-    app.kubernetes.io/part-of: dragonfly-operator
-  name: dragonfly-operator-controller-manager
-  namespace: dragonfly-operator-system
----
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -21,7 +9,6 @@ metadata:
     app.kubernetes.io/name: role
     app.kubernetes.io/part-of: dragonfly-operator
   name: dragonfly-operator-leader-election-role
-  namespace: dragonfly-operator-system
 rules:
 - apiGroups:
   - ""
@@ -180,7 +167,6 @@ metadata:
     app.kubernetes.io/name: rolebinding
     app.kubernetes.io/part-of: dragonfly-operator
   name: dragonfly-operator-leader-election-rolebinding
-  namespace: dragonfly-operator-system
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -188,7 +174,6 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dragonfly-operator-controller-manager
-  namespace: dragonfly-operator-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -207,7 +192,6 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dragonfly-operator-controller-manager
-  namespace: dragonfly-operator-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -226,4 +210,3 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: dragonfly-operator-controller-manager
-  namespace: dragonfly-operator-system

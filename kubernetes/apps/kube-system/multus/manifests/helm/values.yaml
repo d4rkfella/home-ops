@@ -69,5 +69,4 @@ persistence:
         install-cni-plugins:
           - path: /tmp
 serviceAccount:
-  create: true
-  name: multus
+  multus: {}

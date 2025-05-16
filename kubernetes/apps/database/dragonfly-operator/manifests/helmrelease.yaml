@@ -22,8 +22,13 @@ spec:
       retries: 3
   values:
     serviceAccount:
-      create: false
-      name: dragonfly-operator-controller-manager
+      dragonfly-operator-controller-manager:
+        labels:
+          app.kubernetes.io/component: rbac
+          app.kubernetes.io/created-by: dragonfly-operator
+          app.kubernetes.io/instance: controller-manager-sa
+          app.kubernetes.io/name: serviceaccount
+          app.kubernetes.io/part-of: dragonfly-operator
     controllers:
       dragonfly-operator-controller-manager:
         labels:
@@ -33,6 +38,8 @@ spec:
           app.kubernetes.io/name: deployment
           app.kubernetes.io/part-of: dragonfly-operator
           control-plane: controller-manager
+        serviceAccount:
+          identifier: dragonfly-operator-controller-manager
         containers:
           rbac-proxy:
             image:
@@ -114,12 +121,12 @@ spec:
     service:
       app:
         labels:
-            app.kubernetes.io/component: kube-rbac-proxy
-            app.kubernetes.io/created-by: dragonfly-operator
-            app.kubernetes.io/instance: controller-manager-metrics-service
-            app.kubernetes.io/name: service
-            app.kubernetes.io/part-of: dragonfly-operator
-            control-plane: controller-manager
+          app.kubernetes.io/component: kube-rbac-proxy
+          app.kubernetes.io/created-by: dragonfly-operator
+          app.kubernetes.io/instance: controller-manager-metrics-service
+          app.kubernetes.io/name: service
+          app.kubernetes.io/part-of: dragonfly-operator
+          control-plane: controller-manager
         controller: dragonfly-operator-controller-manager
         ports:
           https:

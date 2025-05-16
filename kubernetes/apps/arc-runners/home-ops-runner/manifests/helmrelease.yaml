@@ -33,14 +33,10 @@ spec:
           requests:
             storage: 20Gi
     template:
-      metadata:
-        annotations:
-          container.apparmor.security.beta.kubernetes.io/runner: unconfined
       spec:
-        hostUsers: false
         securityContext:
-          seccompProfile:
-            type: Unconfined
+          runAsNonRoot: true
+          seccompProfile: { type: RuntimeDefault }
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.324.0@sha256:e03b4550955d539604233352ba27cd095a880b906400bb9283f1ee4b061e21bb
@@ -57,9 +53,9 @@ spec:
                 name: talos
                 readOnly: true
             securityContext:
-              capabilities:
-                add: ["SYS_ADMIN"]
-              readOnlyRootFilesystem: false
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         serviceAccountName: *name
         volumes:
           - name: talos

@@ -54,8 +54,8 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
             securityContext:
-              #capabilities:
-                #add: ["SYS_ADMIN"]
+              capabilities:
+                add: ["SYS_ADMIN"]
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
     controllerServiceAccount:

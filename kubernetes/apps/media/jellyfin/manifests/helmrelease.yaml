@@ -114,6 +114,7 @@ spec:
         type: emptyDir
 
       cache:
+        suffix: cache
         type: persistentVolumeClaim
         size: 150Gi
         storageClass: openebs-zfs-1m

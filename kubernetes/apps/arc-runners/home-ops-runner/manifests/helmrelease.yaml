@@ -55,6 +55,8 @@ spec:
             securityContext:
               capabilities:
                 add: ["SYS_ADMIN"]
+              runAsUser: 0
+              runAsGroup: 0
               readOnlyRootFilesystem: false
         serviceAccountName: *name
         volumes:

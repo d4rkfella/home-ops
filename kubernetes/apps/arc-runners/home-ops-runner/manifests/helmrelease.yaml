@@ -58,6 +58,9 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
+            securityContext:
+              capabilities:
+                add: ["SYS_ADMIN", "SETUID", "SETGID"]
         serviceAccountName: *name
         volumes:
           - name: talos

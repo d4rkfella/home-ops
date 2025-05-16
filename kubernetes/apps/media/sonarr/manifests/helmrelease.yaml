@@ -190,7 +190,7 @@ spec:
 
     persistence:
       config:
-        enabled: true
+        suffix: config
         type: persistentVolumeClaim
         size: 15Gi
         storageClass: openebs-zfs-128k

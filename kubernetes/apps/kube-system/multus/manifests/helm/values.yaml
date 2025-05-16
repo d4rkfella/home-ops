@@ -1,5 +1,7 @@
 controllers:
   multus:
+    serviceAccount:
+      identifier: multus
     type: daemonset
     initContainers:
       install-multus-binary:
@@ -38,10 +40,12 @@ controllers:
         securityContext:
           privileged: true
         terminationMessagePolicy: FallbackToLogsOnError
+
 defaultPodOptions:
   hostNetwork: true
   terminationGracePeriodSeconds: 15
   dnsPolicy: "Default"
+
 persistence:
   cni:
     type: hostPath
@@ -68,6 +72,6 @@ persistence:
       multus:
         install-cni-plugins:
           - path: /tmp
+
 serviceAccount:
-  multus:
-    enabled: true
+  multus: {}

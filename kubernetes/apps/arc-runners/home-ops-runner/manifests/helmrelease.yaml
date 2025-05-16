@@ -36,6 +36,7 @@ spec:
       spec:
         hostUsers: false
         securityContext:
+          fsGroup: 123
           seccompProfile: { type: RuntimeDefault }
         containers:
           - name: runner

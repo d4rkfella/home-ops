@@ -62,7 +62,4 @@ spec:
           operator: Exists
           effect: NoSchedule
     serviceAccount:
-      system-upgrade:
-        enabled: true
-      system-upgrade-test:
-        enabled: true
+      default: {}

@@ -24,7 +24,7 @@ spec:
         strategy: RollingUpdate
         replicas: 2
         serviceAccount:
-          identifier: default
+          identifier: system-upgrade-controller
         containers:
           app:
             image:
@@ -66,5 +66,4 @@ spec:
           effect: NoSchedule
 
     serviceAccount:
-      default:
-        enabled: true
+      system-upgrade-controller: {}

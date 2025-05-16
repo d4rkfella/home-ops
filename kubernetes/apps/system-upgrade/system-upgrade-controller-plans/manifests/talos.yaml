@@ -7,7 +7,7 @@ spec:
   version: ${TALOS_VERSION}
   serviceAccountName: system-upgrade-controller
   secrets:
-    - name: system-upgrade-controller
+    - name: system-upgrade
       path: /var/run/secrets/talos.dev
       ignoreUpdates: true
   concurrency: 1

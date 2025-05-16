@@ -64,4 +64,5 @@ spec:
           effect: NoSchedule
 
     serviceAccount:
-      default: {}
+      default:
+        enabled: true

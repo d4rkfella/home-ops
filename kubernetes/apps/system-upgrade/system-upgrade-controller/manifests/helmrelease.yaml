@@ -64,5 +64,4 @@ spec:
           effect: NoSchedule
 
     serviceAccount:
-      name: *app
-      create: true
+      default: {}

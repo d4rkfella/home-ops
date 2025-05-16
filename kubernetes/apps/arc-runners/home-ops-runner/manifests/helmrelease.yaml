@@ -33,6 +33,9 @@ spec:
           requests:
             storage: 20Gi
     template:
+      metadata:
+        annotations:
+          container.apparmor.security.beta.kubernetes.io/runner: unconfined
       spec:
         hostUsers: false
         containers:
@@ -51,8 +54,6 @@ spec:
                 name: talos
                 readOnly: true
             securityContext:
-              runAsUser: 0
-              runAsGroup: 0
               capabilities:
                 add: ["SYS_ADMIN"]
               readOnlyRootFilesystem: false

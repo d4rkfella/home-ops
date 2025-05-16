@@ -60,7 +60,8 @@ spec:
                 readOnly: true
             securityContext:
               capabilities:
-                add: ["SYS_ADMIN", "SETUID", "SETGID", "DAC_OVERRIDE"]
+                add: ["SYS_ADMIN", "SETUID", "SETGID", "DAC_OVERRIDE", "CHOWN"]
+              allowPrivilegeEscalation: true
         serviceAccountName: *name
         volumes:
           - name: talos

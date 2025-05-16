@@ -128,6 +128,7 @@ spec:
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
+
     service:
       app:
         controller: *app

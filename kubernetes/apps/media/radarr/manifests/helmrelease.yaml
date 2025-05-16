@@ -187,6 +187,7 @@ spec:
 
     persistence:
       config:
+        nameOverride: config
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce

@@ -23,6 +23,7 @@ spec:
       opnsense-exporter:
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           app:
             image:

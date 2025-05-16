@@ -35,6 +35,10 @@ spec:
     template:
       spec:
         hostUsers: false
+        securityContext:
+          fsGroup: 123
+          capabilities:
+            add: ["SYS_ADMIN", "SETUID", "SETGID", "DAC_OVERRIDE"]
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.324.0@sha256:e03b4550955d539604233352ba27cd095a880b906400bb9283f1ee4b061e21bb
@@ -50,8 +54,6 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-        securityContext:
-          fsGroup: 123
         serviceAccountName: *name
         volumes:
           - name: talos

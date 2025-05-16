@@ -4,7 +4,7 @@ kind: HelmRelease
 metadata:
   name: dragonfly-operator-controller-manager
 spec:
-  interval: 1h
+  interval: 30m
   chartRef:
     kind: OCIRepository
     name: app-template

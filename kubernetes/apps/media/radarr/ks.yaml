@@ -33,6 +33,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  interval: 1h
+  interval: 30m
   timeout: 5m
   retryInterval: 2m

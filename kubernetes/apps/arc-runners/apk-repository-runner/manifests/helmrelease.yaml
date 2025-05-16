@@ -54,8 +54,8 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
             securityContext:
-              capabilities:
-                add: ["SYS_ADMIN"]
+              #capabilities:
+                #add: ["SYS_ADMIN"]
               readOnlyRootFilesystem: false
     controllerServiceAccount:
       name: actions-runner-controller

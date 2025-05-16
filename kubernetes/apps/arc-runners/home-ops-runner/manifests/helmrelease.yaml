@@ -34,6 +34,7 @@ spec:
             storage: 20Gi
     template:
       spec:
+        hostUsers: false
         securityContext:
           seccompProfile: { type: RuntimeDefault }
         containers:

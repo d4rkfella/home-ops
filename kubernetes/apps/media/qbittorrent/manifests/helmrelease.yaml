@@ -99,7 +99,7 @@ spec:
 
     service:
       app:
-        forceRename: qbittorrent
+        forceRename: *app
         controller: *app
         primary: true
         ports:

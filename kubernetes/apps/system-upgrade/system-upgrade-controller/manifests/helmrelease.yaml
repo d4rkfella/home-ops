@@ -21,6 +21,8 @@ spec:
   values:
     controllers:
       system-upgrade-controller:
+        serviceAccount:
+          identifier: default
         strategy: RollingUpdate
         replicas: 2
         containers:

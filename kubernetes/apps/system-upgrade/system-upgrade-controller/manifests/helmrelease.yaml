@@ -66,5 +66,7 @@ spec:
           effect: NoSchedule
 
     serviceAccount:
-      system-upgrade-controller: {}
-      test: {}
+      system-upgrade-controller:
+        forceRename: system-upgrade-controller
+      test:
+        forceRename: test

@@ -62,4 +62,5 @@ spec:
           operator: Exists
           effect: NoSchedule
     serviceAccount:
-      default: {}
+      default:
+        enabled: true

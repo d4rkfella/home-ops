@@ -187,7 +187,7 @@ spec:
 
     persistence:
       config:
-        enabled: true
+        name: radarr-config
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce

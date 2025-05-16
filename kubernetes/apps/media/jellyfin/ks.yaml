@@ -14,7 +14,6 @@ spec:
       namespace: volsync-system
     - name: nvidia-device-plugin
       namespace: kube-system
-  interval: 1h
   path: ./kubernetes/apps/media/jellyfin/manifests
   postBuild:
     substitute:
@@ -28,5 +27,6 @@ spec:
     name: flux-system
     namespace: flux-system
   wait: false
+  interval: 1h
   timeout: 5m
-  retryInterval: 1m
+  retryInterval: 2m

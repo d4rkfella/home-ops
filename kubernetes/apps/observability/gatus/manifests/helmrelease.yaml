@@ -168,7 +168,8 @@ spec:
                 port: *port
 
     serviceAccount:
-      gatus: {}
+      gatus:
+        enabled: true
 
     persistence:
       config:

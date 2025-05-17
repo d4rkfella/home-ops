@@ -21,6 +21,10 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
         initContainers:
           - name: init-db
@@ -52,16 +56,14 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASSWORD
-            securityContext:
-              runAsUser: 65534
-              runAsGroup: 65534
-              privileged: false
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
 
         securityContext:
+          runAsUser: 65532
+          runAsGroup: 65532
           runAsNonRoot: true
+          fsGroup: 65532
+          fsGroupChangePolicy: Always
           seccompProfile: { type: RuntimeDefault }
 
   db:
@@ -79,7 +81,7 @@ spec:
 
   instances: 1
 
-  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:2a165d8856e20e2f58c827e13fcba4df2c9df1c1c8d8998abd3e04fc11c70a79
+  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:37b2af8cd932873a3eeb19f55ee372351ba0e6c34a99831970c148bb974b9834
 
   startOptimized: true
 

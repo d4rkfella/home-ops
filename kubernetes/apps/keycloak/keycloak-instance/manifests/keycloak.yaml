@@ -11,6 +11,10 @@ spec:
           - name: postgres-ca
             secret:
               secretName: &secret keycloak-secret
+          - name: tmpfs
+            emptyDir: {}
+          - name: dataDir
+            emptyDir: {}
         containers:
           - name: keycloak
             env:
@@ -21,6 +25,10 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
+              - name: dataDir
+                mountPath: /opt/keycloak/data
+              - name: tmpfs
+                mountPath: /tmp
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
@@ -63,7 +71,7 @@ spec:
 
         securityContext:
           runAsUser: 65532
-          runAsGroup: 0
+          runAsGroup: 65532
           runAsNonRoot: true
           fsGroup: 65532
           fsGroupChangePolicy: Always
@@ -84,7 +92,7 @@ spec:
 
   instances: 1
 
-  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:fdd68cdc444c919a7e9bd06de4e0232f7a652fb81e39c3eb2a6fb21666862b35
+  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:b772869ac231fc8d593263a2af4bda17e40de2762a1e459d1c8641d6f3ecd6a1
 
   startOptimized: true
 

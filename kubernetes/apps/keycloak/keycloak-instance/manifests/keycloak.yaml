@@ -29,7 +29,7 @@ spec:
                 mountPath: /opt/keycloak/data
               - name: tmpfs
                 mountPath: /tmp
-            securityContext:
+            securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -64,17 +64,12 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASSWORD
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
 
         securityContext:
           runAsUser: 65532
           runAsGroup: 65532
           runAsNonRoot: true
-          fsGroup: 65532
-          fsGroupChangePolicy: Always
           seccompProfile: { type: RuntimeDefault }
 
   db:

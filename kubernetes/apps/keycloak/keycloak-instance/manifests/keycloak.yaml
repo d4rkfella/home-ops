@@ -21,9 +21,9 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
 
         initContainers:
@@ -56,7 +56,10 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_PASSWORD
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
         securityContext:
           runAsUser: 65532

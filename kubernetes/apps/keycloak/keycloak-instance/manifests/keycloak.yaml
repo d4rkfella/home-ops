@@ -31,7 +31,7 @@ spec:
                 mountPath: /tmp
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
         initContainers:

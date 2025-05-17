@@ -16,7 +16,7 @@ server:
     tag: "1.19.4"
     pullPolicy: IfNotPresent
 
-  updateStrategyType: "OnDelete"
+  updateStrategyType: "RollingUpdate"
 
   logLevel: "info"
   logFormat: "json"

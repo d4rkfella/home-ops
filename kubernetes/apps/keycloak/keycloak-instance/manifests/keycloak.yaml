@@ -14,12 +14,6 @@ spec:
         containers:
           - name: keycloak
             env:
-              - name: KC_HEALTH_ENABLED
-                value: true
-              - name: KC_METRICS_ENABLED
-                value: true
-              - name: KC_DB
-                value: postgres
               - name: KC_DB_URL_PROPERTIES
                 value: "?sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
             volumeMounts:
@@ -87,7 +81,7 @@ spec:
 
   instances: 1
 
-  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:30ced6291575ebeab4f0d4fa8835cc0e9a1602769e8f516b47c53277b636d0ce
+  image: ghcr.io/d4rkfella/keycloak:26.2.4@sha256:fdd68cdc444c919a7e9bd06de4e0232f7a652fb81e39c3eb2a6fb21666862b35
 
   startOptimized: true
 

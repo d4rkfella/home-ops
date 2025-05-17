@@ -13,7 +13,7 @@ spec:
               secretName: &secret keycloak-secret
           - name: tmpfs
             emptyDir: {}
-          - name: dataDir
+          - name: data
             emptyDir: {}
         containers:
           - name: keycloak
@@ -25,7 +25,7 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
-              - name: dataDir
+              - name: data
                 mountPath: /opt/keycloak/data
               - name: tmpfs
                 mountPath: /tmp

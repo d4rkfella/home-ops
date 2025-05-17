@@ -27,8 +27,8 @@ spec:
                 readOnly: true
               - name: data
                 mountPath: /opt/keycloak/data
-              #- name: tmpfs
-                #mountPath: /tmp
+              - name: tmpfs
+                mountPath: /tmp
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

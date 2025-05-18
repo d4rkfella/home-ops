@@ -82,7 +82,7 @@ RUN apk add --no-cache \
 COPY --from=ghcr.io/siderolabs/talosctl:v1.10.1 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
-COPY --from=ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:aa4f936b86745dd6129cbfe8d551b98b13fe5c4927c3d80a45b28b2783374ff8 /usr/bin/vault-backup /usr/local/bin/vault-backup
+COPY --from=ghcr.io/d4rkfella/vault-backup:1.0.0@sha256:5b7343f161acc24d33507403aa9667b994dbfe602fd14fc5eae9fb32e20ac3ba /usr/bin/vault-backup /usr/local/bin/vault-backup
 RUN vault-backup --version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.0.0 /usr/local/bin/helmfile /usr/local/bin/helmfile

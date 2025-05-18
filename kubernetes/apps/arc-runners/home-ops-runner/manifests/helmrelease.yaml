@@ -40,7 +40,7 @@ spec:
           seccompProfile: { type: RuntimeDefault }
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:2490f59856b04d7ff417184603a755d252f821793a733841f84fb7a21c5df918
+            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:ae01bf92c5d4901b6502bb3af99116f1b698405aa9d5e67c0144fe2dd0409361
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER

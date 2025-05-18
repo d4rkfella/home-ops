@@ -31,7 +31,11 @@ spec:
           path: /spec/template/spec/containers/0/resources
           value:
             limits:
-              memory: "1024Mi"
+              cpu: 700m
+              memory: 1024Mi
+            requests:
+              cpu: 300m
+              memory: 512Mi
       target:
         group: apps
         version: v1

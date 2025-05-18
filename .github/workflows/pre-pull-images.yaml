@@ -121,9 +121,6 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Install talosctl
-        run: curl -fsSL https://talos.dev/install | sh
-
       - name: Pull Image
         run: talosctl --nodes $NODE image pull ${{ matrix.images }}
 

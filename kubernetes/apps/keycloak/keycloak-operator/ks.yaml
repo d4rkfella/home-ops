@@ -3,7 +3,7 @@ kind: GitRepository
 metadata:
   name: keycloak-k8s-resources
 spec:
-  interval: 12h
+  interval: 24h
   url: https://github.com/keycloak/keycloak-k8s-resources
   ref:
     tag: 26.2.4

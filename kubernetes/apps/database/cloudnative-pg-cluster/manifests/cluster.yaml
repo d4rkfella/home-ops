@@ -7,7 +7,7 @@ metadata:
     cnpg.io/reload: ""
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.4@sha256:a950d7c3b3571f7f9530e3842c48e4e673104929e3c323225b6f290004f2065c
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5@sha256:a584c18aa3d292b5bec7d0bce76b26edcd0a53555adbf607d14b145191a7b7fd
   primaryUpdateStrategy: unsupervised
   storage:
     pvcTemplate:

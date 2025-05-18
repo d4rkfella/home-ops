@@ -35,9 +35,6 @@ spec:
     template:
       spec:
         hostUsers: false
-        securityContext:
-          fsGroup: 123
-          seccompProfile: { type: RuntimeDefault }
         containers:
           - name: runner
             image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:ae01bf92c5d4901b6502bb3af99116f1b698405aa9d5e67c0144fe2dd0409361
@@ -53,9 +50,6 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-            securityContext:
-              allowPrivilegeEscalation: true
-              capabilities: { drop: ["ALL"] }
         serviceAccountName: *name
         volumes:
           - name: talos

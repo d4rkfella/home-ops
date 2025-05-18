@@ -1,19 +1,32 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: keycloak-k8s-resources
+spec:
+  interval: 12h
+  url: https://github.com/keycloak/keycloak-k8s-resources
+  ref:
+    tag: 26.2.4
+  ignore: |
+    /*
+    !/kubernetes
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: &app keycloak-operator
+  name: keycloak-operator
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/keycloak/keycloak-operator/manifests
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  path: ./kubernetes
   prune: true
+  wait: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  wait: true
-  interval: 1h
-  timeout: 5m
-  retryInterval: 2m
+    name: keycloak-k8s-resources
+  containers:
+    - name: keycloak-operator
+      resources:
+        limits:
+          memory: "1Gi"

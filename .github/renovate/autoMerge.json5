@@ -8,7 +8,7 @@
       "automergeType": "branch",
       "matchUpdateTypes": ["digest"],
       "matchPackageNames": ["/home-operations/", "/d4rkfella/"],
-      "ignoreTests": true
+      "ignoreTests": false
     },
     {
       "description": "Auto-merge Helm Releases",
@@ -26,7 +26,7 @@
       "automergeType": "branch",
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "minimumReleaseAge": "3 days",
-      "ignoreTests": true
+      "ignoreTests": false
     },
     {
       "description": "Auto-merge GitHub Releases",
@@ -35,7 +35,7 @@
       "automergeType": "branch",
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": ["/external-dns/", "/gateway-api/", "/prometheus-operator/"],
-      "ignoreTests": true
+      "ignoreTests": false
     }
   ]
 }

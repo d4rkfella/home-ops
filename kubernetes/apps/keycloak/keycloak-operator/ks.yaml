@@ -25,8 +25,3 @@ spec:
   sourceRef:
     kind: GitRepository
     name: keycloak-k8s-resources
-  containers:
-    - name: keycloak-operator
-      resources:
-        limits:
-          memory: "1Gi"

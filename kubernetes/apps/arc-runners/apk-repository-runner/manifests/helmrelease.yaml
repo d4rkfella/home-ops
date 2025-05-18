@@ -39,7 +39,7 @@ spec:
       spec:
         hostUsers: false
         securityContext:
-          fsGroup: 123
+          fsGroup: 1001
           seccompProfile:
             type: Unconfined
         containers:

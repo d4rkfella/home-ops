@@ -105,5 +105,8 @@ spec:
     httpEnabled: true
     httpPort: 80
 
+  features:
+    enabled:
+      - quick-theme
   ingress:
     enabled: false

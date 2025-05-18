@@ -5,7 +5,7 @@
       "description": ["Auto-merge container digests updates for trusted containers"],
       "matchDatasources": ["docker"],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
       "matchUpdateTypes": ["digest"],
       "matchPackageNames": ["/home-operations/", "/d4rkfella/"],
       "ignoreTests": false
@@ -23,7 +23,7 @@
       "description": ["Auto-merge GitHub Actions for minor and patch"],
       "matchManagers": ["github-actions"],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "minimumReleaseAge": "3 days",
       "ignoreTests": false
@@ -32,7 +32,7 @@
       "description": "Auto-merge GitHub Releases",
       "matchDatasources": ["github-releases"],
       "automerge": true,
-      "automergeType": "branch",
+      "automergeType": "pr",
       "matchUpdateTypes": ["minor", "patch"],
       "matchPackageNames": ["/external-dns/", "/gateway-api/", "/prometheus-operator/"],
       "ignoreTests": false

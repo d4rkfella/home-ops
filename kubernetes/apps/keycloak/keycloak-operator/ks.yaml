@@ -25,3 +25,15 @@ spec:
   sourceRef:
     kind: GitRepository
     name: keycloak-k8s-resources
+  patches:
+    - patch: |
+        - op: replace
+          path: /spec/template/spec/containers/0/resources
+          value:
+            limits:
+              memory: "1024Mi"
+      target:
+        group: apps
+        version: v1
+        kind: Deployment
+        name: keycloak-operator

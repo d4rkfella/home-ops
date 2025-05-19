@@ -66,9 +66,9 @@ spec:
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
             volumeMounts:
-            - name: binfmt
-              mountPath: /proc/sys/fs/binfmt_misc
-              readOnly: true
+              - name: binfmt
+                mountPath: /proc/sys/fs/binfmt_misc
+                readOnly: true
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

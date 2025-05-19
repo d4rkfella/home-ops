@@ -5,7 +5,6 @@ resources:
   - ./namespace.yaml
   - ./truenas-scale/ks.yaml
   - ./windows-server/ks.yaml
-  - ./ubuntu/ks.yaml
 components:
   - ../../components/common
 transformers:

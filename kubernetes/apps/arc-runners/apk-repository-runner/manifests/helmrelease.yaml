@@ -38,10 +38,10 @@ spec:
           container.apparmor.security.beta.kubernetes.io/runner: unconfined
       spec:
         #hostUsers: false
-        #securityContext:
+        securityContext:
           #runAsUser: 1001
           #runAsGroup: 1001
-          #fsGroup: 1001
+          fsGroup: 123
           #seccompProfile:
             #type: Unconfined
         containers:

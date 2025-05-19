@@ -50,8 +50,6 @@ spec:
               cdrom:
                 readonly: true
                 bus: sata
-        machine:
-          type: q35
         resources:
           requests:
             memory: 10240Mi
@@ -72,10 +70,10 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 10Gi
+            storage: 6Gi
       source:
         http:
-          url: "https://releases.ubuntu.com/24.04.2/ubuntu-24.04.2-desktop-amd64.iso?_gl=1*1i3iy60*_gcl_au*MTUwNDQxNDg5Ni4xNzQ3MzgzMDg2"
+          url: "https://releases.ubuntu.com/24.04.2/ubuntu-24.04.2-live-server-amd64.iso?_gl=1*70eju1*_gcl_au*MTUwNDQxNDg5Ni4xNzQ3MzgzMDg2"
   - metadata:
       name: ubuntu-os-disk
     spec:

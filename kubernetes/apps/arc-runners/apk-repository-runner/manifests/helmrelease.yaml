@@ -37,7 +37,7 @@ spec:
         annotations:
           container.apparmor.security.beta.kubernetes.io/runner: unconfined
       spec:
-        #hostUsers: false
+        hostUsers: false
         securityContext:
           runAsUser: 1001
           runAsGroup: 1001
@@ -47,7 +47,7 @@ spec:
         volumes:
         containers:
           - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.324.0@sha256:a8a54cd667ca1e12d05a3933b6c8b56dc84b35cdb1538db37a6623ef93ed789c
+            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:bc0ee79ef55ce24c3501c213c36108899a45d1b50264a7986daf469247e659f6
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
@@ -57,11 +57,10 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
             securityContext:
-              privileged: true
-              #capabilities:
-                #add: ["SYS_ADMIN"]
-              #allowPrivilegeEscalation: true
-              #readOnlyRootFilesystem: false
+              capabilities:
+                add: ["SYS_ADMIN"]
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

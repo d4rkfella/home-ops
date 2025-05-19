@@ -15,7 +15,7 @@ spec:
         - name: bridge
           multus:
             default: true
-            networkName: virtualization/ubuntu
+            networkName: virtualization/ubuntu-vm
       domain:
         clock:
           utc: {}

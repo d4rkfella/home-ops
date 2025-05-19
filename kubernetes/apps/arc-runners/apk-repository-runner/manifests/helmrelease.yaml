@@ -64,7 +64,7 @@ spec:
               capabilities:
                 add: ["SYS_ADMIN"]
               allowPrivilegeEscalation: true
-              readOnlyRootFilesystem: false
+              #readOnlyRootFilesystem: false
             volumeMounts:
               - name: binfmt
                 mountPath: /proc/sys/fs/binfmt_misc

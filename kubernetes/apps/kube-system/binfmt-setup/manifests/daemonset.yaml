@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: binfmt-setup
+  namespace: kube-system
+  labels:
+    app: binfmt-setup
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: binfmt-setup
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: binfmt-setup
+    spec:
+      hostUsers: false
+      initContainers:
+        - name: binfmt-install
+          image: tonistiigi/binfmt:qemu-v9.2.2@sha256:1b804311fe87047a4c96d38b4b3ef6f62fca8cd125265917a9e3dc3c996c39e6
+          args:
+            - '--install'
+            - arm64
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause
+          resources:
+            limits:
+              cpu: 50m
+              memory: 50Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi

@@ -47,7 +47,7 @@ spec:
         volumes:
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:bc0ee79ef55ce24c3501c213c36108899a45d1b50264a7986daf469247e659f6
+            image: ghcr.io/home-operations/actions-runner:2.324.0@sha256:a8a54cd667ca1e12d05a3933b6c8b56dc84b35cdb1538db37a6623ef93ed789c
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
@@ -59,7 +59,6 @@ spec:
             securityContext:
               capabilities:
                 add: ["SYS_ADMIN"]
-              #privileged: true
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
     controllerServiceAccount:

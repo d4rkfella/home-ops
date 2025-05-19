@@ -75,7 +75,7 @@ spec:
             storage: 10Gi
       source:
         http:
-          url: "https://ubuntu.com/download/desktop/thank-you?version=24.04.2&architecture=amd64&lts=true"
+          url: "https://releases.ubuntu.com/24.04.2/ubuntu-24.04.2-desktop-amd64.iso?_gl=1*1i3iy60*_gcl_au*MTUwNDQxNDg5Ni4xNzQ3MzgzMDg2"
   - metadata:
       name: ubuntu-os-disk
     spec:

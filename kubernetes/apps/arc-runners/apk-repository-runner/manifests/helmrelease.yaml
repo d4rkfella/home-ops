@@ -25,13 +25,13 @@ spec:
     minRunners: 1
     maxRunners: 3
     containerMode:
-      type: dind
-      #kubernetesModeWorkVolumeClaim:
-        #accessModes: ["ReadWriteOnce"]
-        #storageClassName: openebs-zfs-128k
-        #resources:
-          #requests:
-            #storage: 20Gi
+      type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: openebs-zfs-128k
+        resources:
+          requests:
+            storage: 20Gi
     template:
       metadata:
         annotations:
@@ -39,14 +39,19 @@ spec:
       spec:
         #hostUsers: false
         securityContext:
-          #runAsUser: 1001
-          #runAsGroup: 1001
+          runAsUser: 1001
+          runAsGroup: 1001
           fsGroup: 123
           seccompProfile:
             type: Unconfined
+        volumes:
+          - name: binfmt
+            hostPath:
+              path: /proc/sys/fs/binfmt_misc
+              type: Directory
         containers:
           - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.324.0@sha256:a8a54cd667ca1e12d05a3933b6c8b56dc84b35cdb1538db37a6623ef93ed789c
+            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:bc0ee79ef55ce24c3501c213c36108899a45d1b50264a7986daf469247e659f6
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
@@ -58,8 +63,12 @@ spec:
             securityContext:
               capabilities:
                 add: ["SYS_ADMIN"]
-              #allowPrivilegeEscalation: true
-              #readOnlyRootFilesystem: false
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+            volumeMounts:
+            - name: binfmt
+              mountPath: /proc/sys/fs/binfmt_misc
+              readOnly: true
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

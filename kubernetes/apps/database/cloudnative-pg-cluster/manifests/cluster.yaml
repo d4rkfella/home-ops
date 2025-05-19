@@ -75,8 +75,6 @@ spec:
         maxParallel: 8
       destinationPath: s3://postgres-backup/
       endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
-      # Note: serverName version needs to be inclemented
-      # when recovering from an existing cnpg cluster
       serverName: postgres17-v2
       s3Credentials:
         accessKeyId:
@@ -85,8 +83,7 @@ spec:
         secretAccessKey:
           name: *secret
           key: ACCESS_SECRET_KEY
-  # Note: previousCluster needs to be set to the name of the previous
-  # cluster when recovering from an existing cnpg cluster
+
   bootstrap:
     recovery:
       source: &previousCluster postgres17-v1

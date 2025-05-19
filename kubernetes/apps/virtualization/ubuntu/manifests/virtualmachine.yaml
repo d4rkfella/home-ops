@@ -67,7 +67,7 @@ spec:
       name: ubuntu-iso
     spec:
       storage:
-        storageClassName: openebs-zfs-1m
+        storageClassName: openebs-zfs-128k
         accessModes:
           - ReadWriteOnce
         resources:

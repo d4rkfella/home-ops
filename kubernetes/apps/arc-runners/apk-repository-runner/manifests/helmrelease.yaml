@@ -45,10 +45,10 @@ spec:
           seccompProfile:
             type: Unconfined
         volumes:
-          - name: binfmt
-            hostPath:
-              path: /proc/sys/fs/binfmt_misc
-              type: Directory
+          #- name: binfmt
+            #hostPath:
+              #path: /proc/sys/fs/binfmt_misc
+              #type: Directory
         containers:
           - name: runner
             image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:bc0ee79ef55ce24c3501c213c36108899a45d1b50264a7986daf469247e659f6
@@ -63,12 +63,12 @@ spec:
             securityContext:
               capabilities:
                 add: ["SYS_ADMIN"]
-              #allowPrivilegeEscalation: true
-              #readOnlyRootFilesystem: false
-            volumeMounts:
-              - name: binfmt
-                mountPath: /proc/sys/fs/binfmt_misc
-                readOnly: true
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+            #volumeMounts:
+              #- name: binfmt
+                #mountPath: /proc/sys/fs/binfmt_misc
+                #readOnly: true
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

@@ -10,6 +10,7 @@ resources:
   - ./reloader/ks.yaml
   - ./nvidia-device-plugin/ks.yaml
   - ./multus/ks.yaml
+  - ./binfmt-setup/ks.yaml
 components:
   - ../../components/common
   - ../../components/repos/app-template

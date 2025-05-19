@@ -63,7 +63,7 @@ spec:
             securityContext:
               capabilities:
                 add: ["SYS_ADMIN"]
-              allowPrivilegeEscalation: true
+              #allowPrivilegeEscalation: true
               #readOnlyRootFilesystem: false
             volumeMounts:
               - name: binfmt

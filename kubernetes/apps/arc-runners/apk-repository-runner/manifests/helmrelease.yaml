@@ -37,7 +37,7 @@ spec:
         annotations:
           container.apparmor.security.beta.kubernetes.io/runner: unconfined
       spec:
-        hostUsers: false
+        #hostUsers: false
         #securityContext:
           #runAsUser: 1001
           #runAsGroup: 1001

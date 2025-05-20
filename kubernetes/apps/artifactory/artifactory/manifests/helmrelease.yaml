@@ -29,7 +29,8 @@ spec:
     artifactory:
       artifactory:
         persistence:
-          type: aws-s3-v3
+          enabled: false
+          type: s3-storage-v3-direct
           awsS3V3:
             identity: test
             credential: test

@@ -81,7 +81,6 @@ spec:
       value: 192.168.91.50
   infrastructure:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: packages.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.50
   listeners:
     - name: http

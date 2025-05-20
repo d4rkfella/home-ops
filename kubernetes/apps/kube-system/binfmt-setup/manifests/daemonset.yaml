@@ -40,7 +40,6 @@ spec:
         args:
           - '--reset'
           - '--persistent'
-          - 'yes'
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true

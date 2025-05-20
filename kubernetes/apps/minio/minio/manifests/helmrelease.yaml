@@ -78,34 +78,6 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
 
-    route:
-      main:
-        parentRefs:
-          - name: internal
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
-              headers:
-                - name: Host
-                  value: "minio.darkfellanetwork.com"
-          backendRefs:
-            - name: main
-              port: http
-        - matches:
-            - path:
-                type: PathPrefix
-                value: /
-              headers:
-                - name: Host
-                  value: "minio-s3.darkfellanetwork.com"
-          backendRefs:
-            - name: main
-              port: s3
-
     persistence:
       data:
         existingClaim: *app

@@ -89,21 +89,18 @@ spec:
             - path:
                 type: PathPrefix
                 value: /
+              hostname: minio.darkfellanetwork.com
           backendRefs:
             - name: main
               port: http
-          hostnames:
-            - minio.darkfellanetwork.com
         - matches:
             - path:
                 type: PathPrefix
                 value: /
+              hostname: minio-s3.darkfellanetwork.com
           backendRefs:
             - name: main
               port: s3
-          hostnames:
-            - minio-s3.darkfellanetwork.com
-
 
     persistence:
       data:

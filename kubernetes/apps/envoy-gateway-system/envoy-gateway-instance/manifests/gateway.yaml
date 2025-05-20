@@ -74,8 +74,6 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: artifactory
-  annotations:
-    external-dns.alpha.kubernetes.io/target: &hostname packages.darkfellanetwork.com
 spec:
   gatewayClassName: envoy-gateway
   addresses:
@@ -83,7 +81,7 @@ spec:
       value: 192.168.91.50
   infrastructure:
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: *hostname
+        external-dns.alpha.kubernetes.io/hostname: packages.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.50
   listeners:
     - name: http

@@ -13,6 +13,9 @@ spec:
     - name: external
       namespace: envoy-gateway-system
       sectionName: http
+    - name: artifactory
+      namespace: envoy-gateway-system
+      sectionName: http
   rules:
     - filters:
         - requestRedirect:

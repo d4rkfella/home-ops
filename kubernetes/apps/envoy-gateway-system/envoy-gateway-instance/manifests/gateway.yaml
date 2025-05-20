@@ -1,0 +1,107 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: external
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &hostname external.darkfellanetwork.com
+spec:
+  gatewayClassName: envoy-gateway
+  addresses:
+    - type: IPAddress
+      value: 192.168.91.51
+  infrastructure:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: 192.168.91.51
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: darkfellanet-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: internal
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &hostname internal.darkfellanetwork.com
+spec:
+  gatewayClassName: envoy-gateway
+  addresses:
+    - type: IPAddress
+      value: 192.168.91.52
+  infrastructure:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: *hostname
+        lbipam.cilium.io/ips: 192.168.91.52
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "*.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "*.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: darkfellanet-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: artifactory
+  annotations:
+    external-dns.alpha.kubernetes.io/target: &hostname packages.darkfellanetwork.com
+spec:
+  gatewayClassName: envoy-gateway
+  addresses:
+    - type: IPAddress
+      value: 192.168.91.50
+  infrastructure:
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: *hostname
+        lbipam.cilium.io/ips: 192.168.91.50
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: "packages.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: Same
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: "packages.darkfellanetwork.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: darkfellanet-tls

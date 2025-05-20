@@ -4,8 +4,7 @@ kind: Kustomization
 resources:
   - ./certificate.yaml
   - ./gatewayclass.yaml
-  - ./external.yaml
-  - ./internal.yaml
+  - ./gateway.yaml
   - ./config.yaml
   - ./redirect.yaml
   - ./clienttrafficpolicy.yaml

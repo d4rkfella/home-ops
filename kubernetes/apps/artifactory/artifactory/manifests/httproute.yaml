@@ -38,7 +38,7 @@ metadata:
 spec:
   hostnames: ["packages.darkfellanetwork.com"]
   parentRefs:
-    - name: external
+    - name: artifactory
       namespace: envoy-gateway-system
       sectionName: https
   rules:

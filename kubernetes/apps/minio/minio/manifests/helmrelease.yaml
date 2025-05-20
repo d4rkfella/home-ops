@@ -29,7 +29,7 @@ spec:
               repository: quay.io/minio/minio
               tag: RELEASE.2024-03-21T23-13-43Z
             env:
-              TZ: America/New_York
+              TZ: Europe/Sofia
               MINIO_UPDATE: "off"
               MINIO_PROMETHEUS_URL: https://prometheus.darkfellanetwork.com
               MINIO_PROMETHEUS_JOB_ID: minio

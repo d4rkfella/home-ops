@@ -1,0 +1,119 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: minio
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+  driftDetection:
+    mode: enabled
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          main:
+            image:
+              repository: quay.io/minio/minio
+              tag: RELEASE.2024-03-21T23-13-43Z
+            env:
+              TZ: America/New_York
+              MINIO_UPDATE: "off"
+              MINIO_PROMETHEUS_URL: https://prometheus.darkfellanetwork.com
+              MINIO_PROMETHEUS_JOB_ID: minio
+              MINIO_BROWSER_REDIRECT_URL: https://minio.darkfellanetwork.com
+              MINIO_SERVER_URL: https://minio-s3.darkfellanetwork.com
+              MINIO_API_CORS_ALLOW_ORIGIN: https://minio.darkfellanetwork.com,https://minio-s3.darkfellanetwork.com
+            envFrom:
+              - secretRef:
+                  name: minio-secret
+            args: ["server", "/data", "--console-address", ":9001"]
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /minio/health/live
+                    port: 9000
+                  initialDelaySeconds: 5
+              readiness: *probe
+              startup:
+                enabled: false
+            podSecurityContext:
+              runAsUser: 65532
+              runAsGroup: 65532
+              fsGroup: 65532
+              fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      main:
+        enabled: true
+        ports:
+          http:
+            port: 9001
+          s3:
+            enabled: true
+            port: 9000
+
+    serviceMonitor:
+      main:
+        enabled: true
+        endpoints:
+          - port: s3
+            scheme: http
+            path: /minio/v2/metrics/cluster
+            interval: 1m
+            scrapeTimeout: 10s
+
+    route:
+      main:
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: main
+              port: http
+          hostnames:
+            - minio.darkfellanetwork.com
+        - matches:
+            - path:
+                type: PathPrefix
+                value: /
+          backendRefs:
+            - name: main
+              port: s3
+          hostnames:
+            - minio-s3.darkfellanetwork.com
+
+
+    persistence:
+      data:
+        existingClaim: *app
+        globalMounts:
+          - path: /data
+
+    resources:
+      requests:
+        memory: 100Mi
+        cpu: 100m
+      limits:
+        memory: 750Mi

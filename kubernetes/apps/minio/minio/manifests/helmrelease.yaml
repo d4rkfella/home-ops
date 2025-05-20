@@ -77,7 +77,7 @@ spec:
 
     serviceMonitor:
       main:
-        enabled: true
+        serviceName: *app
         endpoints:
           - port: s3
             scheme: http

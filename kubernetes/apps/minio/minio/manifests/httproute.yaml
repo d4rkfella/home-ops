@@ -18,7 +18,7 @@ spec:
             value: "minio.darkfellanetwork.com"
     backendRefs:
       - name: minio
-        port: http
+        port: 9001
   - matches:
       - path:
           type: PathPrefix
@@ -28,4 +28,4 @@ spec:
             value: "minio-s3.darkfellanetwork.com"
     backendRefs:
       - name: minio
-        port: s3
+        port: 9000

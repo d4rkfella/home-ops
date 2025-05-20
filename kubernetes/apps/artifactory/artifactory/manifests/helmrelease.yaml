@@ -28,6 +28,14 @@ spec:
   values:
     artifactory:
       artifactory:
+        persistence:
+          type: aws-s3-v3
+          awsS3V3:
+            identity: test
+            credential: test
+            bucketName: artifactory
+            endpoint: https://minio-s3.darkfellanetwork.com
+
         extraSystemYaml:
           observability:
             consumption:

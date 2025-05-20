@@ -36,10 +36,10 @@ spec:
           mountPath: /proc
           mountPropagation: Bidirectional
       - name: binfmt-install
-        image: multiarch/qemu-user-static:x86_64-aarch64
+        image: tonistiigi/binfmt
         args:
-          - '--reset'
-          - '--persistent'
+          - '--install'
+          - arm64
         imagePullPolicy: IfNotPresent
         securityContext:
           privileged: true

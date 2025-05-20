@@ -31,8 +31,8 @@ spec:
             env:
               TZ: Europe/Sofia
               MINIO_UPDATE: "off"
-              MINIO_PROMETHEUS_URL: https://prometheus.darkfellanetwork.com
-              MINIO_PROMETHEUS_JOB_ID: minio
+              #MINIO_PROMETHEUS_URL: https://prometheus.darkfellanetwork.com
+              #MINIO_PROMETHEUS_JOB_ID: minio
               MINIO_BROWSER_REDIRECT_URL: https://minio.darkfellanetwork.com
               MINIO_SERVER_URL: https://minio-s3.darkfellanetwork.com
               MINIO_API_CORS_ALLOW_ORIGIN: https://minio.darkfellanetwork.com,https://minio-s3.darkfellanetwork.com
@@ -74,15 +74,15 @@ spec:
           s3:
             port: 9000
 
-    serviceMonitor:
-      main:
-        serviceName: *app
-        endpoints:
-          - port: s3
-            scheme: http
-            path: /minio/v2/metrics/cluster
-            interval: 1m
-            scrapeTimeout: 10s
+    #serviceMonitor:
+      #main:
+        #serviceName: *app
+        #endpoints:
+          #- port: s3
+            #scheme: http
+            #path: /minio/v2/metrics/cluster
+            #interval: 1m
+            #scrapeTimeout: 10s
 
     persistence:
       data:

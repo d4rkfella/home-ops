@@ -119,7 +119,7 @@ spec:
         storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
         globalMounts:
-          - path: /config/metadata
+          - path: /metadata
 
       cache:
         suffix: cache

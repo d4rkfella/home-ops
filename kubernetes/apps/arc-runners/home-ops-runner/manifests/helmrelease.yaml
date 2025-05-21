@@ -43,7 +43,7 @@ spec:
           fsGroup: 1001
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:bc0ee79ef55ce24c3501c213c36108899a45d1b50264a7986daf469247e659f6
+            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:7b29b147b85390f49c1d708526733bdf096245bbe3c6042f789e8ae3a7f2470a
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER

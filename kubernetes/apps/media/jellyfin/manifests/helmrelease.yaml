@@ -60,12 +60,14 @@ spec:
               limits:
                 nvidia.com/gpu: 1
                 memory: 8Gi
+
         pod:
           runtimeClassName: nvidia
           tolerations:
             - key: nvidia.com/gpu
               operator: Exists
               effect: NoSchedule
+
     defaultPodOptions:
       securityContext:
         runAsUser: 65532
@@ -110,8 +112,14 @@ spec:
         globalMounts:
           - path: /config
 
-      tmp:
-        type: emptyDir
+      metadata:
+        suffix: metadata
+        type: persistentVolumeClaim
+        size: 15Gi
+        storageClass: openebs-zfs-128k
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /config/metadata
 
       cache:
         suffix: cache
@@ -121,6 +129,9 @@ spec:
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /cache
+
+      tmp:
+        type: emptyDir
 
       media:
         type: nfs

@@ -5,10 +5,10 @@
       "description": ["Auto-merge container digests updates for trusted containers"],
       "matchDatasources": ["docker"],
       "automerge": true,
-      "automergeType": "pr",
+      "automergeType": "branch",
       "matchUpdateTypes": ["digest"],
       "matchPackageNames": ["/home-operations/", "/d4rkfella/"],
-      "ignoreTests": false
+      "ignoreTests": true
     },
     {
       "description": "Auto-merge Helm Releases",

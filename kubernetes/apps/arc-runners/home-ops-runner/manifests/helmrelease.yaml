@@ -38,6 +38,7 @@ spec:
         securityContext:
           runAsNonRoot: true
           seccompProfile: { type: RuntimeDefault }
+          runAsUser: 1001
           fsGroup: 123
         containers:
           - name: runner

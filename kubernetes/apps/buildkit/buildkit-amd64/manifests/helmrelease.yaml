@@ -90,7 +90,7 @@ spec:
 
       root:
         type: persistentVolumeClaim
-        storageClass: openebs-hostpath
+        storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
         retain: true
         size: 100Gi

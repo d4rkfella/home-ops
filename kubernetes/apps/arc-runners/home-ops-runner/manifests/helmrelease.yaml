@@ -37,13 +37,11 @@ spec:
         hostUsers: false
         securityContext:
           runAsNonRoot: true
-          runAsUser: 1001
-          runAsGroup: 1001
           seccompProfile: { type: RuntimeDefault }
-          fsGroup: 1001
+          fsGroup: 123
         containers:
           - name: runner
-            image: ghcr.io/d4rkfella/wolfi-actions-runner:2.324.0@sha256:7b29b147b85390f49c1d708526733bdf096245bbe3c6042f789e8ae3a7f2470a
+            image: ghcr.io/actions/actions-runner:2.324.0@sha256:e03b4550955d539604233352ba27cd095a880b906400bb9283f1ee4b061e21bb
             command: ["/home/runner/run.sh"]
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER

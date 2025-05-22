@@ -2,7 +2,7 @@
 
 VM_NAME="truenas"
 NAMESPACE="virtualization"
-OUTPUT_PATH="/tmp/disk.img"
+OUTPUT_PATH="/tmp/disk.img.gz"
 
 # Stop the VM
 echo "Stopping VM..."
@@ -16,7 +16,7 @@ done
 
 # Start export
 echo "Creating VM export..."
-virtctl vmexport download $VM_NAME --vm=$VM_NAME --format=raw --ttl=1h --volume=truenas-scale-os-disk --output=$OUTPUT_PATH -n $NAMESPACE &
+virtctl vmexport download $VM_NAME --vm=$VM_NAME --port-forward --format=gzip --ttl=1h --volume=truenas-scale-os-disk --output=$OUTPUT_PATH -n $NAMESPACE &
 EXPORT_PID=$!
 
 # Wait for the export to finish

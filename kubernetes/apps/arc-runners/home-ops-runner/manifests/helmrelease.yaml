@@ -53,8 +53,8 @@ spec:
                   fieldRef:
                     fieldPath: status.hostIP
             volumeMounts:
-              - mountPath: /var/run/secrets/talos.dev
-                name: talos
+              - mountPath: /var/run/secrets/buildkit
+                name: buildkit-tls
                 readOnly: true
             securityContext:
               capabilities: { drop: ["ALL"] }
@@ -62,9 +62,9 @@ spec:
               readOnlyRootFilesystem: false
         serviceAccountName: *name
         volumes:
-          - name: talos
+          - name: buildkit-tls
             secret:
-              secretName: *name
+              secretName: buildkit-client-tls
     controllerServiceAccount:
       name: actions-runner-controller
       namespace: arc-system

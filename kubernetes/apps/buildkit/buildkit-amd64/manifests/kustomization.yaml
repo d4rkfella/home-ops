@@ -4,3 +4,12 @@ kind: Kustomization
 resources:
   - ./certificate.yaml
   - ./helmrelease.yaml
+configMapGenerator:
+  - name: buildkit-config
+    files:
+      - ./configs/buildkitd.toml
+    options:
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+generatorOptions:
+  disableNameSuffixHash: true

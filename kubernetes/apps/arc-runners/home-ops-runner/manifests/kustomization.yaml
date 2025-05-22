@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - ./rbac.yaml
   - ./externalsecret.yaml
+  - ./certificate.yaml
   - ./helmrelease.yaml

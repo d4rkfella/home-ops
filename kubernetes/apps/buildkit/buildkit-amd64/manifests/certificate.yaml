@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-amd64
+spec:
+  secretName: buildkit-amd64-tls
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  dnsNames:
+    - buildkit-amd64
+    - buildkit-amd64.buildkit
+    - buildkit-amd64.buildkit.svc
+    - buildkit-amd64.buildkit.svc.cluster.local
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth

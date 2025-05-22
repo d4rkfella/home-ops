@@ -79,11 +79,11 @@ spec:
       hostUsers: false
 
     persistence:
-      #config:
-        #type: configMap
-        #name: buildkit-config
-        #globalMounts:
-          #- path: /etc/buildkit
+      config:
+        type: configMap
+        name: buildkit-config
+        globalMounts:
+          - path: /etc/buildkit
 
       root:
         type: persistentVolumeClaim

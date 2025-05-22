@@ -30,11 +30,11 @@ spec:
               - --addr
               - tcp://0.0.0.0:9999
               - --tlscacert
-              - /certs/ca.pem
+              - /certs/ca.crt
               - --tlscert
-              - /certs/cert.pem
+              - /certs/tls.crt
               - --tlskey
-              - /certs/key.pem
+              - /certs/tls.key
             ports:
               - name: grpc
                 containerPort: 9999

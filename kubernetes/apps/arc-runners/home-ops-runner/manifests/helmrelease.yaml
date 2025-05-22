@@ -31,7 +31,7 @@ spec:
         storageClassName: openebs-zfs-128k
         resources:
           requests:
-            storage: 80Gi
+            storage: 160Gi
     template:
       spec:
         hostUsers: false

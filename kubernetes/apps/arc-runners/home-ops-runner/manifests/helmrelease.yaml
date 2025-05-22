@@ -57,7 +57,7 @@ spec:
                 name: buildkit-tls
                 readOnly: true
             securityContext:
-              capabilities: { drop: ["ALL"] }
+              #capabilities: { drop: ["ALL"] }
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
         serviceAccountName: *name

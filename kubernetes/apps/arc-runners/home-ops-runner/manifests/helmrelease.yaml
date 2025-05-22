@@ -58,7 +58,7 @@ spec:
                 readOnly: true
             securityContext:
               capabilities: { drop: ["ALL"] }
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
         serviceAccountName: *name
         volumes:

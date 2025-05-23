@@ -22,7 +22,7 @@ spec:
     controllers:
       gatus:
         serviceAccount:
-            identifier: gatus
+          identifier: gatus
         annotations:
           reloader.stakater.com/auto: "true"
 

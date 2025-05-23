@@ -12,8 +12,6 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: media
-  components:
-    - ../../../../components/gatus/internal
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
@@ -22,12 +20,6 @@ spec:
     - name: keycloak-instance
       namespace: keycloak
   path: ./kubernetes/apps/media/sonarr/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      GATUS_NAME: Sonarr
-      GATUS_PATH: /ping
-      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].status == OK"]'
   prune: true
   sourceRef:
     kind: GitRepository

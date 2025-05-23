@@ -14,15 +14,11 @@ spec:
       namespace: media
   components:
     - ../../../../components/volsync
-    - ../../../../components/gatus/internal
   path: ./kubernetes/apps/media/qbittorrent/manifests
   postBuild:
     substitute:
       APP: *app
       VOLSYNC_CAPACITY: 5Gi
-      GATUS_NAME: qBittorrent
-      GATUS_PATH: /api/v2/app/version
-      GATUS_STATUS: "403"
   prune: true
   sourceRef:
     kind: GitRepository

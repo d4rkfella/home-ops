@@ -22,12 +22,6 @@ spec:
     - name: keycloak-instance
       namespace: keycloak
   path: ./kubernetes/apps/media/prowlarr/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      GATUS_NAME: "Prowlarr"
-      GATUS_PATH: /ping
-      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY].status == OK"]'
   prune: true
   sourceRef:
     kind: GitRepository

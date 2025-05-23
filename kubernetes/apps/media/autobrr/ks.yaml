@@ -7,22 +7,12 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/internal
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
     - name: keycloak-instance
       namespace: keycloak
   path: ./kubernetes/apps/media/autobrr/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CACHE_CAPACITY: 5Gi
-      VOLSYNC_CAPACITY: 10Gi
-      GATUS_NAME: "Autobrr"
-      GATUS_PATH: /api/healthz/readiness
-      GATUS_CONDITIONS: '["[STATUS] == 200", "[BODY] == OK"]'
   prune: true
   sourceRef:
     kind: GitRepository

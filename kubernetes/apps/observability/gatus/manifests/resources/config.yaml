@@ -6,17 +6,23 @@ security:
     client-secret: ${OIDC_CLIENT_SECRET}
     redirect-url: https://status.darkfellanetwork.com/authorization-code/callback
     scopes: [openid]
+
 web:
   port: ${WEB_PORT}
+
 storage:
   type: postgres
   path: postgres://${POSTGRES_USERNAME}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DBNAME}?sslmode=verify-full&sslrootcert=/etc/ssl/certs/postgres-ca.crt
   caching: true
+
 metrics: true
+
 debug: false
+
 ui:
   title: Status | Gatus
   header: Status
+
 alerting:
   pushover:
     title: Gatus
@@ -28,10 +34,12 @@ alerting:
       send-on-resolved: true
       failure-threshold: 3
       success-threshold: 3
+
 connectivity:
   checker:
     target: 1.1.1.1:53
     interval: 1m
+
 endpoints:
   - name: Gatus
     group: external
@@ -44,3 +52,125 @@ endpoints:
       - "[BODY].status == UP"
     alerts:
       - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: postgres17
+    group: infrastructure
+    url: tcp://postgres-v17-rw.database.svc.cluster.local:5432
+    interval: 1m
+    ui:
+      hide-url: true
+      hide-hostname: true
+    conditions:
+      - "[CONNECTED] == true"
+    alerts:
+      - type: pushover
+
+  - name: "Autobrr"
+    group: internal
+    url: "https://autobrr.darkfellanetwork.com:443/api/healthz/readiness"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 200", "[BODY] == OK"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Bazarr"
+    group: internal
+    url: "https://bazarr.darkfellanetwork.com:443/api/system/ping"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Jellyseerr"
+    group: external
+    url: "https://requests.darkfellanetwork.com:443/api/v1/status"
+    interval: 1m
+    client:
+      dns-resolver: tcp://1.1.1.1:53
+    conditions: ["[STATUS] == 200", "has([BODY].version) == true"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Prowlarr"
+    group: internal
+    url: "https://prowlarr.darkfellanetwork.com:443/ping"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "qBittorrent"
+    group: internal
+    url: "https://qbittorrent.darkfellanetwork.com:443/api/v2/app/version"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 403"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Radarr"
+    group: internal
+    url: "https://radarr.darkfellanetwork.com:443/ping"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Sonarr"
+    group: internal
+    url: "https://sonarr.darkfellanetwork.com:443/ping"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "HashiCorp Vault"
+    group: internal
+    url: "https://vault.darkfellanetwork.com:8200/v1/sys/health"
+    interval: 1m
+    client:
+      dns-resolver: tcp://172.17.0.10:53
+    conditions: ["[BODY].initialized == true", "[BODY].sealed == false"]
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"
+
+  - name: "Vaultwarden"
+    group: external
+    url: "https://vaultwarden.darkfellanetwork.com:443/alive"
+    interval: 1m
+    client:
+      dns-resolver: tcp://1.1.1.1:53
+    conditions: ['[STATUS] == 200']
+    alerts:
+      - type: pushover
+    headers:
+      Accept: "application/json"

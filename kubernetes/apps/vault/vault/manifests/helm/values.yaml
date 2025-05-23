@@ -177,7 +177,7 @@ server:
         runAsUser: 100
         runAsGroup: 1000
         fsGroup: 1000
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
       container:
         allowPrivilegeEscalation: false

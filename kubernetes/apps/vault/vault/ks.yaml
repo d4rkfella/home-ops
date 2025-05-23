@@ -7,16 +7,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/gatus/internal
   path: ./kubernetes/apps/vault/vault/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      GATUS_NAME: "HashiCorp Vault"
-      GATUS_PATH: /v1/sys/health
-      GATUS_PORT: "8200"
-      GATUS_CONDITIONS: '["[BODY].initialized == true", "[BODY].sealed == false"]'
   prune: false
   sourceRef:
     kind: GitRepository

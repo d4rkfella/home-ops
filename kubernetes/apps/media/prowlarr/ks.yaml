@@ -12,8 +12,6 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: media
-  components:
-    - ../../../../components/gatus/internal
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database

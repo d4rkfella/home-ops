@@ -51,7 +51,6 @@ spec:
                     name: *secret
                     key: &pgPass POSTGRES_PASSWORD
             securityContext: &securityContext
-              privileged: false
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
@@ -108,7 +107,11 @@ spec:
                   failureThreshold: 3
               readiness: *probes
             securityContext: *securityContext
-            resources: *resources
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 256Mi
 
     defaultPodOptions:
       securityContext:

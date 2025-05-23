@@ -66,6 +66,7 @@ spec:
                 drop: ["ALL"]
                 add: ["SYS_ADMIN", "CHOWN", "FOWNER", "MKNOD", "DAC_OVERRIDE"]
               privileged: false
+              mountPropagation: Bidirectional
 
     defaultPodOptions:
       affinity:

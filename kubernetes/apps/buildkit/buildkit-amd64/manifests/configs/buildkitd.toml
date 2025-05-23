@@ -3,6 +3,9 @@
   uid = 0
   gid = 0
 
+[cdi]
+  disabled = true
+
 [worker.oci]
   enabled = true
   rootless = false

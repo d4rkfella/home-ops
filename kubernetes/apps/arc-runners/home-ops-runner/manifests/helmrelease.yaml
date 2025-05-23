@@ -59,6 +59,9 @@ spec:
               #capabilities: { drop: ["ALL"] }
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
+            resources:
+              limits:
+                devices.kubevirt.io/kvm: "1"
         serviceAccountName: *name
         volumes:
           - name: buildkit-tls

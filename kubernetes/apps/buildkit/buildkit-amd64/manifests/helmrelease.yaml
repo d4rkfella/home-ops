@@ -62,7 +62,7 @@ spec:
                   initialDelaySeconds: 5
                   periodSeconds: 30
             securityContext:
-              privileged: true
+              privileged: false
 
     defaultPodOptions:
       affinity:

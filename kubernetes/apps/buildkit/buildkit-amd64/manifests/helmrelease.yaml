@@ -63,6 +63,7 @@ spec:
                   periodSeconds: 30
             securityContext:
               privileged: true
+              procMount: Unmasked
 
     defaultPodOptions:
       affinity:

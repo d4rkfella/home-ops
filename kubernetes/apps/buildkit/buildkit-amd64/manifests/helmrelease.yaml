@@ -77,7 +77,7 @@ spec:
                       - amd64
       annotations:
         reloader.stakater.com/auto: "true"
-      hostUsers: false
+      hostUsers: true
 
     persistence:
       config:

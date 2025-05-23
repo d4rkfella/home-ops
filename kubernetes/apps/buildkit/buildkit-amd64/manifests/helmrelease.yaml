@@ -62,7 +62,10 @@ spec:
                   initialDelaySeconds: 5
                   periodSeconds: 30
             securityContext:
-              privileged: true
+              capabilities:
+                add: ["CHOWN", "FOWNER", "MKNOD", "DAC_OVERRIDE", "SETFCAP", "NET_BIND_SERVICE"]
+                drop: ["ALL"]
+              privileged: false
 
     defaultPodOptions:
       affinity:

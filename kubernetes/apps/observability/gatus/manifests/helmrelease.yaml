@@ -22,7 +22,7 @@ spec:
     controllers:
       gatus:
         serviceAccount:
-          identifier: gatus
+            identifier: gatus
         annotations:
           reloader.stakater.com/auto: "true"
 
@@ -169,10 +169,6 @@ spec:
               - name: *app
                 port: *port
 
-    serviceAccount:
-      gatus:
-        enabled: true
-
     persistence:
       config:
         type: emptyDir
@@ -202,3 +198,22 @@ spec:
               - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true
+
+    rbac:
+      roles:
+        gatus:
+          type: Role
+          rules:
+            - apiGroups: [""]
+              resources: ["configmaps", "secrets"]
+              verbs: ["get", "watch", "list"]
+      bindings:
+        gatus:
+          type: RoleBinding
+          roleRef:
+            identifier: gatus
+          subjects:
+            - identifier: gatus
+
+    serviceAccount:
+      gatus: {}

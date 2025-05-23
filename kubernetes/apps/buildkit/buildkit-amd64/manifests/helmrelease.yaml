@@ -62,11 +62,7 @@ spec:
                   initialDelaySeconds: 5
                   periodSeconds: 30
             securityContext:
-              capabilities:
-                drop: ["ALL"]
-                add: ["SYS_ADMIN", "CHOWN", "FOWNER", "MKNOD", "DAC_OVERRIDE"]
-              privileged: false
-              mountPropagation: Bidirectional
+              privileged: true
 
     defaultPodOptions:
       affinity:

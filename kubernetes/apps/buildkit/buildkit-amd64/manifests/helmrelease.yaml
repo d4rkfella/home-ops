@@ -64,7 +64,7 @@ spec:
             securityContext:
               capabilities:
                 drop: ["ALL"]
-                add: ["CAP_SYS_ADMIN", "CAP_CHOWN", "CAP_FOWNER", "CAP_MKNOD", "CAP_DAC_OVERRIDE"]
+                add: ["SYS_ADMIN", "CHOWN", "FOWNER", "MKNOD", "DAC_OVERRIDE"]
               privileged: false
 
     defaultPodOptions:

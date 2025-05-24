@@ -18,10 +18,3 @@ spec:
   interval: 1h
   timeout: 5m
   retryInterval: 2m
-  patches:
-    - patch: |
-        - op: add
-          path: /spec/template/spec/hostUsers
-          value: false
-      target:
-        kind: Deployment

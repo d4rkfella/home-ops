@@ -20,6 +20,16 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: cloudflare-dns
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   values:
     fullnameOverride: *app
     provider:

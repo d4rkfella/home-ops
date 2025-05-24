@@ -33,6 +33,16 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: (external-secrets|external-secrets-webhook)
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   valuesFrom:
     - kind: ConfigMap
       name: external-secrets-values

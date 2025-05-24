@@ -18,6 +18,16 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: rfc2136-dns
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   values:
     image:
       tag: v0.15.1

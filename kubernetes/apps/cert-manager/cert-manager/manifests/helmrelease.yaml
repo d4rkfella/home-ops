@@ -33,6 +33,16 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: (cert-manager|cert-manager-cainjector|cert-manager-webhook)
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   valuesFrom:
     - kind: ConfigMap
       name: cert-manager-values

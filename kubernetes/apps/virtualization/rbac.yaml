@@ -12,7 +12,6 @@ rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get","create"]
-  #resourceNames: ["secret-truenas-export","secret-windows-export"]
 - apiGroups: ["kubevirt.io"]
   resources: ["virtualmachines"]
   verbs: ["get"]

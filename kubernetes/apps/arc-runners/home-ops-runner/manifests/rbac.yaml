@@ -21,6 +21,8 @@ rules:
     - "virtualmachineinstances/stop"
     - "virtualmachineinstances/pause"
     - "virtualmachineinstances/unpause"
+    - "virtualmachineinstances/freeze"
+    - "virtualmachineinstances/unfreeze"
   verbs: ["update"]
 - apiGroups: ["kubevirt.io"]
   resources: ["kubevirts"]

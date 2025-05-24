@@ -7,7 +7,7 @@ spec:
   version: ${KUBERNETES_VERSION}
   serviceAccountName: system-upgrade-controller
   secrets:
-    - name: system-upgrade
+    - name: system-upgrade-controller
       path: /var/run/secrets/talos.dev
       ignoreUpdates: false
   concurrency: 1

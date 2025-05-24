@@ -114,6 +114,7 @@ spec:
                 memory: 256Mi
 
     defaultPodOptions:
+      hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

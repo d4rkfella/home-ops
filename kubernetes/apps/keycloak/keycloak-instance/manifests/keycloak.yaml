@@ -72,6 +72,8 @@ spec:
           runAsNonRoot: true
           seccompProfile: { type: RuntimeDefault }
 
+        hostUsers: false
+
   db:
     vendor: postgres
     usernameSecret:

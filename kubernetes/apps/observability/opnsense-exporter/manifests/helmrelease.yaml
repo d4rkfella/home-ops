@@ -67,6 +67,7 @@ spec:
                 memory: 1Gi
 
     defaultPodOptions:
+      hostUsers: false
       securityContext:
         runAsUser: 65532
         runAsGroup: 65532

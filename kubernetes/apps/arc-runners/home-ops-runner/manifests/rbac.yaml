@@ -1,0 +1,30 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: github-actions-vm-manager
+rules:
+- apiGroups: ["kubevirt.io"]
+  resources: ["virtualmachines"]
+  verbs: ["get"]
+- apiGroups: ["subresources.kubevirt.io"]
+  resources: ["virtualmachines/start", "virtualmachines/stop"]
+  verbs: ["update"]
+- apiGroups: ["export.kubevirt.io"]
+  resources: ["virtualmachineexports"]
+  verbs: ["create","delete"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: github-actions-vm-access
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: github-actions-vm-manager
+subjects:
+- kind: ServiceAccount
+  name: home-ops-runner-gha-rs-kube-mode
+  namespace: arc-runners

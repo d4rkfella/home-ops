@@ -29,8 +29,8 @@ spec:
   - kustomize:
       patches:
         - target:
-            kind: "*"
-            name: "*"
+            kind: "StatefulSet"
+            name: "artifactory"
           patch: |-
             - op: add
               path: /spec/template/spec/hostUsers

@@ -37,8 +37,8 @@ spec:
               cpu: 300m
               memory: 512Mi
         - op: add
-              path: /spec/template/spec/hostUsers
-              value: false
+          path: /spec/template/spec/hostUsers
+          value: false
       target:
         group: apps
         version: v1

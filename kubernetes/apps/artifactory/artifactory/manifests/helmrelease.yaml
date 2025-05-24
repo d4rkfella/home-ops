@@ -25,6 +25,16 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+        - target:
+            kind: "*"
+            name: "*"
+          patch: |-
+            - op: add
+              path: /spec/template/spec/hostUsers
+              value: false
   values:
     artifactory:
       artifactory:

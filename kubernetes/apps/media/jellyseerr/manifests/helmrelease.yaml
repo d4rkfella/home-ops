@@ -113,6 +113,7 @@ spec:
                 memory: 2Gi
 
     defaultPodOptions:
+      hostUsers: false
       hostAliases:
         - ip: "192.168.91.52"
           hostnames:

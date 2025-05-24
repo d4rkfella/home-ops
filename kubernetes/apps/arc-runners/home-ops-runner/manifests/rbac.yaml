@@ -8,7 +8,7 @@ rules:
   verbs: ["get"]
 - apiGroups: ["subresources.kubevirt.io"]
   resources: ["virtualmachines/start", "virtualmachines/stop"]
-  verbs: ["update"]
+  verbs: ["*"]
 - apiGroups: ["export.kubevirt.io"]
   resources: ["virtualmachineexports"]
   verbs: ["get","create"]

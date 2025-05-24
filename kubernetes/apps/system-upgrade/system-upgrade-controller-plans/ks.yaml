@@ -18,7 +18,7 @@ spec:
   wait: false
   interval: 1h
   timeout: 5m
-  retryInterval: 2m
+  retryInterval: 1m
   postBuild:
     substitute:
       TALOS_SCHEMATIC_ID: 4a9356a6363819d83722bb117dbb6ea1b453d63de230549808f76d0adb74c764

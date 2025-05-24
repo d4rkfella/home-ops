@@ -69,6 +69,8 @@ spec:
       talosServiceAccount:
         apiVersion: talos.dev/v1alpha1
         kind: ServiceAccount
+        metadata:
+          name: system-upgrade-controller
         spec:
           spec:
             roles: ["os:admin"]

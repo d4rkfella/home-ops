@@ -49,14 +49,14 @@ spec:
     fullnameOverride: *name
     replicaCount: 1
     podSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities: { drop: ["ALL"] }
+    securityContext:
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
       seccompProfile: { type: RuntimeDefault }
-    securityContext:
-      capabilities:
-        drop:
-        - ALL
       readOnlyRootFilesystem: true
     flags:
       watchSingleNamespace: arc-runners

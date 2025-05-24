@@ -11,7 +11,7 @@ rules:
   verbs: ["update"]
 - apiGroups: ["export.kubevirt.io"]
   resources: ["virtualmachineexports"]
-  verbs: ["create","delete"]
+  verbs: ["get"]
 - apiGroups: [""]
   resources: ["namespaces"]
   verbs: ["get", "list"]

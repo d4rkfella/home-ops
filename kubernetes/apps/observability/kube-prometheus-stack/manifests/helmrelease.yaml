@@ -38,6 +38,20 @@ spec:
         patch: |
           - op: remove
             path: /spec/alerting
+      - target:
+          kind: StatefulSet
+          name: (alertmanager-kube-prometheus-stack|prometheus-kube-prometheus-stack|)
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
+      - target:
+          kind: Deployment
+          name: (kube-state-metrics|prometheus-operator)
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   install:
     crds: Skip
     remediation:

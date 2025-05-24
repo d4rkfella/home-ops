@@ -35,3 +35,13 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: Deployment
+          name: envoy-gateway
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false

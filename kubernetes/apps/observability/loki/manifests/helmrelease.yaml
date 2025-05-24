@@ -35,6 +35,16 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  postRenderers:
+  - kustomize:
+      patches:
+      - target:
+          kind: StatefulSet
+          name: loki
+        patch: |-
+          - op: add
+            path: /spec/template/spec/hostUsers
+            value: false
   values:
     deploymentMode: SingleBinary
     loki:

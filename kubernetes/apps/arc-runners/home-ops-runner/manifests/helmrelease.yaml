@@ -62,7 +62,6 @@ spec:
             resources:
               limits:
                 devices.kubevirt.io/kvm: "1"
-        serviceAccountName: *name
         volumes:
           - name: buildkit-tls
             secret:

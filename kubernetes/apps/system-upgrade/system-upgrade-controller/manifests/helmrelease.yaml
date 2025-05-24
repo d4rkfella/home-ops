@@ -65,14 +65,6 @@ spec:
           operator: Exists
           effect: NoSchedule
 
-    rawResources:
-      talosServiceAccount:
-        apiVersion: talos.dev/v1alpha1
-        kind: ServiceAccount
-        spec:
-          spec:
-            roles: ["os:admin"]
-
     rbac:
       bindings:
         system-upgrade-controller:

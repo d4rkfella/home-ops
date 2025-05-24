@@ -9,7 +9,7 @@ spec:
   secrets:
     - name: system-upgrade
       path: /var/run/secrets/talos.dev
-      ignoreUpdates: true
+      ignoreUpdates: false
   concurrency: 1
   exclusive: true
   nodeSelector:

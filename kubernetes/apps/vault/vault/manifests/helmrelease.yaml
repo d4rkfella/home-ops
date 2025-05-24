@@ -35,6 +35,16 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: vault
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   valuesFrom:
     - kind: ConfigMap
       name: vault-values

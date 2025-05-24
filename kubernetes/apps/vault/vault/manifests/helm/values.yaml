@@ -171,7 +171,6 @@ server:
   statefulSet:
     annotations:
       reloader.stakater.com/auto: "true"
-    hostUsers: false
     securityContext:
       pod:
         runAsNonRoot: true

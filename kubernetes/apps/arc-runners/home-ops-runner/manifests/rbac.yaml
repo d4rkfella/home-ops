@@ -13,6 +13,9 @@ rules:
   resources: ["virtualmachineexports"]
   verbs: ["*"]
   #verbs: ["get","create"]
+- apiGroups: ["kubevirt.io"]
+  resources: ["virtualmachineinstances"]
+  verbs: ["get", "list", "watch"]
 - apiGroups: ["subresources.kubevirt.io"]
   resources:
     - "virtualmachineinstances/stop"

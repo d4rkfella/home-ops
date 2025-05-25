@@ -1,6 +1,10 @@
 version: '3'
 
 tasks:
+  kube-explorer:
+    desc: "Interactively explore Kubernetes resources with fzf"
+    cmds:
+      - ./.taskfiles/kubernetes/scripts/kube-explorer.sh
   pvc-filebrowser:
     desc: Mount a PVC into a File Browser pod.
     requires:

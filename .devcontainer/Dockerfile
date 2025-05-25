@@ -116,6 +116,7 @@ RUN apk add --no-cache \
         docker-cli \
         buildkit \
         fzf \
+        python3 \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

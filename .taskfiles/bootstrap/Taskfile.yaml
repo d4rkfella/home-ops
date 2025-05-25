@@ -26,11 +26,14 @@ tasks:
       - test -f {{.ROOT_DIR}}/talosconfig
   apply-config:
     internal: true
+    env:
+      TALOS_VERSION: '{{.TALOS_VERSION}}'
+      TALOS_SCHEMATIC_ID: '{{.TALOS_SCHEMATIC_ID}}'
+      KUBERNETES_VERSION: '{{.KUBERNETES_VERSION}}'
     cmd: |
-      export TALOS_VERSION={{.TALOS_VERSION}} TALOS_SCHEMATIC_ID={{.TALOS_SCHEMATIC_ID}} KUBERNETES_VERSION={{.KUBERNETES_VERSION}}
-        sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \
-            /usr/local/bin/envsubst | \
-                talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
+      sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \
+          /usr/local/bin/envsubst | \
+              talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
     requires:
       vars: ['IP']
     preconditions:
@@ -57,8 +60,6 @@ tasks:
 
   apps:
     internal: true
-    env:
-      KUBERNETES_DIR: '{{.KUBERNETES_DIR}}'
     cmds:
       - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
       - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
@@ -74,15 +75,3 @@ tasks:
       - test -f {{.ROOT_DIR}}/kubeconfig
       - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
       - talosctl config info &>/dev/null
-  flux:
-    desc: Bootstrap Flux-Operator and Flux-Instance
-    prompt: Bootstrap Flux ... continue?
-    cmds:
-      - { task: helmfile-apply }
-  helmfile-apply:
-    cmds:
-      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
-    preconditions:
-      - which helmfile
-      - test -f {{.ROOT_DIR}}/kubeconfig
-      - test -f {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml

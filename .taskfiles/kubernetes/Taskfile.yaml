@@ -4,7 +4,8 @@ tasks:
   kube-explorer:
     desc: "Interactively explore Kubernetes resources with fzf"
     cmds:
-      - ./.taskfiles/kubernetes/scripts/kube-explorer.sh
+      - pip install kubernetes pyyaml
+      - ./.taskfiles/kubernetes/scripts/kube-explorer.py
   pvc-filebrowser:
     desc: Mount a PVC into a File Browser pod.
     requires:

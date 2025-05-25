@@ -8,8 +8,10 @@ on:
     paths:
       - .renovaterc.json5
       - .renovate/**.json5
+
   schedule:
     - cron: "0 * * * *"
+
   workflow_dispatch:
     inputs:
       dryRun:

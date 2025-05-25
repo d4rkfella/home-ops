@@ -1,0 +1,104 @@
+version: '3'
+
+tasks:
+  pvc-filebrowser:
+    desc: Mount a PVC into a File Browser debug pod with default credentials admin/admin
+    requires:
+      vars: [PVC, NAMESPACE]
+    preconditions:
+      - which kubectl
+      - test -f {{.CLUSTER_DIR}}/kubeconfig
+    cmds:
+      - name: Check if PVC exists
+        cmd: |
+          if ! kubectl get pvc {{.PVC}} -n {{.NAMESPACE}} >/dev/null 2>&1; then
+            echo "❌ PVC '{{.PVC}}' not found in namespace '{{.NAMESPACE}}'. Aborting."
+            exit 1
+          fi
+          echo "✅ PVC '{{.PVC}}' found in namespace '{{.NAMESPACE}}'. Proceeding..."
+        silent: true
+      - name: Deploy File Browser pod
+        cmd: |
+          echo "🚀 Deploying File Browser pod in namespace '{{.NAMESPACE}}' with default credentials admin/admin..."
+          kubectl run filebrowser-{{.PVC}} \
+            --image=filebrowser/filebrowser \
+            --restart=Never \
+            --namespace={{.NAMESPACE}} \
+            --overrides='{
+              "spec": {
+                "hostUsers": false,
+                "securityContext": {
+                  "runAsNonRoot": true,
+                  "runAsUser": 65532,
+                  "runAsGroup": 65532,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "volumes": [
+                  {
+                    "name": "target-pvc",
+                    "persistentVolumeClaim": {
+                      "claimName": "{{.PVC}}"
+                    }
+                  },
+                  {
+                    "name": "fb-data",
+                    "emptyDir": {}
+                  }
+                ],
+                "containers": [
+                  {
+                    "name": "fb",
+                    "image": "filebrowser/filebrowser",
+                    "args": ["--database", "/data/filebrowser.db"],
+                    "ports": [
+                      {
+                        "containerPort": 80
+                      }
+                    ],
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/srv",
+                        "name": "target-pvc"
+                      },
+                      {
+                        "mountPath": "/data",
+                        "name": "fb-data"
+                      }
+                    ],
+                    "securityContext": {
+                      "readOnlyRootFilesystem": true,
+                      "allowPrivilegeEscalation": false,
+                      "capabilities": {
+                        "drop": ["ALL"]
+                      }
+                    }
+                  }
+                ]
+              }
+            }'
+        silent: true
+
+      - name: Wait for pod to be ready
+        cmd: |
+          echo "⏳ Waiting for pod to be ready..."
+          if ! kubectl wait --for=condition=Ready pod/filebrowser-{{.PVC}} --namespace={{.NAMESPACE}} --timeout=60s; then
+            echo "❌ Pod failed to become ready in time. Cleaning up..."
+            kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NAMESPACE}} --ignore-not-found
+            exit 1
+          fi
+        silent: true
+
+      - name: Start port-forward
+        cmd: |
+          echo "🌐 Starting port-forward to access File Browser UI at http://localhost:8080"
+          echo "Press Ctrl+C to stop and clean up."
+          kubectl port-forward pod/filebrowser-{{.PVC}} 8080:80 --namespace={{.NAMESPACE}}
+        silent: true
+
+      - name: Clean up pod
+        cmd: |
+          echo "🧹 Cleaning up..."
+          kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NAMESPACE}} --ignore-not-found
+        silent: true

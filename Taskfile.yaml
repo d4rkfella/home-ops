@@ -17,6 +17,7 @@ env:
 includes:
   bootstrap: .taskfiles/bootstrap
   talos: .taskfiles/talos
+  kubernetes: .taskfiles/kubernetes
 
 tasks:
   default: task --list

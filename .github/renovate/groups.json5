@@ -1,107 +1,165 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "packageRules": [
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  packageRules: [
     {
-      "description": ["Actions Runner Controller Group"],
-      "groupName": "Actions Runner Controller",
-      "matchPackageNames": ["/gha-runner-scale-set-controller/", "/gha-runner-scale-set/"],
-      "matchDatasources": ["docker", "helm"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["CoreDNS Group"],
-      "groupName": "CoreDNS",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/coredns/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["External Secrets Operator Group"],
-      "groupName": "External Secrets Operator",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/external-secrets/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["Flux Operator Group"],
-      "groupName": "Flux Operator",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/flux-operator/", "/flux-instance/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["Envoy Gateway Group"],
-      "groupName": "Envoy Gateway",
-      "matchDatasources": ["docker"],
-      "matchPackageNames": ["/gateway-helm/"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["Devcontainer Group"],
-      "matchDatasources": ["github-releases", "docker"],
-      "matchPackagePatterns": [
-        "alpine",
-        "hashicorp/vault",
-        "fluxcd/flux2",
-        "ghcr.io/d4rkfella/vault-backup",
-        "ghcr.io/siderolabs/talosctl",
-        "ghcr.io/getsops/sops",
-        "ghcr.io/helmfile/helmfile",
-        "registry.k8s.io/kubectl",
-        "go-task/task",
-        "kubevirt/kubevirt",
-        "a8m/envsubst"
+      description: [
+        'Actions Runner Controller Group',
       ],
-      "versioning": "semver",
-      "groupName": "Devcontainer",
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["Talos Group"],
-      "groupName": "Talos",
-      "matchPackagePatterns": ["siderolabs/talosctl", "siderolabs/installer"],
-      "matchDatasources": ["docker"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["Keycloak Group"],
-      "groupName": "Keycloak",
-      "matchPackagePatterns": ["d4rkfella/keycloak", "keycloak/keycloak-k8s-resources"],
-      "matchDatasources": ["github-tags", "docker"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    },
-    {
-      "description": ["OpenEBS Group"],
-      "groupName": "OpenEBS",
-      "matchPackagePatterns": [
-        "/zfs-localpv/",
-        "sig-storage/csi-node-driver-registrar",
-        "sig-storage/csi-resizer",
-        "sig-storage/csi-snapshotter",
-        "sig-storage/snapshot-controller",
-        "sig-storage/csi-provisioner",
-        "kubernetes-csi/external-snapshotter"
+      groupName: 'Actions Runner Controller',
+      matchPackageNames: [
+        '/gha-runner-scale-set-controller/',
+        '/gha-runner-scale-set/',
       ],
-      "matchDatasources": ["github-tags", "docker"],
-      "group": {
-        "commitMessageTopic": "{{{groupName}}} group"
-      }
-    }
-  ]
+      matchDatasources: [
+        'docker',
+        'helm',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'CoreDNS Group',
+      ],
+      groupName: 'CoreDNS',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/coredns/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'External Secrets Operator Group',
+      ],
+      groupName: 'External Secrets Operator',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/external-secrets/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'Flux Operator Group',
+      ],
+      groupName: 'Flux Operator',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/flux-operator/',
+        '/flux-instance/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'Envoy Gateway Group',
+      ],
+      groupName: 'Envoy Gateway',
+      matchDatasources: [
+        'docker',
+      ],
+      matchPackageNames: [
+        '/gateway-helm/',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'Devcontainer Group',
+      ],
+      matchDatasources: [
+        'github-releases',
+        'docker',
+      ],
+      matchPackagePatterns: [
+        'alpine',
+        'hashicorp/vault',
+        'fluxcd/flux2',
+        'ghcr.io/d4rkfella/vault-backup',
+        'ghcr.io/siderolabs/talosctl',
+        'ghcr.io/getsops/sops',
+        'ghcr.io/helmfile/helmfile',
+        'registry.k8s.io/kubectl',
+        'go-task/task',
+        'kubevirt/kubevirt',
+        'a8m/envsubst',
+      ],
+      versioning: 'semver',
+      groupName: 'Devcontainer',
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'Talos Group',
+      ],
+      groupName: 'Talos',
+      matchPackagePatterns: [
+        'siderolabs/talosctl',
+        'siderolabs/installer',
+      ],
+      matchDatasources: [
+        'docker',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'Keycloak Group',
+      ],
+      groupName: 'Keycloak',
+      matchPackagePatterns: [
+        'd4rkfella/keycloak',
+        'keycloak/keycloak-k8s-resources',
+      ],
+      matchDatasources: [
+        'github-tags',
+        'docker',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+    {
+      description: [
+        'OpenEBS Group',
+      ],
+      groupName: 'OpenEBS',
+      matchPackagePatterns: [
+        '/zfs-localpv/',
+        'sig-storage/csi-node-driver-registrar',
+        'sig-storage/csi-resizer',
+        'sig-storage/csi-snapshotter',
+        'sig-storage/snapshot-controller',
+        'sig-storage/csi-provisioner',
+        'kubernetes-csi/external-snapshotter',
+      ],
+      matchDatasources: [
+        'github-tags',
+        'docker',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
+  ],
 }

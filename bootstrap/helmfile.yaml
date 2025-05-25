@@ -14,14 +14,14 @@ releases:
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cilium
     version: 1.17.2
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/cilium/manifests/helm/values.yaml']
     hooks:
       - events: ["prepare"]
         command: bash
         args:
           - -c
           - |
-            urls=$(yq -N '.crds[] | select(test("^https"))' {{ requiredEnv "ROOT_DIR" }}/bootstrap/crds.yaml)
+            urls=$(yq -N '.crds[] | select(test("^https"))' {{ requiredEnv "BOOTSTRAP_DIR" }}/crds.yaml)
 
             for url in $urls; do
               echo "Applying CRD from $url"
@@ -42,7 +42,7 @@ releases:
           - --namespace=kube-system
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/cilium/manifests/networks.yaml
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/cilium/manifests/networks.yaml
         showlogs: true
 
   - name: coredns
@@ -50,7 +50,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.42.1
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/coredns/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/coredns/manifests/helm/values.yaml']
     needs: ['kube-system/cilium']
 
   - name: kubelet-csr-approver
@@ -58,7 +58,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/kubelet-csr-approver
     version: 1.2.7
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/kubelet-csr-approver/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/kubelet-csr-approver/manifests/helm/values.yaml']
     needs: ['kube-system/coredns']
 
   - name: cert-manager
@@ -66,7 +66,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cert-manager
     version: v1.17.2
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/helm/values.yaml']
     needs: ['kube-system/kubelet-csr-approver']
     hooks:
       - events: ["prepare"]
@@ -88,14 +88,14 @@ releases:
         command: bash
         args:
           - -c
-          - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+          - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
       - events: ['postsync']
         command: kubectl
         args:
           - apply
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml
         showlogs: true
       - events: ['postsync']
         command: kubectl
@@ -104,14 +104,14 @@ releases:
           - --namespace=vault
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/vault/vault/manifests/certificate.yaml
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/certificate.yaml
 
   - name: external-secrets
     namespace: external-secrets
     atomic: true
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.17.0
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/external-secrets/external-secrets/manifests/helm/values.yaml']
     needs: ['vault/vault','cert-manager/cert-manager']
     hooks:
       - events: ["prepare"]
@@ -136,7 +136,7 @@ releases:
           - --namespace=external-secrets
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml
         showlogs: true
 
   - name: zfs-localpv
@@ -144,7 +144,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
     version: 2.8.0-develop
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/helm/values.yaml']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
       - events: ["prepare"]
@@ -163,7 +163,7 @@ releases:
           - --namespace=kube-system
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/bootstrap/create-zpool.yaml
+          - --filename={{ requiredEnv "BOOTSTRAP_DIR" }}/create-zpool.yaml
         showlogs: true
       - events: ['postsync']
         command: bash
@@ -177,7 +177,7 @@ releases:
           - apply
           - --server-side
           - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml,{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml,{{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml
         showlogs: true
 
   - name: vault
@@ -185,7 +185,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
     version: 0.30.0
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/vault/vault/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/helm/values.yaml']
     needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
     hooks:
     - events: ["prepare"]
@@ -201,7 +201,7 @@ releases:
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{ .Release.Namespace }}"
+        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{ .Release.Namespace }}"
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -257,7 +257,7 @@ releases:
     atomic: true
     chart: oci://ghcr.io/bjw-s-labs/helm/app-template
     version: 4.0.1
-    values: ['{{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/manifests/helm/values.yaml']
+    values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/multus/manifests/helm/values.yaml']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
     - events: ["postsync"]
@@ -266,7 +266,7 @@ releases:
       - apply
       - --server-side
       - --field-manager=kustomize-controller
-      - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kube-system/multus/manifests/rbac.yaml
+      - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/multus/manifests/rbac.yaml
       showlogs: true
     - events: ["postsync"]
       command: kubectl
@@ -275,7 +275,7 @@ releases:
         - --namespace=kubevirt
         - --server-side
         - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml
       showlogs: true
     - events: ["postsync"]
       command: kubectl
@@ -284,7 +284,7 @@ releases:
         - --namespace=cdi
         - --server-side
         - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi-instance/manifests/cdi.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cdi/cdi-instance/manifests/cdi.yaml
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -298,7 +298,7 @@ releases:
         - apply
         - --server-side
         - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/cdi/cdi-instance/manifests/storageprofile.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -313,7 +313,7 @@ releases:
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml | kubectl apply --server-side --filename - --namespace virtualization
+        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml | kubectl apply --server-side --filename - --namespace virtualization
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -408,10 +408,10 @@ releases:
         - --namespace=virtualization
         - --server-side
         - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/manifests/multus-network.yaml
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/windows-server/manifests/virtualmachine.yaml
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/manifests/multus-network.yaml
-        - --filename={{ requiredEnv "ROOT_DIR" }}/kubernetes/apps/virtualization/truenas-scale/manifests/virtualmachine.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/multus-network.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/virtualmachine.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/truenas-scale/manifests/multus-network.yaml
+        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/truenas-scale/manifests/virtualmachine.yaml
       showlogs: true
 
   - name: envoy-gateway-controller

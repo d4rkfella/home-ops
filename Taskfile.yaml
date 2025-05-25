@@ -5,13 +5,12 @@ version: '3'
 set: [pipefail]
 shopt: [globstar]
 
-vars:
-  CLUSTER_DIR: '{{.ROOT_DIR}}/kubernetes'
-  BOOTSTRAP_DIR: '{{.CLUSTER_DIR}}/bootstrap'
-
 env:
-  KUBECONFIG: '{{.CLUSTER_DIR}}/kubeconfig'
-  TALOSCONFIG: '{{.CLUSTER_DIR}}/talosconfig'
+  BOOTSTRAP_DIR: '{{.ROOT_DIR}}/bootstrap'
+  KUBERNETES_DIR: '{{.ROOT_DIR}}/kubernetes'
+  TALOS_DIR: '{{.ROOT_DIR}}/talos'
+  KUBECONFIG: '{{.ROOT_DIR}}/kubeconfig'
+  TALOSCONFIG: '{{.ROOT_DIR}}/talosconfig'
   SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
 
 includes:
@@ -20,4 +19,6 @@ includes:
   kubernetes: .taskfiles/kubernetes
 
 tasks:
-  default: task --list
+  default:
+    cmd: task --list
+    silent: true

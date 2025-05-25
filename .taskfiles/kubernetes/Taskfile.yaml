@@ -2,12 +2,12 @@ version: '3'
 
 tasks:
   pvc-filebrowser:
-    desc: Mount a PVC into a File Browser debug pod with default credentials admin/admin
+    desc: Mount a PVC into a File Browser pod.
     requires:
       vars: [PVC, NAMESPACE]
     preconditions:
       - which kubectl
-      - test -f {{.CLUSTER_DIR}}/kubeconfig
+      - test -f {{.ROOT_DIR}}/kubeconfig
     cmds:
       - name: Check if PVC exists
         cmd: |
@@ -15,8 +15,8 @@ tasks:
             echo "❌ PVC '{{.PVC}}' not found in namespace '{{.NAMESPACE}}'. Aborting."
             exit 1
           fi
-          echo "✅ PVC '{{.PVC}}' found in namespace '{{.NAMESPACE}}'. Proceeding..."
         silent: true
+
       - name: Deploy File Browser pod
         cmd: |
           echo "🚀 Deploying File Browser pod in namespace '{{.NAMESPACE}}' with default credentials admin/admin..."

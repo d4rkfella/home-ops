@@ -20,5 +20,5 @@ includes:
 
 tasks:
   default:
-    cmd: task --list
+    cmd: ./taskpicker.sh
     silent: true

@@ -129,7 +129,7 @@ RUN apk add --no-cache \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install https://github.com/databus23/helm-diff && \
-    wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | sudo tar -xzf - -C /usr/local/bin && \
+    wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     chmod +x /usr/local/bin/kubectl-explore
 
 

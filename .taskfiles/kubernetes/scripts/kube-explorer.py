@@ -229,127 +229,58 @@ class KubeExplorer:
             print(f"Error running fzf: {e}")
             return None
 
-    def get_namespaces(self) -> List[str]:
-        result = subprocess.run(
-            ["kubectl", "get", "ns", "-o", "jsonpath={.items[*].metadata.name}"],
-            stdout=subprocess.PIPE,
-            check=True
-        )
-        return result.stdout.decode().strip().split()
-
-    def get_crds(self) -> List[str]:
-        """Get list of available Custom Resource Definitions"""
-        if self.cached_crds is not None:
-            return self.cached_crds
-
-        try:
-            print("\nLoading custom resources...", file=sys.stderr)
-            result = subprocess.run(
-                ["kubectl", "get", "crd", "-o", "jsonpath={.items[*].spec.names.plural}"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=True
-            )
-            crds = result.stdout.decode().strip().split()
-            print(f"Found {len(crds)} CRDs", file=sys.stderr)
-
-            self.cached_crds = crds
-            return crds
-
-        except subprocess.CalledProcessError as e:
-            print(f"\nError loading CRDs: {e.stderr.decode()}", file=sys.stderr)
-            return []
-
-    def get_resources(self, resource_type: str, namespace: str) -> List[str]:
-        """Get resources in name format"""
-        if resource_type == "CustomResourceDefinitions":
-            return self.get_crds()
-
-        args = ["kubectl", "get", resource_type, "-n", namespace, "-o", "name"]
-
+    def get_namespaces(self) -> str:
+        """Get namespaces using kubectl explore"""
         try:
             result = subprocess.run(
-                args,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                check=True
-            )
-            resources = []
-            for line in result.stdout.splitlines():
-                name = line.decode().strip().split("/")[-1]
-                if resource_type in self.get_crds() and "." in name:
-                    name = name.split(".")[0]
-                resources.append(name)
-            return resources
-        except subprocess.CalledProcessError as e:
-            print(f"\n⚠️ Error getting resources: {e.stderr.decode()}", file=sys.stderr)
-            return []
-
-    def get_resource_types(self, namespace, show_crds=True):
-        """Get available resource types for the namespace"""
-        try:
-            # Get all resources in the namespace
-            result = subprocess.run(
-                ["kubectl", "get", "all", "-n", namespace, "--no-headers", "-o", "name"],
+                ["kubectl", "explore", "namespaces", "--no-headers"],
                 capture_output=True,
                 text=True,
                 check=True
             )
-            
-            # Get all resource types that exist in the namespace
-            existing_resources = set()
-            for line in result.stdout.strip().split("\n"):
-                if line:
-                    resource_type = line.split("/")[0]
-                    existing_resources.add(resource_type)
-            
-            # Check which CRDs have resources in this namespace
-            crd_resources = set()
-            if show_crds and self.cached_crds:
-                print(f"\nChecking {len(self.cached_crds)} cached CRDs for resources in namespace {namespace}", file=sys.stderr)
-                # Use cached CRDs to check for resources
-                for crd in self.cached_crds:
-                    try:
-                        check_result = subprocess.run(
-                            ["kubectl", "get", crd, "-n", namespace, "--no-headers", "-o", "name"],
-                            capture_output=True,
-                            text=True,
-                            check=True
-                        )
-                        if check_result.stdout.strip():
-                            crd_resources.add(crd)
-                    except subprocess.CalledProcessError:
-                        continue
-                print(f"Found {len(crd_resources)} CRDs with resources", file=sys.stderr)
-            
-            # Separate native resources and CRD resources
-            native_resources = sorted(r for r in existing_resources if r not in crd_resources)
-            crd_resources_list = sorted(crd_resources) if show_crds else []
-            
-            # Combine resources with native resources first
-            all_resources = native_resources + crd_resources_list
-            
-            # Add header with toggle info
-            header = f"Resource Types (Ctrl-H to {'hide' if show_crds else 'show'} CRDs)"
-            return header + "\n" + "\n".join(all_resources)
+            return "Namespaces\n" + result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            print(f"Error getting namespaces: {e}")
+            return "Namespaces\n"
+
+    def get_resource_types(self, namespace: str) -> str:
+        """Get resource types using kubectl explore"""
+        try:
+            result = subprocess.run(
+                ["kubectl", "explore", "-n", namespace, "--no-headers"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return f"Resource Types in {namespace}\n" + result.stdout.strip()
         except subprocess.CalledProcessError as e:
             print(f"Error getting resource types: {e}")
-            return ""
+            return f"Resource Types in {namespace}\n"
+
+    def get_resources(self, resource_type: str, namespace: str) -> str:
+        """Get resources using kubectl explore"""
+        try:
+            result = subprocess.run(
+                ["kubectl", "explore", resource_type, "-n", namespace, "--no-headers"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            return f"{resource_type} Resources\n" + result.stdout.strip()
+        except subprocess.CalledProcessError as e:
+            print(f"Error getting resources: {e}")
+            return f"{resource_type} Resources\n"
 
     def run(self):
         """Main navigation loop"""
-        show_crds = True  # Track CRD visibility state
-        
         while True:
             try:
                 # Start with namespace selection
-                namespaces = self.get_namespaces()
-                preview = "kubectl get pods -n {} 2>/dev/null || echo 'No pods in namespace'"
                 selected = self.run_fzf(
-                    "Namespaces\n" + "\n".join(namespaces),
+                    self.get_namespaces(),
                     "Namespace",
                     level="namespace",
-                    preview_cmd=preview
+                    preview_cmd="kubectl get pods -n {} 2>/dev/null || echo 'No pods in namespace'"
                 )
                 if selected is None:
                     break
@@ -357,7 +288,7 @@ class KubeExplorer:
 
                 while True:  # Resource type selection loop
                     selected = self.run_fzf(
-                        self.get_resource_types(self.current_namespace, show_crds),
+                        self.get_resource_types(self.current_namespace),
                         "Resource Type",
                         level="resource_type",
                         preview_cmd=f"kubectl get {{}} -n {self.current_namespace} -o wide"
@@ -365,25 +296,14 @@ class KubeExplorer:
                     if selected is None:
                         break  # Go back to namespace selection
 
-                    # Handle Ctrl-H toggle
-                    if selected == "Resource Types":
-                        show_crds = not show_crds
-                        continue
-
                     self.current_resource_type = selected
 
                     while True:  # Resource selection loop
-                        resources = self.get_resources(self.current_resource_type, self.current_namespace)
-                        if not resources:
-                            preview = f"echo 'No {self.current_resource_type} resources found in namespace {self.current_namespace}'"
-                        else:
-                            preview = f"kubectl describe {self.current_resource_type}/{{}} -n {self.current_namespace} 2>/dev/null || echo 'No description available'"
-                        
                         selected = self.run_fzf(
-                            f"{self.current_resource_type} Resources\n" + "\n".join(resources),
+                            self.get_resources(self.current_resource_type, self.current_namespace),
                             self.current_resource_type,
                             level="resource",
-                            preview_cmd=preview
+                            preview_cmd=f"kubectl describe {self.current_resource_type}/{{}} -n {self.current_namespace} 2>/dev/null || echo 'No description available'"
                         )
                         if selected is None:
                             break  # Go back to resource type selection

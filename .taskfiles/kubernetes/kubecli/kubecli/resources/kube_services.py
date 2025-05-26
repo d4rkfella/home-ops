@@ -121,4 +121,3 @@ class ServiceManager(KubeBase):
                     print("\nPort-forward stopped by user")
             elif key == "enter":
                 print(f"Selected service: {service}")
-                # You can handle other service actions here if needed

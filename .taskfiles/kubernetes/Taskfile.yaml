@@ -3,38 +3,11 @@ version: '3'
 tasks:
   pods:
     desc: Interactive pod explorer with fzf
-    cmds:
-      - "{{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube_pods.py"
-
-  deployments:
-    desc: Interactive deployment explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-deployments.py
+    cmd: kubecli pods
 
   services:
     desc: Interactive service explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-services.py
-
-  statefulsets:
-    desc: Interactive statefulset explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-statefulsets.py
-
-  daemonsets:
-    desc: Interactive daemonset explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-daemonsets.py
-
-  configmaps:
-    desc: Interactive configmap explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-configmaps.py
-
-  secrets:
-    desc: Interactive secret explorer with fzf
-    cmds:
-      - PYTHONPATH={{.ROOT_DIR}} python3 {{.ROOT_DIR}}/.taskfiles/kubernetes/scripts/kube-secrets.py
+    cmd: kubecli services
 
   pvc-filebrowser:
     desc: Mount a PVC into a File Browser pod.

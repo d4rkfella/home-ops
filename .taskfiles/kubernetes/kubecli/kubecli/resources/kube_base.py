@@ -43,8 +43,8 @@ class KubeBase:
             "--bind", f"alt-e:execute(kubectl edit {self.resource_type} {{1}} -n {self.current_namespace})+reload(kubectl get {self.resource_type} -n {self.current_namespace} --no-headers -o custom-columns=:metadata.name)+refresh-preview",
         ]
         base_header = (
-            "Alt-D:Describe | Alt-W:Wide | Alt-V:Default | "
-            "Alt-X:Delete | Alt-E:Edit | Esc:Back | Ctrl-C:Exit"
+            "Alt-D: Describe | Alt-W: Wide | Alt-V: Default | "
+            "Alt-X: Delete | Alt-E: Edit | Esc: Back | Ctrl-C: Exit"
         )
         return bindings, base_header
 

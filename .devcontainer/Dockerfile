@@ -121,6 +121,7 @@ RUN apk add --no-cache \
         buildkit \
         python3 \
         py3-pip \
+        binutils \
         xclip \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \

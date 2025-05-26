@@ -17,6 +17,7 @@ ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.5.1
 ARG KUBECTL_EXPLORE_VERSION=v0.12.0
+ARG FZF_VERSION=v0.62.0
 
 ARG TALOS_VERSION=v1.9.5
 
@@ -78,6 +79,7 @@ RUN apk add --no-cache \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
     wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
+    wget -O- "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION#v}-linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
@@ -117,7 +119,6 @@ RUN apk add --no-cache \
         gnupg \
         docker-cli \
         buildkit \
-        fzf \
         python3 \
         xclip \
         cosign && \

@@ -16,6 +16,7 @@ ARG KUBECTL_VERSION=v1.33.1
 ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.5.1
+ARG KUBECTL_EXPLORE_VERSION=v0.12.0
 
 ARG TALOS_VERSION=v1.9.5
 
@@ -76,6 +77,7 @@ RUN apk add --no-cache \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
+    wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${VERSION}/kubectl-explore_${VERSION}_${ARCH}.tar.gz" | tar -xzf - -C /usr/local/bin && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
@@ -118,7 +120,6 @@ RUN apk add --no-cache \
         fzf \
         python3 \
         xclip \
-        kubectl-krew \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
@@ -127,9 +128,7 @@ RUN apk add --no-cache \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    helm plugin install https://github.com/databus23/helm-diff && \
-    kubectl krew install explore
-
+    helm plugin install https://github.com/databus23/helm-diff
     WORKDIR /project
 
 USER $USERNAME

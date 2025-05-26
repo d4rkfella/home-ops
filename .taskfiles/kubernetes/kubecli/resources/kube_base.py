@@ -50,13 +50,26 @@ class KubeBase:
         label = "Alt-D:Describe | Alt-X:Delete | Alt-E:Edit | Alt-B:Back | Ctrl-C:Exit"
         return bindings, label
 
-    def run_fzf(self, items: str, prompt: str, preview_cmd: Optional[str] = None, extra_bindings: List[str] = []):
+    def run_fzf(
+        self,
+        items: str,
+        prompt: str,
+        preview_cmd: Optional[str] = None,
+        extra_bindings: List[str] = [],
+        header: Optional[str] = None
+    ):
         bindings, label = self.get_common_bindings()
         all_bindings = bindings + extra_bindings
 
+        # Combine the default label with the custom header if provided
+        if header:
+            header_option = f"{label}\n{header}"
+        else:
+            header_option = label
+
         cmd = ["fzf"] + self.get_fzf_style() + [
             "--prompt", f"{prompt}> ",
-            "--header", label,
+            "--header", header_option,
             "--preview", preview_cmd or f"kubectl get {self.resource_type}/{{}} -n {self.current_namespace} -o wide 2>/dev/null || echo 'No info'",
             *all_bindings
         ]

@@ -120,6 +120,7 @@ RUN apk add --no-cache \
         docker-cli \
         buildkit \
         python3 \
+        py3-pip \
         xclip \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \

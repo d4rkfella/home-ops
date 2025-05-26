@@ -16,6 +16,8 @@ ARG KUBECTL_VERSION=v1.33.1
 ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.5.1
+# renovate: datasource=github-releases depName=keisku/kubectl-explore
+ARG KUBECTL_EXLORE_VERSION=v0.12.0
 
 ARG TALOS_VERSION=v1.9.5
 
@@ -126,7 +128,10 @@ RUN apk add --no-cache \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    helm plugin install https://github.com/databus23/helm-diff
+    helm plugin install https://github.com/databus23/helm-diff && \
+    wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | sudo tar -xzf - -C /usr/local/bin && \
+    chmod +x /usr/local/bin/kubectl-explore
+
 
 WORKDIR /project
 

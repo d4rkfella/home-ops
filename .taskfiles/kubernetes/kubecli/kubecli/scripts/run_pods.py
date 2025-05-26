@@ -1,6 +1,8 @@
-# .taskfiles/kubernetes/kubecli/scripts/run_pods.py
 from kubecli.resources.kube_pods import PodManager
 
-if __name__ == "__main__":
+def main():
     manager = PodManager()
     manager.run()
+
+if __name__ == "__main__":
+    main()

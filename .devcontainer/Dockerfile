@@ -117,7 +117,7 @@ RUN apk add --no-cache \
         buildkit \
         fzf \
         python3 \
-        py3-pip \
+        xclip \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

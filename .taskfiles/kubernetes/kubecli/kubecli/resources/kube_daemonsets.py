@@ -81,9 +81,7 @@ class DaemonSetManager(KubeBase):
             print(f"Error restarting daemonset: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRolling restart cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_history(self, daemonset_name: str):
         subprocess.run(["clear"])
@@ -96,12 +94,10 @@ class DaemonSetManager(KubeBase):
             input("\nPress Enter to continue...")
         except subprocess.CalledProcessError as e:
             subprocess.run(["clear"])
-            print(f"Error fetching rollout history: {e}", file=sys.stderr)
+            print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def undo_rollout(self, daemonset_name: str):
         subprocess.run(["clear"])
@@ -179,9 +175,7 @@ class DaemonSetManager(KubeBase):
                     print(f"Error executing undo rollout: {e.stderr.strip()}", file=sys.stderr)
                     input("\nPress Enter to continue...")
                 except KeyboardInterrupt:
-                    subprocess.run(["clear"])
-                    print("\nUndo rollout command cancelled.", file=sys.stderr)
-                    input("\nPress Enter to continue...")
+                    return self.handle_keyboard_interrupt()
 
             else:
                 subprocess.run(["clear"])
@@ -193,9 +187,7 @@ class DaemonSetManager(KubeBase):
             print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history fetch cancelled.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_status(self, daemonset_name: str):
         subprocess.run(["clear"])
@@ -211,6 +203,4 @@ class DaemonSetManager(KubeBase):
             print(f"Error fetching rollout status: {e}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout status cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...") 
+            return self.handle_keyboard_interrupt() 

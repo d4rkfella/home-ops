@@ -60,6 +60,30 @@ class PVCManager(KubeBase):
         subprocess.run(["clear"])
         print(f"Attempting to launch file browser for PVC {pvc_name} in namespace {self.current_namespace}...")
 
+        # Get user input for the pod's security context
+        try:
+            while True:
+                try:
+                    user_input = input("\nEnter user ID to run the pod as (default: 65532): ").strip()
+                    if not user_input:
+                        user_id = 65532
+                        break
+                    try:
+                        user_id = int(user_input)
+                        if user_id < 0:
+                            print("User ID must be a non-negative integer")
+                            continue
+                        if user_id > 65535:
+                            print("User ID must be less than or equal to 65535")
+                            continue
+                        break
+                    except ValueError:
+                        print("Please enter a valid integer")
+                except KeyboardInterrupt:
+                    return self.handle_keyboard_interrupt()
+        except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt()
+
         pod_name = f"filebrowser-{pvc_name}"
         namespace = self.current_namespace
 
@@ -83,19 +107,18 @@ class PVCManager(KubeBase):
              input("\nPress Enter to continue...")
              return
         except KeyboardInterrupt:
-             subprocess.run(["clear"])
-             print("\nOperation cancelled by user.", file=sys.stderr)
-             input("\nPress Enter to continue...")
-             return
+            return self.handle_keyboard_interrupt()
 
         print(f"\n🚀 Deploying File Browser pod in namespace '{namespace}' with default credentials admin/admin...")
+        print(f"Pod will run as user ID: {user_id}")
 
+        # Construct the kubectl run command with overrides
         run_cmd = [
             "kubectl", "run", pod_name,
             "--image=filebrowser/filebrowser",
             "--restart=Never",
             f"--namespace={namespace}",
-            "--overrides={\"spec\":{\"hostUsers\":false,\"securityContext\":{\"runAsNonRoot\":true,\"runAsUser\":65532,\"runAsGroup\":65532,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumes\":[{\"name\":\"target-pvc\",\"persistentVolumeClaim\":{\"claimName\":\"" + pvc_name + "\"}},{\"name\":\"fb-data\",\"emptyDir\":{}}],\"containers\":[{\"name\":\"fb\",\"image\":\"filebrowser/filebrowser\",\"args\":[\"--database\",\"/data/filebrowser.db\"],\"ports\":[{\"containerPort\":80}],\"volumeMounts\":[{\"mountPath\":\"/srv\",\"name\":\"target-pvc\"},{\"mountPath\":\"/data\",\"name\":\"fb-data\"}],\"securityContext\":{\"readOnlyRootFilesystem\":true,\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]}}}]}}"
+            f"--overrides={{\"spec\":{{\"hostUsers\":false,\"securityContext\":{{\"runAsNonRoot\":true,\"runAsUser\":{user_id},\"runAsGroup\":{user_id},\"fsGroup\":{user_id},\"seccompProfile\":{{\"type\":\"RuntimeDefault\"}}}},\"volumes\":[{{\"name\":\"target-pvc\",\"persistentVolumeClaim\":{{\"claimName\":\"{pvc_name}\"}}}},{{\"name\":\"fb-data\",\"emptyDir\":{{}}}}],\"containers\":[{{\"name\":\"fb\",\"image\":\"filebrowser/filebrowser\",\"args\":[\"--database\",\"/data/filebrowser.db\"],\"ports\":[{{\"containerPort\":80}}],\"volumeMounts\":[{{\"mountPath\":\"/srv\",\"name\":\"target-pvc\"}},{{\"mountPath\":\"/data\",\"name\":\"fb-data\"}}],\"securityContext\":{{\"readOnlyRootFilesystem\":true,\"allowPrivilegeEscalation\":false,\"capabilities\":{{\"drop\":[\"ALL\"]}}}}}}]}}}}"
         ]
 
         try:
@@ -120,8 +143,7 @@ class PVCManager(KubeBase):
             subprocess.run(["clear"])
             print(f"An error occurred during the process: {e.stderr.strip()}", file=sys.stderr)
         except KeyboardInterrupt:
-             subprocess.run(["clear"])
-             print("\nOperation cancelled by user.", file=sys.stderr)
+            return self.handle_keyboard_interrupt()
         finally:
             print("\n🧹 Cleaning up pod...")
             subprocess.run(["kubectl", "delete", "pod", pod_name, "-n", namespace, "--ignore-not-found"])

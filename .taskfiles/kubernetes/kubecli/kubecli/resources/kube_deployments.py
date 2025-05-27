@@ -78,14 +78,12 @@ class DeploymentManager(KubeBase):
             print(f"Error restarting deployment: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRolling restart cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_history(self, deployment_name: str):
+        subprocess.run(["clear"])
         print(f"Showing rollout history for deployment {deployment_name} in namespace {self.current_namespace}")
         try:
-            subprocess.run(["clear"])
             subprocess.run(
                 ["kubectl", "rollout", "history", "deployment", deployment_name, "-n", self.current_namespace],
                 check=True
@@ -93,17 +91,15 @@ class DeploymentManager(KubeBase):
             input("\nPress Enter to continue...")
         except subprocess.CalledProcessError as e:
             subprocess.run(["clear"])
-            print(f"Error fetching rollout history: {e}", file=sys.stderr)
+            print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_status(self, deployment_name: str):
+        subprocess.run(["clear"])
         print(f"Showing rollout status for deployment {deployment_name} in namespace {self.current_namespace}")
         try:
-            subprocess.run(["clear"])
             subprocess.run(
                 ["kubectl", "rollout", "status", "deployment", deployment_name, "-n", self.current_namespace],
                 check=True
@@ -114,11 +110,10 @@ class DeploymentManager(KubeBase):
             print(f"Error fetching rollout status: {e}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout status cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def undo_rollout(self, deployment_name: str):
+        subprocess.run(["clear"])
         print(f"Fetching rollout history for {deployment_name} in namespace {self.current_namespace}...")
         try:
             history_result = subprocess.run(
@@ -193,9 +188,7 @@ class DeploymentManager(KubeBase):
                     print(f"Error executing undo rollout: {e.stderr.strip()}", file=sys.stderr)
                     input("\nPress Enter to continue...")
                 except KeyboardInterrupt:
-                    subprocess.run(["clear"])
-                    print("\nUndo rollout command cancelled.", file=sys.stderr)
-                    input("\nPress Enter to continue...")
+                    return self.handle_keyboard_interrupt()
 
             else:
                 subprocess.run(["clear"])
@@ -207,41 +200,46 @@ class DeploymentManager(KubeBase):
             print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history fetch cancelled.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def scale_deployment(self, deployment_name: str):
-        print(f"Attempting to scale deployment {deployment_name} in namespace {self.current_namespace}...")
+        subprocess.run(["clear"])
+        print(f"Current scale for deployment {deployment_name} in namespace {self.current_namespace}:")
         try:
-            replica_count_str = input(f"Enter desired replica count for {deployment_name}: ")
-            replica_count = int(replica_count_str)
-
-            if replica_count < 0:
-                subprocess.run(["clear"])
-                print("Replica count cannot be negative.", file=sys.stderr)
+            result = subprocess.run(
+                ["kubectl", "get", "deployment", deployment_name, "-n", self.current_namespace, "-o", "jsonpath={.spec.replicas}"],
+                capture_output=True, text=True, check=True
+            )
+            current_replicas = result.stdout.strip()
+            print(f"Current replicas: {current_replicas}")
+            
+            new_replicas = input("\nEnter new number of replicas (or press Enter to cancel): ").strip()
+            if not new_replicas:
+                print("Operation cancelled.")
                 input("\nPress Enter to continue...")
                 return
 
-            print(f"Scaling {deployment_name} to {replica_count} replicas...")
-            result = subprocess.run(
-                ["kubectl", "scale", "deployment", deployment_name, f"--replicas={replica_count}", "-n", self.current_namespace],
-                capture_output=True, text=True, check=True
-            )
-            subprocess.run(["clear"])
-            print(result.stdout.strip())
-            input("\nPress Enter to continue...")
+            try:
+                replicas = int(new_replicas)
+                if replicas < 0:
+                    print("Number of replicas must be non-negative.")
+                    input("\nPress Enter to continue...")
+                    return
+            except ValueError:
+                print("Please enter a valid integer.")
+                input("\nPress Enter to continue...")
+                return
 
-        except ValueError:
-            subprocess.run(["clear"])
-            print("Invalid input. Please enter a number.", file=sys.stderr)
+            subprocess.run(
+                ["kubectl", "scale", "deployment", deployment_name, f"--replicas={replicas}", "-n", self.current_namespace],
+                check=True
+            )
+            print(f"Successfully scaled deployment to {replicas} replicas")
             input("\nPress Enter to continue...")
         except subprocess.CalledProcessError as e:
             subprocess.run(["clear"])
             print(f"Error scaling deployment: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nScaling cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
  

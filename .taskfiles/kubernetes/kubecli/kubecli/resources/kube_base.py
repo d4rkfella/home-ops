@@ -24,6 +24,13 @@ class KubeBase:
     def __init__(self):
         self.current_namespace = None
 
+    def handle_keyboard_interrupt(self):
+        """Global handler for KeyboardInterrupt"""
+        subprocess.run(["clear"])
+        print("\nOperation cancelled by user.", file=sys.stderr)
+        input("\nPress Enter to continue...")
+        return "esc", None
+
     def get_fzf_style(self) -> List[str]:
         style = [
             "--history-size=1000",

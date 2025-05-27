@@ -80,9 +80,7 @@ class StatefulSetManager(KubeBase):
             print(f"Error restarting statefulset: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRolling restart cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_history(self, statefulset_name: str):
         subprocess.run(["clear"])
@@ -95,12 +93,10 @@ class StatefulSetManager(KubeBase):
             input("\nPress Enter to continue...")
         except subprocess.CalledProcessError as e:
             subprocess.run(["clear"])
-            print(f"Error fetching rollout history: {e}", file=sys.stderr)
+            print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def undo_rollout(self, statefulset_name: str):
         subprocess.run(["clear"])
@@ -178,9 +174,7 @@ class StatefulSetManager(KubeBase):
                     print(f"Error executing undo rollout: {e.stderr.strip()}", file=sys.stderr)
                     input("\nPress Enter to continue...")
                 except KeyboardInterrupt:
-                    subprocess.run(["clear"])
-                    print("\nUndo rollout command cancelled.", file=sys.stderr)
-                    input("\nPress Enter to continue...")
+                    return self.handle_keyboard_interrupt()
 
             else:
                 subprocess.run(["clear"])
@@ -192,9 +186,7 @@ class StatefulSetManager(KubeBase):
             print(f"Error fetching rollout history: {e.stderr.strip()}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
-            subprocess.run(["clear"])
-            print("\nRollout history fetch cancelled.", file=sys.stderr)
-            input("\nPress Enter to continue...")
+            return self.handle_keyboard_interrupt()
 
     def rollout_status(self, statefulset_name: str):
         subprocess.run(["clear"])
@@ -210,6 +202,45 @@ class StatefulSetManager(KubeBase):
             print(f"Error fetching rollout status: {e}", file=sys.stderr)
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt()
+
+    def scale_statefulset(self, statefulset_name: str):
+        subprocess.run(["clear"])
+        print(f"Current scale for statefulset {statefulset_name} in namespace {self.current_namespace}:")
+        try:
+            result = subprocess.run(
+                ["kubectl", "get", "statefulset", statefulset_name, "-n", self.current_namespace, "-o", "jsonpath={.spec.replicas}"],
+                capture_output=True, text=True, check=True
+            )
+            current_replicas = result.stdout.strip()
+            print(f"Current replicas: {current_replicas}")
+            
+            new_replicas = input("\nEnter new number of replicas (or press Enter to cancel): ").strip()
+            if not new_replicas:
+                print("Operation cancelled.")
+                input("\nPress Enter to continue...")
+                return
+
+            try:
+                replicas = int(new_replicas)
+                if replicas < 0:
+                    print("Number of replicas must be non-negative.")
+                    input("\nPress Enter to continue...")
+                    return
+            except ValueError:
+                print("Please enter a valid integer.")
+                input("\nPress Enter to continue...")
+                return
+
+            subprocess.run(
+                ["kubectl", "scale", "statefulset", statefulset_name, f"--replicas={replicas}", "-n", self.current_namespace],
+                check=True
+            )
+            print(f"Successfully scaled statefulset to {replicas} replicas")
+            input("\nPress Enter to continue...")
+        except subprocess.CalledProcessError as e:
             subprocess.run(["clear"])
-            print("\nRollout status cancelled by user.", file=sys.stderr)
-            input("\nPress Enter to continue...") 
+            print(f"Error scaling statefulset: {e.stderr.strip()}", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt() 

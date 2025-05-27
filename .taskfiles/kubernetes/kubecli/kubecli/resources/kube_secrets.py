@@ -4,6 +4,7 @@ from typing import List, Tuple, Optional
 from kubecli.resources.kube_base import KubeBase
 import sys
 import base64
+import json
 
 class SecretManager(KubeBase):
     resource_type = "secrets"
@@ -104,4 +105,88 @@ class SecretManager(KubeBase):
                 continue
             elif key == "alt-c":
                  self.view_content(secret)
+
+    def edit_secret(self, secret_name: str):
+        subprocess.run(["clear"])
+        print(f"Editing secret {secret_name} in namespace {self.current_namespace}")
+        try:
+            # Get secret details
+            secret_result = subprocess.run(
+                ["kubectl", "get", "secret", secret_name, "-n", self.current_namespace, "-o", "json"],
+                capture_output=True, text=True, check=True
+            )
+            secret_data = json.loads(secret_result.stdout)
+            
+            # Get data
+            data = secret_data.get('data', {})
+            if not data:
+                print("No data found in secret.")
+                input("\nPress Enter to continue...")
+                return
+
+            # Create key selection menu
+            keys = list(data.keys())
+            print("Select key to edit:")
+            key_result = self.run_fzf(
+                keys,
+                f"Edit Secret ({secret_name})",
+                header="Select key to edit (Esc to cancel)",
+                use_common_bindings=False,
+                expect="esc,enter"
+            )
+
+            if key_result is None or (isinstance(key_result, tuple) and key_result[0] == "esc"):
+                subprocess.run(["clear"])
+                print("Edit cancelled.")
+                input("\nPress Enter to continue...")
+                return
+
+            selected_key, key = key_result if isinstance(key_result, tuple) else ("enter", key_result)
+            if selected_key != "enter":
+                subprocess.run(["clear"])
+                print(f"Unexpected key pressed: {selected_key}")
+                input("\nPress Enter to continue...")
+                return
+
+            # Get new value
+            while True:
+                try:
+                    print(f"\nCurrent value for {key}:")
+                    print(data[key])
+                    new_value = input("\nEnter new value (or press Enter to cancel): ").strip()
+                    if not new_value:
+                        print("Edit cancelled.")
+                        input("\nPress Enter to continue...")
+                        return
+                    break
+                except KeyboardInterrupt:
+                    return self.handle_keyboard_interrupt()
+
+            # Update secret
+            subprocess.run(["clear"])
+            print(f"Updating secret {secret_name}...")
+            try:
+                # Base64 encode the new value
+                encoded_value = base64.b64encode(new_value.encode()).decode()
+                subprocess.run(
+                    ["kubectl", "patch", "secret", secret_name, "-n", self.current_namespace, "--patch", f'{{"data":{{"{key}":"{encoded_value}"}}}}'],
+                    check=True
+                )
+                print("Secret updated successfully.")
+                input("\nPress Enter to continue...")
+            except subprocess.CalledProcessError as e:
+                subprocess.run(["clear"])
+                print(f"Error updating secret: {e.stderr.strip()}", file=sys.stderr)
+                input("\nPress Enter to continue...")
+
+        except subprocess.CalledProcessError as e:
+            subprocess.run(["clear"])
+            print(f"Error getting secret details: {e.stderr.strip()}", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except json.JSONDecodeError:
+            subprocess.run(["clear"])
+            print("Error parsing secret details.", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt()
  

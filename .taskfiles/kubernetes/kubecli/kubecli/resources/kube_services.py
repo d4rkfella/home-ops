@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 import subprocess
+import json
+import re
+import sys
 from typing import List, Tuple, Optional
 from kubecli.resources.kube_base import KubeBase
 
@@ -9,8 +12,8 @@ class ServiceManager(KubeBase):
 
     def get_service_bindings(self) -> Tuple[List[str], str]:
         service_bindings = [
-             "--bind", "alt-p:accept", # Alt-P for Port-forward
-             "--bind", "enter:ignore" # Ignore Enter key press
+             "--bind", "alt-p:accept",
+             "--bind", "enter:ignore"
         ]
         service_header = "Alt-P: Port-forward"
         return service_bindings, service_header
@@ -86,43 +89,115 @@ class ServiceManager(KubeBase):
                 continue
 
             if key == "alt-p":
-                target_ports = self.get_target_ports(service)
-                if not target_ports:
-                    print(f"No target ports found for service {service}")
-                    input("\nPress Enter to continue...")
-                    continue
+                self.port_forward_service(service)
 
-                port_result = self.run_fzf(
-                    target_ports,
-                    f"Select target port for service {service}",
-                    header="Target Ports",
-                    use_common_bindings=False
-                )
-                if isinstance(port_result, tuple):
-                    _, target_port = port_result
-                else:
-                    target_port = port_result
+    def port_forward_service(self, service_name: str):
+        subprocess.run(["clear"])
+        print(f"Port forwarding for service {service_name} in namespace {self.current_namespace}")
+        try:
+            # Get service details
+            service_result = subprocess.run(
+                ["kubectl", "get", "service", service_name, "-n", self.current_namespace, "-o", "json"],
+                capture_output=True, text=True, check=True
+            )
+            service_data = json.loads(service_result.stdout)
+            
+            # Extract ports
+            ports = service_data.get('spec', {}).get('ports', [])
+            if not ports:
+                print("No ports found in service definition.")
+                input("\nPress Enter to continue...")
+                return
 
-                if not target_port:
-                    print("No target port selected, aborting port-forward")
-                    input("\nPress Enter to continue...")
-                    continue
+            # Create port selection menu
+            port_options = []
+            for port in ports:
+                name = port.get('name', 'unnamed')
+                protocol = port.get('protocol', 'TCP')
+                port_num = port.get('port')
+                target_port = port.get('targetPort')
+                if port_num:
+                    port_options.append(f"{name} ({protocol}): {port_num} -> {target_port}")
 
-                local_port = self.select_local_port()
-                if not local_port:
-                    print("No local port selected, aborting port-forward")
-                    input("\nPress Enter to continue...")
-                    continue
+            if not port_options:
+                print("No valid ports found in service definition.")
+                input("\nPress Enter to continue...")
+                return
 
-                print(f"Starting port-forward: local {local_port} -> target {target_port}")
+            # Let user select port
+            print("Select port to forward:")
+            port_result = self.run_fzf(
+                port_options,
+                f"Port Forward ({service_name})",
+                header="Select port to forward (Esc to cancel)",
+                use_common_bindings=False,
+                expect="esc,enter"
+            )
+
+            if port_result is None or (isinstance(port_result, tuple) and port_result[0] == "esc"):
+                subprocess.run(["clear"])
+                print("Port forward cancelled.")
+                input("\nPress Enter to continue...")
+                return
+
+            selected_key, selected_port = port_result if isinstance(port_result, tuple) else ("enter", port_result)
+            if selected_key != "enter":
+                subprocess.run(["clear"])
+                print(f"Unexpected key pressed: {selected_key}")
+                input("\nPress Enter to continue...")
+                return
+
+            # Extract port number from selection
+            port_match = re.search(r': (\d+) ->', selected_port)
+            if not port_match:
+                print("Could not parse port number from selection.")
+                input("\nPress Enter to continue...")
+                return
+
+            service_port = port_match.group(1)
+            
+            # Get local port
+            while True:
                 try:
-                    subprocess.run(
-                        [
-                            "kubectl", "port-forward",
-                            f"service/{service}",
-                            f"{local_port}:{target_port}",
-                            "-n", self.current_namespace
-                        ]
-                    )
+                    local_port = input(f"Enter local port to forward to (default: {service_port}): ").strip()
+                    if not local_port:
+                        local_port = service_port
+                    local_port = int(local_port)
+                    if local_port < 1 or local_port > 65535:
+                        print("Port must be between 1 and 65535")
+                        continue
+                    break
+                except ValueError:
+                    print("Please enter a valid port number")
+                    continue
                 except KeyboardInterrupt:
-                    print("\nPort-forward stopped by user")
+                    return self.handle_keyboard_interrupt()
+
+            # Start port forwarding
+            subprocess.run(["clear"])
+            print(f"Starting port forward for {service_name}...")
+            print(f"Forwarding local port {local_port} to service port {service_port}")
+            print("Press Ctrl+C to stop port forwarding")
+            
+            try:
+                subprocess.run(
+                    ["kubectl", "port-forward", f"svc/{service_name}", f"{local_port}:{service_port}", "-n", self.current_namespace],
+                    check=True
+                )
+            except subprocess.CalledProcessError as e:
+                subprocess.run(["clear"])
+                print(f"Error during port forwarding: {e.stderr.strip()}", file=sys.stderr)
+                input("\nPress Enter to continue...")
+            except KeyboardInterrupt:
+                return self.handle_keyboard_interrupt()
+
+        except subprocess.CalledProcessError as e:
+            subprocess.run(["clear"])
+            print(f"Error getting service details: {e.stderr.strip()}", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except json.JSONDecodeError:
+            subprocess.run(["clear"])
+            print("Error parsing service details.", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt()

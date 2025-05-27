@@ -123,6 +123,7 @@ RUN apk add --no-cache \
         py3-pip \
         binutils \
         xclip \
+        tmux \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

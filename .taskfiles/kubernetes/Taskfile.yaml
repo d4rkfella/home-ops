@@ -9,6 +9,30 @@ tasks:
     desc: Interactive service explorer with fzf
     cmd: kubecli services
 
+  deployments:
+    desc: Interactive deployments explorer with fzf
+    cmd: kubecli deployments
+
+  configmaps:
+    desc: Interactive configmaps explorer with fzf
+    cmd: kubecli configmaps
+
+  secrets:
+    desc: Interactive secrets explorer with fzf
+    cmd: kubecli secrets
+
+  daemonsets:
+    desc: Interactive daemonsets explorer with fzf
+    cmd: kubecli daemonsets
+
+  statefulsets:
+    desc: Interactive statefulsets explorer with fzf
+    cmd: kubecli statefulsets
+
+  pvc:
+    desc: Interactive pvc explorer with fzf
+    cmd: kubecli pvcs
+
   pvc-filebrowser:
     desc: Mount a PVC into a File Browser pod.
     requires:

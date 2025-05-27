@@ -1,0 +1,107 @@
+#!/usr/bin/env python3
+import subprocess
+from typing import List, Tuple, Optional
+from kubecli.resources.kube_base import KubeBase
+import sys
+import base64
+
+class SecretManager(KubeBase):
+    resource_type = "secrets"
+    resource_name = "Secret"
+
+    def get_secret_bindings(self) -> Tuple[List[str], str]:
+        secret_bindings = [
+            "--bind", "alt-c:accept",
+            "--bind", "enter:ignore"
+        ]
+        secret_header = "Alt-C: View Content (CAUTION: Sensitive Data)"
+        return secret_bindings, secret_header
+
+    def select_resource(self) -> Tuple[Optional[str], Optional[str]]:
+        secrets = self.refresh_resources(self.current_namespace)
+        if not secrets:
+            subprocess.run(["clear"])
+            print(f"No secrets found in namespace {self.current_namespace}", file=sys.stderr)
+            input("\nPress Enter to continue...")
+            return "esc", None
+
+        bindings, header = self.get_secret_bindings()
+
+        result = self.run_fzf(
+            secrets,
+            f"Secrets ({self.current_namespace})",
+            extra_bindings=bindings,
+            header=header,
+            expect="esc,alt-c"
+        )
+        if isinstance(result, tuple):
+            return result
+        else:
+            return "esc", None
+
+    def view_content(self, secret_name: str):
+        print(f"Fetching data for Secret {secret_name} in namespace {self.current_namespace}...")
+        try:
+            # Get only the data field using jsonpath
+            result = subprocess.run(
+                ["kubectl", "get", "secret", secret_name, "-n", self.current_namespace, "-o=jsonpath={.data}"],
+                capture_output=True, text=True, check=True
+            )
+
+            data_str = result.stdout.strip()
+
+            subprocess.run(["clear"])
+            print(f"Data for Secret: {secret_name} (Base64 Decoded)")
+            print("-------------------------")
+
+            if data_str and data_str != "{}": # Check if data is not empty JSON object
+                try:
+                    import json
+                    import base64
+                    data_dict = json.loads(data_str)
+                    for key, encoded_value in data_dict.items():
+                        try:
+                            decoded_value_bytes = base64.b64decode(encoded_value.strip())
+                            try:
+                                decoded_value = decoded_value_bytes.decode("utf-8")
+                            except UnicodeDecodeError:
+                                decoded_value = str(decoded_value_bytes) # Represent bytes
+
+                            print(f"{key}: {decoded_value}")
+                        except base64.binascii.Error:
+                            print(f"{key}: [UNDECODABLE or NOT BASE64] {encoded_value.strip()}")
+                except (json.JSONDecodeError, Exception) as e:
+                    print(f"Could not parse data JSON or decode base64: {e}", file=sys.stderr)
+                    print("Raw data output:")
+                    print(data_str)
+
+            else:
+                print("No data found in this Secret.")
+
+            print("-------------------------")
+            input("\nPress Enter to continue...")
+
+        except subprocess.CalledProcessError as e:
+            subprocess.run(["clear"])
+            print(f"Error fetching Secret data: {e.stderr.strip()}", file=sys.stderr)
+            input("\nPress Enter to continue...")
+        except KeyboardInterrupt:
+            subprocess.run(["clear"])
+            print("\nFetching data cancelled by user.", file=sys.stderr)
+            input("\nPress Enter to continue...")
+
+    def navigate(self):
+        while True:
+            if not self.current_namespace:
+                key, ns = self.select_namespace()
+                if key == "esc" or ns is None:
+                    return
+                self.current_namespace = ns
+
+            key, secret = self.select_resource()
+            if key == "esc" or secret is None:
+                self.current_namespace = None
+                continue
+            elif key == "alt-c":
+                 self.view_content(secret)
+ 

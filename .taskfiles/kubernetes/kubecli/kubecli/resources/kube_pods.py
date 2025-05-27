@@ -10,7 +10,8 @@ class PodManager(KubeBase):
     def get_pod_bindings(self) -> Tuple[List[str], str]:
         pod_bindings = [
             "--bind", f"alt-l:change-preview(kubectl logs {{1}} -n {self.current_namespace} --all-containers)+change-preview-window(hidden|right:60%:wrap)",
-            "--bind", "alt-c:accept"
+            "--bind", "alt-c:accept",
+            "--bind", "enter:ignore"
         ]
         pod_header = "Alt-L: Logs Preview | Alt-C: Exec Shell"
         return pod_bindings, pod_header
@@ -19,6 +20,7 @@ class PodManager(KubeBase):
         pods = self.refresh_resources(self.current_namespace)
         if not pods:
             print(f"No pods found in namespace {self.current_namespace}")
+            input("\nPress Enter to continue...")
             return "esc", None
 
         bindings, header = self.get_pod_bindings()
@@ -28,7 +30,7 @@ class PodManager(KubeBase):
             "Pods",
             extra_bindings=bindings,
             header=header,
-            expect="esc,alt-c,enter"
+            expect="esc,alt-c"
         )
         if isinstance(result, tuple):
             return result
@@ -89,5 +91,3 @@ class PodManager(KubeBase):
                 continue
             elif key == "alt-c":
                 self.exec_pod_via_fzf(pod)
-            elif key == "enter":
-                self.handle_resource_action(pod)

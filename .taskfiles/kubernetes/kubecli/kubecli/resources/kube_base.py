@@ -203,15 +203,11 @@ class KubeBase:
     def select_resource(self) -> Tuple[Optional[str], Optional[str]]:
         return "esc", None
 
-    def handle_resource_action(self, resource_name: str):
-        print(f"{self.resource_name} selected: {resource_name}")
-
     def navigate(self):
         while True:
             if not self.current_namespace:
                 key, ns = self.select_namespace()
                 if key == "esc" or ns is None:
-                    print("Exiting.")
                     return
                 self.current_namespace = ns
 
@@ -219,8 +215,3 @@ class KubeBase:
             if key == "esc" or resource is None:
                 self.current_namespace = None
                 continue
-
-            if key == "enter":
-                self.handle_resource_action(resource)
-            else:
-                pass

@@ -8,8 +8,11 @@ class ServiceManager(KubeBase):
     resource_name = "Service"
 
     def get_service_bindings(self) -> Tuple[List[str], str]:
-        service_bindings = []
-        service_header = "Press Alt-P to start port-forward | Esc: Back to namespaces"
+        service_bindings = [
+             "--bind", "alt-p:accept", # Alt-P for Port-forward
+             "--bind", "enter:ignore" # Ignore Enter key press
+        ]
+        service_header = "Alt-P: Port-forward"
         return service_bindings, service_header
 
     def get_target_ports(self, service_name: str) -> List[str]:
@@ -26,6 +29,7 @@ class ServiceManager(KubeBase):
             return ports_str.split() if ports_str else []
         except subprocess.CalledProcessError as e:
             print(f"Error fetching target ports: {e.stderr}")
+            input("\nPress Enter to continue...")
             return []
 
     def select_local_port(self) -> Optional[str]:
@@ -50,16 +54,17 @@ class ServiceManager(KubeBase):
         services = self.refresh_resources(self.current_namespace)
         if not services:
             print(f"No services found in namespace {self.current_namespace}")
+            input("\nPress Enter to continue...")
             return "esc", None
 
         bindings, header = self.get_service_bindings()
 
         result = self.run_fzf(
-            services,  # <-- pass the list directly, no splitlines()
+            services,
             f"Services ({self.current_namespace})",
             extra_bindings=bindings,
             header=header,
-            expect="esc,alt-p,enter"
+            expect="esc,alt-p"
         )
 
         if isinstance(result, tuple):
@@ -77,7 +82,6 @@ class ServiceManager(KubeBase):
 
             key, service = self.select_resource()
             if key == "esc" or service is None:
-                # Go back to namespace selection
                 self.current_namespace = None
                 continue
 
@@ -85,6 +89,7 @@ class ServiceManager(KubeBase):
                 target_ports = self.get_target_ports(service)
                 if not target_ports:
                     print(f"No target ports found for service {service}")
+                    input("\nPress Enter to continue...")
                     continue
 
                 port_result = self.run_fzf(
@@ -100,11 +105,13 @@ class ServiceManager(KubeBase):
 
                 if not target_port:
                     print("No target port selected, aborting port-forward")
+                    input("\nPress Enter to continue...")
                     continue
 
                 local_port = self.select_local_port()
                 if not local_port:
                     print("No local port selected, aborting port-forward")
+                    input("\nPress Enter to continue...")
                     continue
 
                 print(f"Starting port-forward: local {local_port} -> target {target_port}")
@@ -119,5 +126,3 @@ class ServiceManager(KubeBase):
                     )
                 except KeyboardInterrupt:
                     print("\nPort-forward stopped by user")
-            elif key == "enter":
-                print(f"Selected service: {service}")

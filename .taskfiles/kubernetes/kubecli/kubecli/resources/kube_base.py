@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import subprocess
 import sys
+import os
+import stat
 from typing import List, Optional, Tuple, Union
 
 FZF_COLORS = {
@@ -48,6 +50,23 @@ class KubeBase:
         )
         return bindings, base_header
 
+    def _get_fzf_binary_path(self) -> str:
+        """
+        Returns the path to the bundled fzf binary when running from PyInstaller,
+        otherwise returns 'fzf' (assumed in PATH).
+        """
+        if getattr(sys, 'frozen', False):
+            base_path = sys._MEIPASS
+            fzf_path = os.path.join(base_path, 'fzf')
+
+            st = os.stat(fzf_path)
+            os.chmod(fzf_path, st.st_mode | stat.S_IEXEC)
+            print(f"DEBUG: fzf_path permissions after chmod: {oct(st.st_mode)}", file=sys.stderr)
+
+            return fzf_path
+        else:
+            return "fzf"
+
     def run_fzf(
         self,
         items: Union[List[str], str],
@@ -82,7 +101,9 @@ class KubeBase:
             header_lines.append("─" * 110)
         header_option = "\n".join(header_lines)
 
-        cmd = ["fzf"] + self.get_fzf_style() + [
+        fzf_bin = self._get_fzf_binary_path()
+
+        cmd = [fzf_bin] + self.get_fzf_style() + [
             "--prompt", f"{prompt}> ",
             "--header", header_option,
         ]
@@ -180,7 +201,6 @@ class KubeBase:
             return []
 
     def select_resource(self) -> Tuple[Optional[str], Optional[str]]:
-        # This is intended to be overridden by subclasses.
         return "esc", None
 
     def handle_resource_action(self, resource_name: str):
@@ -203,5 +223,4 @@ class KubeBase:
             if key == "enter":
                 self.handle_resource_action(resource)
             else:
-                # Other keys can be handled in subclasses.
                 pass

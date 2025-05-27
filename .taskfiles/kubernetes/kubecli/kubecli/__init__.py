@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import click
 from kubecli.resources.kube_pods import PodManager
 from kubecli.resources.kube_services import ServiceManager
@@ -19,6 +18,3 @@ def services():
     """Manage Kubernetes services."""
     manager = ServiceManager()
     manager.navigate()
-
-if __name__ == '__main__':
-    cli()

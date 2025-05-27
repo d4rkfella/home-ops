@@ -316,8 +316,8 @@ clear'''
             session.cmd('bind-key', '-T', 'copy-mode-vi', 'n', 'send', '-X', 'search-again')
             session.cmd('bind-key', '-T', 'copy-mode-vi', 'N', 'send', '-X', 'search-reverse')
             
-            # Set up fzf search binding using fzf-tmux with full path
-            session.cmd('bind-key', '-T', 'copy-mode-vi', 'C-s', 'send', '-X', 'copy-pipe-and-cancel', f'tmux capture-pane -p -S -1000 | {os.path.expanduser("~/.fzf/bin/fzf-tmux")} -p 80% --no-sort --reverse --inline-info --preview "echo {{}}" --preview-window=up:3:wrap --bind "ctrl-y:execute-silent(echo -n {{}} | xclip -in -selection clipboard)+abort"')
+            # Set up fzf search binding using fzf-tmux with Alpine path
+            session.cmd('bind-key', '-T', 'copy-mode-vi', 'C-s', 'send', '-X', 'copy-pipe-and-cancel', 'tmux capture-pane -p -S -1000 | /usr/local/bin/fzf-tmux -p 80% --no-sort --reverse --inline-info --preview "echo {}" --preview-window=up:3:wrap --bind "ctrl-y:execute-silent(echo -n {} | xclip -in -selection clipboard)+abort"')
             
             # Display help text using libtmux's display-message
             help_text = [

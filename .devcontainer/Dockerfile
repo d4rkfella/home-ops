@@ -126,6 +126,8 @@ RUN apk add --no-cache \
         xclip \
         tmux \
         ncurses \
+        vim \
+        fzf-vim \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

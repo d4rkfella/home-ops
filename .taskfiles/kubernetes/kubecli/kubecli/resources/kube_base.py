@@ -4,6 +4,7 @@ import sys
 import os
 import stat
 from typing import List, Optional, Tuple, Union
+import libtmux
 
 FZF_COLORS = {
     "fg": "#d0d0d0",
@@ -50,10 +51,11 @@ class KubeBase:
             "--bind", f"alt-v:change-preview(kubectl get {self.resource_type}/{{1}} -n {self.current_namespace})+change-preview-window(hidden|right:60%:wrap)",
             "--bind", f"alt-x:execute(kubectl delete {self.resource_type} {{1}} -n {self.current_namespace} --grace-period=30)+reload(kubectl get {self.resource_type} -n {self.current_namespace} --no-headers -o custom-columns=:metadata.name)+refresh-preview",
             "--bind", f"alt-e:execute(kubectl edit {self.resource_type} {{1}} -n {self.current_namespace})+reload(kubectl get {self.resource_type} -n {self.current_namespace} --no-headers -o custom-columns=:metadata.name)+refresh-preview",
+            "--bind", f"alt-t:accept",  # Alt-T: Tmux Edit
         ]
         base_header = (
             "Alt-D: Describe | Alt-W: Wide | Alt-V: Default | "
-            "Alt-X: Delete | Alt-E: Edit | Esc: Back | Ctrl-C: Exit"
+            "Alt-X: Delete | Alt-E: Edit | Alt-T: Tmux Edit | Esc: Back | Ctrl-C: Exit"
         )
         return bindings, base_header
 
@@ -222,3 +224,74 @@ class KubeBase:
             if key == "esc" or resource is None:
                 self.current_namespace = None
                 continue
+
+    def edit_in_tmux(self, resource_name: str, title: str = None):
+        """Edit a resource in tmux with enhanced search capabilities."""
+        if title is None:
+            title = f"Edit: {resource_name}"
+
+        try:
+            session_name = f"edit-{resource_name.lower().replace(' ', '-')}"
+            
+            with libtmux.Server() as server:
+                # Buffer the entire file content
+                file_content = subprocess.check_output(
+                    ["kubectl", "get", self.resource_type, resource_name, "-n", self.current_namespace, "-o", "yaml"],
+                    text=True
+                )
+                session = server.new_session(
+                    session_name=session_name,
+                    window_name=title,
+                    start_directory=None,
+                    attach=False,
+                    window_command=f"kubectl edit {self.resource_type} {resource_name} -n {self.current_namespace}"
+                )
+
+                # Get the window and pane
+                window = session.windows[0]
+                pane = window.panes[0]
+
+                # Configure session options
+                session.set_option('status', 'on')
+                session.set_option('status-interval', 1)
+                session.set_option('status-left-length', 100)
+                session.set_option('status-right-length', 100)
+                session.set_option('status-style', 'fg=black,bg=green')
+                session.set_option('mouse', 'on')
+                session.set_option('history-limit', 100000)  # Increase scrollback buffer for fzf
+
+                # Bind F2 to fuzzy search and jump to the selected line
+                server.cmd('bind-key', '-n', 'F2', 'run-shell', 'tmux capture-pane -p -S -100000 | $(which fzf-tmux) -p 80% --preview "echo {}" --preview-window=up:1 --bind "enter:execute(echo {} | cut -d: -f1 | xargs -I{} tmux send-keys -t {session_name}:{window_index}.{pane_index} \":{}\" Enter)" || true')
+
+                # Update status bar
+                session.set_option('status-left', '#[fg=green]#H #[fg=black]• #[fg=blue,bold]🔍 #[fg=yellow]Press F2 for fuzzy search#[default]')
+                session.set_option('status-right', '#[fg=green]#(cut -d " " -f 1 /proc/loadavg)#[default] #[fg=blue]%H:%M#[default] #[fg=yellow]🚪 C-c(stop)#[default]')
+
+                # Configure copy mode bindings
+                server.cmd('bind-key', '-T', 'copy-mode-vi', '/', 'command-prompt', '-i', '-p', 'search up', 'send -X search-backward-incremental "%%%"')
+                server.cmd('bind-key', '-T', 'copy-mode-vi', '?', 'command-prompt', '-i', '-p', 'search down', 'send -X search-forward-incremental "%%%"')
+                server.cmd('bind-key', '-T', 'copy-mode-vi', 'n', 'send', '-X', 'search-again')
+                server.cmd('bind-key', '-T', 'copy-mode-vi', 'N', 'send', '-X', 'search-reverse')
+
+                # Attach to the session
+                session.attach_session()
+
+                print(f"\nResource configuration is being shown in a new window.")
+                print("\nSearch and Navigation:")
+                print("- Press F2 for fuzzy search")
+                print("- Regular search: / (forward) or ? (backward)")
+                print("- Next match: n")
+                print("- Previous match: N")
+                print("\nExit:")
+                print("- Press Ctrl+C to stop editing and return to menu")
+                input("\nPress Enter to continue...")
+
+        except Exception as e:
+            print(f"Error setting up tmux: {str(e)}")
+            # Try to clean up if session was created
+            try:
+                if 'session' in locals():
+                    session.kill_session()
+            except:
+                pass
+            return False

@@ -6,6 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click>=8.0.0",
+        "libtmux>=0.21.0",
     ],
     entry_points={
         'console_scripts': [

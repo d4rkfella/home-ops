@@ -80,6 +80,7 @@ RUN apk add --no-cache \
     mv helm /usr/local/bin/helm && \
     wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     wget -O- "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION#v}-linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
+    wget -O /usr/local/bin/fzf-tmux https://raw.githubusercontent.com/junegunn/fzf/master/bin/fzf-tmux && chmod +x /usr/local/bin/fzf-tmux && \
     #Set permissions
     chmod +x /usr/local/bin/*
 

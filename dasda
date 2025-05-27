@@ -1,0 +1,237 @@
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"maxprocs: Updating GOMAXPROCS=2: determined from CPU quota"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Starting autobrr"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Version: 1.62.0"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Commit: fe4f385a2263d4b5ad2c0a0c60cfd65108b8c1e2"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Build date: 2025-05-05T21:15:24Z"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Log-level: INFO"}
+{"level":"info","time":"2025-05-24T13:58:42+03:00","message":"Using database: postgres"}
+{"level":"info","module":"http","time":"2025-05-24T13:58:42+03:00","message":"Starting API tcp server. Listening on [::]:80"}
+{"level":"info","module":"http","time":"2025-05-24T13:58:42+03:00","message":"Starting Metrics tcp server. Listening on [::]:9094"}
+{"level":"info","module":"indexer","time":"2025-05-24T13:58:42+03:00","message":"Loaded 3 indexers"}
+{"level":"info","module":"irc","network":"irc.iptorrents.com","time":"2025-05-24T13:58:44+03:00","message":"network connected to: IPTorrents"}
+{"level":"info","module":"irc","network":"irc.torrentleech.org","time":"2025-05-24T13:58:44+03:00","message":"network connected to: TorrentLeech.org"}
+{"level":"info","module":"irc","network":"irc.iptorrents.com","time":"2025-05-24T13:58:46+03:00","message":"Monitoring channel #ipt.announce"}
+{"level":"info","module":"irc","network":"irc.torrentleech.org","time":"2025-05-24T13:58:47+03:00","message":"Monitoring channel #tlannounces"}
+{"level":"info","module":"irc","network":"irc.p2p-network.net","time":"2025-05-24T13:58:52+03:00","message":"network connected to: P2P-Network"}
+{"level":"info","module":"irc","network":"irc.p2p-network.net","time":"2025-05-24T13:58:55+03:00","message":"Monitoring channel #speedapp"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Andor (2022) Season 2 S02 (2160p HDR DSNP WEB-DL x265 HEVC 10bit DDP 5 1 Vyndros)","time":"2025-05-24T15:12:25+03:00","message":"Matched 'Andor (2022) Season 2 S02 (2160p HDR DSNP WEB-DL x265 HEVC 10bit DDP 5 
+1 Vyndros)' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Babylon 2022 1080p BluRay DD 7 1 x264-HiDt","time":"2025-05-24T17:02:39+03:00","message":"Matched 'Babylon 2022 1080p BluRay DD 7 1 x264-HiDt' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Captain America Brave New World 2025 BluRay 1080p DD 5 1 x264-BHDStudio","time":"2025-05-24T20:58:05+03:00","message":"Matched 'Captain America Brave New World 2025 BluRay 1080p DD 5 1 x264-BHDStudio' (Movies) for IPTo
+rrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Captain America Brave New World 2025 1080p BluRay Eco-Bitrate HEVC 10-bit Opus 7 1 incl Commentary-MrTentsaw","time":"2025-05-24T22:33:22+03:00","message":"Matched 'Captain America Brave New World 2025 1080p BluRay Eco
+-Bitrate HEVC 10-bit Opus 7 1 incl Commentary-MrTentsaw' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Companion 2025 REPACK UHD BluRay 2160p DDP 7 1 DV HDR10Plus x265-hallowed","time":"2025-05-25T01:39:56+03:00","message":"Matched 'Companion 2025 REPACK UHD BluRay 2160p DDP 7 1 DV HDR10Plus x265-hallowed' (Mov
+ies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Companion 2025 REPACK UHD BluRay 2160p DDP 7 1 DV HDR10Plus x265-hallowed","time":"2025-05-25T02:19:00+03:00","message":"Matched 'Companion 2025 REPACK UHD BluRay 2160p DDP 7 1 DV HDR10Plus x265-hallowed' (Movies) for 
+IPTorrents"}
+{"level":"info","module":"feed","job":"feed-cache-cleanup","time":"2025-05-25T03:05:00+03:00","message":"successfully ran feed-cache-cleanup job"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Captain America Brave New World 2025 1080p BluRay Hi-Bitrate HEVC 10-bit TrueHD Atmos 7 1 incl Commentary-MrTentsaw","time":"2025-05-25T03:21:40+03:00","message":"Matched 'Captain America Brave New World 2025 1080p Blu
+Ray Hi-Bitrate HEVC 10-bit TrueHD Atmos 7 1 incl Commentary-MrTentsaw' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Andor 2022 Season 2 S02 2160p HDR DSNP WEB-DL x265 HEVC 10bit DDP 5 1 Vyndros","time":"2025-05-25T04:47:59+03:00","message":"Matched 'Andor 2022 Season 2 S02 2160p HDR DSNP WEB-DL x265 HEVC 10bit DDP 5 1 Vyndros' (Seri
+es) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Conclave 2024 REPACK UHD BluRay 2160p DDP 7 1 HDR x265-hallowed","time":"2025-05-25T06:09:10+03:00","message":"Matched 'Conclave 2024 REPACK UHD BluRay 2160p DDP 7 1 HDR x265-hallowed' (Movies) for TorrentLeec
+h"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Conclave 2024 REPACK UHD BluRay 2160p DDP 7 1 HDR x265-hallowed","time":"2025-05-25T07:10:30+03:00","message":"Matched 'Conclave 2024 REPACK UHD BluRay 2160p DDP 7 1 HDR x265-hallowed' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"A Minecraft Movie (2025) (2160p WEB-DL Hybrid H265 DV HDR DDP Atmos 5 1 English - HONE)","time":"2025-05-25T08:33:41+03:00","message":"Matched 'A Minecraft Movie (2025) (2160p WEB-DL Hybrid H265 DV HDR DDP Atmos 5 1 En
+glish - HONE)' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Captain America Brave New World (2025) 1080p MA WEBRiP x264 16-bit Stereo WAV-CREATiVE24","time":"2025-05-25T13:21:37+03:00","message":"Matched 'Captain America Brave New World (2025) 1080p MA WEBRiP x264 16-b
+it Stereo WAV-CREATiVE24' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E01 Heavens Half Hour 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T14:49:35+03:00","message":"Matched 'Daredevil Born Again S01E01 Heavens Half Hour 2160p WEB-DL DDP5 1 Atmos H 26
+5-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E02 Optics 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T14:55:13+03:00","message":"Matched 'Daredevil Born Again S01E02 Optics 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune' (Series) fo
+r IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E03 The Hollow of His Hand 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T14:55:38+03:00","message":"Matched 'Daredevil Born Again S01E03 The Hollow of His Hand 2160p WEB-DL DDP5 1 
+Atmos H 265-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E04 Sic Semper Systema 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T14:56:15+03:00","message":"Matched 'Daredevil Born Again S01E04 Sic Semper Systema 2160p WEB-DL DDP5 1 Atmos H 
+265-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E05 With Interest 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T14:56:35+03:00","message":"Matched 'Daredevil Born Again S01E05 With Interest 2160p WEB-DL DDP5 1 Atmos H 265-Kitsun
+e' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E06 Excessive Force 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T15:01:15+03:00","message":"Matched 'Daredevil Born Again S01E06 Excessive Force 2160p WEB-DL DDP5 1 Atmos H 265-Ki
+tsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E07 Art for Arts Sake 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T15:02:41+03:00","message":"Matched 'Daredevil Born Again S01E07 Art for Arts Sake 2160p WEB-DL DDP5 1 Atmos H 26
+5-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E08 Isle of Joy REPACK 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T15:04:55+03:00","message":"Matched 'Daredevil Born Again S01E08 Isle of Joy REPACK 2160p WEB-DL DDP5 1 Atmos H 
+265-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Daredevil Born Again S01E09 Straight to Hell 2160p WEB-DL DDP5 1 Atmos H 265-Kitsune","time":"2025-05-25T15:12:20+03:00","message":"Matched 'Daredevil Born Again S01E09 Straight to Hell 2160p WEB-DL DDP5 1 Atmos H 265-
+Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Movies","release":"Mission.Impossible.The.Final.Reckoning.2025.V2.1080p.HDTS.h265.Dual.YG","time":"2025-05-25T19:38:37+03:00","message":"Matched 'Mission.Impossible.The.Final.Reckoning.2025.V2.1080p.HDTS.h265.Dual.YG' (Movies) for S
+peedApp"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Series","release":"The.Last.Of.Us.S02E06.The.Price.1080p.HMAX.MULTi.WEB-DL.DD.5.1.Atmos.H264-SPWEB","time":"2025-05-25T23:32:03+03:00","message":"Matched 'The.Last.Of.Us.S02E06.The.Price.1080p.HMAX.MULTi.WEB-DL.DD.5.1.Atmos.H264-SPW
+EB' (Series) for SpeedApp"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"FREAKY TALES 2024 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR","time":"2025-05-25T23:55:24+03:00","message":"Matched 'FREAKY TALES 2024 1080p AMZN WEB-DL DDP5 1 H 264-BYNDR' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Presumed Innocent 2024 S01 1080p DS4K ATVP Webrip DV HDR10  DDP 5 1 x265-Vialle","time":"2025-05-26T00:06:55+03:00","message":"Matched 'Presumed Innocent 2024 S01 1080p DS4K ATVP Webrip DV HDR10  DDP 5 1 x265-Vialle' (
+Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"FREAKY TALES 2024 2160p AMZN WEB-DL DDP5 1 H 265-BYNDR","time":"2025-05-26T00:08:48+03:00","message":"Matched 'FREAKY TALES 2024 2160p AMZN WEB-DL DDP5 1 H 265-BYNDR' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Movies","release":"Arthur.the.King.2024.1080p.BluRay.DD+7.1.x264-SPHD","time":"2025-05-26T01:35:06+03:00","message":"Matched 'Arthur.the.King.2024.1080p.BluRay.DD+7.1.x264-SPHD' (Movies) for SpeedApp"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Ash (2025) (2160p AMZN WEB-DL H265 HDR10+ DDP 5 1 English - HONE)","time":"2025-05-26T02:07:53+03:00","message":"Matched 'Ash (2025) (2160p AMZN WEB-DL H265 HDR10+ DDP 5 1 English - HONE)' (Movies) for Torrent
+Leech"}
+{"level":"info","module":"feed","job":"feed-cache-cleanup","time":"2025-05-26T03:05:00+03:00","message":"successfully ran feed-cache-cleanup job"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 1080p WEB h264-ETHEL","time":"2025-05-26T03:58:02+03:00","message":"Matched 'The Last of Us S02E07 1080p WEB h264-ETHEL' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab","time":"2025-05-26T03:59:56+03:00","message":"Matched 'The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p WEB h264-ETHEL","time":"2025-05-26T04:01:04+03:00","message":"Matched 'The Last of Us S02E07 1080p WEB h264-ETHEL' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab","time":"2025-05-26T04:03:17+03:00","message":"Matched 'The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Series","release":"The.Last.of.Us.S02E07.1080p.WEB.h264-ETHEL","time":"2025-05-26T04:13:04+03:00","message":"Matched 'The.Last.of.Us.S02E07.1080p.WEB.h264-ETHEL' (Series) for SpeedApp"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T04:32:29+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p HEVC x265-MeGusta","time":"2025-05-26T04:36:33+03:00","message":"Matched 'The Last of Us S02E07 1080p HEVC x265-MeGusta' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 x264-NTb","time":"2025-05-26T04:43:09+03:00","message":"Matched 'The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 x264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 DV HDR x265-NTb","time":"2025-05-26T04:43:56+03:00","message":"Matched 'The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 DV HDR x265-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T04:44:44+03:00","message":"Matched 'The Last of Us S02E07 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 1080p x265-ELiTE","time":"2025-05-26T04:44:45+03:00","message":"Matched 'The Last of Us S02E07 1080p x265-ELiTE' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 Convergence 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX","time":"2025-05-26T04:45:15+03:00","message":"Matched 'The Last of Us S02E07 Convergence 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLU
+X' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 DV x265-NTb","time":"2025-05-26T04:46:06+03:00","message":"Matched 'The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 DV x265-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 2160p CRAV WEB-DL DD5 1 H 265-WADU","time":"2025-05-26T04:51:05+03:00","message":"Matched 'The Last of Us S02 2160p CRAV WEB-DL DD5 1 H 265-WADU' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 Atmos H 264-Kitsune","time":"2025-05-26T04:51:08+03:00","message":"Matched 'The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 Atmos H 264-Kitsune' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T04:54:29+03:00","message":"Matched 'The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (Series) for IP
+Torrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU","time":"2025-05-26T04:57:25+03:00","message":"Matched 'The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU' (Series) for TorrentLeec
+h"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU","time":"2025-05-26T04:59:14+03:00","message":"Matched 'The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-WADU","time":"2025-05-26T05:07:51+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-WADU' (Series) for Torre
+ntLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p x265-ELiTE","time":"2025-05-26T05:15:47+03:00","message":"Matched 'The Last of Us S02E07 1080p x265-ELiTE' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-Kitsune","time":"2025-05-26T05:25:00+03:00","message":"Matched 'The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-Kitsune' (Series) for IP
+Torrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us (2023) S02E07 Convergence (1080p AMZN Webrip x265 10bit EAC3 5 1 Atmos English - JBENT)[TAoE]","time":"2025-05-26T05:29:17+03:00","message":"Matched 'The Last of Us (2023) S02E07 Convergence (10
+80p AMZN Webrip x265 10bit EAC3 5 1 Atmos English - JBENT)[TAoE]' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Series","release":"The.Last.Of.Us.S02E07.Convergence.1080p.HMAX.MULTi.WEB-DL.DD.5.1.Atmos.H264-SPWEB","time":"2025-05-26T05:48:16+03:00","message":"Matched 'The.Last.Of.Us.S02E07.Convergence.1080p.HMAX.MULTi.WEB-DL.DD.5.1.Atmos.H264
+-SPWEB' (Series) for SpeedApp"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us (2023) S02 (1080p AMZN Webrip x265 10bit EAC3 5 1 Atmos English - JBENT)[TAoE]","time":"2025-05-26T06:26:22+03:00","message":"Matched 'The Last of Us (2023) S02 (1080p AMZN Webrip x265 10bit EAC
+3 5 1 Atmos English - JBENT)[TAoE]' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 Convergence 1080p HEVC x265-MeGusta","time":"2025-05-26T06:46:17+03:00","message":"Matched 'The Last of Us S02E07 Convergence 1080p HEVC x265-MeGusta' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p WEBRip 10Bit DDP5 1 HEVC-d3g","time":"2025-05-26T06:58:18+03:00","message":"Matched 'The Last of Us S02 1080p WEBRip 10Bit DDP5 1 HEVC-d3g' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p WEBRip 10Bit DDP5 1 HEVC-d3g","time":"2025-05-26T07:00:42+03:00","message":"Matched 'The Last of Us S02 1080p WEBRip 10Bit DDP5 1 HEVC-d3g' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-Kitsune","time":"2025-05-26T07:26:20+03:00","message":"Matched 'The Last of Us S02E07 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-Kitsune' (Series) for IPTorrents
+"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S02E07 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst","time":"2025-05-26T07:46:17+03:00","message":"Matched 'The Last Of Us S02E07 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst' (Ser
+ies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S02 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst","time":"2025-05-26T07:59:15+03:00","message":"Matched 'The Last Of Us S02 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst' (Series) f
+or TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T08:15:47+03:00","message":"Matched 'The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX","time":"2025-05-26T08:15:51+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX' (Series) for Torre
+ntLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-FLUX","time":"2025-05-26T08:15:54+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-FLUX' (Series) for TorrentLeech"
+}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T08:16:03+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 x264-NTb","time":"2025-05-26T08:36:14+03:00","message":"Matched 'The Last of Us S02E07 1080p MAX WEB-DL DDP5 1 x264-NTb' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T08:37:34+03:00","message":"Matched 'The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX' 
+(Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T09:09:29+03:00","message":"Matched 'The Last of Us S02E07 Convergence 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) 
+for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T09:13:31+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us 2023 S02 NORDiC 1080p WEB-DL H 264 DDP5 1 Atmos-TWASERiES","time":"2025-05-26T09:23:00+03:00","message":"Matched 'The Last of Us 2023 S02 NORDiC 1080p WEB-DL H 264 DDP5 1 Atmos-TWASERiES' (Serie
+s) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 MULTI 1080p WEB X264-HiggsBoson","time":"2025-05-26T09:38:06+03:00","message":"Matched 'The Last of Us S02 MULTI 1080p WEB X264-HiggsBoson' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 Convergence 2160p MAX WEB-DL DD 5 1 Atmos DoVi HDR H 265-playWEB","time":"2025-05-26T09:45:20+03:00","message":"Matched 'The Last of Us S02E07 Convergence 2160p MAX WEB-DL DD 5 1 Atmos DoVi HDR H 
+265-playWEB' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Captain America Brave New World 2025 Hybrid 2160p MA WEB-DL DDP5 1 Atmos DV HDR10+ H 265-126811","time":"2025-05-26T10:33:43+03:00","message":"Matched 'Captain America Brave New World 2025 Hybrid 2160p MA WEB-
+DL DDP5 1 Atmos DV HDR10+ H 265-126811' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us (2023) S02 (1080p AMZN Webrip x265 10bit EAC3 5 1 Atmos English - JBENT)TAoE","time":"2025-05-26T11:12:39+03:00","message":"Matched 'The Last of Us (2023) S02 (1080p AMZN Webrip x265 10bit EAC3 5 1 Atmos
+ English - JBENT)TAoE' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us 2023 S02 NORDiC 1080p WEB-DL H 264 DDP5 1 Atmos-TWASERiES","time":"2025-05-26T11:13:48+03:00","message":"Matched 'The Last of Us 2023 S02 NORDiC 1080p WEB-DL H 264 DDP5 1 Atmos-TWASERiES' (Series) for IP
+Torrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T11:15:29+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T11:17:12+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T11:19:06+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-BLOOM","time":"2025-05-26T11:20:31+03:00","message":"Matched 'The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-BLOOM' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot 2025 S01E03 MULTI 2160p WEB-DL HDR H265-AOC","time":"2025-05-26T11:20:47+03:00","message":"Matched 'Murderbot 2025 S01E03 MULTI 2160p WEB-DL HDR H265-AOC' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot 2025 S01E03 MULTI 2160p WEB-DL HDR H265-AOC","time":"2025-05-26T11:20:49+03:00","message":"Matched 'Murderbot 2025 S01E03 MULTI 2160p WEB-DL HDR H265-AOC' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T11:21:31+03:00","message":"Matched 'The Last of Us S02 1080p MAX WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p MAX WEB-DL DDP5 1 x264-NTb","time":"2025-05-26T11:22:30+03:00","message":"Matched 'The Last of Us S02 1080p MAX WEB-DL DDP5 1 x264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 2160p CRAV WEB-DL DD5 1 H 265-WADU","time":"2025-05-26T11:35:41+03:00","message":"Matched 'The Last of Us S02 2160p CRAV WEB-DL DD5 1 H 265-WADU' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX","time":"2025-05-26T11:40:07+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-FLUX' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-WADU","time":"2025-05-26T11:44:53+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV HDR H 265-WADU' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU","time":"2025-05-26T11:48:15+03:00","message":"Matched 'The Last Of Us S02 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S02 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst","time":"2025-05-26T11:50:50+03:00","message":"Matched 'The Last Of Us S02 NORDiC 2160p SDR WEB-DL DDP5 1 Atmos H 265-NorTekst' (Series) for IPTorr
+ents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p MAX WEB-DL DDP5 1 x264-NTb","time":"2025-05-26T11:53:34+03:00","message":"Matched 'The Last of Us S02 1080p MAX WEB-DL DDP5 1 x264-NTb' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E07 1080p AV1 10bit-MeGusta","time":"2025-05-26T12:06:34+03:00","message":"Matched 'The Last of Us S02E07 1080p AV1 10bit-MeGusta' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Gladiator II 2024 NORDiC 2160p DV HDR UHD-BluRay x265 TrueHD Atmos 7 1-SAXWIO","time":"2025-05-26T12:22:38+03:00","message":"Matched 'Gladiator II 2024 NORDiC 2160p DV HDR UHD-BluRay x265 TrueHD Atmos 7 1-SAXW
+IO' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab","time":"2025-05-26T15:34:00+03:00","message":"Matched 'The Last of Us S02E07 DV HDR 2160p WEB H265-SuccessfulCrab' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S01-S02 1080p 10bit WEBRip 6CH x265-PSA","time":"2025-05-26T15:49:14+03:00","message":"Matched 'The Last of Us S01-S02 1080p 10bit WEBRip 6CH x265-PSA' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Prisoners 2013 1080p BluRay x265-YAWNTiC","time":"2025-05-26T16:25:08+03:00","message":"Matched 'Prisoners 2013 1080p BluRay x265-YAWNTiC' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU","time":"2025-05-26T16:29:48+03:00","message":"Matched 'The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU","time":"2025-05-26T16:47:24+03:00","message":"Matched 'The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU' (Series) for TorrentLeec
+h"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last Of Us (2023) Season 2 S02 (1080p AMZN WEB-DL x265 HEVC 10bit DDP 5 1 Vyndros)","time":"2025-05-26T16:50:30+03:00","message":"Matched 'The Last Of Us (2023) Season 2 S02 (1080p AMZN WEB-DL x265 HEVC 10
+bit DDP 5 1 Vyndros)' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p WEBRip x265-DH","time":"2025-05-26T17:05:34+03:00","message":"Matched 'The Last of Us S02 1080p WEBRip x265-DH' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Prisoners 2013 1080p BluRay x265-YAWNTiC","time":"2025-05-26T17:13:41+03:00","message":"Matched 'Prisoners 2013 1080p BluRay x265-YAWNTiC' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BLOOM","time":"2025-05-26T18:13:22+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BLOOM' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR","time":"2025-05-26T18:16:21+03:00","message":"Matched 'The Last of Us S02 1080p AMZN WEB-DL DDP5 1 Atmos H 264-BYNDR' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S02 COMPLETE 1080p 10bit WEBRip 6CH X265 HEVC-PSA","time":"2025-05-26T18:16:57+03:00","message":"Matched 'The Last Of Us S02 COMPLETE 1080p 10bit WEBRip 6CH X265 HEVC-PSA' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S02 COMPLETE 1080p WEB-DL X264 6CH-Pahe","time":"2025-05-26T18:17:38+03:00","message":"Matched 'The Last Of Us S02 COMPLETE 1080p WEB-DL X264 6CH-Pahe' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 COMPLETE 2160p WEB-DL x265 HDR DV DD 5 1 Atmos-Pahe in","time":"2025-05-26T18:19:03+03:00","message":"Matched 'The Last of Us S02 COMPLETE 2160p WEB-DL x265 HDR DV DD 5 1 Atmos-Pahe in' (Series) for 
+IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 German DL AC3D 2160p DV HDR MAX WEB H265-ZeroTwo","time":"2025-05-26T18:51:21+03:00","message":"Matched 'The Last of Us S02 German DL AC3D 2160p DV HDR MAX WEB H265-ZeroTwo' (Series) for IPTorrents"}
+
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 MULTI 1080p WEB X264-HiggsBoson","time":"2025-05-26T18:52:28+03:00","message":"Matched 'The Last of Us S02 MULTI 1080p WEB X264-HiggsBoson' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DD 5 1 Atmos DoVi HDR H 265-playWEB","time":"2025-05-26T19:13:34+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DD 5 1 Atmos DoVi HDR H 265-playWEB' (Series) for IPTo
+rrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-FLUX","time":"2025-05-26T19:17:13+03:00","message":"Matched 'The Last of Us S02 2160p MAX WEB-DL DDP5 1 Atmos DV H 265-FLUX' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU","time":"2025-05-26T19:22:12+03:00","message":"Matched 'The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos H 265-WADU' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p WEBRip x265-DH","time":"2025-05-26T19:22:55+03:00","message":"Matched 'The Last of Us S02 1080p WEBRip x265-DH' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 COMPLETE 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T19:25:02+03:00","message":"Matched 'The Last of Us S02 COMPLETE 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E01 Future Days 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T19:45:27+03:00","message":"Matched 'The Last of Us S02E01 Future Days 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (Series) for IP
+Torrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E02 Through the Valley 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T19:45:52+03:00","message":"Matched 'The Last of Us S02E02 Through the Valley 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (
+Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E04 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T19:50:51+03:00","message":"Matched 'The Last of Us S02E04 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E05 Feel Her Love 1080p AMZN WEB-DL DDP5 1 H 264-playWEB","time":"2025-05-26T19:51:11+03:00","message":"Matched 'The Last of Us S02E05 Feel Her Love 1080p AMZN WEB-DL DDP5 1 H 264-playWEB' (Series) fo
+r IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us 2023 Season 2 S02 1080p AMZN WEB-DL x265 HEVC 10bit DDP 5 1 Vyndros","time":"2025-05-26T20:44:08+03:00","message":"Matched 'The Last Of Us 2023 Season 2 S02 1080p AMZN WEB-DL x265 HEVC 10bit DDP 5 1 Vynd
+ros' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU","time":"2025-05-26T20:48:18+03:00","message":"Matched 'The Last Of Us S01 2160p NOW WEB-DL DDP5 1 Atmos HLG H 265-WADU' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 COMPLETE 1080p AMZN WEB-DL DDP5 1 H 264-NTb","time":"2025-05-26T20:58:58+03:00","message":"Matched 'The Last of Us S02 COMPLETE 1080p AMZN WEB-DL DDP5 1 H 264-NTb' (Series) for TorrentLeech"
+}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02E06 The Price 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-26T21:02:35+03:00","message":"Matched 'The Last of Us S02E06 The Price 1080p AMZN WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for 
+IPTorrents"}
+{"level":"info","module":"release","indexer":"speedapp","filter":"Series","release":"The.Last.of.Us.S02.1080p.MAX.DUAL.WEB-DL.DDP.5.1.H264-SPWEB","time":"2025-05-27T01:50:18+03:00","message":"Matched 'The.Last.of.Us.S02.1080p.MAX.DUAL.WEB-DL.DDP.5.1.H264-SPWEB' (Series) for SpeedApp"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us (2023) S02E07 Convergence (2160p HDR10 DV Hybrid MAX Webrip x265 10bit EAC3 5 1 Atmos - Goki)[TAoE]","time":"2025-05-27T02:04:20+03:00","message":"Matched 'The Last of Us (2023) S02E07 Convergen
+ce (2160p HDR10 DV Hybrid MAX Webrip x265 10bit EAC3 5 1 Atmos - Goki)[TAoE]' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us (2023) S02 (2160p HDR10 DV Hybrid MAX Webrip x265 10bit EAC3 5 1 Atmos - Goki)[TAoE]","time":"2025-05-27T02:32:12+03:00","message":"Matched 'The Last of Us (2023) S02 (2160p HDR10 DV Hybrid MAX 
+Webrip x265 10bit EAC3 5 1 Atmos - Goki)[TAoE]' (Series) for TorrentLeech"}
+{"level":"info","module":"feed","job":"feed-cache-cleanup","time":"2025-05-27T03:05:00+03:00","message":"successfully ran feed-cache-cleanup job"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S01 1080p WebRip EAC3 5 1 x265-Lootera","time":"2025-05-27T05:06:08+03:00","message":"Matched 'The Last of Us S01 1080p WebRip EAC3 5 1 x265-Lootera' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p WebRip EAC3 5 1 x265-Lootera","time":"2025-05-27T05:06:09+03:00","message":"Matched 'The Last of Us S02 1080p WebRip EAC3 5 1 x265-Lootera' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Andor S02 1080p WEBRip x265-KONTRAST","time":"2025-05-27T07:55:39+03:00","message":"Matched 'Andor S02 1080p WEBRip x265-KONTRAST' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02 1080p HULU WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-27T09:05:32+03:00","message":"Matched 'The Last of Us S02 1080p HULU WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Andor S02 1080p WEBRip x265-KONTRAST","time":"2025-05-27T09:51:23+03:00","message":"Matched 'Andor S02 1080p WEBRip x265-KONTRAST' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S01 1080p WebRip EAC3 5 1 x265-Lootera","time":"2025-05-27T10:14:59+03:00","message":"Matched 'The Last of Us S01 1080p WebRip EAC3 5 1 x265-Lootera' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p WebRip EAC3 5 1 x265-Lootera","time":"2025-05-27T10:15:35+03:00","message":"Matched 'The Last of Us S02 1080p WebRip EAC3 5 1 x265-Lootera' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Babylon 2022 2160p ATVP WEB-DL DD 5 1 H 265-PiRaTeS","time":"2025-05-27T10:21:05+03:00","message":"Matched 'Babylon 2022 2160p ATVP WEB-DL DD 5 1 H 265-PiRaTeS' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Babylon 2022 1080p ATVP WEB-DL DD 5 1 H 264-PiRaTeS","time":"2025-05-27T10:21:09+03:00","message":"Matched 'Babylon 2022 1080p ATVP WEB-DL DD 5 1 H 264-PiRaTeS' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Movies","release":"Babylon 2022 1080p HULU WEB-DL DDP 5 1 H 264-PiRaTeS","time":"2025-05-27T10:21:13+03:00","message":"Matched 'Babylon 2022 1080p HULU WEB-DL DDP 5 1 H 264-PiRaTeS' (Movies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080i HDTV DD5 1 H 264-playTV","time":"2025-05-27T10:36:03+03:00","message":"Matched 'The Last of Us S02 1080i HDTV DD5 1 H 264-playTV' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"The Last of Us S02 1080p HULU WEB-DL DDP5 1 Atmos H 264-FLUX","time":"2025-05-27T11:16:53+03:00","message":"Matched 'The Last of Us S02 1080p HULU WEB-DL DDP5 1 Atmos H 264-FLUX' (Series) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E01 FreeCommerce 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC","time":"2025-05-27T11:23:04+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC' (Series) f
+or TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E02 Eye Contact 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC","time":"2025-05-27T11:25:29+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC' (Series) for
+ TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC","time":"2025-05-27T11:28:47+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC' (Ser
+ies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC","time":"2025-05-27T11:31:17+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC' (Serie
+s) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC","time":"2025-05-27T11:33:55+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC' (S
+eries) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC","time":"2025-05-27T11:37:16+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC' (Ser
+ies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E01 FreeCommerce 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC","time":"2025-05-27T11:54:28+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC' (Series) for IPTorr
+ents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E02 Eye Contact 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC","time":"2025-05-27T11:54:46+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 1080p ATVP WEB-DL DDP5 1 Atmos H 264-STC' (Series) for IPTorren
+ts"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC","time":"2025-05-27T12:06:21+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC' (Series) fo
+r IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC","time":"2025-05-27T12:09:54+03:00","message":"Matched 'Murderbot S01E01 FreeCommerce 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC' (Series) for 
+IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC","time":"2025-05-27T12:16:57+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos DV H 265-STC' (Series) for IP
+Torrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Series","release":"Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC","time":"2025-05-27T12:17:32+03:00","message":"Matched 'Murderbot S01E02 Eye Contact 2160p ATVP WEB-DL DDP5 1 Atmos HDR H 265-STC' (Series) for 
+IPTorrents"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Babylon 2022 1080p ATVP WEB-DL DD 5 1 H 264-PiRaTeS","time":"2025-05-27T12:21:33+03:00","message":"Matched 'Babylon 2022 1080p ATVP WEB-DL DD 5 1 H 264-PiRaTeS' (Movies) for IPTorrents"}
+{"level":"info","module":"release","indexer":"torrentleech","filter":"Series","release":"The Last of Us S02E07 Convergence 1080p MAX WEB-DL DDP5 1 Atmos H 264-STC","time":"2025-05-27T12:23:12+03:00","message":"Matched 'The Last of Us S02E07 Convergence 1080p MAX WEB-DL DDP5 1 Atmos H 264-STC' (Ser
+ies) for TorrentLeech"}
+{"level":"info","module":"release","indexer":"ipt","filter":"Movies","release":"Babylon 2022 1080p HULU WEB-DL DDP 5 1 H 264-PiRaTeS","time":"2025-05-27T12:29:17+03:00","message":"Matched 'Babylon 2022 1080p HULU WEB-DL DDP 5 1 H 264-PiRaTeS' (Movies) for IPTorrents"}
+

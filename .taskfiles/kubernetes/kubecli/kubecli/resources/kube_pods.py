@@ -3,8 +3,10 @@ import subprocess
 import json
 import re
 import sys
+import os
 from typing import List, Tuple, Optional
 from kubecli.resources.kube_base import KubeBase
+import libtmux
 
 class PodManager(KubeBase):
     resource_type = "pods"
@@ -16,9 +18,10 @@ class PodManager(KubeBase):
             "--bind", "alt-c:accept",
             "--bind", "alt-p:accept",
             "--bind", "alt-f:accept",  # Alt-F: Full Logs
+            "--bind", "alt-s:accept",  # Alt-S: Session Management
             "--bind", "enter:ignore"
         ]
-        pod_header = "Alt-L: Logs Preview | Alt-C: Exec Shell | Alt-P: Port Forward | Alt-F: Full Logs"
+        pod_header = "Alt-L: Logs Preview | Alt-C: Exec Shell | Alt-P: Port Forward | Alt-F: Full Logs | Alt-S: Session Management"
         return pod_bindings, pod_header
 
     def select_resource(self) -> Tuple[Optional[str], Optional[str]]:
@@ -35,7 +38,7 @@ class PodManager(KubeBase):
             "Pods",
             extra_bindings=bindings,
             header=header,
-            expect="esc,alt-c,alt-p,alt-f"
+            expect="esc,alt-c,alt-p,alt-f,alt-s"
         )
         if isinstance(result, tuple):
             return result
@@ -75,6 +78,8 @@ class PodManager(KubeBase):
                 self.port_forward_pod(pod)
             elif key == "alt-f":
                 self.logs_pod(pod)
+            elif key == "alt-s":
+                self.manage_log_sessions()
 
     def port_forward_pod(self, pod_name: str):
         subprocess.run(["clear"])
@@ -264,48 +269,85 @@ class PodManager(KubeBase):
         """Try to spawn a new terminal window with the given command.
         Returns True if successful, False otherwise."""
         
-        # First try tmux
         try:
-            # Create a new tmux session with the command
-            session_name = f"logs-{title.lower().replace(' ', '-')}"
-            tmux_cmd = f"tmux new-session -d -s {session_name} '{command}'"
-            subprocess.run(tmux_cmd, shell=True, check=True)
+            clean_title = title.replace("Logs:", "").strip()
+            session_name = f"logs-{clean_title.lower().replace(' ', '-').replace(':', '-')}"
+            
+            server = libtmux.Server()
+            
+            # Create new session with a wrapper command that handles Ctrl+C and displays help
+            help_text = '''echo -e "\n=== Log Viewing Help ===\n"
+echo "Search: Ctrl+S (fuzzy search) / (search up) ? (search down) n/N (next/prev)"
+echo "Exit: Ctrl+C (stop logs) Ctrl+B then D (detach)"
+echo "Scroll: Arrow keys, Page Up/Down, or mouse wheel\n"
+echo "=== Logs Start Below ===\n\n"
+clear'''
+            
+            wrapped_command = f"""trap 'tmux kill-session -t {session_name}' INT TERM; {help_text}; {command}"""
+            
+            session = server.new_session(
+                session_name=session_name,
+                window_name=title,
+                start_directory=None,
+                attach=False,
+                window_command=wrapped_command
+            )
+            
+            window = session.windows[0]
+            pane = window.panes[0]
+            
+            session.set_option('status', 'on')
+            session.set_option('status-interval', 1)
+            session.set_option('status-left-length', 100)
+            session.set_option('status-right-length', 100)
+            session.set_option('status-style', 'fg=black,bg=green')
+            
+            session.set_option('status-left', '#[fg=green]#H #[fg=black]• #[fg=yellow]🔍 C-s(fzf) /(up) ?(down) n/N(next/prev)#[default]')
+            session.set_option('status-right', '#[fg=green]#(cut -d " " -f 1 /proc/loadavg)#[default] #[fg=blue]%H:%M#[default] #[fg=yellow]🚪 C-c(stop) C-b d(detach)#[default]')
+            
+            # Unbind default Ctrl+S binding and set up our bindings
+            session.cmd('unbind-key', '-T', 'root', 'C-s')
+            session.cmd('unbind-key', '-T', 'copy-mode-vi', 'C-s')
+            
+            # Set up key bindings for search
+            session.cmd('bind-key', '-T', 'root', 'C-s', 'copy-mode')
+            session.cmd('bind-key', '-T', 'copy-mode-vi', '/', 'command-prompt', '-i', '-p', 'search up', 'send -X search-backward-incremental "%%%"')
+            session.cmd('bind-key', '-T', 'copy-mode-vi', '?', 'command-prompt', '-i', '-p', 'search down', 'send -X search-forward-incremental "%%%"')
+            session.cmd('bind-key', '-T', 'copy-mode-vi', 'n', 'send', '-X', 'search-again')
+            session.cmd('bind-key', '-T', 'copy-mode-vi', 'N', 'send', '-X', 'search-reverse')
+            
+            # Set up fzf search binding using fzf-tmux with full path
+            session.cmd('bind-key', '-T', 'copy-mode-vi', 'C-s', 'send', '-X', 'copy-pipe-and-cancel', f'tmux capture-pane -p -S -1000 | {os.path.expanduser("~/.fzf/bin/fzf-tmux")} -p 80% --no-sort --reverse --inline-info --preview "echo {{}}" --preview-window=up:3:wrap --bind "ctrl-y:execute-silent(echo -n {{}} | xclip -in -selection clipboard)+abort"')
+            
+            # Display help text using libtmux's display-message
+            help_text = [
+                "\n=== Log Viewing Help ===\n",
+                "Search: Ctrl+S (fuzzy search) / (search up) ? (search down) n/N (next/prev)",
+                "Exit: Ctrl+C (stop logs) Ctrl+B then D (detach)",
+                "Scroll: Arrow keys, Page Up/Down, or mouse wheel\n",
+                "=== Logs Start Below ===\n\n"
+            ]
+            
+            for line in help_text:
+                session.cmd('display-message', '-p', line)
+            
+            # Clear the screen
+            pane.send_keys('clear')
+            
             # Attach to the session
-            subprocess.Popen(["tmux", "attach-session", "-t", session_name])
-            return True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            pass
-
-        # Then try screen
-        try:
-            # Create a new screen session with the command
-            session_name = f"logs-{title.lower().replace(' ', '-')}"
-            screen_cmd = f"screen -dmS {session_name} {command}"
-            subprocess.run(screen_cmd, shell=True, check=True)
-            # Attach to the session
-            subprocess.Popen(["screen", "-r", session_name])
-            return True
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            pass
-
-        # Finally try terminal emulators
-        terminals = [
-            ["gnome-terminal", "--title", title, "--", "bash", "-c", command],
-            ["konsole", "-e", f"bash -c '{command}'", "--title", title],
-            ["xterm", "-title", title, "-e", command],
-            ["urxvt", "-title", title, "-e", command],
-            ["alacritty", "-t", title, "-e", "bash", "-c", command],
-            ["kitty", "-T", title, "bash", "-c", command],
-            ["lxterminal", "-t", title, "-e", command]  # Added lxterminal which is common on Alpine
-        ]
-
-        for terminal_cmd in terminals:
+            session.attach_session()
+            
+            # Clean up when detached
             try:
-                subprocess.Popen(terminal_cmd)
-                return True
-            except FileNotFoundError:
-                continue
-        return False
+                session.kill_session()
+            except:
+                pass  # Session might already be killed
+            
+            return True
+            
+        except Exception as e:
+            print(f"Error setting up tmux: {str(e)}")
+            return False
 
     def logs_pod(self, pod_name: str):
         subprocess.run(["clear"])
@@ -429,10 +471,16 @@ class PodManager(KubeBase):
             # Try to spawn a new terminal window
             if self.spawn_terminal(title, cmd):
                 print(f"\nLogs are being shown in a new window.")
-                print("To detach from the window:")
-                print("- In tmux: Press Ctrl+B then D")
-                print("- In screen: Press Ctrl+A then D")
-                print("- For terminal emulators: Just close the window")
+                print("\nSearch and Navigation:")
+                print("- Enter copy mode: Ctrl+B then [")
+                print("- Search with fzf: Ctrl+S")
+                print("- Regular search: / (forward) or ? (backward)")
+                print("- Next match: n")
+                print("- Previous match: N")
+                print("\nExit and Return:")
+                print("- Press Ctrl+C to stop logs and return to menu")
+                print("- Or use Ctrl+B then D to detach (logs will continue running)")
+                print("- To reattach: tmux attach -t logs-{pod_name}")
             else:
                 print("\nCould not spawn a new window. Please install one of the following:")
                 print("- tmux: apk add tmux")
@@ -450,3 +498,89 @@ class PodManager(KubeBase):
             input("\nPress Enter to continue...")
         except KeyboardInterrupt:
             return self.handle_keyboard_interrupt()
+
+    def manage_log_sessions(self):
+        """Manage active log sessions."""
+        subprocess.run(["clear"])
+        print("Managing Log Sessions")
+        
+        try:
+            # Get list of active tmux sessions
+            result = subprocess.run(
+                ["tmux", "list-sessions", "-F", "#{session_name}"],
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            
+            # Filter for log sessions
+            log_sessions = [s for s in result.stdout.splitlines() if s.startswith("logs-")]
+            
+            if not log_sessions:
+                print("No active log sessions found.")
+                input("\nPress Enter to continue...")
+                return
+            
+            # Create menu options
+            options = []
+            for session in log_sessions:
+                # Extract pod name from session name
+                pod_name = session.replace("logs-", "").replace("-", " ")
+                options.append(f"{pod_name} (Session: {session})")
+            
+            # Add option to kill all sessions
+            options.append("Kill All Log Sessions")
+            
+            # Show menu
+            print("Select a session to manage:")
+            result = self.run_fzf(
+                options,
+                "Log Sessions",
+                header="Select session to manage (Esc to cancel)",
+                use_common_bindings=False,
+                expect="esc,enter"
+            )
+            
+            if result is None or (isinstance(result, tuple) and result[0] == "esc"):
+                return
+            
+            selected = result[1] if isinstance(result, tuple) else result
+            
+            if selected == "Kill All Log Sessions":
+                # Kill all log sessions
+                for session in log_sessions:
+                    subprocess.run(["tmux", "kill-session", "-t", session])
+                print("All log sessions have been terminated.")
+            else:
+                # Extract session name
+                session_name = selected.split("(Session: ")[1].rstrip(")")
+                
+                # Show session management options
+                print("\nSession Management Options:")
+                print("1. Reattach to session")
+                print("2. Kill session")
+                print("3. Back to menu")
+                
+                while True:
+                    try:
+                        choice = input("\nEnter your choice (1-3): ").strip()
+                        if choice == "1":
+                            subprocess.run(["tmux", "attach-session", "-t", session_name])
+                            break
+                        elif choice == "2":
+                            subprocess.run(["tmux", "kill-session", "-t", session_name])
+                            print(f"Session {session_name} has been terminated.")
+                            break
+                        elif choice == "3":
+                            break
+                        else:
+                            print("Invalid choice. Please enter 1-3.")
+                    except KeyboardInterrupt:
+                        return self.handle_keyboard_interrupt()
+            
+        except subprocess.CalledProcessError as e:
+            print(f"Error managing sessions: {e.stderr.strip()}", file=sys.stderr)
+        except KeyboardInterrupt:
+            return self.handle_keyboard_interrupt()
+        
+        input("\nPress Enter to continue...")

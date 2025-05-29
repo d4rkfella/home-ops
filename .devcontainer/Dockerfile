@@ -7,7 +7,7 @@ ARG VIRTCTL_VERSION=v1.5.1
 # renovate: datasource=github-releases depName=a8m/envsubst
 ARG ENVSUBST_VERSION=v1.4.3
 # renovate: datasource=github-releases depName=hashicorp/vault
-ARG VAULT_VERSION=v1.19.4
+ARG VAULT_VERSION=v1.19.5
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.18.0
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
@@ -15,7 +15,7 @@ ARG KUBECTL_VERSION=v1.33.1
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2
-ARG FLUX_VERSION=v2.5.1
+ARG FLUX_VERSION=v2.6.0
 ARG KUBECTL_EXPLORE_VERSION=v0.12.0
 ARG FZF_VERSION=v0.62.0
 

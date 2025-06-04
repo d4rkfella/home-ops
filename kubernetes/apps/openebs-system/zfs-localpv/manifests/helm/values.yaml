@@ -12,7 +12,7 @@ zfsNode:
     image:
       registry: registry.k8s.io/
       repository: sig-storage/csi-node-driver-registrar
-      tag: v2.13.0
+      tag: v2.14.0
 zfsController:
   resizer:
     image:
@@ -33,7 +33,7 @@ zfsController:
     image:
       registry: registry.k8s.io/
       repository: sig-storage/csi-provisioner
-      tag: v5.2.0
+      tag: v5.3.0
 zfs:
   bin: /usr/local/sbin/zfs
 

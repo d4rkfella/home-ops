@@ -7,7 +7,7 @@ controllers:
       install-multus-binary:
         image:
           repository: ghcr.io/d4rkfella/multus-cni
-          tag: 4.2.1@sha256:6dbbefc84f8a7526089fc5be8fa0ee2be5959d01e8316b998e9ca6c2f0580cfc
+          tag: 4.2.0@sha256:6dbbefc84f8a7526089fc5be8fa0ee2be5959d01e8316b998e9ca6c2f0580cfc
         command: ["/install_multus"]
         args:
           - --type
@@ -26,7 +26,7 @@ controllers:
       multus:
         image:
           repository: ghcr.io/d4rkfella/multus-cni
-          tag: 4.2.1@sha256:6dbbefc84f8a7526089fc5be8fa0ee2be5959d01e8316b998e9ca6c2f0580cfc
+          tag: 4.2.0
         args:
           - --multus-conf-file=auto
           - --multus-autoconfig-dir=/host/etc/cni/net.d

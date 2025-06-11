@@ -6,8 +6,8 @@ controllers:
     initContainers:
       install-multus-binary:
         image:
-          repository: ghcr.io/d4rkfella/multus-cni
-          tag: 4.2.1
+          repository: ghcr.io/k8snetworkplumbingwg/multus-cni
+          tag: snapshot
         command: ["/install_multus"]
         args:
           - --type

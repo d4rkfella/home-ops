@@ -31,23 +31,23 @@ spec:
           init-db:
             image:
               repository: ghcr.io/d4rkfella/postgres-init
-              tag: 1.0.1@sha256:f03a7cf334cb3532322e32bd2a75cfe745b0fd59136e354a0a02b24efbafa5d4
+              tag: 0.1.0@sha256:4dedc2e2ee6206c7127cbbf5f6ecc463f048aa4ede27bb59a201a1b6ad6d6c06
             env:
-              INIT_POSTGRES_DBNAME: &dbName sonarr
-              INIT_POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
-              INIT_POSTGRES_SSLMODE: require
-              INIT_POSTGRES_USER:
+              POSTGRES_DBNAME: &dbName sonarr
+              POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              POSTGRES_SSLMODE: require
+              POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
                     name: &secret "{{ .Release.Name }}-secret"
                     key: &pgUser POSTGRES_USERNAME
-              INIT_POSTGRES_PASS:
+              POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: &pgPass POSTGRES_PASSWORD
-              INIT_POSTGRES_SUPER_USER: postgres-db-manager
-              INIT_POSTGRES_SUPER_PASS:
+              POSTGRES_SUPER_USER: postgres-db-manager
+              POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret

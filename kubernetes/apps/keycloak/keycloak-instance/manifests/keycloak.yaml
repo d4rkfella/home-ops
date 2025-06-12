@@ -36,30 +36,30 @@ spec:
 
         initContainers:
           - name: init-db
-            image: "ghcr.io/d4rkfella/postgres-init:1.0.1@sha256:f03a7cf334cb3532322e32bd2a75cfe745b0fd59136e354a0a02b24efbafa5d4"
+            image: "ghcr.io/d4rkfella/postgres-init:0.1.0@sha256:4dedc2e2ee6206c7127cbbf5f6ecc463f048aa4ede27bb59a201a1b6ad6d6c06"
             imagePullPolicy: IfNotPresent
             env:
-              - name: INIT_POSTGRES_HOST
+              - name: POSTGRES_HOST
                 value: &dbHost postgres-v17-rw.database.svc.cluster.local
-              - name: INIT_POSTGRES_PORT
+              - name: POSTGRES_PORT
                 value: '5432'
-              - name: INIT_POSTGRES_SSLMODE
+              - name: POSTGRES_SSLMODE
                 value: require
-              - name: INIT_POSTGRES_DBNAME
+              - name: POSTGRES_DBNAME
                 value: &dbName keycloak
-              - name: INIT_POSTGRES_SUPER_USER
+              - name: POSTGRES_SUPER_USER
                 value: postgres-db-manager
-              - name: INIT_POSTGRES_SUPER_PASS
+              - name: POSTGRES_SUPER_PASS
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_SUPER_PASS
-              - name: INIT_POSTGRES_USER
+              - name: POSTGRES_USER
                 valueFrom:
                   secretKeyRef:
                     name: *secret
                     key: POSTGRES_USERNAME
-              - name: INIT_POSTGRES_PASS
+              - name: POSTGRES_PASS
                 valueFrom:
                   secretKeyRef:
                     name: *secret

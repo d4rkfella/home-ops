@@ -41,8 +41,6 @@ spec:
             env:
               - name: POSTGRES_HOST
                 value: &dbHost postgres-v17-rw.database.svc.cluster.local
-              - name: POSTGRES_SSL_ROOTCERT_PATH
-                value: '/etc/ssl/certs/cnpg-ca.crt'
               - name: POSTGRES_PORT
                 value: '5432'
               - name: POSTGRES_SSLMODE

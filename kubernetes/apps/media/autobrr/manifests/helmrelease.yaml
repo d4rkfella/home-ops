@@ -35,7 +35,7 @@ spec:
               POSTGRES_DBNAME: &dbName autobrr
               POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
               POSTGRES_SSLMODE: verify-full
-              POSTGRES_SSLROOTCERT: /etc/ssl/certs/postgres-ca.crt
+              POSTGRES_SSL_ROOTCERT_PATH: /etc/ssl/certs/postgres-ca.crt
               POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:

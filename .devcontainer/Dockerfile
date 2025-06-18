@@ -9,7 +9,7 @@ ARG ENVSUBST_VERSION=v1.4.3
 # renovate: datasource=github-releases depName=hashicorp/vault
 ARG VAULT_VERSION=v1.19.5
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v3.18.2
+ARG HELM_VERSION=v3.18.3
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 ARG KUBECTL_VERSION=v1.33.1
 # renovate: datasource=github-releases depName=getsops/sops

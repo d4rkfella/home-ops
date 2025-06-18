@@ -110,7 +110,7 @@ releases:
     namespace: external-secrets
     atomic: true
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    version: 0.17.0
+    version: 0.18.0
     values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/external-secrets/external-secrets/manifests/helm/values.yaml']
     needs: ['vault/vault','cert-manager/cert-manager']
     hooks:

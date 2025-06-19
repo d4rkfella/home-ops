@@ -18,17 +18,17 @@ zfsController:
     image:
       registry: registry.k8s.io/
       repository: sig-storage/csi-resizer
-      tag: v1.13.2
+      tag: v1.14.0
   snapshotter:
     image:
       registry: registry.k8s.io/
       repository: sig-storage/csi-snapshotter
-      tag: v8.2.1
+      tag: v8.3.0
   snapshotController:
     image:
       registry: registry.k8s.io/
       repository: sig-storage/snapshot-controller
-      tag: v8.2.1
+      tag: v8.3.0
   provisioner:
     image:
       registry: registry.k8s.io/

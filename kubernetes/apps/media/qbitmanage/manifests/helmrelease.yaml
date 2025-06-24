@@ -92,3 +92,8 @@ spec:
         path: /mnt/exos20/data/downloads/torrents
         globalMounts:
           - path: /data/downloads/torrents
+
+      tmp:
+        type: emptyDir
+        globalMounts:
+          path: /tmp

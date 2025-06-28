@@ -11,7 +11,7 @@ ARG VAULT_VERSION=v1.20.0
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v3.18.3
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-ARG KUBECTL_VERSION=v1.33.1
+ARG KUBECTL_VERSION=v1.33.2
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2

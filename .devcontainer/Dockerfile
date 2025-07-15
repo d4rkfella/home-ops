@@ -1,4 +1,4 @@
-FROM alpine:3.22.0 AS build
+FROM alpine:3.22.1 AS build
 
 # renovate: datasource=github-releases depName=go-task/task
 ARG TASK_VERSION=v3.44.0
@@ -94,7 +94,7 @@ COPY --from=ghcr.io/helmfile/helmfile:v1.1.3 /usr/local/bin/helmfile /usr/local/
 RUN helmfile --version
 
 
-FROM alpine:3.22.0
+FROM alpine:3.22.1
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano

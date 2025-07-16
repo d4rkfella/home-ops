@@ -33,6 +33,8 @@ spec:
               DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_PublishedServerUrl: https://jellyfin.darkfellanetwork.com
               TZ: Europe/Sofia
+              JELLYFIN_EnableMetrics: true
+              JELLYFIN_MetricsListenPort: 8080
             probes:
               liveness: &probes
                 enabled: true
@@ -93,12 +95,15 @@ spec:
           discovery:
             port: 7359
             protocol: UDP
+          metrics:
+            port: 8080
+            protocol: TCP
 
     serviceMonitor:
       app:
         serviceName: jellyfin
         endpoints:
-          - port: http
+          - port: metrics
             scheme: http
             path: /metrics
             interval: 1m

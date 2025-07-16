@@ -29,8 +29,6 @@ spec:
             path: /spec/template/spec/hostUsers
             value: false
   values:
-    image:
-      tag: v0.15.1
     fullnameOverride: *app
     provider:
       name: rfc2136

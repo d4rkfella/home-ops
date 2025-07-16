@@ -57,7 +57,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/kubelet-csr-approver
-    version: 1.2.7
+    version: 1.2.10
     values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/kubelet-csr-approver/manifests/helm/values.yaml']
     needs: ['kube-system/coredns']
 

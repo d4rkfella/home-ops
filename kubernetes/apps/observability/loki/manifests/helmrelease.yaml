@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/d4rkfella/charts-mirror/loki
   ref:
-    tag: 6.29.0
+    tag: 6.32.0
   verify:
     provider: cosign
 ---

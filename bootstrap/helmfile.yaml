@@ -65,7 +65,7 @@ releases:
     namespace: cert-manager
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cert-manager
-    version: v1.17.2
+    version: v1.18.2
     values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/helm/values.yaml']
     needs: ['kube-system/kubelet-csr-approver']
     hooks:

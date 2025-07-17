@@ -44,6 +44,12 @@ data:
       recycle_bin: /data/downloads/torrents/.RecycleBin
       orphaned_dir: /data/downloads/torrents/orphaned_data
 
+    cat:
+      movies: "/data/downloads/torrents/movies"
+      movies-imported: "/data/downloads/torrents/movies"
+      tv: "/data/downloads/torrents/tv"
+      tv-imported: "/data/downloads/torrents/tv"
+
     tracker:
       torrentleech|tleechreload:
         tag: TorrentLeech

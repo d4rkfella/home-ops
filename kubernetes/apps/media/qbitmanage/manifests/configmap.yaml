@@ -47,6 +47,7 @@ data:
       root_dir: /data/downloads/torrents
       recycle_bin: /data/downloads/torrents/.RecycleBin
       orphaned_dir: /data/downloads/torrents/orphaned_data
+      torrents_dir: ""
 
     cat:
       movies: "/data/downloads/torrents/movies"

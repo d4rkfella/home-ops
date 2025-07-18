@@ -80,6 +80,11 @@ spec:
           - path: /usr/share/nginx/html
             readOnly: true
 
+      run-dir:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+
       cache:
         type: emptyDir
         globalMounts:

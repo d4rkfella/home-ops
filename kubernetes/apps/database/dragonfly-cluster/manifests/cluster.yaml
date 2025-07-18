@@ -23,7 +23,7 @@ spec:
       resources:
         requests:
           storage: 2Gi
-  replicas: 2
+  replicas: 1
   resources:
     requests:
       cpu: 500m

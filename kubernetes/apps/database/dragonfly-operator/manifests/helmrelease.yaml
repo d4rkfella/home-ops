@@ -96,8 +96,7 @@ spec:
                 memory: 64Mi
               limits:
                 memory: 128Mi
-        annotations:
-          reloader.stakater.com/auto: "true"
+    
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

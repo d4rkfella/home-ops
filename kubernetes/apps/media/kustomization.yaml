@@ -15,7 +15,7 @@ resources:
   - ./cross-seed/ks.yaml
   - ./recyclarr/ks.yaml
   - ./jellyfin/ks.yaml
-  - ./jellyfin-plugins-repo/ks.yaml
+  - ./jellyfin-plugins/ks.yaml
 components:
   - ../../components/common
   - ../../components/repos/app-template

@@ -3,6 +3,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: dragonfly-operator-leader-election-role
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: leader-election-role
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: role
+    app.kubernetes.io/part-of: dragonfly-operator
 rules:
 - apiGroups:
   - ""
@@ -115,6 +122,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: dragonfly-operator-metrics-reader
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: metrics-reader
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: dragonfly-operator
 rules:
 - nonResourceURLs:
   - /metrics
@@ -125,6 +139,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: dragonfly-operator-proxy-role
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: proxy-role
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/part-of: dragonfly-operator
 rules:
 - apiGroups:
   - authentication.k8s.io
@@ -143,6 +164,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: dragonfly-operator-leader-election-rolebinding
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: leader-election-rolebinding
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: rolebinding
+    app.kubernetes.io/part-of: dragonfly-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -156,6 +184,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: dragonfly-operator-manager-rolebinding
+  labels:
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: manager-rolebinding
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: dragonfly-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -169,6 +204,13 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: dragonfly-operator-proxy-rolebinding
+  labels:
+    app.kubernetes.io/component: kube-rbac-proxy
+    app.kubernetes.io/created-by: dragonfly-operator
+    app.kubernetes.io/instance: proxy-rolebinding
+    app.kubernetes.io/managed-by: helm
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/part-of: dragonfly-operator
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

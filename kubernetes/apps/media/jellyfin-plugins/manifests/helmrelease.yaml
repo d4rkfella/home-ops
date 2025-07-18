@@ -79,3 +79,8 @@ spec:
         globalMounts:
           - path: /usr/share/nginx/html
             readOnly: true
+
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /var/cache/nginx

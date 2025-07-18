@@ -94,5 +94,5 @@ spec:
         type: configMap
         name: nginx-conf
         globalMounts:
-          - path: /etc/nginx/conf.d/jellyfin-plugins.conf
-            subPath: jellyfin-plugins.conf
+          - path: /etc/nginx/conf.d/default.conf
+            subPath: default.conf

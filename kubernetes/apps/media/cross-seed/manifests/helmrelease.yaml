@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/cross-seed
-              tag: 6.13.0@sha256:203877508301cc769c74623276e905e79d5c4e3fa1d8431b18225a5a30f6e1d6
+              tag: 6.13.1@sha256:a4b6f4f206fa6c1d3d3d47b0ceb132a4136c068fe1443a30672ae76e67eace3f
             args: ["daemon", "-v"]
             env:
               TZ: Europe/Sofia

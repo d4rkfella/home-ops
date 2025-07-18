@@ -89,3 +89,9 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /var/cache/nginx
+
+      nginx-config:
+        type: configMap
+        globalMounts:
+          - path: /etc/nginx/conf.d/jellyfin-plugins.conf
+            subPath: jellyfin-plugins.conf

@@ -46,7 +46,10 @@ spec:
                   failureThreshold: 3
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -77,21 +80,17 @@ spec:
 
     service:
       app:
-        controller: jellyfin
-        type: LoadBalancer
-        allocateLoadBalancerNodePorts: false
-        externalTrafficPolicy: Local
-        annotations:
-          external-dns.alpha.kubernetes.io/hostname: jellyfin.darkfellanetwork.com
-          lbipam.cilium.io/ips: 192.168.91.75
         ports:
           http:
             port: *port
-          https:
-            port: 443
-          discovery:
-            port: 7359
-            protocol: UDP
+
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
 
     serviceMonitor:
       app:
@@ -102,8 +101,6 @@ spec:
             path: /metrics
             interval: 1m
             scrapeTimeout: 10s
-            tlsConfig:
-              serverName: jellyfin.darkfellanetwork.com
 
     persistence:
       config:
@@ -138,11 +135,3 @@ spec:
         path: /mnt/exos20/data/media
         globalMounts:
           - path: /data/media
-
-      cert:
-        type: secret
-        name: jellyfin-tls
-        globalMounts:
-          - path: /etc/ssl/certs/jellyfin-keystore.p12
-            subPath: keystore.p12
-            readOnly: true

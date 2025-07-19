@@ -18,19 +18,12 @@
             "albert.TabOut",
             "PKief.material-product-icons",
             "editorconfig.editorconfig",
-            "ms-kubernetes-tools.vscode-kubernetes-tools",
             "ms-azuretools.vscode-docker",
             "GitHub.vscode-pull-request-github",
             "donjayamanne.githistory",
             "PKief.material-icon-theme"
         ],
         "settings": {
-            "vscode-kubernetes.kubectl-path": "/usr/local/bin/kubectl",
-            "vscode-kubernetes.helm-path": "/usr/local/bin/helm",
-            "vs-kubernetes": {
-                "vs-kubernetes.kubeconfig": "./kubernetes/kubeconfig",
-                "vs-kubernetes.crd-code-completion": "enabled"
-            },
             "git.path": "/usr/bin/git",
             "git.enableCommitSigning": true,
             "docker.dockerPath": "/usr/bin/docker",

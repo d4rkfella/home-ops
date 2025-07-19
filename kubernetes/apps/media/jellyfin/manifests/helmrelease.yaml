@@ -30,7 +30,6 @@ spec:
               tag: 10.11.0@sha256:a4b5cda725cb617c64aa85c43d21aab92a950b45536e2434fb5a1813a4c47c89
               pullPolicy: IfNotPresent
             env:
-              DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
               JELLYFIN_PublishedServerUrl: https://jellyfin.darkfellanetwork.com
               TZ: Europe/Sofia
             probes:

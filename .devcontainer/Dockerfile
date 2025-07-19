@@ -81,6 +81,9 @@ RUN apk add --no-cache \
     wget -O- "https://github.com/keisku/kubectl-explore/releases/download/${KUBECTL_EXPLORE_VERSION}/kubectl-explore_${KUBECTL_EXPLORE_VERSION}_linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     wget -O- "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION#v}-linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     wget -O /usr/local/bin/fzf-tmux https://raw.githubusercontent.com/junegunn/fzf/master/bin/fzf-tmux && chmod +x /usr/local/bin/fzf-tmux && \
+    #Download kubectl node-shell plugin
+    curl -fsSLO https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
+    sudo mv ./kubectl-node_shell /usr/local/bin/kubectl-node_shell && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
@@ -120,14 +123,6 @@ RUN apk add --no-cache \
         gnupg \
         docker-cli \
         buildkit \
-        python3 \
-        py3-pip \
-        binutils \
-        xclip \
-        tmux \
-        ncurses \
-        vim \
-        fzf-vim \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

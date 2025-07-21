@@ -51,7 +51,7 @@ spec:
           uuid: 360185c7-bdca-4d57-bcaf-c25ad8c1b5ba
         devices:
           autoattachVSOCK: true
-          autoattachInputDevice: false
+          autoattachInputDevice: true
           autoattachMemBalloon: false
           interfaces:
             - name: bridge

@@ -11,7 +11,7 @@ tasks:
       - kubectl get nodes {{.NODE}}
       - kubectl node-shell --version
       - which kubectl
-  
+
   sync-secrets:
     desc: Sync all ExternalSecrets
     cmds:
@@ -44,3 +44,22 @@ tasks:
       - flux -n actions-runner-system reconcile hr home-ops-runner
     preconditions:
       - which flux helm
+
+  vnc-connect:
+    desc: "Connect to a running VM via virtctl VNC"
+    interactive: true
+    cmds:
+      - |
+        selected_vm=$(kubectl get vms --all-namespaces -o json | jq -r '.items[] | select(.status.printableStatus == "Running") | "\(.metadata.namespace)\t\(.metadata.name)"' | fzf --prompt="🖥 Select a running VM: ")
+        if [ -z "$selected_vm" ]; then
+          echo "❌ No VM selected."; exit 1
+        fi
+        namespace=$(echo "$selected_vm" | awk '{print $1}')
+        vm_name=$(echo "$selected_vm" | awk '{print $2}')
+        echo "🔌 Connecting to $vm_name in namespace $namespace..."
+        virtctl vnc "$vm_name" -n "$namespace"
+    preconditions:
+      - which kubectl
+      - which virtctl
+      - which fzf
+      - which jq

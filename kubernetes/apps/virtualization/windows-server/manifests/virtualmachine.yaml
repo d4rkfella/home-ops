@@ -62,6 +62,7 @@ spec:
               bridge: {}
               model: virtio
               macAddress: 50:d4:cb:0f:ee:d9
+          rng: {}
           tpm: {}
           disks:
             - disk:

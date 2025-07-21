@@ -52,5 +52,4 @@ for var in $required_vars; do
   var_args="$var_args $var=$value"
 done
 
-echo "🚀 Running: task $task_name $var_args"
 eval task "$task_name" $var_args

@@ -53,6 +53,10 @@ spec:
           autoattachVSOCK: true
           autoattachInputDevice: true
           autoattachMemBalloon: false
+          inputs:
+            - type: tablet
+              bus: virtio
+              name: tablet
           interfaces:
             - name: bridge
               bridge: {}

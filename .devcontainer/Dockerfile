@@ -121,6 +121,8 @@ RUN apk add --no-cache \
         docker-cli \
         buildkit \
         tigervnc-client \
+        fontconfig \
+        ttf-dejavu \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

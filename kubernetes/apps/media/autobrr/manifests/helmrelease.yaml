@@ -61,7 +61,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/autobrr
-              tag: 1.63.1@sha256:cd427dbd1fa4f47f6950b223c4ac1702a3f068033f5e61fb4fdb4c3306fc6aca
+              tag: 1.64.0@sha256:e9d7aa925acdd718f3972d48c9e1420bf2962e217c4d170819302e8d960c926f
             env:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"

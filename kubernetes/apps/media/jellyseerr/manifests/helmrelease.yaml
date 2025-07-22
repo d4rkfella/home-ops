@@ -64,7 +64,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/jellyseerr
-              tag: 2.7.1@sha256:8ae1bf744db90f363d64a298dc3bb1701097adfab51b4687c1f29ce7977f0cde
+              tag: 2.7.2@sha256:7adccf79727f94d412a7b891ac2f7249e33b6982807f750520dd9d051de9af89
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"

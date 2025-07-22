@@ -63,3 +63,16 @@ tasks:
       - which virtctl
       - which fzf
       - which jq
+
+  start-pgadmin:
+    desc: Start pgAdmin Docker container
+    cmds:
+      - |
+        docker run -d --name pgadmin \
+          -e PGADMIN_DEFAULT_EMAIL=admin@admin.com \
+          -e PGADMIN_DEFAULT_PASSWORD=admin \
+          -p 8080:80 \
+          --restart unless-stopped \
+          dpage/pgadmin4
+    preconditions:
+      - which docker

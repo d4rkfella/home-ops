@@ -101,7 +101,7 @@ spec:
         existingClaim: *app
 
       config-cache:
-        #suffix: cache
+        suffix: cache
         type: persistentVolumeClaim
         size: 75Gi
         storageClass: openebs-zfs-1m

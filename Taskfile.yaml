@@ -17,6 +17,7 @@ includes:
   bootstrap: .taskfiles/bootstrap
   talos: .taskfiles/talos
   kubernetes: .taskfiles/kubernetes
+  aws: .taskfiles/aws
 
 tasks:
   default:

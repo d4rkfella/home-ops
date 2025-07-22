@@ -1,0 +1,12 @@
+
+---
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+tasks:
+  r2-manager:
+    desc: Browse and manage R2 buckets with a custom credentials file
+    vars:
+      CREDENTIALS: /your/custom/credentials/path
+    cmds:
+      - /project/scripts/manage-buckets.sh

@@ -65,14 +65,24 @@ tasks:
       - which jq
 
   start-pgadmin:
-    desc: Start pgAdmin Docker container
+    desc: Start pgAdmin Docker container and clean up port-forward on exit
     cmds:
       - |
-        docker run -d --name pgadmin \
-          -e PGADMIN_DEFAULT_EMAIL=admin@admin.com \
+        echo "🔌 Starting port-forward..."
+        kubectl port-forward svc/postgres-v17-rw 5432:5432 -n database >/dev/null 2>&1 &
+
+        echo "🚀 Starting pgAdmin..."
+        docker run --rm --name pgadmin \
+          --add-host=host.docker.internal:host-gateway \
+          -e PGADMIN_DEFAULT_EMAIL=georgi.panov@darkfellanetwork.com \
           -e PGADMIN_DEFAULT_PASSWORD=admin \
+          -e PGADMIN_REPLACE_SERVERS_ON_STARTUP=True \
+          -e PGPASS_FILE=/.pgpass \
+          -v ~/home-ops/.pgadmin/servers.json:/pgadmin4/servers.json \
+          -v ~/home-ops/.pgadmin/.pgpass:/.pgpass \
           -p 8080:80 \
-          --restart unless-stopped \
           dpage/pgadmin4
+
     preconditions:
       - which docker
+      - which kubectl

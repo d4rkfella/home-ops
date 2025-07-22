@@ -29,7 +29,8 @@ spec:
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:443
-              #PLEX_NO_AUTH_NETWORKS: 192.168.10.0/24
+              NVIDIA_DRIVER_CAPABILITIES: all
+              NVIDIA_VISIBLE_DEVICES: all
             probes:
               liveness: &probes
                 enabled: true
@@ -58,6 +59,9 @@ spec:
               limits:
                 nvidia.com/gpu: 1
                 memory: 8Gi
+
+        pod:
+          runtimeClassName: nvidia
 
     defaultPodOptions:
       securityContext:

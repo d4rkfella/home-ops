@@ -16,6 +16,7 @@ resources:
   - ./recyclarr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./jellyfin-plugins/ks.yaml
+  - ./plex/ks.yaml
 components:
   - ../../components/common
   - ../../components/repos/app-template

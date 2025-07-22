@@ -1,45 +1,43 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyfin
+  name: &app plex
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
-  driftDetection:
-    mode: enabled
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     controllers:
-      jellyfin:
+      plex:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/jellyfin
-              tag: 10.11.0@sha256:a4b5cda725cb617c64aa85c43d21aab92a950b45536e2434fb5a1813a4c47c89
-              pullPolicy: IfNotPresent
+              repository: ghcr.io/home-operations/plex
+              tag: 1.41.9.9961@sha256:6c86319bb3275135f5da5aec71b45e48305669ecbceee0f88d335bebf0d0f218
             env:
-              JELLYFIN_PublishedServerUrl: https://jellyfin.darkfellanetwork.com
               TZ: Europe/Sofia
+              PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:443
+              #PLEX_NO_AUTH_NETWORKS: 192.168.10.0/24
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
-                    port: &port 8096
+                    path: /identity
+                    port: &port 32400
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -56,25 +54,16 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                #nvidia.com/gpu: 1
                 cpu: 100m
-                memory: 512Mi
               limits:
-                #nvidia.com/gpu: 1
-                memory: 8Gi
-
-        pod:
-          runtimeClassName: nvidia
-          tolerations:
-            - key: nvidia.com/gpu
-              operator: Exists
-              effect: NoSchedule
+                nvidia.com/gpu: 1
+                memory: 16Gi
 
     defaultPodOptions:
       securityContext:
+        runAsNonRoot: true
         runAsUser: 65532
         runAsGroup: 65532
-        runAsNonRoot: true
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
 
@@ -91,43 +80,34 @@ spec:
           - name: internal
             namespace: envoy-gateway-system
             sectionName: https
-
-    serviceMonitor:
-      app:
-        serviceName: jellyfin
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  remove: ["Range"]
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /library/streams
+          - backendRefs:
+              - identifier: app
+                port: *port
 
     persistence:
       config:
         existingClaim: *app
-        globalMounts:
-          - path: /config
 
-      metadata:
-        suffix: metadata
+      config-cache:
+        #suffix: cache
         type: persistentVolumeClaim
-        size: 15Gi
-        storageClass: openebs-zfs-128k
-        accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /metadata
-
-      cache:
-        suffix: cache
-        type: persistentVolumeClaim
-        size: 150Gi
+        size: 75Gi
         storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
         globalMounts:
-          - path: /cache
-
-      tmp:
-        type: emptyDir
+          - path: /config/Library/Application Support/Plex Media Server/Cache
 
       media:
         type: nfs
@@ -135,3 +115,15 @@ spec:
         path: /mnt/exos20/data/media
         globalMounts:
           - path: /data/media
+
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          plex:
+            app:
+              - path: /config/Library/Application Support/Plex Media Server/Logs
+                subPath: logs
+              - path: /transcode
+                subPath: transcode
+              - path: /tmp
+                subPath: tmp

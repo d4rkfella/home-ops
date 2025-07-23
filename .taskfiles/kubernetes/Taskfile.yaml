@@ -59,10 +59,7 @@ tasks:
         echo "🔌 Connecting to $vm_name in namespace $namespace..."
         virtctl vnc "$vm_name" -n "$namespace"
     preconditions:
-      - which kubectl
-      - which virtctl
-      - which fzf
-      - which jq
+      - which kubectl virtctl fzf jq
 
   start-pgadmin:
     desc: Start pgAdmin Docker container and clean up port-forward on exit
@@ -84,5 +81,4 @@ tasks:
           dpage/pgadmin4
 
     preconditions:
-      - which docker
-      - which kubectl
+      - which docker kubectl

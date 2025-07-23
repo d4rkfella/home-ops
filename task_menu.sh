@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-trap 'echo; echo "❌ Input cancelled by user. Exiting."; exit 0' SIGINT
+trap 'echo; echo "❌ Task cancelled by user. Exiting."; exit 0' SIGINT
 
 tasks=$(task --list --json | jq -r '.tasks[] | "\(.name)\t\(.desc)"')
 
@@ -42,7 +42,7 @@ required_vars=$(yq e ".tasks.\"$task_key\".requires.vars // [] | .[]" "$included
 var_args=""
 for var in $required_vars; do
   while true; do
-    read -rp "🔹 $var: " value || { echo; echo "❌ Input cancelled. Exiting."; exit 0; }
+    read -rp "🔹 $var: " value
     if [ -n "$value" ]; then
       break
     else

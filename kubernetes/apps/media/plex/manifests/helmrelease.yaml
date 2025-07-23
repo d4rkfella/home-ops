@@ -30,6 +30,7 @@ spec:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com
               NVIDIA_VISIBLE_DEVICES: all
+              PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/usr/lib/plexmediaserver/Library/Application Support"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -57,6 +58,8 @@ spec:
     persistence:
       config:
         existingClaim: *app
+        globalMounts:
+          - path: /usr/lib/plexmediaserver/Library/Application Support
 
       config-cache:
         suffix: cache
@@ -65,7 +68,7 @@ spec:
         storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
         globalMounts:
-          - path: /config/Library/Application Support/Plex Media Server/Cache
+          - path: /usr/lib/plexmediaserver/Library/Application Support/Plex Media Server/Cache
 
       media:
         type: nfs
@@ -79,7 +82,7 @@ spec:
         advancedMounts:
           plex:
             app:
-              - path: /config/Library/Application Support/Plex Media Server/Logs
+              - path: /usr/lib/plexmediaserver/Library/Application Support/Plex Media Server/Logs
                 subPath: logs
               - path: /transcode
                 subPath: transcode

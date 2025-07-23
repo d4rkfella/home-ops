@@ -10,12 +10,12 @@ spec:
       "name": "plex",
       "type": "bridge",
       "bridge": "br0",
+      "mac": "6e:e3:71:7f:86:f7",
       "ipam": {
         "type": "static",
         "addresses": [
           {
-            "address": "192.168.91.43/24",
-            "gateway": "192.168.91.1"
+            "address": "192.168.91.43/24"
           }
         ],
         "routes": [
@@ -28,7 +28,6 @@ spec:
           "nameservers": [
             "192.168.91.41"
           ]
-        },
-        "mac": "6e:e3:71:7f:86:f7"
+        }
       }
     }

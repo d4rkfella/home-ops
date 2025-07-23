@@ -45,8 +45,8 @@ spec:
           annotations:
             v1.multus-cni.io/default-network: media/plex
           runtimeClassName: nvidia
-          dnsPolicy: None                      # <--- add here
-          dnsConfig:                          # <--- add here
+          dnsPolicy: None
+          dnsConfig:
             nameservers:
               - 192.168.91.41
 
@@ -77,6 +77,7 @@ spec:
         path: /mnt/exos20/data/media
         globalMounts:
           - path: /data/media
+            readOnly: true
 
       tmpfs:
         type: emptyDir

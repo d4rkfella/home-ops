@@ -44,13 +44,10 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/networks: |
-              [
-                {
-                  "name": "plex",
-                  "default-route": ["0.0.0.0/0"]
-                }
-              ]
+            k8s.v1.cni.cncf.io/networks: '[
+              { "name": "plex",
+                "mac": "c2:b0:57:49:47:f1"
+              }]'
           runtimeClassName: nvidia
 
     defaultPodOptions:

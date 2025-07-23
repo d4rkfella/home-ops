@@ -97,6 +97,7 @@ spec:
       entrypoint:
         type: configMap
         name: plex-entrypoint
+        defaultMode: 0755
         globalMounts:
           - path: /entrypoint.sh
             subPath: entrypoint.sh

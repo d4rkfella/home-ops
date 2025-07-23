@@ -11,6 +11,7 @@ spec:
         {
           "type": "bridge",
           "bridge": "br0",
+          "mac": "6e:e3:71:7f:86:f7",
           "ipam": {
             "type": "static",
             "addresses": [

@@ -43,13 +43,7 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/default-network: '[
-                {
-                  "name": "plex",
-                  "namespace": "media",
-                  "mac": "6e:e3:71:7f:86:f7"
-                }
-              ]'
+            v1.multus-cni.io/default-network: media/plex
           runtimeClassName: nvidia
           dnsPolicy: None
           dnsConfig:

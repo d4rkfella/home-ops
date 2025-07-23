@@ -62,7 +62,7 @@ tasks:
       - which kubectl virtctl fzf jq
 
   start-pgadmin:
-    desc: Start pgAdmin Docker container and clean up port-forward on exit
+    desc: Start pgAdmin Docker container
     cmds:
       - |
         echo "🔌 Starting port-forward..."

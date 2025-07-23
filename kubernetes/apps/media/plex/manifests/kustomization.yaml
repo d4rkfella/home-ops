@@ -6,7 +6,6 @@ resources:
   - ./multus-network.yaml
   - ./externalsecret.yaml
   - ./certificate.yaml
-  - ./entrypoint.sh
 configMapGenerator:
   - name: plex-entrypoint
     files:

@@ -6,3 +6,12 @@ resources:
   - ./multus-network.yaml
   - ./externalsecret.yaml
   - ./certificate.yaml
+  - ./entrypoint.sh
+configMapGenerator:
+  - name: plex-entrypoint
+    files:
+      - entrypoint.sh=./entrypoint.sh
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled

@@ -93,3 +93,11 @@ spec:
           - path: /etc/ssl/certs/plex-keystore.p12
             subPath: keystore.p12
             readOnly: true
+
+      entrypoint:
+        type: configMap
+        name: plex-entrypoint
+        globalMounts:
+          - path: /entrypoint.sh
+            subPath: entrypoint.sh
+            readOnly: true

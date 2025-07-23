@@ -21,6 +21,12 @@ spec:
       plex:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          busybox:
+            image:
+              repository: busybox
+              tag: latest
+            command: ['sh', '-c', 'until [ -d /sys/class/net/net1 ]; do echo waiting for eth1; sleep 1; done']
         containers:
           app:
             image:

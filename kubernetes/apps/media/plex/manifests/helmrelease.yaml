@@ -50,10 +50,6 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/networks: '[
-              { "name": "plex",
-                "mac": "c2:b0:57:49:47:f1"
-              }]'
             v1.multus-cni.io/default-network: media/plex
           runtimeClassName: nvidia
 

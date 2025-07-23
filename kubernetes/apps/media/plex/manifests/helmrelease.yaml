@@ -43,7 +43,7 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/default-network: "none"
+            k8s.v1.cni.cncf.io/default-network: ""
             k8s.v1.cni.cncf.io/networks: '[
                 {
                   "name": "plex",

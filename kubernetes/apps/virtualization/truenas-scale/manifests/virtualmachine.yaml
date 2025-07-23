@@ -47,11 +47,9 @@ spec:
             - name: bridge-1
               bridge: {}
               model: virtio
-              macAddress: 00:16:3e:bc:da:12
             - name: bridge-2
               bridge: {}
               model: virtio
-              macAddress: 52:54:00:fa:3d:88
           disks:
             - name: os-disk
               bootOrder: 1

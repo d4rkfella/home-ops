@@ -6,31 +6,41 @@ metadata:
 spec:
   config: |-
     {
-      "cniVersion": "0.3.1",
-      "name": "truenas-vm-1",
-      "type": "bridge",
-      "bridge": "br0",
-      "ipam": {
-        "type": "static",
-        "addresses": [
-          {
-            "address": "192.168.91.39/24",
-            "gateway": "192.168.91.1"
-          }
-        ],
-        "routes": [
-          {
-            "dst": "0.0.0.0/0",
-            "gw": "192.168.91.1"
-          }
-        ],
-        "dns": {
-          "nameservers": [
-            "192.168.91.41"
+          "cniVersion": "0.3.1",
+          "name": "truenas-vm-1",
+          "plugins": [
+            {
+              "type": "bridge",
+              "bridge": "br0",
+              "ipam": {
+                "type": "static",
+                "addresses": [
+                  {
+                    "address": "192.168.91.39/24"
+                  }
+                ],
+                "routes": [
+                  {
+                    "dst": "0.0.0.0/0",
+                    "gw": "192.168.91.1"
+                  }
+                ],
+                "dns": {
+                  "nameservers": [
+                    "192.168.91.41"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "tuning",
+              "capabilities": {
+                "mac": true
+              },
+              "mac": "00:16:3e:bc:da:12"
+            }
           ]
         }
-      }
-    }
 ---
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
@@ -39,28 +49,38 @@ metadata:
 spec:
   config: |-
     {
-      "cniVersion": "0.3.1",
-      "name": "truenas-vm-2",
-      "type": "bridge",
-      "bridge": "br0",
-      "ipam": {
-        "type": "static",
-        "addresses": [
-          {
-            "address": "192.168.91.40/24",
-            "gateway": "192.168.91.1"
-          }
-        ],
-        "routes": [
-          {
-            "dst": "0.0.0.0/0",
-            "gw": "192.168.91.1"
-          }
-        ],
-        "dns": {
-          "nameservers": [
-            "192.168.91.41"
+          "cniVersion": "0.3.1",
+          "name": "truenas-vm-2",
+          "plugins": [
+            {
+              "type": "bridge",
+              "bridge": "br0",
+              "ipam": {
+                "type": "static",
+                "addresses": [
+                  {
+                    "address": "192.168.91.40/24"
+                  }
+                ],
+                "routes": [
+                  {
+                    "dst": "0.0.0.0/0",
+                    "gw": "192.168.91.1"
+                  }
+                ],
+                "dns": {
+                  "nameservers": [
+                    "192.168.91.41"
+                  ]
+                }
+              }
+            },
+            {
+              "type": "tuning",
+              "capabilities": {
+                "mac": true
+              },
+              "mac": "52:54:00:fa:3d:88"
+            }
           ]
         }
-      }
-    }

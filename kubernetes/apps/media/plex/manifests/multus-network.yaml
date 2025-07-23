@@ -12,6 +12,7 @@ spec:
         {
           "type": "bridge",
           "bridge": "br0",
+          "macspoofchk": true,
           "ipam": {
             "type": "static",
             "addresses": [

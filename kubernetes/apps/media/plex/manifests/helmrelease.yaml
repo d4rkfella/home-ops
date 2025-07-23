@@ -31,24 +31,6 @@ spec:
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:443
               NVIDIA_DRIVER_CAPABILITIES: all
               NVIDIA_VISIBLE_DEVICES: all
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /identity
-                    port: &port 32400
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

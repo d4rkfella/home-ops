@@ -43,8 +43,8 @@ spec:
                 memory: 8Gi
 
         pod:
-          annotations:
-            k8s.v1.cni.cncf.io/networks: plex
+          #annotations:
+            #k8s.v1.cni.cncf.io/networks: plex
           runtimeClassName: nvidia
 
     defaultPodOptions:
@@ -54,6 +54,15 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: Always
+
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.44
+        ports:
+          http:
+            port: 32400
 
     persistence:
       config:

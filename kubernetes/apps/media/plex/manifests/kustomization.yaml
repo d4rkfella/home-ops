@@ -4,3 +4,5 @@ kind: Kustomization
 resources:
   - ./helmrelease.yaml
   - ./multus-network.yaml
+  - ./externalsecret.yaml
+  - ./certificate.yaml

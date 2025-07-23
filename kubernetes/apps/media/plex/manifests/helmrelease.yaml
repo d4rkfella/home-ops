@@ -73,35 +73,6 @@ spec:
         fsGroup: 65532
         fsGroupChangePolicy: Always
 
-    service:
-      app:
-        ports:
-          http:
-            port: *port
-
-    route:
-      app:
-        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
-        parentRefs:
-          - name: internal
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: *port
-            filters:
-              - type: RequestHeaderModifier
-                requestHeaderModifier:
-                  remove: ["Range"]
-            matches:
-              - path:
-                  type: PathPrefix
-                  value: /library/streams
-          - backendRefs:
-              - identifier: app
-                port: *port
-
     persistence:
       config:
         existingClaim: *app
@@ -133,3 +104,11 @@ spec:
                 subPath: transcode
               - path: /tmp
                 subPath: tmp
+
+      cert:
+        type: secret
+        name: plex-tls
+        globalMounts:
+          - path: /etc/ssl/certs/plex-keystore.p12
+            subPath: keystore.p12
+            readOnly: true

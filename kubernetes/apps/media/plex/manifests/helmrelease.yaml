@@ -45,6 +45,10 @@ spec:
           annotations:
             v1.multus-cni.io/default-network: media/plex
           runtimeClassName: nvidia
+          dnsPolicy: None                      # <--- add here
+          dnsConfig:                          # <--- add here
+            nameservers:
+              - 192.168.91.41
 
     defaultPodOptions:
       securityContext:

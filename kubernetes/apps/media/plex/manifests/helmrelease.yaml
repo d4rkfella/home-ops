@@ -30,7 +30,6 @@ spec:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com
               NVIDIA_VISIBLE_DEVICES: all
-              PLEX_MEDIA_SERVER_APPLICATION_SUPPORT_DIR: "/usr/lib/plexmediaserver/Library/Application Support"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -56,13 +55,11 @@ spec:
         runAsUser: 65532
         runAsGroup: 65532
         fsGroup: 65532
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
 
     persistence:
       config:
         existingClaim: *app
-        globalMounts:
-          - path: /usr/lib/plexmediaserver/Library/Application Support
 
       config-cache:
         suffix: cache
@@ -71,7 +68,7 @@ spec:
         storageClass: openebs-zfs-1m
         accessMode: ReadWriteOnce
         globalMounts:
-          - path: /usr/lib/plexmediaserver/Library/Application Support/Plex Media Server/Cache
+          - path: /config/Library/Application Support/Plex Media Server/Cache
 
       media:
         type: nfs
@@ -85,7 +82,7 @@ spec:
         advancedMounts:
           plex:
             app:
-              - path: /usr/lib/plexmediaserver/Library/Application Support/Plex Media Server/Logs
+              - path: /config/Library/Application Support/Plex Media Server/Logs
                 subPath: logs
               - path: /transcode
                 subPath: transcode
@@ -99,11 +96,3 @@ spec:
           - path: /etc/ssl/certs/plex-keystore.p12
             subPath: keystore.p12
             readOnly: true
-
-      entrypoint:
-        type: configMap
-        name: plex-entrypoint
-        defaultMode: 0755
-        globalMounts:
-          - path: /entrypoint.sh
-            subPath: entrypoint.sh

@@ -43,11 +43,10 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/default-network: ""
-            k8s.v1.cni.cncf.io/networks: '[
+            k8s.v1.cni.cncf.io/default-network: '[
                 {
                   "name": "plex",
-                  "interface": "eth0",
+                  "namespace": "media",
                   "mac": "6e:e3:71:7f:86:f7"
                 }
               ]'

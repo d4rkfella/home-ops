@@ -37,5 +37,5 @@ zfsController:
 zfs:
   bin: /usr/local/sbin/zfs
 
-backupGC:
-  enabled: true
+analytics:
+  enabled: false

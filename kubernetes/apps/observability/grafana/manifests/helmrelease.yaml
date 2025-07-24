@@ -160,9 +160,10 @@ spec:
           revision: 3
           datasource: Prometheus
         zfs:
-          url: https://raw.githubusercontent.com/openebs/zfs-localpv/develop/deploy/sample/grafana-dashboard.json
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
+          # renovate: depName="ZFS"
+          gnetId: 7845
+          revision: 4
+          datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457

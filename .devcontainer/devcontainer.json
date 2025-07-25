@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer:latest@sha256:17952df1f29f91d33b6f31aa92c5c06b53d70c68c2849c336d11ace4a01a83aa",
+    "image": "ghcr.io/d4rkfella/devcontainer:latest@sha256:d809b9d1cb5af50af9fea965b6bfb173b854ee062f02afafe34f4cfffef90f29",
     "workspaceFolder": "/project",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",

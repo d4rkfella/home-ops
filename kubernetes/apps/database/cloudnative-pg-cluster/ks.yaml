@@ -14,6 +14,7 @@ spec:
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   dependsOn:
     - name: cloudnative-pg-operator
+    - name: cloudnative-pg-barman-cloud
   path: ./kubernetes/apps/database/cloudnative-pg-cluster/manifests
   prune: true
   sourceRef:

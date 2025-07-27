@@ -4,7 +4,7 @@ kind: VirtualMachine
 metadata:
   name: windows-server-2025
 spec:
-  running: true
+  runStrategy: Always
   template:
     metadata:
       labels:
@@ -71,18 +71,18 @@ spec:
             - disk:
                 bus: virtio
               name: wds
-            #- name: iso
-              #bootOrder: 2
-              #cdrom:
-                #readonly: true
-                #bus: sata
+            - name: iso
+              bootOrder: 2
+              cdrom:
+                readonly: true
+                bus: sata
             - name: virtio-drivers
               cdrom:
                 readonly: true
                 bus: sata
-            #- name: sysprep
-              #cdrom:
-                #bus: sata
+            - name: sysprep
+              cdrom:
+                bus: sata
         machine:
           type: q35
         resources:
@@ -91,10 +91,10 @@ spec:
           limits:
             memory: 4Gi
       volumes:
-      #- name: sysprep
-        #sysprep:
-          #secret:
-            #name: sysprep-secret
+      - name: sysprep
+        sysprep:
+          secret:
+            name: sysprep-secret
       - dataVolume:
           name: windows-server-2025-iso
         name: iso
@@ -112,7 +112,6 @@ spec:
       name: windows-server-2025-iso
     spec:
       storage:
-        storageClassName: openebs-zfs-1m
         accessModes:
           - ReadWriteOnce
         resources:

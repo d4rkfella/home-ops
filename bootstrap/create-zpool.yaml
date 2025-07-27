@@ -19,11 +19,11 @@ spec:
         - name: DEVICES
           value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd"
         - name: ASHIFT
-          value: "14"
+          value: "12"
         - name: POOL_NAME
           value: "ssd_pool"
         - name: TALOS_VERSION
-          value: "v1.10.1"
+          value: "v1.10.5"
         resources:
           limits:
             cpu: "1"

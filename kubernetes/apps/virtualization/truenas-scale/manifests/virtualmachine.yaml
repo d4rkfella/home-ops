@@ -4,7 +4,7 @@ kind: VirtualMachine
 metadata:
   name: truenas
 spec:
-  running: true
+  runStrategy: Always
   template:
     metadata:
       labels:
@@ -88,7 +88,7 @@ spec:
             storage: 3Gi
       source:
         http:
-          url: "https://download.sys.truenas.net/TrueNAS-SCALE-Fangtooth/25.04.0/TrueNAS-SCALE-25.04.0.iso"
+          url: "https://download.sys.truenas.net/TrueNAS-SCALE-Fangtooth/25.04.1/TrueNAS-SCALE-25.04.1.iso"
   - metadata:
       name: truenas-scale-os-disk
     spec:

@@ -13,7 +13,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cilium
-    version: 1.17.2
+    version: 1.17.6
     values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/cilium/manifests/helm/values.yaml']
     hooks:
       - events: ["prepare"]
@@ -101,6 +101,15 @@ releases:
         command: kubectl
         args:
           - apply
+          - --namespace=cert-manager
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/rbac.yaml
+        showlogs: true
+      - events: ['postsync']
+        command: kubectl
+        args:
+          - apply
           - --namespace=vault
           - --server-side
           - --field-manager=kustomize-controller
@@ -143,7 +152,7 @@ releases:
     namespace: openebs-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
-    version: 2.8.0-develop
+    version: 2.8.0
     values: ['{{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/helm/values.yaml']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
@@ -221,34 +230,37 @@ releases:
           done
 
           export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
-          vault operator init > /tmp/vault-keys.json
+
+          echo "Checking if Vault is already initialized..."
+          if vault status -format=json | jq -e '.initialized' | grep -q true; then
+            echo "Vault is already initialized. Skipping initialization."
+          else
+            echo "Vault not initialized. Initializing now..."
+            vault operator init -format=json > /tmp/vault-keys.json
+            echo "Vault initialized successfully."
+          fi
       showlogs: true
     - events: ["postsync"]
       command: bash
       args:
         - -c
         - |
-          echo "Waiting for Vault to become unsealed..."
           export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
-          while true; do
-            VAULT_STATUS=$(vault status 2>/dev/null)
-            if [ $? -eq 0 ]; then
-              SEALED_STATUS=$(echo "$VAULT_STATUS" | grep "Sealed" | awk '{print $2}')
-              if [ "$SEALED_STATUS" == "false" ]; then
-                echo "Vault is unsealed. Proceeding with snapshot restoration..."
-                break
-              else
-                echo "Vault is still sealed. Retrying in 5 seconds..."
-                sleep 5
-              fi
-            else
-              echo "Error: Unable to retrieve Vault status. Retrying in 5 seconds..."
-              sleep 5
+
+          echo "Waiting for Vault to become unsealed and ready..."
+          ATTEMPTS=0
+          until vault status -format=json 2>/dev/null | jq -e '.sealed == false' >/dev/null; do
+            echo "Vault is sealed or not reachable yet. Retrying in 5 seconds..."
+            sleep 5
+            ATTEMPTS=$((ATTEMPTS+1))
+            if [ "$ATTEMPTS" -ge 60 ]; then
+              echo "Timeout waiting for Vault to unseal."
+              exit 1
             fi
           done
 
-          export VAULT_TOKEN=$(grep 'Initial Root Token:' /tmp/vault-keys.json | awk '{print $4}')
-
+          echo "Vault is unsealed. Proceeding with snapshot restoration..."
+          export VAULT_TOKEN=$(jq -r '.root_token' /tmp/vault-keys.json)
           vault-backup restore --force --config=/project/.vault/vault-backup.yaml --vault-token=$VAULT_TOKEN
       showlogs: true
 

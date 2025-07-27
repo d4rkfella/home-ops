@@ -2,9 +2,10 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: postgres-v17
+  name: &current postgres-v17
   labels:
     cnpg.io/reload: ""
+    cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.5@sha256:bf8b5075909274326ca1ac71401460bd227a65ac36a303c8366dd40a29c764ea
@@ -37,19 +38,12 @@ spec:
       shared_buffers: "1843MB"
       wal_init_zero: "off"
       wal_recycle: "off"
-      max_wal_size: "4096"
-      min_wal_size: "2048"
-      wal_keep_size: "16GB"
-      wal_compression: "on"
       huge_pages: "on"
       work_mem: 10MB
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256
       - hostssl all all 127.0.0.1/32 scram-sha-256
       - host all all all reject
-  nodeMaintenanceWindow:
-    inProgress: false
-    reusePVC: true
   resources:
     requests:
       cpu: 500m
@@ -58,32 +52,17 @@ spec:
       hugepages-2Mi: 2Gi
   monitoring:
     enablePodMonitor: true
-  backup:
-    retentionPolicy: 30d
-    barmanObjectStore: &barmanObjectStore
-      data:
-        compression: bzip2
-        encryption: AES256
-      wal:
-        compression: bzip2
-        encryption: AES256
-        maxParallel: 8
-      destinationPath: s3://postgres-backup/
-      endpointURL: https://2bd80478faceecf0d53c596cd910805f.eu.r2.cloudflarestorage.com
-      serverName: postgres17-v1
-      s3Credentials:
-        accessKeyId:
-          name: *secret
-          key: ACCESS_KEY_ID
-        secretAccessKey:
-          name: *secret
-          key: ACCESS_SECRET_KEY
-
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters: &parameters
+        barmanObjectName: cloudflare
+        serverName: postgres-v17-1
   bootstrap:
     recovery:
-      source: &previousCluster postgres17-v2
+      source: source
   externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+    - name: source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters: *parameters

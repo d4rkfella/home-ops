@@ -10,7 +10,7 @@ spec:
     - name: cert-manager
       namespace: cert-manager
     - name: cloudnative-pg-operator
-  path: ./kubernetes/apps/database/barman-cloud
+  path: ./kubernetes/apps/database/barman-cloud/manifests
   postBuild:
     substitute:
       # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar

@@ -48,7 +48,7 @@ spec:
               - name: POSTGRES_DBNAME
                 value: &dbName keycloak
               - name: POSTGRES_SUPER_USER
-                value: postgres-db-manager
+                value: postgres
               - name: POSTGRES_SUPER_PASS
                 valueFrom:
                   secretKeyRef:

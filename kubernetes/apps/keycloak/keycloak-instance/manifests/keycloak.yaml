@@ -93,9 +93,9 @@ spec:
 
   startOptimized: true
 
-  bootstrapAdmin:
-    user:
-      secret: *secret
+  #bootstrapAdmin:
+    #user:
+      #secret: *secret
 
   proxy:
     headers: xforwarded

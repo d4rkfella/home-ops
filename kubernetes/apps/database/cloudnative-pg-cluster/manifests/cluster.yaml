@@ -45,7 +45,6 @@ spec:
       work_mem: 10MB
       checkpoint_timeout: "15min"
       checkpoint_completion_target: "0.9"
-      hot_standby_feedback: "on"
       max_slot_wal_keep_size: "8GB"
     pg_hba:
       - hostssl all all 172.16.0.0/16 scram-sha-256

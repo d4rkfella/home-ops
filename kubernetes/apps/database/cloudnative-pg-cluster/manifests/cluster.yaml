@@ -58,11 +58,11 @@ spec:
       parameters: &parameters
         barmanObjectName: cloudflare
         serverName: postgres-v17-1
-  bootstrap:
-    recovery:
-      source: source
-  externalClusters:
-    - name: source
-      plugin:
-        name: barman-cloud.cloudnative-pg.io
-        parameters: *parameters
+  #bootstrap:
+    #recovery:
+      #source: source
+  #externalClusters:
+    #- name: source
+      #plugin:
+        #name: barman-cloud.cloudnative-pg.io
+        #parameters: *parameters

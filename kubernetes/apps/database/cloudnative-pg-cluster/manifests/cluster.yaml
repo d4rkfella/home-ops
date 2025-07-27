@@ -45,7 +45,6 @@ spec:
       work_mem: 10MB
       checkpoint_timeout: "15min"
       checkpoint_completion_target: "0.9"
-      archive_timeout: "15min"
       hot_standby_feedback: "on"
       max_slot_wal_keep_size: "8GB"
     pg_hba:

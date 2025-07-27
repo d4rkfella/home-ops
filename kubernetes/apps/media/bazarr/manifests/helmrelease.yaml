@@ -34,7 +34,7 @@ spec:
               POSTGRES_PORT: &dbPort 5432
               POSTGRES_SSLMODE: require
               POSTGRES_DBNAME: &dbName bazarr
-              POSTGRES_SUPER_USER: postgres-db-manager
+              POSTGRES_SUPER_USER: postgres
               POSTGRES_SUPER_PASS:
                 valueFrom:
                   secretKeyRef:

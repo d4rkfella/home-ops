@@ -76,7 +76,7 @@ spec:
                     name: artifactory-secret
                     key: POSTGRES_SUPER_PASS
               - name: POSTGRES_SUPER_USER
-                value: postgres-db-manager
+                value: postgres
               - name: POSTGRES_USER
                 valueFrom:
                   secretKeyRef:

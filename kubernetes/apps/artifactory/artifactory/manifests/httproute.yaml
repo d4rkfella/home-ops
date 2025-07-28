@@ -9,17 +9,10 @@ spec:
       namespace: envoy-gateway-system
       sectionName: https
   rules:
-    # Rule 1: Rewrite /wolfi-os to /artifactory/wolfi-os
     - matches:
         - path:
             type: PathPrefix
-            value: /wolfi-os
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: /artifactory/wolfi-os
+            value: /
       backendRefs:
         - name: artifactory
           namespace: artifactory

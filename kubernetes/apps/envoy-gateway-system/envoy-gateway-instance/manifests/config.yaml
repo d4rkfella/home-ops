@@ -12,3 +12,6 @@ spec:
       - op: add
         path: /static_resources/clusters/2/dns_lookup_family
         value: V4_ONLY
+      - op: add
+        path: /static_resources/http_filters/0/typed_config/normalize_path
+        value: false

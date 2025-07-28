@@ -79,5 +79,5 @@ spec:
             storage: 32Gi
       source:
         registry:
-          url: "docker://ghcr.io/d4rkfella/truenas-vm-disk:sha256:350ff8693d9767910bd3374073220ed1af49ae340e4283b4a88105abd9311390"
+          url: "docker://ghcr.io/d4rkfella/truenas-vm-disk@sha256:350ff8693d9767910bd3374073220ed1af49ae340e4283b4a88105abd9311390"
           secretRef: endpoint-secret

@@ -47,22 +47,7 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /wolfi-os
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: /artifactory/wolfi-os
-      backendRefs:
-        - name: artifactory
-          namespace: artifactory
-          port: 8082
-
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /artifactory
+            value: /
       backendRefs:
         - name: artifactory
           namespace: artifactory

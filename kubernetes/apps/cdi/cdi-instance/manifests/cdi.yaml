@@ -15,8 +15,9 @@ spec:
     nodeSelector:
       kubernetes.io/os: linux
   config:
-    scratchSpaceStorageClass: openebs-zfs-1m
+    scratchSpaceStorageClass: openebs-zfs-128k
     podResourceRequirements:
       requests:
         cpu: "100m"
         memory: "60M"
+    uploadProxyURLOverride: "https://cdi-uploadproxy.darkfellanetwork.com"

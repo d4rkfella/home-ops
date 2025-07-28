@@ -70,27 +70,11 @@ spec:
             pageSize: "2Mi"
       volumes:
       - dataVolume:
-          name: truenas-scale-iso
-        name: iso
-      - dataVolume:
-          name: truenas-scale-os-disk
+          name: truenas-os-disk
         name: os-disk
   dataVolumeTemplates:
   - metadata:
-      name: truenas-scale-iso
-    spec:
-      storage:
-        storageClassName: openebs-zfs-1m
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 3Gi
-      source:
-        http:
-          url: "https://download.sys.truenas.net/TrueNAS-SCALE-Fangtooth/25.04.1/TrueNAS-SCALE-25.04.1.iso"
-  - metadata:
-      name: truenas-scale-os-disk
+      name: truenas-os-disk
     spec:
       storage:
         accessModes:
@@ -99,4 +83,6 @@ spec:
           requests:
             storage: 32Gi
       source:
-        blank: {}
+        registry:
+          url: "docker://ghcr.io/d4rkfella/truenas-vm-disk:latest@sha256:350ff8693d9767910bd3374073220ed1af49ae340e4283b4a88105abd9311390"
+          secretRef: endpoint-secret

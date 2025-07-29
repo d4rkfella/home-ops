@@ -167,7 +167,7 @@
       ],
       groupName: 'OpenEBS',
       matchPackagePatterns: [
-        '*/vault',
+        'charts-mirror/vault',
       ],
       matchDatasources: [
         'helm',

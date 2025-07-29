@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/d4rkfella/charts-mirror/vault
   ref:
-    tag: 0.30.0
+    tag: 0.30.1
   verify:
     provider: cosign
 ---

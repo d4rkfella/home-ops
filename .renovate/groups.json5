@@ -161,5 +161,20 @@
         commitMessageTopic: '{{{groupName}}} group',
       },
     },
+    {
+      description: [
+        'Vault Group',
+      ],
+      groupName: 'OpenEBS',
+      matchPackagePatterns: [
+        '*/vault',
+      ],
+      matchDatasources: [
+        'helm',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+    },
   ],
 }

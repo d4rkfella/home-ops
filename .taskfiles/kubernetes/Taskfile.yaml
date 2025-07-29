@@ -75,10 +75,10 @@ tasks:
           -e PGADMIN_DEFAULT_PASSWORD=admin \
           -e PGADMIN_REPLACE_SERVERS_ON_STARTUP=True \
           -e PGPASS_FILE=/.pgpass \
-          -v ~/home-ops/.pgadmin/servers.json:/pgadmin4/servers.json \
-          -v ~/home-ops/.pgadmin/.pgpass:/.pgpass \
+          -v /home/darkfella/home-ops/.pgadmin/servers.json:/pgadmin4/servers.json \
+          -v /home/darkfella/home-ops/.pgadmin/.pgpass:/.pgpass \
           -p 8080:80 \
-          dpage/pgadmin4
+          dpage/pgadmin4:9.6.0
 
     preconditions:
       - which docker kubectl

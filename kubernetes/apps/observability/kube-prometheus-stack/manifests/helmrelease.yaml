@@ -101,7 +101,7 @@ spec:
               defaultMode: 256
         initContainers:
           - name: oauth-proxy
-            image: quay.io/oauth2-proxy/oauth2-proxy:v7.10.0@sha256:2f1471fc735d50dfb0041aeae12967bae42a8387ce1660f0a76b175e3f9c195c
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.11.0@sha256:be154ec9c7e710a99cfd497da3ae387a8a21657302faff4dc1ad5a1ce7ebc529
             args:
             - --config=/etc/oauth2-proxy.cfg
             env:
@@ -248,7 +248,7 @@ spec:
               - "accounts.darkfellanetwork.com"
         initContainers:
           - name: oauth-proxy
-            image: quay.io/oauth2-proxy/oauth2-proxy:v7.10.0@sha256:2f1471fc735d50dfb0041aeae12967bae42a8387ce1660f0a76b175e3f9c195c
+            image: quay.io/oauth2-proxy/oauth2-proxy:v7.11.0@sha256:be154ec9c7e710a99cfd497da3ae387a8a21657302faff4dc1ad5a1ce7ebc529
             args:
             - --config=/etc/oauth2-proxy.cfg
             env:

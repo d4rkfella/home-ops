@@ -3,7 +3,7 @@ FROM alpine:3.22.1 AS build
 # renovate: datasource=github-releases depName=go-task/task
 ARG TASK_VERSION=v3.44.1
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.6.0-rc.1
+ARG VIRTCTL_VERSION=v1.6.0
 # renovate: datasource=github-releases depName=a8m/envsubst
 ARG ENVSUBST_VERSION=v1.4.3
 # renovate: datasource=github-releases depName=hashicorp/vault

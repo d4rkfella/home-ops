@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
@@ -47,22 +48,47 @@ tasks:
 
   vnc-connect:
     desc: "Connect to a running VM via virtctl VNC"
-    interactive: true
+    silent: true
     cmds:
       - |
-        selected_vm=$(kubectl get vms --all-namespaces -o json | jq -r '.items[] | select(.status.printableStatus == "Running") | "\(.metadata.namespace)\t\(.metadata.name)"' | fzf --prompt="🖥 Select a running VM: ")
-        if [ -z "$selected_vm" ]; then
-          echo "❌ No VM selected."; exit 1
+        #!/usr/bin/env bash
+        set +e  # disable exit on error so we can handle errors manually
+
+        selected_vm=$(kubectl get vms --all-namespaces -o json | \
+          jq -r '.items[] | select(.status.printableStatus == "Running") | "\(.metadata.namespace)\t\(.metadata.name)"' | \
+          fzf --with-nth=2 --preview='echo Namespace: {1}' --prompt="🖥 Select a running VM: ")
+
+        fzf_exit_code=$?
+
+        if [[ $fzf_exit_code -ne 0 || -z "$selected_vm" ]]; then
+          echo "❌ No VM selected or selection cancelled."
+          exit 0   # EXIT 0 so the task runner knows this is NOT an error
         fi
+
         namespace=$(echo "$selected_vm" | awk '{print $1}')
         vm_name=$(echo "$selected_vm" | awk '{print $2}')
-        echo "🔌 Connecting to $vm_name in namespace $namespace..."
+
+        if [[ -z "$namespace" || -z "$vm_name" ]]; then
+          echo "❌ Invalid VM selection."
+          exit 0
+        fi
+
+        echo "🔌 Connecting to VMI $vm_name in namespace $namespace..."
         virtctl vnc "$vm_name" -n "$namespace"
+        exit_code=$?
+
+        # exit with virtctl's exit code or 0 if virtctl succeeded
+        if [[ $exit_code -ne 0 ]]; then
+          echo "❌ virtctl command failed with exit code $exit_code"
+        fi
+
+        exit $exit_code
     preconditions:
       - which kubectl virtctl fzf jq
 
   start-pgadmin:
     desc: Start pgAdmin Docker container
+    silent: true
     cmds:
       - |
         echo "🔌 Starting port-forward..."

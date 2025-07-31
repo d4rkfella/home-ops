@@ -1,12 +1,185 @@
-
 ---
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
-  r2-manager:
-    desc: Browse and manage R2 buckets with a custom credentials file
-    vars:
-      CREDENTIALS: /your/custom/credentials/path
+  s3-manager:
+    desc: Fully interactive R2 S3 browser + manager (inline)
+    silent: true
     cmds:
-      - /project/scripts/manage-buckets.sh
+      - |
+        bash <<'EOF'
+        set -euo pipefail
+        IFS=$'\n\t'
+
+        AWS_CONFIG_FILE=${AWS_CONFIG_FILE:-"$HOME/.aws/config"}
+
+        aws_s3() {
+          local profile="$1"; shift
+          aws --profile "$profile" "$@"
+        }
+
+        press_enter_to_continue() {
+          read -rp "Press Enter to continue..."
+        }
+
+        select_aws_profile() {
+          local profiles profile
+          profiles=($(aws configure list-profiles))
+          if [[ ${#profiles[@]} -eq 0 ]]; then
+            echo "No AWS profiles found. Exiting." >&2
+            exit 1
+          fi
+
+          local exit_option="<-- Exit"
+          local fzf_input=("${profiles[@]}" "$exit_option")
+
+          profile=$(printf '%s\n' "${fzf_input[@]}" | fzf --prompt="Select AWS profile> ")
+
+          if [[ -z "$profile" || "$profile" == "$exit_option" ]]; then
+            echo ""
+          else
+            echo "$profile"
+          fi
+        }
+
+        list_buckets() {
+          local profile=$1
+          aws_s3 "$profile" s3api list-buckets --query "Buckets[].Name" --output text 2>/dev/null | tr '\t' '\n'
+        }
+
+        list_objects() {
+          local profile=$1 bucket=$2 prefix=${3:-""}
+          local query="[CommonPrefixes[].Prefix, Contents[].Key][]"
+          local args=(--delimiter "/")
+          [[ -n "$prefix" ]] && args+=(--prefix "$prefix")
+          aws_s3 "$profile" s3api list-objects-v2 --bucket "$bucket" "${args[@]}" --query "$query" --output text | tr '\t' '\n' | grep -Fxv "$prefix" || true
+        }
+
+        delete_object() {
+          local profile=$1 bucket=$2 object=$3
+          aws_s3 "$profile" s3api delete-object --bucket "$bucket" --key "$object"
+          echo "Deleted object '$object' from bucket '$bucket'."
+        }
+
+        delete_prefix() {
+          local profile=$1 bucket=$2 prefix=$3
+          echo "Are you sure you want to DELETE ALL objects under prefix '$prefix'?"
+          select yn in "Yes (delete)" "Dry-run" "Cancel"; do
+            case $yn in
+              "Yes (delete)")
+                aws_s3 "$profile" s3 rm "s3://$bucket/$prefix" --recursive
+                press_enter_to_continue
+                break
+                ;;
+              "Dry-run")
+                aws_s3 "$profile" s3 rm "s3://$bucket/$prefix" --recursive --dryrun
+                press_enter_to_continue
+                break
+                ;;
+              *)
+                echo "Cancelled."
+                break
+                ;;
+            esac
+          done
+        }
+
+        delete_bucket() {
+          local profile=$1 bucket=$2
+          echo "Are you sure you want to DELETE bucket '$bucket' and all contents?"
+          select yn in "Yes (delete)" "Dry-run" "Cancel"; do
+            case $yn in
+              "Yes (delete)")
+                aws_s3 "$profile" s3 rm "s3://$bucket" --recursive
+                aws_s3 "$profile" s3api delete-bucket --bucket "$bucket"
+                press_enter_to_continue
+                break
+                ;;
+              "Dry-run")
+                aws_s3 "$profile" s3 rm "s3://$bucket" --recursive --dryrun
+                press_enter_to_continue
+                break
+                ;;
+              *)
+                echo "Cancelled."
+                break
+                ;;
+            esac
+          done
+        }
+
+        browse_objects() {
+          local profile=$1 bucket=$2
+          local prefix=""
+
+          while true; do
+            local fzf_input=("../")
+            mapfile -t items < <(list_objects "$profile" "$bucket" "$prefix")
+            [[ ${#items[@]} -gt 0 ]] && fzf_input+=("${items[@]}")
+
+            local prompt="Bucket '$bucket/${prefix}' (Enter=navigate, Ctrl+D/T=delete): "
+            local output key selected
+            output=$(printf '%s\n' "${fzf_input[@]}" | fzf --prompt="$prompt" --expect=ctrl-d,ctrl-t)
+            [[ $? -eq 130 || -z "$output" ]] && break
+
+            mapfile -t lines <<< "$output"
+            key="${lines[0]}"
+            selected="${lines[1]}"
+
+            if [[ -z "$key" ]]; then
+              if [[ "$selected" == "../" ]]; then
+                [[ -z "$prefix" ]] && break
+                prefix=$(dirname "${prefix%/}")/
+                [[ "$prefix" == "./" || "$prefix" == "/" ]] && prefix=""
+              elif [[ "${selected: -1}" == "/" ]]; then
+                prefix=$selected
+              else
+                echo "Selected object: $selected"
+                press_enter_to_continue
+              fi
+            else
+              [[ "$selected" == "../" ]] && continue
+              if [[ "${selected: -1}" == "/" ]]; then
+                delete_prefix "$profile" "$bucket" "$selected"
+              else
+                delete_object "$profile" "$bucket" "$selected"
+                press_enter_to_continue
+              fi
+            fi
+          done
+        }
+
+        main() {
+          while true; do
+            local profile
+            profile=$(select_aws_profile)
+            [[ -z "$profile" ]] && break
+
+            mapfile -t buckets < <(list_buckets "$profile")
+            [[ ${#buckets[@]} -eq 0 ]] && echo "No buckets found." && press_enter_to_continue && continue
+
+            while true; do
+              local fzf_input=("<-- Back" "${buckets[@]}")
+              local output key selected
+              output=$(printf '%s\n' "${fzf_input[@]}" | fzf --prompt="Bucket> " --expect=ctrl-d,ctrl-t)
+              [[ $? -eq 130 || -z "$output" ]] && break
+
+              mapfile -t lines <<< "$output"
+              key="${lines[0]}"
+              selected="${lines[1]}"
+
+              [[ "$selected" == "<-- Back" ]] && break
+
+              if [[ -z "$key" ]]; then
+                browse_objects "$profile" "$selected"
+              elif [[ "$key" == "ctrl-d" || "$key" == "ctrl-t" ]]; then
+                delete_bucket "$profile" "$selected"
+                mapfile -t buckets < <(list_buckets "$profile")
+              fi
+            done
+          done
+        }
+
+        main "$@"
+        EOF

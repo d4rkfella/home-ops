@@ -17,7 +17,7 @@ metadata:
   name: keycloak-operator
 spec:
   interval: 1h
-  retryInterval: 1m
+  retryInterval: 2m
   timeout: 5m
   path: ./kubernetes
   prune: true
@@ -32,7 +32,7 @@ spec:
           value:
             limits:
               cpu: 700m
-              memory: 1024Mi
+              memory: 1536Mi
             requests:
               cpu: 300m
               memory: 512Mi

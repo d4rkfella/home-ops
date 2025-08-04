@@ -61,9 +61,9 @@ sops:
     mac_only_encrypted: true
     version: 3.10.2
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.10/website/content/v1.10/schemas/config.schema.json
 version: v1alpha1
 debug: false
-persist: true
 machine:
     systemDiskEncryption:
         ephemeral:
@@ -72,18 +72,14 @@ machine:
                 - slot: 0
                   tpm:
                     checkSecurebootStatusOnEnroll: true
-            options:
-                - no_read_workqueue
-                - no_write_workqueue
+            options: ["no_read_workqueue", "no_write_workqueue"]
         state:
             provider: luks2
             keys:
                 - slot: 0
                   tpm:
                     checkSecurebootStatusOnEnroll: true
-            options:
-                - no_read_workqueue
-                - no_write_workqueue
+            options: ["no_read_workqueue", "no_write_workqueue"]
     type: controlplane
     token: ENC[AES256_GCM,data:4JnyEJTVix2nfNSc66oay0lym5vIUWw=,iv:jt6ZMxKK+CSkvgKmd28l4iKoKKH4DYpcgerbZyelGbU=,tag:sED4t6FlC2pPpsNrbwwIIw==,type:str]
     ca:
@@ -182,7 +178,7 @@ machine:
         net.core.bpf_jit_harden: "1"
         user.max_user_namespaces: "49152"
     sysfs:
-        kernel.mm.ksm.run: 1
+        kernel.mm.ksm.run: "1"
     udev:
         rules:
             - SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="none"
@@ -254,7 +250,7 @@ cluster:
             rules:
                 - level: Metadata
         extraArgs:
-            enable-aggregator-routing: true
+            enable-aggregator-routing: "true"
             feature-gates: UserNamespacesSupport=true,UserNamespacesPodSecurityStandards=true
     controllerManager:
         image: registry.k8s.io/kube-controller-manager:${KUBERNETES_VERSION}

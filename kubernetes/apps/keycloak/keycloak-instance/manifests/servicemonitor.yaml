@@ -9,7 +9,7 @@ spec:
   jobLabel: keycloak
   namespaceSelector:
     matchNames:
-      - idp
+      - keycloak
   selector:
     matchLabels:
       app: keycloak

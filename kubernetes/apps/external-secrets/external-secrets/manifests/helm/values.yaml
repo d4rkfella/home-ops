@@ -5,6 +5,9 @@ image:
 certController:
   image:
     repository: ghcr.io/external-secrets/external-secrets
+  serviceMonitor:
+    enabled: true
+    interval: 1m
 extraArgs:
   enable-secrets-caching: "true"
   enable-managed-secrets-caching: "true"
@@ -38,7 +41,10 @@ webhook:
         name: vault-issuer
         kind: ClusterIssuer
         group: cert-manager.io
-      duration: 2160h # 90d
+      duration: 2160h # 90d  
   image:
     repository: ghcr.io/external-secrets/external-secrets
   lookaheadInterval: 240h # 10d
+  serviceMonitor:
+    enabled: true
+    interval: 1m

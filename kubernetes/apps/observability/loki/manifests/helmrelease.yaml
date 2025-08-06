@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/d4rkfella/charts-mirror/loki
   ref:
-    tag: 6.34.0
+    tag: 6.35.0
   verify:
     provider: cosign
 ---
@@ -63,6 +63,8 @@ spec:
         chunk_encoding: snappy
       storage:
         type: filesystem
+        filesystem:
+          admin_api_directory: null
       schemaConfig:
         configs:
           - from: "2024-04-01"

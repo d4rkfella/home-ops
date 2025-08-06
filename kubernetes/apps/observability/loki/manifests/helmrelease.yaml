@@ -47,47 +47,62 @@ spec:
             value: false
   values:
     deploymentMode: SingleBinary
+
     loki:
       auth_enabled: false
       analytics:
         reporting_enabled: false
-      server:
-        log_level: info
-      commonConfig:
-        replication_factor: 1
-      compactor:
-        working_directory: /var/loki/compactor/retention
-        delete_request_store: filesystem
-        retention_enabled: true
-      ingester:
-        chunk_encoding: snappy
-      storage:
-        type: filesystem
-      schemaConfig:
-        configs:
-          - from: "2024-04-01"
-            store: tsdb
-            object_store: filesystem
-            schema: v13
-            index:
-              prefix: loki_index_
-              period: 24h
+
       structuredConfig:
+        common:
+          path_prefix: /var/loki
+          replication_factor: 1
+          storage:
+            filesystem:
+              directory: /var/loki
+
+        compactor:
+          working_directory: /var/loki/compactor/retention
+          delete_request_store: filesystem
+          retention_enabled: true
+
+        ingester:
+          chunk_encoding: snappy
+
+        storage_config:
+          filesystem:
+            directory: /var/loki
+
+        schema_config:
+          configs:
+            - from: "2024-04-01"
+              store: tsdb
+              object_store: filesystem
+              schema: v13
+              index:
+                prefix: loki_index_
+                period: 24h
+
         ruler:
           enable_api: true
           enable_alertmanager_v2: true
           alertmanager_url: https://alertmanager.darkfellanetwork.com
           storage:
-              type: local
-              local:
-                directory: /rules
+            type: local
+            local:
+              directory: /rules
           rule_path: /rules/fake
           alertmanager_client:
             credentials_file: /etc/secrets/client-secret/token
-      limits_config:
-        retention_period: 14d
-        ingestion_rate_mb: 10
-        ingestion_burst_size_mb: 20
+
+        limits_config:
+          retention_period: 14d
+          ingestion_rate_mb: 10
+          ingestion_burst_size_mb: 20
+
+        server:
+          log_level: info
+
     singleBinary:
       replicas: 1
       persistence:
@@ -102,31 +117,35 @@ spec:
         - name: bearer-token
           secret:
             secretName: oidc-token-secret
-      #extraContainers:
-        #- name: oauth-proxy
-          #image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
-          #args:
-          #- --config=/vault/secrets/oauth2-proxy.cfg
-          #ports:
-          #- containerPort: 8081
-            #name: oauth-proxy
-            #protocol: TCP
-          #securityContext:
-            #allowPrivilegeEscalation: false
-            #readOnlyRootFilesystem: true
-            #capabilities: { drop: ["ALL"] }
-          #volumeMounts:
-            #- name: loki
-              #mountPath: /vault/secrets/oauth2-proxy.cfg
-              #subPath: oauth2-proxy.cfg
-              #readOnly: true
-            #- name: loki
-              #mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
-              #subPath: darkfellanet-internal-root-ca.crt
-              #readOnly: true
-            #- name: loki-internal-tls
-              #mountPath: /vault/secrets/tls
-              #readOnly: true
+
+      # Optional oauth2-proxy container (commented out as in your original config)
+      # extraContainers:
+      #   - name: oauth-proxy
+      #     image: quay.io/oauth2-proxy/oauth2-proxy:v7.8.1-amd64@sha256:543e19accc96055a00f42ed93525ae04008bea3d7debe1d912096f8f20978033
+      #     args:
+      #       - --config=/vault/secrets/oauth2-proxy.cfg
+      #     ports:
+      #       - containerPort: 8081
+      #         name: oauth-proxy
+      #         protocol: TCP
+      #     securityContext:
+      #       allowPrivilegeEscalation: false
+      #       readOnlyRootFilesystem: true
+      #       capabilities:
+      #         drop: ["ALL"]
+      #     volumeMounts:
+      #       - name: loki
+      #         mountPath: /vault/secrets/oauth2-proxy.cfg
+      #         subPath: oauth2-proxy.cfg
+      #         readOnly: true
+      #       - name: loki
+      #         mountPath: /etc/ssl/certs/darkfellanet-internal-root-ca.crt
+      #         subPath: darkfellanet-internal-root-ca.crt
+      #         readOnly: true
+      #       - name: loki-internal-tls
+      #         mountPath: /vault/secrets/tls
+      #         readOnly: true
+
     gateway:
       replicas: 0
     backend:
@@ -143,6 +162,7 @@ spec:
       enabled: false
     test:
       enabled: false
+
     sidecar:
       image:
         repository: ghcr.io/home-operations/k8s-sidecar

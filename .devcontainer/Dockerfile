@@ -90,7 +90,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/d4rkfella/vault-backup:1.0.5@sha256:5187832f73098c88ea0de705edc99b9c69d1df88c9c0036d0822d9e51f71b267 /usr/bin/vault-backup /usr/local/bin/vault-backup
 RUN vault-backup --version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.1.3 /usr/local/bin/helmfile /usr/local/bin/helmfile
+COPY --from=ghcr.io/helmfile/helmfile:v1.1.4 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
 

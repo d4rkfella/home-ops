@@ -54,7 +54,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /tmp/config.yaml /config/config.yaml"]
+                  command: ["/bin/sh", "-c", "cp /secret/config.yaml /config/config.yaml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -85,8 +85,8 @@ spec:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /tmp/config.yml
-            subPath: config.yml
+          - path: /secret/config.yaml
+            subPath: config.yaml
             readOnly: false
 
       media:
@@ -95,8 +95,3 @@ spec:
         path: /mnt/exos20/data/downloads/torrents
         globalMounts:
           - path: /data/downloads/torrents
-
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp

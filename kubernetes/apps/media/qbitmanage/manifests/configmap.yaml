@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: qbitmanage-configmap
 data:
-  config.yaml: |
+  config.yml: |
     ---
     commands:
       dry_run: False

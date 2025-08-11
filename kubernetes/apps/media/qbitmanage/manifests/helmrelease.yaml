@@ -54,7 +54,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /secret/config.yaml /config/config.yaml"]
+                  command: ["/bin/sh", "-c", "cp /tmp/config.yaml /config/config.yaml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -85,7 +85,7 @@ spec:
         type: configMap
         name: "{{ .Release.Name }}-configmap"
         globalMounts:
-          - path: /secret/config.yaml
+          - path: /tmp/config.yaml
             subPath: config.yaml
             readOnly: false
 

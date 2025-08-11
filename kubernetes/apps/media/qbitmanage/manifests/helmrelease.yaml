@@ -34,6 +34,7 @@ spec:
             env:
               TZ: Europe/Sofia
               QBT_RUN: true
+              QBT_CONFIG: "/config/config.yaml"
               QBT_WIDTH: 100
               QBITTORRENT_USERNAME:
                 valueFrom:
@@ -53,7 +54,7 @@ spec:
             lifecycle:
               postStart:
                 exec:
-                  command: ["/bin/sh", "-c", "cp /tmp/config.yml /config/config.yml"]
+                  command: ["/bin/sh", "-c", "cp /tmp/config.yaml /config/config.yaml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -76,7 +77,9 @@ spec:
       config:
         type: emptyDir
         globalMounts:
+          - path: /app/config
           - path: /config
+          - path: /tmp
 
       config-file:
         type: configMap

@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbit_manage
-              tag: 4.5.3@sha256:4fd9185e62cc90ca574051deb42387309428957854a29018b7037d65fcfd61a3
+              tag: 4.5.2
             env:
               TZ: Europe/Sofia
               QBT_RUN: true
@@ -73,7 +73,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
 
     persistence:
-      config:
+      app:
         type: emptyDir
         globalMounts:
           - path: /app/config

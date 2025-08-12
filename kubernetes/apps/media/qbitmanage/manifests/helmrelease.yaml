@@ -1,10 +1,12 @@
 ---
+
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: qbitmanage
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
+
 spec:
   interval: 1h
   chartRef:
@@ -12,6 +14,7 @@ spec:
     name: app-template
   driftDetection:
     mode: enabled
+
   values:
     controllers:
       qbitmanage:
@@ -26,11 +29,12 @@ spec:
           successfulJobsHistory: 1
           failedJobsHistory: 1
           ttlSecondsAfterFinished: 3600
+
         containers:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbit_manage
-              tag: 4.5.2
+              tag: 4.5.2@sha256:82f6a331f1611d51bb384dafd3fa033525da36f0469c7c8d7828afd3955cc186
             env:
               TZ: Europe/Sofia
               QBT_RUN: true
@@ -45,6 +49,7 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: QBITTORRENT_PASSWORD
+
             resources:
               requests:
                 cpu: 10m
@@ -59,11 +64,14 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
 
+
+
     defaultPodOptions:
       hostAliases:
         - ip: "192.168.91.52"
           hostnames:
             - "qbittorrent.darkfellanetwork.com"
+
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -72,13 +80,12 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
+
     persistence:
-      app:
+      config:
         type: emptyDir
         globalMounts:
-          - path: /app/config
           - path: /config
-          - path: /tmp
 
       config-file:
         type: configMap
@@ -94,3 +101,8 @@ spec:
         path: /mnt/exos20/data/downloads/torrents
         globalMounts:
           - path: /data/downloads/torrents
+
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

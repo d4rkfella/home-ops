@@ -20,16 +20,6 @@ spec:
       qbitmanage:
         annotations:
           reloader.stakater.com/auto: "true"
-        type: cronjob
-        cronjob:
-          schedule: 0 * * * *
-          backoffLimit: 0
-          timeZone: Europe/Sofia
-          concurrencyPolicy: Forbid
-          successfulJobsHistory: 1
-          failedJobsHistory: 1
-          ttlSecondsAfterFinished: 3600
-
         containers:
           app:
             image:
@@ -49,7 +39,6 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: QBITTORRENT_PASSWORD
-
             resources:
               requests:
                 cpu: 10m
@@ -63,8 +52,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-
-
 
     defaultPodOptions:
       hostAliases:

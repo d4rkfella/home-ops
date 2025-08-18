@@ -1,5 +1,4 @@
 ---
-
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -58,7 +57,7 @@ spec:
         controller: qbitmanage
         ports:
           http:
-            port: &port 8080
+            port: http
 
     route:
       app:

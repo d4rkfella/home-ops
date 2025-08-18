@@ -3,10 +3,9 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: qbitmanage
+  name: &app qbitmanage
   annotations:
     kustomize.toolkit.fluxcd.io/substitute: disabled
-
 spec:
   interval: 1h
   chartRef:
@@ -14,7 +13,6 @@ spec:
     name: app-template
   driftDetection:
     mode: enabled
-
   values:
     controllers:
       qbitmanage:
@@ -23,8 +21,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/stuffanthings/qbit_manage
-              tag: v4.5.4
+              repository: ghcr.io/d4rkfella/qbit_manage
+              tag: 4.5.4@sha256:5cd86eb357cf889b94082fbc810563ad2b19f2256e5ba7dd2bf82344a795c05c
             env:
               TZ: Europe/Sofia
               QBT_WIDTH: 100
@@ -66,10 +64,28 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile: { type: RuntimeDefault }
 
+    service:
+      app:
+        controller: qbitmanage
+        ports:
+          http:
+            port: &port 8080
+
+    route:
+      app:
+        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     persistence:
       config:
-        type: emptyDir
+        existingClaim: *app
         globalMounts:
           - path: /config
 

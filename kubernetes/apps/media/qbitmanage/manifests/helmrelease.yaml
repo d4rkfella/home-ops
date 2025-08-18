@@ -27,7 +27,6 @@ spec:
               tag: 4.5.4@sha256:d44789702353e6a0ed9a419efab0ae99627853d65408a9e4ff6a488284ee43e1
             env:
               TZ: Europe/Sofia
-              QBT_RUN: true
               QBT_WIDTH: 100
               QBITTORRENT_USERNAME:
                 valueFrom:

@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbit_manage
-              tag: 4.5.2@sha256:82f6a331f1611d51bb384dafd3fa033525da36f0469c7c8d7828afd3955cc186
+              tag: 4.5.4@sha256:d44789702353e6a0ed9a419efab0ae99627853d65408a9e4ff6a488284ee43e1
             env:
               TZ: Europe/Sofia
               QBT_RUN: true

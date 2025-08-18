@@ -22,7 +22,7 @@ spec:
           reloader.stakater.com/auto: "true"
         type: cronjob
         cronjob:
-          schedule: 0 * * * *
+          schedule: */5 * * * *
           backoffLimit: 0
           timeZone: Europe/Sofia
           concurrencyPolicy: Forbid

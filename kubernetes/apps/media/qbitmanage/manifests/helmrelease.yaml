@@ -25,17 +25,6 @@ spec:
               tag: 4.5.4@sha256:5cd86eb357cf889b94082fbc810563ad2b19f2256e5ba7dd2bf82344a795c05c
             env:
               TZ: Europe/Sofia
-              QBT_WIDTH: 100
-              QBITTORRENT_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret qbitmanage-secret
-                    key: QBITTORRENT_USERNAME
-              QBITTORRENT_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: QBITTORRENT_PASSWORD
             resources:
               requests:
                 cpu: 10m

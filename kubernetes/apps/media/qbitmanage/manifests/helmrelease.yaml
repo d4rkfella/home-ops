@@ -41,10 +41,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 1Gi
-            lifecycle:
-              postStart:
-                exec:
-                  command: ["/bin/sh", "-c", "cp /tmp/config.yml /config/config.yml"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -88,14 +84,6 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config
-
-      config-file:
-        type: configMap
-        name: "{{ .Release.Name }}-configmap"
-        globalMounts:
-          - path: /tmp/config.yml
-            subPath: config.yml
-            readOnly: true
 
       media:
         type: nfs

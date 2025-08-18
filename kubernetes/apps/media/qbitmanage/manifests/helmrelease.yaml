@@ -23,8 +23,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/qbit_manage
-              tag: 4.5.4@sha256:d44789702353e6a0ed9a419efab0ae99627853d65408a9e4ff6a488284ee43e1
+              repository: ghcr.io/stuffanthings/qbit_manage
+              tag: v4.5.4
             env:
               TZ: Europe/Sofia
               QBT_WIDTH: 100

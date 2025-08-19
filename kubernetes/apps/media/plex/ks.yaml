@@ -27,5 +27,5 @@ spec:
     namespace: flux-system
   wait: false
   interval: 1h
-  timeout: 5m
+  timeout: 6m
   retryInterval: 2m

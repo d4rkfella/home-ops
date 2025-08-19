@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/plex
-              tag: 1.42.1.10060@sha256:b2bc0cbbf18d283fd4a4ec79547dd2feb3add0500bc90682d8c1b226c6fab11a
+              tag: 1.42.1.10060
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:32400
@@ -63,7 +63,7 @@ spec:
         existingClaim: *app
         globalMounts:
           - path: /config/Library/Application Support/Plex Media Server
-      
+
       config-cache:
         suffix: cache
         type: persistentVolumeClaim

@@ -38,16 +38,6 @@ spec:
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
-          attestations:
-            - type: https://slsa.dev/provenance/v0.2
-              conditions:
-                - all:
-                  - key: "{{ regex_match('^https://github.com/slsa-framework/slsa-github-generator/container@.*','{{ buildType}}') }}"
-                    operator: Equals
-                    value: true
-                  - key: "{{ regex_match('^https://github.com/d4rkfella/.*/.github/workflows/(apko-build|build|build-runner-image).yaml@refs/heads/main','{{ builder.id}}') }}"
-                    operator: Equals
-                    value: true
         - imageReferences:
           - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce
@@ -55,17 +45,6 @@ spec:
             - entries:
                 - keyless:
                     subject: "https://github.com/controlplaneio-fluxcd/flux-operator/*"
-                    issuer: "https://token.actions.githubusercontent.com"
-                    rekor:
-                      url: https://rekor.sigstore.dev
-
-        - imageReferences:
-          - "ghcr.io/d4rkfella/plex"
-          failureAction: Enforce
-          attestors:
-            - entries:
-                - keyless:
-                    subjectRegExp: "https://github.com/d4rkfella/*"
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev

@@ -58,3 +58,14 @@ spec:
                     issuer: "https://token.actions.githubusercontent.com"
                     rekor:
                       url: https://rekor.sigstore.dev
+
+        - imageReferences:
+          - "ghcr.io/d4rkfella/plex"
+          failureAction: Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subjectRegExp: "https://github.com/d4rkfella/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: https://rekor.sigstore.dev

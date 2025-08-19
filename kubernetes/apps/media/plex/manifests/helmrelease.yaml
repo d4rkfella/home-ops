@@ -24,8 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/plex
-              tag: 1.42.1.10060@sha256:04563be281364ba2462285aacb2ca13d7ef7e1d0b19e1203f4c19b4a56840c5c
+              repository: ghcr.io/d4rkfella/plex
+              tag: 1.42.1.10060@sha256:b2bc0cbbf18d283fd4a4ec79547dd2feb3add0500bc90682d8c1b226c6fab11a
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:32400

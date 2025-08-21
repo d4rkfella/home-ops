@@ -17,6 +17,7 @@
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
+      minimumGroupSize: 2,
     },
     {
       description: [
@@ -63,6 +64,7 @@
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
+      minimumGroupSize: 2,
     },
     {
       description: [
@@ -102,22 +104,6 @@
       ],
       versioning: 'semver',
       groupName: 'Devcontainer',
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-    },
-    {
-      description: [
-        'Talos Group',
-      ],
-      groupName: 'Talos',
-      matchPackagePatterns: [
-        'siderolabs/talosctl',
-        'siderolabs/installer',
-      ],
-      matchDatasources: [
-        'docker',
-      ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
@@ -175,6 +161,31 @@
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
+    },
+    {
+      description: "Kubernetes Group",
+      groupName: "kubernetes",
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "/kube-apiserver/",
+        "/kube-controller-manager/",
+        "/kube-scheduler/",
+        "/kubelet/",
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 4,
+    },
+    {
+      description: "Talos Group",
+      groupName: "talos",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/installer-secureboot/", "/talosctl/"],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+      minimumGroupSize: 2,
     },
   ],
 }

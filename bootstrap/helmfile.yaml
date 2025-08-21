@@ -175,12 +175,6 @@ releases:
           - --filename={{ requiredEnv "BOOTSTRAP_DIR" }}/create-zpool.yaml
         showlogs: true
       - events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - until kubectl get crd volumesnapshotclasses.snapshot.storage.k8s.io &>/dev/null; do sleep 10; done
-        showlogs: true
-      - events: ['postsync']
         command: kubectl
         args:
           - apply

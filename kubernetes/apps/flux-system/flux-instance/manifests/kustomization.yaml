@@ -8,9 +8,3 @@ resources:
   - ./prometheusrule.yaml
   - ./receiver.yaml
   - ./podmonitor.yaml
-configMapGenerator:
-  - name: flux-instance-values
-    files:
-      - values.yaml=./helm/values.yaml
-configurations:
-  - ./helm/kustomizeconfig.yaml

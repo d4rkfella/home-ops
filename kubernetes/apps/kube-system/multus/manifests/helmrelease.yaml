@@ -10,6 +10,81 @@ spec:
     name: app-template
   driftDetection:
     mode: enabled
-  valuesFrom:
-    - kind: ConfigMap
-      name: multus-values
+  values:
+    controllers:
+      multus:
+        serviceAccount:
+          identifier: multus
+        type: daemonset
+        initContainers:
+          install-multus-binary:
+            image:
+              repository: ghcr.io/d4rkfella/multus-cni
+              tag: 4.2.2@sha256:7c23ec67d6bc77237f9a1a48af0d875e21f98e2f8bc7a227078d8b29670b34bf
+            command: ["/install_multus"]
+            args:
+              - --type
+              - thin
+            securityContext:
+              privileged: true
+            terminationMessagePolicy: FallbackToLogsOnError
+          install-cni-plugins:
+            image:
+              repository: ghcr.io/d4rkfella/cni-plugins-install
+              tag: 1.0.3@sha256:ec8ae85991929ee499a8c73ac39a86c0349503e8bdc4fff6172c92bdb30c75de
+            env:
+              # renovate: datasource=github-releases depName=containernetworking/plugins
+              CNI_PLUGINS_VERSION: v1.7.1
+        containers:
+          multus:
+            image:
+              repository: ghcr.io/d4rkfella/multus-cni
+              tag: 4.2.2@sha256:7c23ec67d6bc77237f9a1a48af0d875e21f98e2f8bc7a227078d8b29670b34bf
+            args:
+              - --multus-conf-file=auto
+              - --multus-autoconfig-dir=/host/etc/cni/net.d
+              - --cni-conf-dir=/host/etc/cni/net.d
+              - --cleanup-config-on-exit=true
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 50Mi
+            securityContext:
+              privileged: true
+            terminationMessagePolicy: FallbackToLogsOnError
+
+    defaultPodOptions:
+      hostNetwork: true
+      terminationGracePeriodSeconds: 15
+      dnsPolicy: "Default"
+
+    persistence:
+      cni:
+        type: hostPath
+        hostPath: /etc/cni/net.d
+        advancedMounts:
+          multus:
+            multus:
+              - path: /host/etc/cni/net.d
+      cnibin:
+        type: hostPath
+        hostPath: /opt/cni/bin
+        advancedMounts:
+          multus:
+            install-multus-binary:
+              - path: /host/opt/cni/bin
+                mountPropagation: Bidirectional
+            multus:
+              - path: /host/opt/cni/bin
+            install-cni-plugins:
+              - path: /host/opt/cni/bin
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          multus:
+            install-cni-plugins:
+              - path: /tmp
+
+    serviceAccount:
+      multus: {}

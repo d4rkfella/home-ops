@@ -43,6 +43,6 @@ spec:
           - op: add
             path: /spec/template/spec/hostUsers
             value: false
-  valuesFrom:
-    - kind: ConfigMap
-      name: flux-operator-values
+  values:
+    serviceMonitor:
+      create: true

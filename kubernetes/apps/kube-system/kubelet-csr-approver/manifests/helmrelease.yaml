@@ -37,6 +37,9 @@ spec:
     - kind: ConfigMap
       name: kubelet-csr-approver-values
   values:
+    replicas: 1
+    providerRegex: ^k8s-\d$
+    bypassDnsResolution: true
     metrics:
       enable: true
       serviceMonitor:

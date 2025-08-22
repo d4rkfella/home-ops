@@ -24,7 +24,7 @@ releases:
 
             for url in $urls; do
               echo "Applying CRD from $url"
-              kubectl apply --server-side -f $url
+              kubectl apply --server-side --field-manager=kustomize-controller -f $url
             done
             echo "All CRDs applied successfully!"
         showlogs: true
@@ -87,7 +87,7 @@ releases:
         command: bash
         args:
           - -c
-          - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --filename - --namespace cert-manager
+          - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace cert-manager
       - events: ['postsync']
         command: kubectl
         args:
@@ -203,7 +203,7 @@ releases:
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --filename - --namespace "{{ .Release.Namespace }}"
+        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace "{{ .Release.Namespace }}"
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -318,7 +318,7 @@ releases:
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml | kubectl apply --server-side --filename - --namespace virtualization
+        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace virtualization
       showlogs: true
     - events: ["postsync"]
       command: bash
@@ -465,7 +465,7 @@ releases:
       command: bash
       args:
         - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/components/common/sops/secret.sops.yaml | kubectl apply --server-side --filename - --namespace flux-system
+        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/components/common/sops/secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace flux-system
     - events: ['postsync']
       command: kubectl
       args:

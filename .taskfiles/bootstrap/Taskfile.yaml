@@ -3,14 +3,6 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: '3'
 
-vars:
-  KUBERNETES_VERSION:
-    sh: yq 'select(document_index == 0).spec.postBuild.substitute.KUBERNETES_VERSION' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
-  TALOS_SCHEMATIC_ID:
-    sh: yq 'select(document_index == 0).spec.postBuild.substitute.TALOS_SCHEMATIC_ID' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
-  TALOS_VERSION:
-    sh: yq 'select(document_index == 0).spec.postBuild.substitute.TALOS_VERSION' {{.KUBERNETES_DIR}}/apps/system-upgrade/system-upgrade-controller-plans/ks.yaml
-
 tasks:
   talos:
     desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
@@ -28,14 +20,9 @@ tasks:
       - test -f {{.ROOT_DIR}}/talosconfig
   apply-config:
     internal: true
-    env:
-      TALOS_VERSION: '{{.TALOS_VERSION}}'
-      TALOS_SCHEMATIC_ID: '{{.TALOS_SCHEMATIC_ID}}'
-      KUBERNETES_VERSION: '{{.KUBERNETES_VERSION}}'
     cmd: |
       sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \
-          /usr/local/bin/envsubst | \
-              talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
+          talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
     preconditions:
       - which sops
       - which talosctl
@@ -74,18 +61,4 @@ tasks:
       - which helmfile
       - test -f {{.ROOT_DIR}}/kubeconfig
       - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
-      - talosctl config info &>/dev/null
-
-  flux:
-    desc: Bootstrap Flux
-    prompt: Bootstrap Flux ... continue?
-    cmds:
-      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
-      - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
-    preconditions:
-      - which bash
-      - which sops
-      - which kubectl
-      - which helmfile
-      - test -f {{.BOOTSTRAP_DIR}}/helmfile-flux.yaml
       - talosctl config info &>/dev/null

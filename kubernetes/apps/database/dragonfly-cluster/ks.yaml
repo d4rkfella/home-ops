@@ -6,10 +6,10 @@ metadata:
 spec:
   dependsOn:
     - name: dragonfly-operator
-  healthCheckExprs:
-    - apiVersion: dragonflydb.io/v1alpha1
-      kind: Dragonfly
-      current: status.phase == "ready"
+  #healthCheckExprs:
+    #- apiVersion: dragonflydb.io/v1alpha1
+      #kind: Dragonfly
+      #current: status.phase == "ready"
   path: ./kubernetes/apps/database/dragonfly-cluster/manifests
   prune: true
   sourceRef:

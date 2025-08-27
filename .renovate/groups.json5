@@ -96,7 +96,7 @@
       description: "Talos Group",
       groupName: "talos",
       matchDatasources: ["docker"],
-      matchPackageNames: ["/installer-secureboot/", "/talosctl/"],
+      matchPackageNames: ["/installer-secureboot/", "/talosctl/", "/installer/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

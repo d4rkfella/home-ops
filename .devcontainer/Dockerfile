@@ -17,7 +17,7 @@ ARG SOPS_VERSION=v3.10.2
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.6.4
 # renovate: datasource=github-releases depName=junegunn/fzf
-ARG FZF_VERSION=v0.65.1
+ARG FZF_VERSION=v0.65.2
 
 WORKDIR /tmp
 

@@ -61,14 +61,6 @@ spec:
                 drop:
                   - ALL
               readOnlyRootFilesystem: true
-        statefulset:
-          volumeClaimTemplates:
-            - accessMode: ReadWriteOnce
-              globalMounts:
-                - path: /var/lib/microbin
-              name: data
-              size: 1Mi
-        type: statefulset
     defaultPodOptions:
       securityContext:
         fsGroup: 65532
@@ -94,3 +86,11 @@ spec:
         ports:
           http:
             port: 8080
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        size: 2Mi
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /var/lib/microbin

@@ -37,8 +37,6 @@ spec:
               repository: ghcr.io/d4rkfella/multus-cni
               tag: 4.2.2@sha256:7c23ec67d6bc77237f9a1a48af0d875e21f98e2f8bc7a227078d8b29670b34bf
             args:
-              - --multus-conf-file=auto
-              - --multus-autoconfig-dir=/tmp
               - --cni-conf-dir=/tmp
               - --cleanup-config-on-exit
             resources:

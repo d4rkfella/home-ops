@@ -90,7 +90,7 @@ spec:
     persistence:
       data:
         type: persistentVolumeClaim
-        size: 2Mi
+        size: 1Gi
         accessMode: ReadWriteOnce
         globalMounts:
           - path: /var/lib/microbin

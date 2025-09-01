@@ -61,6 +61,7 @@ spec:
                 drop:
                   - ALL
               readOnlyRootFilesystem: true
+
     defaultPodOptions:
       securityContext:
         fsGroup: 65532
@@ -69,6 +70,7 @@ spec:
         runAsUser: 65532
         seccompProfile:
           type: RuntimeDefault
+
     route:
       app:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
@@ -80,6 +82,7 @@ spec:
           - backendRefs:
               - name: *app
                 port: *port
+
     service:
       app:
         controller: microbin

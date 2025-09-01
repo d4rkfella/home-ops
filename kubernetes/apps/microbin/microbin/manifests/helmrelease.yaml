@@ -62,7 +62,6 @@ spec:
                   - ALL
               readOnlyRootFilesystem: true
         statefulset:
-          podManagementPolicy: Parallel
           volumeClaimTemplates:
             - accessMode: ReadWriteOnce
               globalMounts:
@@ -78,7 +77,6 @@ spec:
         runAsUser: 65532
         seccompProfile:
           type: RuntimeDefault
-      shareProcessNamespace: true
     route:
       app:
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]

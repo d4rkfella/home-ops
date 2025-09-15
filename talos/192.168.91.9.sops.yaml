@@ -89,7 +89,7 @@ machine:
         - 127.0.0.1
         - 192.168.91.10
     kubelet:
-        image: ghcr.io/siderolabs/kubelet:v1.34.0
+        image: ghcr.io/siderolabs/kubelet:v1.34.1
         extraConfig:
             maxParallelImagePulls: 10
             maxPods: 400

@@ -85,7 +85,7 @@
         "/kube-apiserver/",
         "/kube-controller-manager/",
         "/kube-scheduler/",
-        "/kubelet$",
+        "/kubelet$/"
       ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",

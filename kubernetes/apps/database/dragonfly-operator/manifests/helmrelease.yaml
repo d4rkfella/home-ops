@@ -31,7 +31,7 @@ spec:
           rbac-proxy:
             image:
               repository: quay.io/brancz/kube-rbac-proxy
-              tag: v0.19.1@sha256:9f21034731c7c3228611b9d40807f3230ce8ed2b286b913bf2d1e760d8d866fc
+              tag: v0.20.0@sha256:147cb28fea35473b2cf8697892d375bbe0aec237c5740b0368719b4c0d71b290
             args:
               - "--secure-listen-address=0.0.0.0:8443"
               - "--upstream=http://127.0.0.1:8080/"

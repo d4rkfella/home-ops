@@ -12,7 +12,6 @@ def sigint_handler(sig, frame):
 
 signal.signal(signal.SIGINT, sigint_handler)
 
-# Run `task --list --json`
 try:
     result = subprocess.run(
         ["task", "--list", "--json"],
@@ -27,10 +26,8 @@ except subprocess.CalledProcessError:
 
 tasks = [(t["name"], t["desc"]) for t in tasks_json.get("tasks", [])]
 
-# Format for fzf
 fzf_input = "\n".join([f"{name}\t{desc}" for name, desc in tasks])
 
-# Run fzf
 try:
     fzf = subprocess.run(
         ["fzf"],
@@ -62,7 +59,6 @@ else:
     included_dir = taskfile["includes"].get(namespace)
     included_file = os.path.join(included_dir, "Taskfile.yaml")
 
-# Load included taskfile
 with open(included_file) as f:
     included_taskfile = yaml.safe_load(f)
 
@@ -81,6 +77,5 @@ for var in required_vars:
             print(f"⚠️  {var} cannot be empty.")
     var_args.append(f"{var}={value}")
 
-# Run the task
 cmd = ["task", task_name] + var_args
 subprocess.run(cmd)

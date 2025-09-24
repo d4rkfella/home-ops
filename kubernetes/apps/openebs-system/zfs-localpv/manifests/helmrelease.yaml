@@ -48,7 +48,7 @@ spec:
         image:
           registry: registry.k8s.io/
           repository: sig-storage/csi-node-driver-registrar
-          tag: v2.14.0
+          tag: v2.15.0
     zfsController:
       resizer:
         image:

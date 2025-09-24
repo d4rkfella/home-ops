@@ -122,6 +122,7 @@ RUN apk add --no-cache \
         ttf-dejavu \
         aws-cli \
         python3 \
+        py3-yaml \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \

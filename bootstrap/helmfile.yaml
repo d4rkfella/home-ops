@@ -186,7 +186,7 @@ releases:
     namespace: vault
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
-    version: 0.30.1
+    version: 0.31.0
     values: ['./values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
     hooks:

@@ -103,8 +103,8 @@
       minimumGroupSize: 2,
     },
     {
-      description: "Barman Cloud Plugin"
-      group: "Barman Cloud"
+      description: "Barman Cloud Plugin",
+      group: "Barman Cloud",
       matchDatasources: ["docker"],
       matchPackageNames: ["/plugin-barman-cloud/"],
       group: {

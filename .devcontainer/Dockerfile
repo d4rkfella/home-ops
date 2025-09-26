@@ -81,7 +81,7 @@ RUN apk add --no-cache \
     #Set permissions
     chmod +x /usr/local/bin/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.11.1 /talosctl /usr/local/bin/talosctl
+COPY --from=ghcr.io/siderolabs/talosctl:v1.11.2 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
 COPY --from=ghcr.io/d4rkfella/vault-backup:1.0.9@sha256:d8770fa92573f1677cb0af36664d8454ea5c05076cba0bdcf565c025f4034dd4 /usr/bin/vault-backup /usr/local/bin/vault-backup

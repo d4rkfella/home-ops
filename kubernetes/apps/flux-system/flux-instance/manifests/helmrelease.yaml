@@ -38,7 +38,7 @@ spec:
     instance:
       distribution:
         # renovate: datasource=github-releases depName=fluxcd/flux2
-        version: 2.6.4
+        version: 2.7.0
         registry: "ghcr.io/fluxcd"
       cluster:
         networkPolicy: false

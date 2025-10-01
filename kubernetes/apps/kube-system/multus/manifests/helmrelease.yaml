@@ -31,7 +31,7 @@ spec:
           install-cni-plugins:
             image:
               repository: ghcr.io/d4rkfella/cni-plugins-install
-              tag: 1.0.3@sha256:ec8ae85991929ee499a8c73ac39a86c0349503e8bdc4fff6172c92bdb30c75de
+              tag: 1.0.3@sha256:f0f41d72ec29bcdbe2d8608eb8beac3fafe2f39b8c3b87426e439b49327d562f
             env:
               # renovate: datasource=github-releases depName=containernetworking/plugins
               CNI_PLUGINS_VERSION: v1.8.0

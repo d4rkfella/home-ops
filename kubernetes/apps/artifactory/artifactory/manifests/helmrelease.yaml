@@ -19,12 +19,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: jfrog
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    remediation:
-      retries: 3
   postRenderers:
   - kustomize:
       patches:

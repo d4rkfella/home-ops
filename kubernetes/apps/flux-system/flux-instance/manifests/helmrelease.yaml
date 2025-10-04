@@ -24,22 +24,11 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-instance
-  driftDetection:
-    mode: enabled
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     instance:
       distribution:
-        # renovate: datasource=github-releases depName=fluxcd/flux2
-        version: 2.7.0
-        registry: "ghcr.io/fluxcd"
+        artifact: oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests:v0.30.0
+        version: 2.x
       cluster:
         networkPolicy: false
       storage:
@@ -52,26 +41,13 @@ spec:
         - notification-controller
       sync:
         kind: GitRepository
-        url: https://github.com/d4rkfella/home-ops.git
+        url: https://github.com/d4rkfella/home-ops
         ref: refs/heads/main
         path: kubernetes/flux/cluster
         interval: 1h
         recurseSubmodules: true
-      commonMetadata:
-        labels:
-          app.kubernetes.io/name: flux
       kustomize:
         patches:
-          - patch: |
-              - op: add
-                path: /spec/decryption
-                value:
-                  provider: sops
-                  secretRef:
-                    name: sops-age
-            target:
-              group: kustomize.toolkit.fluxcd.io
-              kind: Kustomization
           # Increase the number of workers and limits
           # Ref: https://fluxcd.io/flux/installation/configuration/vertical-scaling/#increase-the-number-of-workers-and-limits
           - patch: |
@@ -212,3 +188,29 @@ spec:
             target:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller|notification-controller)
+
+          - # Disable chart digest tracking
+            patch: |-
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --feature-gates=DisableChartDigestTracking=true
+            target:
+              kind: Deployment
+              name: helm-controller
+
+          - # Controller-level SOPS decryption
+            patch: |-
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --sops-age-secret=sops-age-secret
+            target:
+              kind: Deployment
+              name: kustomize-controller
+          - # Watch configmaps and secrets attached to HelmReleases and Kustomizations
+            patch: |-
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --watch-configs-label-selector=owner!=helm
+            target:
+              kind: Deployment
+              name: (helm-controller|kustomize-controller)

@@ -8,16 +8,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: gha-runner-scale-set
-  driftDetection:
-    mode: enabled
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     githubConfigUrl: https://github.com/d4rkfella/vm-container-disks
     githubConfigSecret: home-ops-runner-secret

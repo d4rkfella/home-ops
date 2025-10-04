@@ -8,22 +8,11 @@ spec:
   chartRef:
     kind: OCIRepository
     name: app-template
-  driftDetection:
-    mode: enabled
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     controllers:
       gatus:
         annotations:
           reloader.stakater.com/auto: "true"
-
         initContainers:
           init-db:
             image:
@@ -54,7 +43,6 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-
         containers:
           app:
             image:
@@ -159,7 +147,6 @@ spec:
           gatus:
             app:
               - path: /config
-
       config-file:
         type: configMap
         name: gatus-configmap
@@ -169,7 +156,6 @@ spec:
               - path: /config/config.yaml
                 subPath: config.yaml
                 readOnly: true
-
       postgres-ca:
         type: secret
         name: *secret

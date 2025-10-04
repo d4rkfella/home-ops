@@ -51,8 +51,8 @@ spec:
                     remediation:
                       remediateLastFailure: true
                       retries: 2
-                    driftDetection:
-                      mode: enabled
+                  driftDetection:
+                    mode: enabled
               target:
                 group: helm.toolkit.fluxcd.io
                 kind: HelmRelease

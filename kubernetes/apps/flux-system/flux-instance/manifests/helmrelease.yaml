@@ -19,11 +19,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: flux-instance
-  annotations:
-    fluxcd.controlplane.io/reconcile: "enabled"
-    fluxcd.controlplane.io/reconcileEvery: "10m"
-    fluxcd.controlplane.io/reconcileTimeout: "1m"
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   interval: 5m
   chartRef:
@@ -219,3 +214,11 @@ spec:
             target:
               kind: Deployment
               name: (helm-controller|kustomize-controller)
+
+          - patch: |
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --log-level=debug
+            target:
+              kind: Deployment
+              name: helm-controller

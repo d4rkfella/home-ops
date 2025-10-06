@@ -197,3 +197,5 @@ spec:
               forwardAccessToken: false
               refreshToken: true
               passThroughAuthHeader: false
+              cookieConfig:
+                sameSite: None

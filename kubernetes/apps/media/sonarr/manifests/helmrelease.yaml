@@ -192,7 +192,7 @@ spec:
               clientID: "c9571b36-7bc8-4dd8-afb4-6ca656a88761"
               clientSecret:
                 name: "sonarr-secret"
-              redirectURL: "https://sonarr.darkfellanetwork.com/oauth2/callback"
+              redirectURL: "https://sonarr.darkfellanetwork.com/callback"
               logoutPath: "/oauth2/sign_out"
               forwardAccessToken: false
               refreshToken: true

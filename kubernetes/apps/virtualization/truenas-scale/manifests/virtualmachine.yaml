@@ -26,6 +26,7 @@ spec:
           model: host-passthrough
           dedicatedCpuPlacement: true
           isolateEmulatorThread: true
+        ioThreadsPolicy: auto
         features:
           acpi: {}
           apic: {}

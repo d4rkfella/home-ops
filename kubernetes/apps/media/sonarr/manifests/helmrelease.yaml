@@ -193,4 +193,4 @@ spec:
               clientSecret:
                 name: "sonarr-secret"
               redirectURL: "https://sonarr.darkfellanetwork.com/oauth2/callback"
-              logoutPath: "/logout"
+              logoutPath: "/oauth2/sign_out"

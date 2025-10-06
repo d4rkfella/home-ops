@@ -194,7 +194,6 @@ spec:
                 name: "sonarr-secret"
               redirectURL: "https://sonarr.darkfellanetwork.com/oauth2/callback"
               logoutPath: "/oauth2/sign_out"
-              cookieDomain: "sonarr.darkfellanetwork.com"
               forwardAccessToken: false
               refreshToken: true
               passThroughAuthHeader: false

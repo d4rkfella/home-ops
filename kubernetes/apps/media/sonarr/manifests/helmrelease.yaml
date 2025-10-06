@@ -210,3 +210,22 @@ spec:
               - path: /etc/ssl/certs/Internal-Root-CA.crt
                 subPath: ca.crt
                 readOnly: true
+    
+    rawResources:
+      envoy-security-policy:
+        enabled: true
+        apiVersion: gateway.envoyproxy.io/v1alpha1
+        kind: SecurityPolicy
+        spec:
+          targetRefs:
+            - group: gateway.networking.k8s.io
+              kind: HTTPRoute
+              name: sonarr
+          oidc:
+            provider:
+              issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+            clientID: "91541ad5-d34b-4dec-98f4-4b644882e02d"
+            clientSecret:
+              name: "sonarr-secret"
+            redirectURL: "https://sonarr.darkfellanetwork.com/oauth2/callback"
+            logoutPath: "/logout"

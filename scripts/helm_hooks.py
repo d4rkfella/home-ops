@@ -126,17 +126,22 @@ async def vault_init_unseal_restore(vault_addr, backup_file="/project/.vault/vau
     # Unseal
     with open(token_file) as f:
         keys = json.load(f)['keys']
-    for key in keys:
-        if client_vault.sys.is_sealed():
-            client_vault.sys.submit_unseal_key(key)
+    if client_vault.sys.is_sealed():
+        print("Submitting first unseal key with reset")
+        client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
+        
+        for key in keys[1:]:
+            if client_vault.sys.is_sealed():
+                client_vault.sys.submit_unseal_key(key=key)
+    
     print("Vault unsealed")
 
     # Restore
-    with open(token_file) as f:
-        root_token = json.load(f)['root_token']
-    client_vault.token = root_token
+    #with open(token_file) as f:
+        #root_token = json.load(f)['root_token']
+    #client_vault.token = root_token
     # Placeholder for vault-backup restore logic
-    print(f"Restoring Vault backup from {backup_file} (implement your custom logic here)")
+    #print(f"Restoring Vault backup from {backup_file} (implement your custom logic here)")
 
 # -------------------------------
 # CRD fetching

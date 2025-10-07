@@ -15,19 +15,25 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: cilium
-          RELEASE_NAMESPACE: kube-system
-          CRD_FILE: "{{ requiredEnv 'BOOTSTRAP_DIR' }}/crds.yaml"
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "kube-system"]
+        showlogs: true
+      - events: ["prepare"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "crds"
+          - "--names"
+          - "ciliuml2announcementpolicies.cilium.io,ciliumloadbalancerippools.cilium.io,kubevirts.kubevirt.io,cdis.cdi.kubevirt.io"
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: kube-system
-          CRDS_TO_WAIT: "ciliuml2announcementpolicies.cilium.io,ciliumloadbalancerippools.cilium.io,kubevirts.kubevirt.io,cdis.cdi.kubevirt.io"
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/cilium/manifests/networks.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/cilium/manifests/networks.yaml"
+          - "--namespace"
+          - "kube-system"
         showlogs: true
 
   - name: coredns
@@ -56,19 +62,45 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: cert-manager
-          RELEASE_NAMESPACE: cert-manager
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "cert-manager"]
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: cert-manager
-          CRDS_TO_WAIT: "clusterissuers.cert-manager.io,certificates.cert-manager.io"
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/rbac.yaml"
-          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "crds"
+          - "--names"
+          - "clusterissuers.cert-manager.io,certificates.cert-manager.io"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml"
+          - "--namespace"
+          - "cert-manager"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/rbac.yaml"
+          - "--namespace"
+          - "cert-manager"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "sops"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml"
+          - "--namespace"
+          - "cert-manager"
         showlogs: true
 
   - name: external-secrets
@@ -81,18 +113,25 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: external-secrets
-          RELEASE_NAMESPACE: external-secrets
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "external-secrets"]
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: external-secrets
-          CRDS_TO_WAIT: "clustersecretstores.external-secrets.io"
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "crds"
+          - "--names"
+          - "clustersecretstores.external-secrets.io"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml"
+          - "--namespace"
+          - "external-secrets"
         showlogs: true
 
   - name: zfs-localpv
@@ -105,24 +144,37 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: zfs-localpv
-          RELEASE_NAMESPACE: openebs-system
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "openebs-system"]
         showlogs: true
       - events: ["presync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: kube-system
-          MANIFESTS: "{{ requiredEnv 'BOOTSTRAP_DIR' }}/create-zpool.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'BOOTSTRAP_DIR' }}/create-zpool.yaml"
+          - "--namespace"
+          - "kube-system"
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: openebs-system
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml"
+          - "--namespace"
+          - "openebs-system"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml"
+          - "--namespace"
+          - "openebs-system"
         showlogs: true
 
   - name: vault
@@ -135,53 +187,90 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: vault
-          RELEASE_NAMESPACE: vault
-          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/vault/vault/manifests/vault.secret.sops.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "sops"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/vault/vault/manifests/vault.secret.sops.yaml"
+          - "--namespace"
+          - "vault"
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: vault
-          VAULT_ADDR: "https://vault.darkfellanetwork.com:8200"
-          CRDS_TO_WAIT: ""
+        args:
+          - "scripts/helm_hooks.py"
+          - "vault"
+          - "--addr"
+          - "https://vault.darkfellanetwork.com:8200"
         showlogs: true
 
   - name: multus
     namespace: kube-system
     atomic: true
-    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    chart: oci://bjw-s-labs/helm/app-template
     version: 4.3.0
     values: ['./values.yaml.gotmpl']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: kube-system
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/multus/manifests/rbac.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/multus/manifests/rbac.yaml"
+          - "--namespace"
+          - "kube-system"
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: kubevirt
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml"
+          - "--namespace"
+          - "kubevirt"
         showlogs: true
       - events: ["postsync"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: cdi
-          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/cdi.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml"
-          CRDS_TO_WAIT: "storageprofiles.cdi.kubevirt.io,virtualmachines.kubevirt.io,datavolumes.cdi.kubevirt.io"
-          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml"
-          DEPLOYMENTS: "virt-operator,virt-controller,virt-api,cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver"
-          DAEMONSETS: "virt-handler"
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/cdi.yaml"
+          - "--namespace"
+          - "cdi"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "manifest"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml"
+          - "--namespace"
+          - "cdi"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "deployments"
+          - "--namespace"
+          - "virtualization"
+          - "--names"
+          - "virt-operator,virt-controller,virt-api,cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args:
+          - "scripts/helm_hooks.py"
+          - "daemonsets"
+          - "--namespace"
+          - "virtualization"
+          - "--names"
+          - "virt-handler"
         showlogs: true
 
   - name: envoy-gateway-controller
@@ -193,10 +282,7 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: envoy-gateway-controller
-          RELEASE_NAMESPACE: envoy-gateway-system
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "envoy-gateway-system"]
         showlogs: true
 
   - name: flux-operator
@@ -208,10 +294,7 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAME: flux-operator
-          RELEASE_NAMESPACE: flux-system
+        args: ["scripts/helm_hooks.py", "namespace", "--name", "flux-system"]
         showlogs: true
 
   - name: flux-instance
@@ -224,15 +307,11 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: flux-system
-          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/components/common/sops/secret.sops.yaml"
-        showlogs: true
-      - events: ["postsync"]
-        command: python
-        args: ["scripts/helm_hooks.py"]
-        env:
-          RELEASE_NAMESPACE: virtualization
-          MANIFESTS: ""
+        args:
+          - "scripts/helm_hooks.py"
+          - "sops"
+          - "--file"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/components/common/sops/secret.sops.yaml"
+          - "--namespace"
+          - "flux-system"
         showlogs: true

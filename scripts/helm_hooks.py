@@ -148,23 +148,41 @@ async def wait_for_deployments(dyn, namespace: str, deployments: list[str], time
         await watcher.close()
 
 
-async def wait_for_daemonsets(dyn, namespace, daemonsets, timeout=600):
-    api = dyn.resources.get(api_version="apps/v1", kind="DaemonSet")
+async def wait_for_daemonsets(dyn, namespace: str, daemonsets: list[str], timeout: int = 600):
+    api = await dyn.resources.get(api_version="apps/v1", kind="DaemonSet")
+    remaining = set(daemonsets)
     end_time = asyncio.get_event_loop().time() + timeout
-    for name in daemonsets:
-        while True:
-            try:
-                ds = await api.get(name=name, namespace=namespace)
-                ready = ds.status.number_ready or 0
-                desired = ds.status.desired_number_scheduled or 0
-                if ready >= desired:
-                    print(f"DaemonSet {name} ready")
-                    break
-            except ApiException:
-                pass
+
+    watcher = watch.Watch()
+    try:
+        async for event in api.watch(namespace=namespace, watcher=watcher):
+            obj = event["object"]
+            dep_name = obj.metadata.name
+            if dep_name not in remaining:
+                continue
+
+            status = obj.status or {}
+
+            desired = obj.status.desiredNumberScheduled or 0
+            ready = obj.status.numberReady or 0
+
+            if desired == 0:
+                print(f"DaemonSet {dep_name} has 0 desired replicas, not ready")
+            elif ready >= desired:
+                print(f"DaemonSet {dep_name} is ready ({ready}/{desired})")
+                remaining.remove(dep_name)
+            else:
+                print(f"Event {event['type']} {dep_name}: {ready}/{desired} ready")
+
+            if not remaining:
+                print("All daemonsets ready")
+                break
+
             if asyncio.get_event_loop().time() > end_time:
-                raise TimeoutError(f"DaemonSet {name} in {namespace} did not become ready")
-            await asyncio.sleep(5)
+                raise TimeoutError(f"Timeout waiting for daemonsets: {remaining}")
+    finally:
+        await watcher.close()
+
 
 async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
     client_vault = hvac.Client(url=vault_addr)
@@ -335,10 +353,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kubernetes hook executor")
     subparsers = parser.add_subparsers(dest="command")
 
-    ns_parser = subparsers.add_parser("namespace", help="Ensure namespace exists")
+    ns_parser = subparsers.add_parser("ensure-namespace", help="Ensure namespace exists")
     ns_parser.add_argument("--name", required=True, help="Namespace to create/check")
 
-    mf_parser = subparsers.add_parser("manifest", help="Apply manifest file")
+    mf_parser = subparsers.add_parser("apply-manifest", help="Apply manifest file")
     mf_parser.add_argument("--file", required=True, help="YAML manifest file")
     mf_parser.add_argument("--namespace", help="Namespace override")
 
@@ -346,21 +364,21 @@ if __name__ == "__main__":
     sops_parser.add_argument("--file", required=True, help="SOPS YAML file")
     sops_parser.add_argument("--namespace", required=True, help="Namespace to apply in")
 
-    fetch_crd_parser = subparsers.add_parser("crds-apply", help="Fetch and apply CRDs from YAML")
+    fetch_crd_parser = subparsers.add_parser("apply-crds", help="Fetch and apply CRDs from YAML")
     fetch_crd_parser.add_argument("--file", required=True, help="YAML file listing CRD URLs")
 
-    wait_crd_parser = subparsers.add_parser("crds-wait", help="Wait for CRDs to be established")
+    wait_crd_parser = subparsers.add_parser("wait-crds", help="Wait for CRDs to be established")
     wait_crd_parser.add_argument("--names", required=True, help="Comma-separated CRD names to wait for")
 
-    dep_parser = subparsers.add_parser("deployments", help="Wait for deployments")
+    dep_parser = subparsers.add_parser("wait-deployments", help="Wait for deployments")
     dep_parser.add_argument("--namespace", required=True)
     dep_parser.add_argument("--names", required=True, help="Comma-separated deployment names")
 
-    ds_parser = subparsers.add_parser("daemonsets", help="Wait for daemonsets")
+    ds_parser = subparsers.add_parser("wait-daemonsets", help="Wait for daemonsets")
     ds_parser.add_argument("--namespace", required=True)
     ds_parser.add_argument("--names", required=True, help="Comma-separated daemonset names")
 
-    vault_parser = subparsers.add_parser("vault", help="Init/unseal/restore Vault")
+    vault_parser = subparsers.add_parser("init-vault", help="Init/unseal/restore Vault")
     vault_parser.add_argument("--addr", required=True, help="Vault address")
     vault_parser.add_argument("--backup", default="/project/.vault/vault-backup.yaml", help="Vault backup file")
 

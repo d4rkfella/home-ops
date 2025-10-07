@@ -1,11 +1,9 @@
----
 # yaml-language-server: $schema=https://json.schemastore.org/helmfile
 
 helmDefaults:
   cleanupOnFail: true
   wait: true
   waitForJobs: true
-  # waitRetries: 3 # Not supported by Helm yet
 
 releases:
   - name: cilium
@@ -16,32 +14,20 @@ releases:
     values: ['./values.yaml.gotmpl']
     hooks:
       - events: ["prepare"]
-        command: bash
-        args:
-          - -c
-          - |
-            urls=$(yq -N '.crds[] | select(test("^https"))' {{ requiredEnv "BOOTSTRAP_DIR" }}/crds.yaml)
-
-            for url in $urls; do
-              echo "Applying CRD from $url"
-              kubectl apply --server-side --field-manager=kustomize-controller -f $url
-            done
-            echo "All CRDs applied successfully!"
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: cilium
+          RELEASE_NAMESPACE: kube-system
+          CRD_FILE: "{{ requiredEnv 'BOOTSTRAP_DIR' }}/crds.yaml"
         showlogs: true
-      - events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - until kubectl get crd ciliuml2announcementpolicies.cilium.io ciliumloadbalancerippools.cilium.io kubevirts.kubevirt.io cdis.cdi.kubevirt.io &>/dev/null; do sleep 10; done
-        showlogs: true
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --namespace=kube-system
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/cilium/manifests/networks.yaml
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: kube-system
+          CRDS_TO_WAIT: "ciliuml2announcementpolicies.cilium.io,ciliumloadbalancerippools.cilium.io,kubevirts.kubevirt.io,cdis.cdi.kubevirt.io"
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/cilium/manifests/networks.yaml"
         showlogs: true
 
   - name: coredns
@@ -69,50 +55,21 @@ releases:
     needs: ['kube-system/kubelet-csr-approver']
     hooks:
       - events: ["prepare"]
-        command: bash
-        args:
-          - -c
-          - |
-            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-              kubectl create namespace "{{ .Release.Namespace }}"
-            fi
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: cert-manager
+          RELEASE_NAMESPACE: cert-manager
         showlogs: true
-      - events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - until kubectl get crd clusterissuers.cert-manager.io certificates.cert-manager.io &>/dev/null; do sleep 10; done
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: cert-manager
+          CRDS_TO_WAIT: "clusterissuers.cert-manager.io,certificates.cert-manager.io"
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/rbac.yaml"
+          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml"
         showlogs: true
-      - events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace cert-manager
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml
-        showlogs: true
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --namespace=cert-manager
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cert-manager/cert-manager/manifests/rbac.yaml
-        showlogs: true
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --namespace=vault
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/certificate.yaml
 
   - name: external-secrets
     namespace: external-secrets
@@ -123,28 +80,19 @@ releases:
     needs: ['vault/vault','cert-manager/cert-manager']
     hooks:
       - events: ["prepare"]
-        command: bash
-        args:
-          - -c
-          - |
-            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-              kubectl create namespace "{{ .Release.Namespace }}"
-            fi
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: external-secrets
+          RELEASE_NAMESPACE: external-secrets
         showlogs: true
-      - events: ['postsync']
-        command: bash
-        args:
-          - -c
-          - until kubectl get crd clustersecretstores.external-secrets.io &>/dev/null; do sleep 10; done
-        showlogs: true
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --namespace=external-secrets
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: external-secrets
+          CRDS_TO_WAIT: "clustersecretstores.external-secrets.io"
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml"
         showlogs: true
 
   - name: zfs-localpv
@@ -156,30 +104,25 @@ releases:
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
       - events: ["prepare"]
-        command: bash
-        args:
-          - -c
-          - |
-            if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-              kubectl create namespace "{{ .Release.Namespace }}"
-            fi
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: zfs-localpv
+          RELEASE_NAMESPACE: openebs-system
         showlogs: true
-      - events: ['presync']
-        command: kubectl
-        args:
-          - apply
-          - --namespace=kube-system
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "BOOTSTRAP_DIR" }}/create-zpool.yaml
+      - events: ["presync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: kube-system
+          MANIFESTS: "{{ requiredEnv 'BOOTSTRAP_DIR' }}/create-zpool.yaml"
         showlogs: true
-      - events: ['postsync']
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml,{{ requiredEnv "KUBERNETES_DIR" }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: openebs-system
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml"
         showlogs: true
 
   - name: vault
@@ -190,72 +133,22 @@ releases:
     values: ['./values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
     hooks:
-    - events: ["prepare"]
-      command: bash
-      args:
-        - -c
-        - |
-          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-            kubectl create namespace "{{ .Release.Namespace }}"
-          fi
-      showlogs: true
-    - events: ['prepare']
-      command: bash
-      args:
-        - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace "{{ .Release.Namespace }}"
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - |
-          echo "Waiting for Vault pods to be Running..."
-          while true; do
-            VAULT_PODS=$(kubectl get pods -n vault -l app.kubernetes.io/name=vault -o jsonpath='{.items[*].status.phase}')
-            if echo "$VAULT_PODS" | grep -q "Running" && ! echo "$VAULT_PODS" | grep -q "Pending"; then
-              echo "All Vault pods are Running."
-              break
-            else
-              echo "Vault pods are not yet Running. Waiting..."
-              sleep 10
-            fi
-          done
-
-          export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
-
-          echo "Checking if Vault is already initialized..."
-          if vault status -format=json | jq -e '.initialized' | grep -q true; then
-            echo "Vault is already initialized. Skipping initialization."
-          else
-            echo "Vault not initialized. Initializing now..."
-            vault operator init -format=json > /tmp/vault-keys.json
-            echo "Vault initialized successfully."
-          fi
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - |
-          export VAULT_ADDR=https://vault.darkfellanetwork.com:8200
-
-          echo "Waiting for Vault to become unsealed and ready..."
-          ATTEMPTS=0
-          until vault status -format=json 2>/dev/null | jq -e '.sealed == false' >/dev/null; do
-            echo "Vault is sealed or not reachable yet. Retrying in 5 seconds..."
-            sleep 5
-            ATTEMPTS=$((ATTEMPTS+1))
-            if [ "$ATTEMPTS" -ge 60 ]; then
-              echo "Timeout waiting for Vault to unseal."
-              exit 1
-            fi
-          done
-
-          echo "Vault is unsealed. Proceeding with snapshot restoration..."
-          export VAULT_TOKEN=$(jq -r '.root_token' /tmp/vault-keys.json)
-          vault-backup restore --force --config=/project/.vault/vault-backup.yaml --vault-token=$VAULT_TOKEN
-      showlogs: true
+      - events: ["prepare"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: vault
+          RELEASE_NAMESPACE: vault
+          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/vault/vault/manifests/vault.secret.sops.yaml"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: vault
+          VAULT_ADDR: "https://vault.darkfellanetwork.com:8200"
+          CRDS_TO_WAIT: ""
+        showlogs: true
 
   - name: multus
     namespace: kube-system
@@ -265,159 +158,31 @@ releases:
     values: ['./values.yaml.gotmpl']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:
-    - events: ["postsync"]
-      command: kubectl
-      args:
-      - apply
-      - --server-side
-      - --field-manager=kustomize-controller
-      - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kube-system/multus/manifests/rbac.yaml
-      showlogs: true
-    - events: ["postsync"]
-      command: kubectl
-      args:
-        - apply
-        - --namespace=kubevirt
-        - --server-side
-        - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml
-      showlogs: true
-    - events: ["postsync"]
-      command: kubectl
-      args:
-        - apply
-        - --namespace=cdi
-        - --server-side
-        - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cdi/cdi-instance/manifests/cdi.yaml
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - until kubectl get crd storageprofiles.cdi.kubevirt.io &>/dev/null; do sleep 10; done
-      showlogs: true
-    - events: ["postsync"]
-      command: kubectl
-      args:
-        - apply
-        - --server-side
-        - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - |
-          if ! kubectl get namespace virtualization &>/dev/null; then
-            kubectl create namespace virtualization
-          fi
-      showlogs: true
-    - events: ['postsync']
-      command: bash
-      args:
-        - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace virtualization
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - |
-          echo "Checking if all required deployments and daemonsets are running..."
-
-          KUBEVIRT_DEPLOYMENTS=("virt-operator" "virt-controller" "virt-api")
-          KUBEVIRT_DAEMONSETS=("virt-handler")
-          CDI_DEPLOYMENTS=("cdi-uploadproxy" "cdi-operator" "cdi-deployment" "cdi-apiserver")
-
-          MAX_ATTEMPTS=12
-          SLEEP_INTERVAL="30s"
-
-          check_and_retry_deployment_status() {
-            local NAMESPACE=$1
-            local DEPLOYMENT_NAME=$2
-            local ATTEMPTS=0
-
-            echo "Checking deployment $DEPLOYMENT_NAME in namespace $NAMESPACE..."
-            while true; do
-              kubectl -n "$NAMESPACE" rollout status "deployment/$DEPLOYMENT_NAME" --timeout=1m
-              if [ $? -eq 0 ]; then
-                echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE is running."
-                return 0 # Success
-              fi
-
-              ATTEMPTS=$((ATTEMPTS + 1))
-              if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
-                echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE failed to roll out after $MAX_ATTEMPTS attempts. Exiting."
-                exit 1 # Failed after max attempts
-              fi
-
-              echo "Deployment $DEPLOYMENT_NAME in namespace $NAMESPACE not ready yet. Retrying in $SLEEP_INTERVAL (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."
-              sleep "$SLEEP_INTERVAL"
-            done
-          }
-
-          # --- Function to check and retry daemonset status ---
-          check_and_retry_daemonset_status() {
-            local NAMESPACE=$1
-            local DAEMONSET_NAME=$2
-            local ATTEMPTS=0
-
-            echo "Checking daemonset $DAEMONSET_NAME in namespace $NAMESPACE..."
-            while true; do
-              kubectl -n "$NAMESPACE" rollout status "daemonset/$DAEMONSET_NAME" --timeout=1m
-              if [ $? -eq 0 ]; then
-                echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE is running."
-                return 0 # Success
-              fi
-
-              ATTEMPTS=$((ATTEMPTS + 1))
-              if [ "$ATTEMPTS" -ge "$MAX_ATTEMPTS" ]; then
-                echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE failed to roll out after $MAX_ATTEMPTS attempts. Exiting."
-                exit 1 # Failed after max attempts
-              fi
-
-              echo "Daemonset $DAEMONSET_NAME in namespace $NAMESPACE not ready yet. Retrying in $SLEEP_INTERVAL (attempt $ATTEMPTS/$MAX_ATTEMPTS)..."
-              sleep "$SLEEP_INTERVAL"
-            done
-          }
-
-          # --- Check Kubevirt Deployments ---
-          for DEPLOYMENT in "${KUBEVIRT_DEPLOYMENTS[@]}"; do
-            check_and_retry_deployment_status "kubevirt" "$DEPLOYMENT"
-          done
-
-          # --- Check Kubevirt Daemonsets ---
-          for DAEMONSET in "${KUBEVIRT_DAEMONSETS[@]}"; do
-            check_and_retry_daemonset_status "kubevirt" "$DAEMONSET"
-          done
-
-          # --- Check CDI Deployments ---
-          for DEPLOYMENT in "${CDI_DEPLOYMENTS[@]}"; do
-            check_and_retry_deployment_status "cdi" "$DEPLOYMENT"
-          done
-
-          echo "All required deployments and daemonsets are running."
-      showlogs: true
-    - events: ["postsync"]
-      command: bash
-      args:
-        - -c
-        - until kubectl get crd virtualmachines.kubevirt.io datavolumes.cdi.kubevirt.io &>/dev/null; do sleep 10; done
-      showlogs: true
-    - events: ["postsync"]
-      command: kubectl
-      args:
-        - apply
-        - --namespace=virtualization
-        - --server-side
-        - --field-manager=kustomize-controller
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/multus-network.yaml
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/windows-server/manifests/virtualmachine.yaml
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/truenas-scale/manifests/multus-network.yaml
-        - --filename={{ requiredEnv "KUBERNETES_DIR" }}/apps/virtualization/truenas-scale/manifests/virtualmachine.yaml
-      showlogs: true
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: kube-system
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/multus/manifests/rbac.yaml"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: kubevirt
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: cdi
+          MANIFESTS: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/cdi.yaml,{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml"
+          CRDS_TO_WAIT: "storageprofiles.cdi.kubevirt.io,virtualmachines.kubevirt.io,datavolumes.cdi.kubevirt.io"
+          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/virtualization/windows-server/manifests/sysprep.secret.sops.yaml"
+          DEPLOYMENTS: "virt-operator,virt-controller,virt-api,cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver"
+          DAEMONSETS: "virt-handler"
+        showlogs: true
 
   - name: envoy-gateway-controller
     namespace: envoy-gateway-system
@@ -426,15 +191,13 @@ releases:
     version: 1.5.2
     needs: ['cert-manager/cert-manager','kube-system/cilium']
     hooks:
-    - events: ["prepare"]
-      command: bash
-      args:
-        - -c
-        - |
-          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-            kubectl create namespace "{{ .Release.Namespace }}"
-          fi
-      showlogs: true
+      - events: ["prepare"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: envoy-gateway-controller
+          RELEASE_NAMESPACE: envoy-gateway-system
+        showlogs: true
 
   - name: flux-operator
     namespace: flux-system
@@ -443,15 +206,13 @@ releases:
     version: 0.31.0
     values: ['./values.yaml.gotmpl']
     hooks:
-    - events: ["prepare"]
-      command: bash
-      args:
-        - -c
-        - |
-          if ! kubectl get namespace "{{ .Release.Namespace }}" &>/dev/null; then
-            kubectl create namespace "{{ .Release.Namespace }}"
-          fi
-      showlogs: true
+      - events: ["prepare"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAME: flux-operator
+          RELEASE_NAMESPACE: flux-system
+        showlogs: true
 
   - name: flux-instance
     namespace: flux-system
@@ -461,15 +222,17 @@ releases:
     values: ['./values.yaml.gotmpl']
     needs: ['flux-system/flux-operator']
     hooks:
-    - events: ['prepare']
-      command: bash
-      args:
-        - -c
-        - sops -d {{ requiredEnv "KUBERNETES_DIR" }}/components/common/sops/secret.sops.yaml | kubectl apply --server-side --field-manager=kustomize-controller --filename - --namespace flux-system
-    - events: ['postsync']
-      command: kubectl
-      args:
-        - delete
-        - secret
-        - sysprep-secret
-        - --namespace=virtualization
+      - events: ["prepare"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: flux-system
+          SOPS_FILE: "{{ requiredEnv 'KUBERNETES_DIR' }}/components/common/sops/secret.sops.yaml"
+        showlogs: true
+      - events: ["postsync"]
+        command: python
+        args: ["scripts/helm_hooks.py"]
+        env:
+          RELEASE_NAMESPACE: virtualization
+          MANIFESTS: ""
+        showlogs: true

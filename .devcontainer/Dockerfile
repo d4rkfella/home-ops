@@ -122,6 +122,7 @@ RUN apk add --no-cache \
         ttf-dejavu \
         aws-cli \
         python3 \
+        py3-pip \
         py3-yaml \
         py3-boto3 \
         cosign && \

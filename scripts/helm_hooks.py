@@ -11,7 +11,6 @@ import aiohttp
 import subprocess
 from kubernetes_asyncio import client, config, dynamic, watch
 from kubernetes_asyncio.dynamic import DynamicClient
-from kubernetes_asyncio.utils import create_from_yaml, FailToCreateError
 from kubernetes_asyncio.client.exceptions import ApiException
 import hvac
 
@@ -168,10 +167,6 @@ async def wait_for_daemonsets(dyn, namespace, daemonsets, timeout=600):
             await asyncio.sleep(5)
 
 async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
-    """
-    Initializes/unseals Vault and conditionally performs a backup restore
-    if keys were present and unsealing was required.
-    """
     client_vault = hvac.Client(url=vault_addr)
     token_file = "/tmp/vault-keys.json"
     keys_loaded = False
@@ -197,28 +192,26 @@ async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
             with open(token_file) as f:
                 data = json.load(f)
                 keys = data.get('keys')
-            if keys:
-                print("Vault is sealed. Attempting unseal...")
-                client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
-                for key in keys[1:]:
-                    client_vault.sys.submit_unseal_key(key=key)
-                if not client_vault.sys.is_sealed():
-                    print("Vault unsealed successfully.")
-                else:
-                    print("Vault remains sealed after attempting unseal.")
+            print("Vault is sealed. Attempting unseal...")
+            client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
+            for key in keys[1:]:
+                client_vault.sys.submit_unseal_key(key=key)
+            await asyncio.sleep(5)
+
+            if not client_vault.sys.is_sealed():
+                print("Vault unsealed successfully.")
             else:
-                print("Vault unseal skipped: 'keys' not found in token file.")
-        except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+                print("Vault remains sealed after attempted unseal operation.")
+                return
+        except FileNotFoundError as e:
+            print(f"Error reading token file: {e}")
+            return
+        except (KeyError, json.JSONDecodeError) as e:
             print(f"Error reading keys from token file for unseal: {e}")
             return
-    elif not client_vault.sys.is_sealed():
-        print("Vault is already unsealed.")
-    else:
-        print("Vault is sealed, but token file is missing. Cannot unseal or restore.")
-        return
 
     if not client_vault.sys.is_sealed() and keys_loaded:
-        print("Proceeding with Vault Raft snapshot restoration...")
+        print("Vault is already unsealed and init root token is available. Proceeding with Raft snapshot restoration....")
 
         try:
             with open(token_file) as f:
@@ -258,8 +251,7 @@ async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
              print("Vault restore FAILED: 'vault-backup' command not found. Ensure it's in the PATH.")
         except Exception as e:
             print(f"An unexpected error occurred during vault restore: {e}")
-    else:
-        print("Vault restore skipped. Conditions not met (either already unsealed and stable, keys missing, or still sealed).")
+
 
 
 async def fetch_and_apply_crds(dyn, crd_yaml_path):
@@ -379,21 +371,21 @@ if __name__ == "__main__":
 
         async with client.ApiClient() as api_client:
             dyn = await DynamicClient(api_client)
-            if args.command == "namespace":
+            if args.command == "ensure-namespace":
                 await ensure_namespace(dyn, args.name)
-            elif args.command == "manifest":
+            elif args.command == "apply-manifest":
                 await apply_manifest_file(dyn, args.file, args.namespace)
-            elif args.command == "sops":
+            elif args.command == "apply-sops-encrypted-manifest":
                 await apply_sops_manifest(dyn, args.file, args.namespace)
-            elif args.command == "crds-apply":
+            elif args.command == "apply-crds":
                 await fetch_and_apply_crds(dyn, args.file)
-            elif args.command == "crds-wait":
+            elif args.command == "wait-crds":
                 await wait_for_crds(dyn, args.names.split(","))
-            elif args.command == "deployments":
+            elif args.command == "wait-deployments":
                 await wait_for_deployments(dyn, args.namespace, args.names.split(","))
-            elif args.command == "daemonsets":
+            elif args.command == "wait-daemonsets":
                 await wait_for_daemonsets(dyn, args.namespace, args.names.split(","))
-            elif args.command == "vault":
+            elif args.command == "init-vault":
                 await vault_init_unseal_restore(args.addr, args.backup)
             else:
                 parser.print_help()

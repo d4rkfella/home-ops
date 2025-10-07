@@ -15,9 +15,7 @@ from kubernetes_asyncio.utils import create_from_yaml, FailToCreateError
 from kubernetes_asyncio.client.exceptions import ApiException
 import hvac
 
-# -------------------------------
-# Kubernetes helpers
-# -------------------------------
+
 async def load_k8s_client():
     """Properly load Kubernetes dynamic client"""
     await config.load_kube_config()
@@ -34,7 +32,7 @@ async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
     except ApiException as e:
         if e.status == 404:
             body = {"apiVersion": "v1", "kind": "Namespace", "metadata": {"name": namespace}}
-            await api.server_side_apply(body=body, field_manager="flux-client-side-apply", force_conflicts=True)
+            await api.server_side_apply(body=body, field_manager="flux-client-side-apply")
             print(f"Created namespace '{namespace}'")
         else:
             raise
@@ -47,41 +45,34 @@ async def apply_manifest_file(dyn, file_path: str, namespace: str = None):
             api = await dyn.resources.get(api_version=doc['apiVersion'], kind=doc['kind'])
             if 'namespace' not in doc['metadata'] and namespace:
                 doc['metadata']['namespace'] = namespace
-            await api.apply(body=doc, field_manager="kustomize-controller")
+            await api.apply(body=doc, field_manager="flux-client-side-apply")
             print(f"Applied {doc['kind']} {doc['metadata']['name']}")
 
 async def apply_sops_manifest(dyn: DynamicClient, file_path: str, namespace: str):
-    import subprocess # Required for calling the sops CLI binary
-    import os         # Required for accessing environment variables
+    import subprocess
+    import os
 
     age_key_file = os.environ.get("SOPS_AGE_KEY_FILE")
     if not age_key_file:
         print("Fatal Error: SOPS_AGE_KEY_FILE environment variable is not set. Cannot decrypt.")
-        # Added instructional context on where to check the environment for SOPS
         print("Please ensure the 'SOPS_AGE_KEY_FILE' is exported in your shell (e.g., via 'envcr').")
         return
 
-    # 1. Execute the sops command to decrypt the file path
     try:
-        # FIX: Reverting the command to use the shorthand flag '-d' to perfectly match the
-        # user's known working shell command ('sops -d <file>').
-        # The 'env=os.environ' remains to inherit SOPS_AGE_KEY_FILE correctly.
         decrypted_str = subprocess.check_output(
-            ['sops', '-d', file_path],  # Using '-d' shorthand
-            env=os.environ,                 # CRITICAL: Pass the shell's environment
-            universal_newlines=True,        # Decodes output to string (YAML text)
+            ['sops', '-d', file_path],
+            env=os.environ,
+            universal_newlines=True,
             stderr=subprocess.PIPE,
         )
     except FileNotFoundError:
         print("Fatal Error: The 'sops' CLI binary is not installed or available in PATH. Cannot proceed.")
         return
     except subprocess.CalledProcessError as e:
-        # SOPS CLI failed to decrypt (e.g., bad key, bad file format)
         print(f"Error decrypting SOPS file '{file_path}' (SOPS CLI Failed). Output:")
-        # Print only the stderr output from the SOPS CLI for clear debugging
         print(e.stderr.strip())
         print(f"Attempted to use key file path from SOPS_AGE_KEY_FILE: {age_key_file}")
-        return # Stop execution if decryption fails
+        return
     except Exception as e:
         print(f"An unexpected error occurred during SOPS decryption: {e}")
         return
@@ -90,9 +81,7 @@ async def apply_sops_manifest(dyn: DynamicClient, file_path: str, namespace: str
         if not doc:
             continue
 
-        # Ensures that 'doc' is actually a dictionary before attempting to access its keys.
         if not isinstance(doc, dict):
-            # This check is still necessary to skip non-document content in the YAML stream
             print(f"Skipping non-dictionary document from SOPS file: {type(doc)}")
             continue
 
@@ -101,9 +90,7 @@ async def apply_sops_manifest(dyn: DynamicClient, file_path: str, namespace: str
             doc.setdefault('metadata', {})['namespace'] = namespace
 
         name = doc['metadata']['name']
-        # The field manager for SOPS-applied manifests is typically 'kustomize-controller'
-        # or a specific flux manager. Using 'kustomize-controller' for consistency.
-        await api.server_side_apply(body=doc, field_manager="kustomize-controller", name=name)
+        await api.server_side_apply(body=doc, field_manager="flux-client-side-apply", name=name)
         print(f"Applied {doc['kind']} {doc['metadata']['name']} (SOPS)")
 
 
@@ -180,52 +167,105 @@ async def wait_for_daemonsets(dyn, namespace, daemonsets, timeout=600):
                 raise TimeoutError(f"DaemonSet {name} in {namespace} did not become ready")
             await asyncio.sleep(5)
 
-# -------------------------------
-# Vault helpers
-# -------------------------------
-async def vault_init_unseal_restore(vault_addr, backup_file="/project/.vault/vault-backup.yaml"):
+async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
+    """
+    Initializes/unseals Vault and conditionally performs a backup restore
+    if keys were present and unsealing was required.
+    """
     client_vault = hvac.Client(url=vault_addr)
     token_file = "/tmp/vault-keys.json"
+    keys_loaded = False
 
-    # Initialize
     if not client_vault.sys.is_initialized():
-        init_result = client_vault.sys.initialize()
-        with open(token_file, "w") as f:
-            json.dump(init_result, f)
-        print("Vault initialized")
+        print("Vault not initialized. Initializing now...")
+        try:
+            init_result = client_vault.sys.initialize()
+            with open(token_file, "w") as f:
+                json.dump(init_result, f)
+            print("Vault initialized successfully. Keys saved.")
+            keys_loaded = True
+        except Exception as e:
+            print(f"Vault initialization failed: {e}")
+            return
     else:
-        print("Vault already initialized")
+        print("Vault already initialized.")
+        if os.path.exists(token_file):
+            keys_loaded = True
 
-    # Unseal
-    with open(token_file) as f:
-        keys = json.load(f)['keys']
-    if client_vault.sys.is_sealed():
-        print("Submitting first unseal key with reset")
-        client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
-        
-        for key in keys[1:]:
-            if client_vault.sys.is_sealed():
-                client_vault.sys.submit_unseal_key(key=key)
-    
-    print("Vault unsealed")
+    if client_vault.sys.is_sealed() and keys_loaded:
+        try:
+            with open(token_file) as f:
+                data = json.load(f)
+                keys = data.get('keys')
+            if keys:
+                print("Vault is sealed. Attempting unseal...")
+                client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
+                for key in keys[1:]:
+                    client_vault.sys.submit_unseal_key(key=key)
+                if not client_vault.sys.is_sealed():
+                    print("Vault unsealed successfully.")
+                else:
+                    print("Vault remains sealed after attempting unseal.")
+            else:
+                print("Vault unseal skipped: 'keys' not found in token file.")
+        except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+            print(f"Error reading keys from token file for unseal: {e}")
+            return
+    elif not client_vault.sys.is_sealed():
+        print("Vault is already unsealed.")
+    else:
+        print("Vault is sealed, but token file is missing. Cannot unseal or restore.")
+        return
 
-    # Restore
-    #with open(token_file) as f:
-        #root_token = json.load(f)['root_token']
-    #client_vault.token = root_token
-    # Placeholder for vault-backup restore logic
-    #print(f"Restoring Vault backup from {backup_file} (implement your custom logic here)")
+    if not client_vault.sys.is_sealed() and keys_loaded:
+        print("Proceeding with Vault Raft snapshot restoration...")
 
-# -------------------------------
-# CRD fetching
-# -------------------------------
+        try:
+            with open(token_file) as f:
+                root_token = json.load(f)['root_token']
+
+            command = [
+                "vault-backup",
+                "restore",
+                "--force",
+                f"--config={backup_file}",
+                f"--vault-token={root_token}"
+                f"--vault-address={vault_addr}"
+            ]
+
+            print(f"Executing: {' '.join(command)} (VAULT_ADDR={vault_addr})")
+
+            process = await asyncio.create_subprocess_exec(
+                *command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+
+            stdout, stderr = await process.communicate()
+
+            if process.returncode != 0:
+                print(f"Vault restore FAILED (Exit Code {process.returncode}):")
+                print("STDOUT:\n", stdout.decode().strip())
+                print("STDERR:\n", stderr.decode().strip())
+                raise RuntimeError(f"Vault restore failed with exit code {process.returncode}")
+            else:
+                print("Vault restore completed successfully.")
+                print("STDOUT:\n", stdout.decode().strip())
+
+        except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
+            print(f"Vault restore skipped: Failed to read root token from token file. Error: {e}")
+        except FileNotFoundError:
+             print("Vault restore FAILED: 'vault-backup' command not found. Ensure it's in the PATH.")
+        except Exception as e:
+            print(f"An unexpected error occurred during vault restore: {e}")
+    else:
+        print("Vault restore skipped. Conditions not met (either already unsealed and stable, keys missing, or still sealed).")
+
+
 async def fetch_and_apply_crds(dyn, crd_yaml_path):
-    # Register the custom constructor to handle the specific PyYAML bug in Prometheus CRDs.
     register_yaml_value_constructor()
 
-    # 1. Read the list of URLs from your YAML file (just URLs starting with https)
     try:
-        # Use the passed argument path instead of hardcoded path
         with open(crd_yaml_path) as f:
             data = yaml.safe_load(f)
     except FileNotFoundError:
@@ -242,13 +282,11 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path):
     else:
         print(urls)
 
-    # 2. Create one aiohttp session for all fetches
     async with aiohttp.ClientSession() as session:
         for url in urls:
             print(f"Fetching CRDs from {url}")
             yaml_text = None
 
-            # --- FETCHING ---
             try:
                 async with session.get(url) as resp:
                     if resp.status != 200:
@@ -259,7 +297,6 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path):
                 print(f"Failed to fetch {url} (network error): {e}")
                 continue
 
-            # --- APPLICATION ---
             try:
                 docs_applied = 0
 
@@ -294,55 +331,43 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path):
 def register_yaml_value_constructor():
     """Registers a constructor for the problematic implicit YAML tag."""
     def yaml_constructor_value(loader, node):
-        # Instruct the loader to construct this node as a simple scalar (string)
         return loader.construct_scalar(node)
 
-    # Use UnsafeLoader since we rely on it for complex CRDs anyway, and register the fix there.
-    # Check if the constructor is already registered before adding it.
     if 'tag:yaml.org,2002:value' not in yaml.UnsafeLoader.yaml_constructors:
         yaml.UnsafeLoader.add_constructor('tag:yaml.org,2002:value', yaml_constructor_value)
-# -------------------------------
-# CLI dispatcher for testing individual functions
-# -------------------------------
+
+
 if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Kubernetes hook executor")
     subparsers = parser.add_subparsers(dest="command")
 
-    # Namespace
     ns_parser = subparsers.add_parser("namespace", help="Ensure namespace exists")
     ns_parser.add_argument("--name", required=True, help="Namespace to create/check")
 
-    # Apply manifest
     mf_parser = subparsers.add_parser("manifest", help="Apply manifest file")
     mf_parser.add_argument("--file", required=True, help="YAML manifest file")
     mf_parser.add_argument("--namespace", help="Namespace override")
 
-    # Apply SOPS
     sops_parser = subparsers.add_parser("sops", help="Apply SOPS manifest")
     sops_parser.add_argument("--file", required=True, help="SOPS YAML file")
     sops_parser.add_argument("--namespace", required=True, help="Namespace to apply in")
 
-    # Fetch & apply CRDs
     fetch_crd_parser = subparsers.add_parser("crds-apply", help="Fetch and apply CRDs from YAML")
     fetch_crd_parser.add_argument("--file", required=True, help="YAML file listing CRD URLs")
 
-    # Wait for CRDs
     wait_crd_parser = subparsers.add_parser("crds-wait", help="Wait for CRDs to be established")
     wait_crd_parser.add_argument("--names", required=True, help="Comma-separated CRD names to wait for")
 
-    # Deployments
     dep_parser = subparsers.add_parser("deployments", help="Wait for deployments")
     dep_parser.add_argument("--namespace", required=True)
     dep_parser.add_argument("--names", required=True, help="Comma-separated deployment names")
 
-    # Daemonsets
     ds_parser = subparsers.add_parser("daemonsets", help="Wait for daemonsets")
     ds_parser.add_argument("--namespace", required=True)
     ds_parser.add_argument("--names", required=True, help="Comma-separated daemonset names")
 
-    # Vault
     vault_parser = subparsers.add_parser("vault", help="Init/unseal/restore Vault")
     vault_parser.add_argument("--addr", required=True, help="Vault address")
     vault_parser.add_argument("--backup", default="/project/.vault/vault-backup.yaml", help="Vault backup file")

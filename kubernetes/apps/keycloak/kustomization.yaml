@@ -25,7 +25,7 @@ patches:
             spec:
               hostUsers: false
               containers:
-                - name: manager
+                - name: keycloak-operator
                   resources:
                     limits:
                       cpu: 700m

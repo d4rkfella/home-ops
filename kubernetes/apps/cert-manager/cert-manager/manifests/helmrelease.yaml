@@ -23,17 +23,9 @@ spec:
   chartRef:
     kind: OCIRepository
     name: cert-manager
-  postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: Deployment
-          name: (cert-manager|cert-manager-cainjector|cert-manager-webhook)
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
   values:
+    global:
+      hostUsers: false
     crds:
       enabled: true
       keep: true

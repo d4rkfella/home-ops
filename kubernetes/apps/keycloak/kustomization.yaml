@@ -9,3 +9,27 @@ components:
   - ../../components/common
 transformers:
   - ./transformers
+patches:
+    - target:
+        group: apps
+        version: v1
+        kind: Deployment
+        name: keycloak-operator
+      patch: |
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: keycloak-operator
+        spec:
+          template:
+            spec:
+              hostUsers: false
+              containers:
+                - name: manager
+                  resources:
+                    limits:
+                      cpu: 700m
+                      memory: 1536Mi
+                    requests:
+                      cpu: 300m
+                      memory: 512Mi

@@ -45,6 +45,7 @@ spec:
               - 192.168.91.41
 
     defaultPodOptions:
+      hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

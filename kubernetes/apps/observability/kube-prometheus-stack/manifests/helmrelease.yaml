@@ -149,6 +149,7 @@ spec:
               namespace: envoy-gateway-system
               sectionName: https
       prometheusSpec:
+        serviceDiscoveryRole: EndpointSlice
         listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:

@@ -271,6 +271,7 @@ cluster:
             key: ENC[AES256_GCM,data:z6hzAfMxWr79hD6g9OzKMdBzj/QA4x/tzwzUQAmB/giRfyeAXrhR4xbXnjs+8hFuPA0bf/yeuhdFkdJUp4qSPyx0J8VV0EoaAx2D4jBBlJxYUpS4hZHDyGxMaaP9o3gzFMZZ2a2NcEJ0ayvs0FwYHLYj3j3XzznRyygOfFIqfNuIvXonZaueBtTbOF3b5sFxA0D5QkuTSqbKkFswuqXz925mKKbMeMKos9G1UPYFLbvE41T4Gm3ZKEdRA9T/HOGyhMC9ZF2P8WtXbXciMN9LL+5xBbO6A061M8XZmMZJtIuoE6VfaYa1cW691qeg5bvvOoNJiCT+SmkEAOGIKrOoYbFOKhnjrQuvgeocOZhW4xrFfi7+MbgKu+x3RyTAovoj3wL+eqoYI1bF1qXfQsmVKA==,iv:oECtP95BgKw4luyXlMOV5UDBPNeWqwchbGNu+oIBBsM=,tag:Vk319bgtoknBqWvyWZZ2xA==,type:str]
         extraArgs:
             listen-metrics-urls: http://0.0.0.0:2381
+            listen-client-urls: https://127.0.0.1:2379
     allowSchedulingOnControlPlanes: true
 sops:
     age:

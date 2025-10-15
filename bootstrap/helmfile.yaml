@@ -56,7 +56,7 @@ releases:
     namespace: cert-manager
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cert-manager
-    version: v1.19.0
+    version: v1.19.1
     values: ['./values.yaml.gotmpl']
     needs: ['kube-system/kubelet-csr-approver']
     hooks:

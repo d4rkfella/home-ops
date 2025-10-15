@@ -143,7 +143,7 @@ machine:
             - spec_rstack_overflow=microcode
             - zfs.zfs_arc_shrinker_limit=0
             - zfs.zfs_arc_max=34359738368
-        image: factory.talos.dev/installer-secureboot/4a9356a6363819d83722bb117dbb6ea1b453d63de230549808f76d0adb74c764:v1.11.2
+        image: factory.talos.dev/installer-secureboot/4a9356a6363819d83722bb117dbb6ea1b453d63de230549808f76d0adb74c764:v1.11.3
         wipe: false
     files:
         - op: overwrite

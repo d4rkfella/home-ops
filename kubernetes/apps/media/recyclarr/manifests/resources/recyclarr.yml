@@ -43,6 +43,22 @@ radarr:
 
     custom_formats:
       - trash_ids:
+          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
+          - 2899d84dc9372de3408e6d8cc18e9666 # x264
+        assign_scores_to:
+          - name: SQP-3
+            score: 0
+      - trash_ids:
+          - caa37d0df9c348912df1fb1d88f9273a # HDR10+ Boost
+          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
+          - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
+          - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
+          - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
+          - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
+          - f537cf427b64c38c8e36298f657e4828 # Scene
+          - f700d29429c023a5734505e77daeaea7 # DV (Disk)
+          - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
+          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
           - 0f12c086e289cf966fa5948eac571f44 # Hybrid
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
           - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster
@@ -52,47 +68,6 @@ radarr:
           - 957d0f44b592285f26449575e8b1167e # Special Edition
           - eecf3a857724171f968a66cb5719e152 # IMAX
           - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
-        assign_scores_to:
-          - name: SQP-3
-
-      # Unwanted
-      - trash_ids:
-          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
-        assign_scores_to:
-          - name: SQP-3
-            score: 0
-      - trash_ids:
-          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
-        assign_scores_to:
-          - name: SQP-3
-
-      # Enable x264 releases
-      - trash_ids:
-          - 2899d84dc9372de3408e6d8cc18e9666 # x264
-        assign_scores_to:
-          - name: SQP-3
-            score: 0
-
-      # Optional
-      - trash_ids:
-          - b17886cb4158d9fea189859409975758 # HDR10+ Boost
-          - 55a5b50cb416dea5a50c4955896217ab # DV HDR10+ Boost
-
-          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
-
-          - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
-          - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
-          - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
-          - 5c44f52a8714fdd79bb4d98e2673be1f # Retags
-          - f537cf427b64c38c8e36298f657e4828 # Scene
-          - f700d29429c023a5734505e77daeaea7 # DV (Disk)
-        assign_scores_to:
-          - name: SQP-3
-
-      # Optional SDR
-      # SDR (no WEBDL) - block UHD/4k Remux and Bluray encode SDR releases, but allow SDR WEB
-      - trash_ids:
-          - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
         assign_scores_to:
           - name: SQP-3
 
@@ -127,17 +102,11 @@ sonarr:
       - name: WEB-2160p
 
     custom_formats:
-      # HDR Formats
       - trash_ids:
-          # Comment out the next line if you and all of your users' setups are fully DV compatible
-          - 9b27ab6498ec0f31a3353992e19434ca # DV (WEBDL)
-
-          - 0dad0a507451acddd754fe6dc3a7f5e7 # HDR10+ Boost
-          - 385e9e8581d33133c3961bdcdeffb7b4 # DV HDR10+ Boost
+          - caa37d0df9c348912df1fb1d88f9273a # HDR10Plus Boost
         assign_scores_to:
           - name: WEB-2160p
 
-      # Optional
       - trash_ids:
           - 32b367365729d530ca1c124a0b180c64 # Bad Dual Groups
           - 82d40da2bc6923f41e14394075dd4b03 # No-RlsGroup

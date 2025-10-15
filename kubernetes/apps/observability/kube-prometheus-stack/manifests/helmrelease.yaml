@@ -388,7 +388,7 @@ spec:
         - deployments
         - endpointslices
         - horizontalpodautoscalers
-        #- ingresses
+        - ingresses
         - jobs
         - leases
         - limitranges
@@ -409,10 +409,10 @@ spec:
         - storageclasses
         - validatingwebhookconfigurations
         - volumeattachments
-        # - ingressclasses
-        # - clusterrolebindings
-        # - clusterroles
-        # - roles
+        - ingressclasses
+        - clusterrolebindings
+        - clusterroles
+        - roles
       metricLabelsAllowlist:
         - nodes=[*]
       prometheus:

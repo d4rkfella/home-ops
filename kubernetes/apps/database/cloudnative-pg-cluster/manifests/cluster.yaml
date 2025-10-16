@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: &current postgres-v17
+  name: &current postgres-v18
   labels:
     cnpg.io/reload: ""
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
@@ -57,14 +57,14 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: cloudflare
-        serverName: postgres-v17-2
+        serverName: postgres-v18
   bootstrap:
     recovery:
       source: source
-  externalClusters:
-    - name: source
-      plugin:
-        name: barman-cloud.cloudnative-pg.io
-        parameters:
-          barmanObjectName: cloudflare
-          serverName: postgres-v17-1
+  #externalClusters:
+    #- name: source
+      #plugin:
+        #name: barman-cloud.cloudnative-pg.io
+        #parameters:
+          #barmanObjectName: cloudflare
+          #serverName: postgres-v17-1

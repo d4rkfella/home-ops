@@ -65,6 +65,6 @@ spec:
     - name: source
       plugin:
         name: barman-cloud.cloudnative-pg.io
-        parameters: &parameters
+        parameters:
           barmanObjectName: cloudflare
           serverName: postgres-v17-1

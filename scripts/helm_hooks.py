@@ -212,7 +212,7 @@ async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
             client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
             for key in keys[1:]:
                 client_vault.sys.submit_unseal_key(key=key)
-            await asyncio.sleep(5)
+            await asyncio.sleep(60)
 
             if not client_vault.sys.is_sealed():
                 print("Vault unsealed successfully.")

@@ -19,7 +19,7 @@ spec:
               repository: ghcr.io/d4rkfella/postgres-init
               tag: 0.1.0@sha256:11795769214505f9aee9314d0dc2086fb4f8f2dd16d08739e1734fd719884eda
             env:
-              POSTGRES_HOST: &dbHost postgres-v17-rw.database.svc.cluster.local
+              POSTGRES_HOST: &dbHost postgres-db-rw.database.svc.cluster.local
               POSTGRES_PORT: &dbPort 5432
               POSTGRES_SSLMODE: require
               POSTGRES_DBNAME: &dbName gatus

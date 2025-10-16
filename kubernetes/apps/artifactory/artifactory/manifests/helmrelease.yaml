@@ -54,7 +54,7 @@ spec:
               seccompProfile: { type: RuntimeDefault }
             env:
               - name: POSTGRES_HOST
-                value: postgres-v17-rw.database.svc.cluster.local
+                value: postgres-db-rw.database.svc.cluster.local
               - name: POSTGRES_DBNAME
                 value: artifactory
               - name: POSTGRES_PASS

@@ -40,7 +40,7 @@ spec:
             imagePullPolicy: IfNotPresent
             env:
               - name: POSTGRES_HOST
-                value: &dbHost postgres-v17-rw.database.svc.cluster.local
+                value: &dbHost postgres-db-rw.database.svc.cluster.local
               - name: POSTGRES_PORT
                 value: '5432'
               - name: POSTGRES_SSLMODE

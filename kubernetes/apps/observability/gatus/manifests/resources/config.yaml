@@ -57,7 +57,7 @@ endpoints:
 
   - name: postgres17
     group: infrastructure
-    url: tcp://postgres-v17-rw.database.svc.cluster.local:5432
+    url: tcp://postgres-db-rw.database.svc.cluster.local:5432
     interval: 1m
     ui:
       hide-url: true

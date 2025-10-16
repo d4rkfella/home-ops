@@ -6,7 +6,7 @@ metadata:
 spec:
   backupOwnerReference: self
   cluster:
-    name: postgres-v17
+    name: postgres-db
   immediate: true
   method: plugin
   pluginConfiguration:

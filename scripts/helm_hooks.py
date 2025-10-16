@@ -16,14 +16,12 @@ import hvac
 
 
 async def load_k8s_client():
-    """Properly load Kubernetes dynamic client"""
     await config.load_kube_config()
     api_client = client.ApiClient()
     dyn = await DynamicClient(api_client)
     return dyn
 
 async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
-    """Ensure namespace exists using dynamic client"""
     api = await dyn.resources.get(api_version="v1", kind="Namespace")
     try:
         await api.get(name=namespace)
@@ -339,7 +337,6 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path):
                 print(f"Unexpected error while applying CRDs from {url}: {e}")
 
 def register_yaml_value_constructor():
-    """Registers a constructor for the problematic implicit YAML tag."""
     def yaml_constructor_value(loader, node):
         return loader.construct_scalar(node)
 

@@ -55,7 +55,7 @@ spec:
   plugins:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
-      parameters: &parameters
+      parameters:
         barmanObjectName: cloudflare
         serverName: postgres-v17-2
   bootstrap:

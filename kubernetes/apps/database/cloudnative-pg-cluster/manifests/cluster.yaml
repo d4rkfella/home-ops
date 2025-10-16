@@ -57,7 +57,7 @@ spec:
       isWALArchiver: true
       parameters: &parameters
         barmanObjectName: cloudflare
-        serverName: postgres-v17-1
+        serverName: postgres-v17-2
   bootstrap:
     recovery:
       source: source

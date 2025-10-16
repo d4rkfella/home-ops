@@ -8,7 +8,7 @@ metadata:
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.6-system-trixie@sha256:6779e9677bde7f91d1c5deb17b2bf2cc78e40baf7471a0aea62c6ed55c8d1d9c
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.0-system-trixie@sha256:94e0f3cb607687072a2cb83216072ff7684b1dcb2ec11a845818dfda4e620aaa
   primaryUpdateStrategy: unsupervised
   storage:
     pvcTemplate:
@@ -57,12 +57,13 @@ spec:
       isWALArchiver: true
       parameters: &parameters
         barmanObjectName: cloudflare
+        serverName: postgres-v17-2
+  bootstrap:
+    recovery:
+      source: source
+  externalClusters:
+    - name: source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        barmanObjectName: cloudflare
         serverName: postgres-v17-1
-  #bootstrap:
-    #recovery:
-      #source: source
-  #externalClusters:
-    #- name: source
-      #plugin:
-        #name: barman-cloud.cloudnative-pg.io
-        #parameters: *parameters

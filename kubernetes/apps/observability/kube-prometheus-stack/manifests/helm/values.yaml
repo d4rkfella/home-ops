@@ -35,6 +35,7 @@ kube-state-metrics:
           - persistentvolumes
           - resourcequotas
           - endpoints
+          - endpointslices
           - configmaps
           - limitranges
           - secrets

@@ -57,7 +57,7 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: cloudflare
-        serverName: postgres-db
+        serverName: postgres-db-1
   bootstrap:
     recovery:
       source: source
@@ -67,4 +67,4 @@ spec:
         name: barman-cloud.cloudnative-pg.io
         parameters:
           barmanObjectName: cloudflare
-          serverName: postgres-v17-1
+          serverName: postgres-db

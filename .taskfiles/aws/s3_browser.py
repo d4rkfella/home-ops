@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import boto3
 import subprocess
 import sys
 import os
@@ -9,6 +8,7 @@ AWS_DIR = os.path.join(os.getcwd(), ".aws")
 os.environ["AWS_SHARED_CREDENTIALS_FILE"] = os.path.join(AWS_DIR, "credentials")
 os.environ["AWS_CONFIG_FILE"] = os.path.join(AWS_DIR, "config")
 
+import boto3
 
 def run_fzf(options, prompt="> ", expect=None):
     """Run fzf with optional keybinds, return (key, selection)."""
@@ -91,7 +91,7 @@ def delete_prefix(session, bucket, prefix, endpoint=None):
     s3 = session.client("s3", endpoint_url=endpoint)
 
     if choice == "Yes (delete)":
-        s3_resource = boto3.resource("s3", endpoint_url=endpoint, region_name=session.region_name)
+        s3_resource = session.resource("s3", endpoint_url=endpoint)
         bucket_resource = s3_resource.Bucket(bucket)
         bucket_resource.objects.filter(Prefix=prefix).delete()
         print(f"✅ Deleted all objects under '{prefix}' in '{bucket}'")

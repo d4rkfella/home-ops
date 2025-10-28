@@ -77,7 +77,7 @@ spec:
                     name: artifactory-secret
                     key: db-user
         persistence:
-          size: 40Gi
+          size: 50Gi
       nginx:
         enabled: false
       postgresql:

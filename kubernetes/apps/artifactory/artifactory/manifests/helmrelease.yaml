@@ -76,8 +76,6 @@ spec:
                   secretKeyRef:
                     name: artifactory-secret
                     key: db-user
-        persistence:
-          size: 50Gi
       nginx:
         enabled: false
       postgresql:

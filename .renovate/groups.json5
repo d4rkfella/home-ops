@@ -26,11 +26,13 @@
       groupName: 'Flux Operator',
       matchDatasources: [
         'docker',
+        'github-releases',
       ],
       matchPackageNames: [
         '/flux-operator/',
         '/flux-instance/',
         '/flux-operator-manifests/',
+        '/flux2/',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',

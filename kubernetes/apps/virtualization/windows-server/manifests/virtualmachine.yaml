@@ -41,6 +41,13 @@ spec:
           smm: {}
           hypervPassthrough:
             enabled: true
+          hyperv:
+            hv-vapic: {}
+            hv-time: {}
+            hv-frequencies: {}
+            hv-reenlightenment: {}
+            hv-stimer: {}
+            hv-synic: {}
           pvspinlock:
             enabled: true
         firmware:

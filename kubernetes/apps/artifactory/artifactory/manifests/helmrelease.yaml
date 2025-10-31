@@ -31,6 +31,8 @@ spec:
               value: false
   values:
     artifactory:
+      onemodel:
+        enabled: false
       artifactory:
         extraSystemYaml:
           observability:

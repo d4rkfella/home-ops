@@ -32,7 +32,7 @@ spec:
   values:
     artifactory:
       onemodel:
-        enabled: false
+        enabled: true
       artifactory:
         extraSystemYaml:
           observability:

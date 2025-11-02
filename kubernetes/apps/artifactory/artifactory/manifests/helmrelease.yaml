@@ -49,7 +49,7 @@ spec:
           dataKey: bootstrap.creds
         customInitContainers: |
           - name: "init-db"
-            image: ghcr.io/d4rkfella/postgres-init:0.1.0@sha256:11795769214505f9aee9314d0dc2086fb4f8f2dd16d08739e1734fd719884eda
+            image: ghcr.io/d4rkfella/postgres-init:0.1.0@sha256:bf523baf0575d7a44a6572f50d7188db225e0642d80158093cd1f4ffa61cc317
             imagePullPolicy: IfNotPresent
             securityContext:
               runAsUser: 65532

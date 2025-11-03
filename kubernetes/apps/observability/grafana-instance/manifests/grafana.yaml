@@ -35,7 +35,7 @@ spec:
       auto_assign_org_role: Viewer
       auto_assign_org_id: "1"
     security:
-      disable_initial_admin_creation: "true"
+      #disable_initial_admin_creation: "true"
       allow_embedding: "false"
       cookie_secure: "true"
     analytics:
@@ -44,7 +44,7 @@ spec:
       reporting_enabled: "false"
       feedback_links_enabled: "false"
     auth.anonymous:
-      enabled: "true"
+      enabled: "false"
     auth.basic:
       enabled: "false"
     news:
@@ -66,6 +66,12 @@ spec:
         spec:
           containers:
             - name: grafana
+              env:
+                - name: GF_SECURITY_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-secret
+                      key: GF_SECURITY_ADMIN_PASSWORD
               volumeMounts:
                 - name: oauth-client-secret
                   mountPath: /etc/secrets/oauth

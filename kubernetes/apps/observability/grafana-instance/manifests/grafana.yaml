@@ -70,10 +70,6 @@ spec:
                 - name: oauth-client-secret
                   mountPath: /etc/secrets/oauth
                   readOnly: true
-                - name: internal-ca
-                  mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-                  subPath: ca.crt
-                  readOnly: true
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true

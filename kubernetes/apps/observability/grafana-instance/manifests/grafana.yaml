@@ -88,10 +88,6 @@ spec:
               secret:
                 secretName: grafana-secret
                 defaultMode: 0440
-            - name: internal-ca
-              secret:
-                secretName: grafana-secret
-                defaultMode: 0440
   persistentVolumeClaim:
     spec:
       accessModes:

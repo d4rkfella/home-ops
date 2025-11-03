@@ -2,23 +2,26 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: flux
+  name: flux-system
   labels:
-    app.kubernetes.io/instance: flux
-    app.kubernetes.io/name: flux
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/component: monitoring
 spec:
-  podMetricsEndpoints:
-    - honorLabels: true
-      interval: 60s
-      path: /metrics
-      port: http-prom
-      scheme: http
-      scrapeTimeout: 30s
-  jobLabel: app.kubernetes.io/instance
   namespaceSelector:
     matchNames:
       - flux-system
   selector:
-    matchLabels:
-      app.kubernetes.io/instance: flux
-      app.kubernetes.io/name: flux
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - helm-controller
+          - source-controller
+          - kustomize-controller
+          - notification-controller
+          - image-automation-controller
+          - image-reflector-controller
+  podMetricsEndpoints:
+    - port: http-prom
+      interval: 60s
+      scrapeTimeout: 30s

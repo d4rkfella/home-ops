@@ -1,74 +1,8 @@
 kube-state-metrics:
-  collectors: [ ]
   extraArgs:
     - --custom-resource-state-only=false
   rbac:
     extraRules:
-      - apiGroups: ["coordination.k8s.io"]
-        resources:
-          - leases
-        verbs: ["list", "watch"]
-      - apiGroups: ["admissionregistration.k8s.io"]
-        resources:
-          - mutatingwebhookconfigurations
-        verbs: ["list", "watch"]
-      - apiGroups: ["networking.k8s.io"]
-        resources:
-          - ingresses
-        verbs: ["list", "watch"]
-      - apiGroups: ["policy"]
-        resources:
-          - poddisruptionbudgets
-        verbs: ["list", "watch"]
-      - apiGroups: ["storage.k8s.io"]
-        resources:
-          - volumeattachments
-          - storageclasses
-        verbs: ["list", "watch"]
-      - apiGroups: [""]
-        resources:
-          - pods
-          - services
-          - nodes
-          - namespaces
-          - replicationcontrollers
-          - persistentvolumes
-          - resourcequotas
-          - endpoints
-          - endpointslices
-          - configmaps
-          - limitranges
-          - secrets
-          - persistentvolumeclaims
-        verbs: ["list", "watch"]
-      - apiGroups: ["apps"]
-        resources:
-          - deployments
-          - daemonsets
-          - replicasets
-          - statefulsets
-        verbs: ["list", "watch"]
-      - apiGroups: ["batch"]
-        resources:
-          - cronjobs
-          - jobs
-        verbs: ["list", "watch"]
-      - apiGroups: ["autoscaling"]
-        resources:
-          - horizontalpodautoscalers
-        verbs: ["list", "watch"]
-      - apiGroups: ["networking.k8s.io"]
-        resources:
-          - networkpolicies
-        verbs: ["list", "watch"]
-      - apiGroups: ["admissionregistration.k8s.io"]
-        resources:
-          - validatingwebhookconfigurations
-        verbs: ["list", "watch"]
-      - apiGroups: ["certificates.k8s.io"]
-        resources:
-          - certificatesigningrequests
-        verbs: ["list", "watch"]
       - apiGroups:
           - source.toolkit.fluxcd.io
           - kustomize.toolkit.fluxcd.io
@@ -285,7 +219,7 @@ kube-state-metrics:
                   webhook_path: [ status, webhookPath ]
           - groupVersionKind:
               group: image.toolkit.fluxcd.io
-              version: v1beta2
+              version: v1
               kind: ImageRepository
             metricNamePrefix: gotk
             metrics:
@@ -303,7 +237,7 @@ kube-state-metrics:
                   image: [ spec, image ]
           - groupVersionKind:
               group: image.toolkit.fluxcd.io
-              version: v1beta2
+              version: v1
               kind: ImagePolicy
             metricNamePrefix: gotk
             metrics:
@@ -321,7 +255,7 @@ kube-state-metrics:
                   source_name: [ spec, imageRepositoryRef, name ]
           - groupVersionKind:
               group: image.toolkit.fluxcd.io
-              version: v1beta2
+              version: v1
               kind: ImageUpdateAutomation
             metricNamePrefix: gotk
             metrics:

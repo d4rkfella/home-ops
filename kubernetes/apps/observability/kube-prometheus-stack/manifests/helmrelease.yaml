@@ -54,7 +54,7 @@ spec:
       service:
         targetPort: 8082
       serviceMonitor:
-        selfMonitor: false
+        selfMonitor: true
       route:
         main:
           enabled: true

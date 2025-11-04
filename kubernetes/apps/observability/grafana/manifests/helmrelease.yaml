@@ -141,7 +141,7 @@ spec:
     dashboards:
       default:
         cpng:
-          url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/refs/heads/main/charts/cluster/grafana-dashboard.json
+          url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/main/charts/cluster/grafana-dashboard.json
           datasource: Prometheus
         opnsense:
           url: https://raw.githubusercontent.com/AthennaMind/opnsense-exporter/main/deploy/grafana/dashboard-v1.json
@@ -151,11 +151,6 @@ spec:
           # renovate: depName="Cert-manager-Kubernetes"
           gnetId: 20842
           revision: 3
-          datasource: Prometheus
-        zfs:
-          # renovate: depName="ZFS"
-          gnetId: 7845
-          revision: 4
           datasource: Prometheus
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"

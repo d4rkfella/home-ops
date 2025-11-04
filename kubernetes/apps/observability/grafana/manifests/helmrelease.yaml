@@ -140,6 +140,9 @@ spec:
               path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
+        cpng:
+          url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/refs/heads/main/charts/cluster/grafana-dashboard.json
+          datasource: Prometheus
         opnsense:
           url: https://raw.githubusercontent.com/AthennaMind/opnsense-exporter/main/deploy/grafana/dashboard-v1.json
           datasource:
@@ -162,7 +165,7 @@ spec:
             - { name: DS_PROMETHEUS, value: Prometheus }
         keycloak:
           # renovate: depName="KeyCloak Metrics"
-          gnetID: 14390
+          gnetId: 14390
           revision: 7
           datasource: Prometheus
         external-dns:

@@ -140,6 +140,11 @@ spec:
               path: /var/lib/grafana/dashboards/default
     dashboards:
       default:
+        external-secrets:
+          # renovate: depName="External Secrets"
+          gnetId: 21640
+          revision: 4
+          datasource: Prometheus
         cpng:
           url: https://raw.githubusercontent.com/cloudnative-pg/grafana-dashboards/main/charts/cluster/grafana-dashboard.json
           datasource: Prometheus

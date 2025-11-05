@@ -91,6 +91,7 @@ spec:
                 secretKeyRef:
                   name: artifactory-secret
                   key: db-user
+
     nginx:
       enabled: false
     postgresql:

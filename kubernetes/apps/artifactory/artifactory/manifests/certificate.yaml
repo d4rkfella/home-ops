@@ -12,13 +12,12 @@ metadata:
   name: artifactory-ca
 spec:
   isCA: true
-  commonName: "Artifactory Root CA"
+  commonName: "artifactory.artifactory.svc.cluster.local"
+  dnsNames:
+    - "artifactory.artifactory.svc.cluster.local"
   secretName: artifactory-ca
   duration: 87600h
   renewBefore: 720h
   issuerRef:
     name: selfsigned-root-ca
     kind: Issuer
-  dnsNames:
-    - "artifactory.artifactory.svc.cluster.local"
-    - "artifactory.artifactory.svc"

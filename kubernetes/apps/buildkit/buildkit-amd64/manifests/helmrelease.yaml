@@ -79,7 +79,6 @@ spec:
         name: buildkit-config
         globalMounts:
           - path: /etc/buildkit
-
       root:
         type: persistentVolumeClaim
         storageClass: openebs-zfs-128k
@@ -88,7 +87,6 @@ spec:
         size: 100Gi
         globalMounts:
           - path: /var/lib/buildkit
-
       run:
         type: emptyDir
         medium: Memory
@@ -96,7 +94,6 @@ spec:
         globalMounts:
           - path: /run
           - path: /var/run
-
       certs:
         type: secret
         name: buildkit-amd64-tls

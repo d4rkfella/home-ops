@@ -41,6 +41,9 @@ spec:
     onemodel:
       enabled: false
     artifactory:
+      license:
+        secret: artifactory-secret
+        dataKey: license-key
       image:
         registry: ghcr.io
         repository: d4rkfella/artifactory-pro

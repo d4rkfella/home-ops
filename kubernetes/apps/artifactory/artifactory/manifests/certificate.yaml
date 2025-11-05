@@ -1,0 +1,21 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-root-ca
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: artifactory-ca
+spec:
+  isCA: true
+  commonName: "Artifactory Root CA"
+  secretName: artifactory-ca
+  duration: 87600h
+  renewBefore: 720h
+  issuerRef:
+    name: selfsigned-root-ca
+    kind: Issuer

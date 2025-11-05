@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1alpha3
+kind: BackendTLSPolicy
+metadata:
+  name: artifactory
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: artifactory
+  validation:
+    hostname: artifactory.artifactory.svc.cluster.local
+    caCertificateRefs:
+      - group: ""
+        kind: Secret
+        name: artifactory-ca

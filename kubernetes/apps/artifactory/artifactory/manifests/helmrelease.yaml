@@ -46,6 +46,9 @@ spec:
     onemodel:
       enabled: false
     artifactory:
+      statefulset:
+        annotations:
+          reloader.stakater.com/auto: "true"
       license:
         secret: artifactory-secret
         dataKey: license-key

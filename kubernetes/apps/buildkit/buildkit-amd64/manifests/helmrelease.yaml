@@ -43,7 +43,7 @@ spec:
                       - buildctl
                       - debug
                       - workers
-                  initialDelaySeconds: 5
+                  initialDelaySeconds: 3
                   periodSeconds: 30
               readiness:
                 enabled: true
@@ -54,7 +54,7 @@ spec:
                       - buildctl
                       - debug
                       - workers
-                  initialDelaySeconds: 5
+                  initialDelaySeconds: 3
                   periodSeconds: 30
             securityContext:
               privileged: true

@@ -18,3 +18,4 @@ spec:
         - name: artifactory
           namespace: artifactory
           port: 8082
+          scheme: HTTPS

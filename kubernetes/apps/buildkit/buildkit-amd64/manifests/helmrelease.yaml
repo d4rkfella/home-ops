@@ -28,6 +28,8 @@ spec:
               - /certs/tls.crt
               - --tlskey
               - /certs/tls.key
+              - --oci-worker-snapshotter
+              - fuse-overlayfs
             ports:
               - name: grpc
                 containerPort: 9999

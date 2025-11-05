@@ -38,6 +38,8 @@ spec:
               value:
                 - name: ghcr-pull-secret
   values:
+    router:
+      tlsEnabled: true
     access:
       accessConfig:
         security:

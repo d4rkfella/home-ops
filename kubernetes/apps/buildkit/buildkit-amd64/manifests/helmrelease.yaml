@@ -29,7 +29,7 @@ spec:
               - --tlskey
               - /certs/tls.key
               - --oci-worker-snapshotter
-              - fuse-overlayfs
+              - overlayfs
             ports:
               - name: grpc
                 containerPort: 9999

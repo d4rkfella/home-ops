@@ -38,6 +38,10 @@ spec:
               value:
                 - name: ghcr-pull-secret
   values:
+    access:
+      accessConfig:
+        security:
+          tls: true
     onemodel:
       enabled: false
     artifactory:

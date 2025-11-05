@@ -19,3 +19,6 @@ spec:
   issuerRef:
     name: selfsigned-root-ca
     kind: Issuer
+  dnsNames:
+    - "artifactory.artifactory.svc.cluster.local"
+    - "artifactory.artifactory.svc"

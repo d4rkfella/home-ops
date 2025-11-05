@@ -2,15 +2,15 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
-  name: artifactory-oss
+  name: artifactory
 spec:
   interval: 1h
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 107.125.4
-  url: oci://ghcr.io/d4rkfella/charts-mirror/artifactory-oss
+    tag: 107.125.6
+  url: oci://ghcr.io/d4rkfella/charts-mirror/artifactory
   verify:
     provider: cosign
 ---
@@ -22,7 +22,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: artifactory-oss
+    name: artifactory
   postRenderers:
   - kustomize:
       patches:
@@ -33,69 +33,78 @@ spec:
             - op: add
               path: /spec/template/spec/hostUsers
               value: false
+            - op: add
+              path: /spec/template/spec/imagePullSecrets
+              value:
+                - name: ghcr-pull-secret
   values:
+    onemodel:
+      enabled: false
     artifactory:
-      onemodel:
-        enabled: false
-      artifactory:
-        extraSystemYaml:
-          observability:
-            consumption:
-              allow: ""
-        masterKeySecretName: artifactory-secret
-        joinKeySecretName: artifactory-secret
-        admin:
-          secret: artifactory-secret
-          dataKey: bootstrap.creds
-        customInitContainers: |
-          - name: "init-db"
-            image: ghcr.io/d4rkfella/postgres-init:0.1.0@sha256:bf523baf0575d7a44a6572f50d7188db225e0642d80158093cd1f4ffa61cc317
-            imagePullPolicy: IfNotPresent
-            securityContext:
-              runAsUser: 65532
-              runAsGroup: 65532
-              runAsNonRoot: true
-              allowPrivilegeEscalation: false
-              capabilities: { drop: ["ALL"] }
-              seccompProfile: { type: RuntimeDefault }
-            env:
-              - name: POSTGRES_HOST
-                value: postgres-db-rw.database.svc.cluster.local
-              - name: POSTGRES_DBNAME
-                value: artifactory
-              - name: POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: artifactory-secret
-                    key: db-password
-              - name: POSTGRES_SSLMODE
-                value: require
-              - name: POSTGRES_SUPER_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: artifactory-secret
-                    key: POSTGRES_SUPER_PASS
-              - name: POSTGRES_SUPER_USER
-                value: postgres
-              - name: POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: artifactory-secret
-                    key: db-user
-      nginx:
-        enabled: false
-      postgresql:
-        enabled: false
-      database:
-        type: "postgresql"
-        driver: org.postgresql.Driver
-        secrets:
-          user:
-            name: &secret artifactory-secret
-            key: "db-user"
-          password:
-            name: *secret
-            key: "db-password"
-          url:
-            name: *secret
-            key: "db-url"
+      image:
+        registry: ghcr.io
+        repository: d4rkfella/artifactory-pro
+        tag: 7.125.6
+        digest: sha256:89a8a6f09cfb88c45da613903ded11832371c63ae8aab78eaede0716b12819fc
+        pullPolicy: IfNotPresent
+      extraSystemYaml:
+        observability:
+          consumption:
+            allow: ""
+      masterKeySecretName: artifactory-secret
+      joinKeySecretName: artifactory-secret
+      admin:
+        secret: artifactory-secret
+        dataKey: bootstrap.creds
+      customInitContainers: |
+        - name: "init-db"
+          image: ghcr.io/d4rkfella/postgres-init:0.1.0@sha256:bf523baf0575d7a44a6572f50d7188db225e0642d80158093cd1f4ffa61cc317
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 65532
+            runAsGroup: 65532
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities: { drop: ["ALL"] }
+            seccompProfile: { type: RuntimeDefault }
+          env:
+            - name: POSTGRES_HOST
+              value: postgres-db-rw.database.svc.cluster.local
+            - name: POSTGRES_DBNAME
+              value: artifactory
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: artifactory-secret
+                  key: db-password
+            - name: POSTGRES_SSLMODE
+              value: require
+            - name: POSTGRES_SUPER_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: artifactory-secret
+                  key: POSTGRES_SUPER_PASS
+            - name: POSTGRES_SUPER_USER
+              value: postgres
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: artifactory-secret
+                  key: db-user
+    nginx:
+      enabled: false
+    postgresql:
+      enabled: false
+    database:
+      type: "postgresql"
+      driver: org.postgresql.Driver
+      secrets:
+        user:
+          name: &secret artifactory-secret
+          key: "db-user"
+        password:
+          name: *secret
+          key: "db-password"
+        url:
+          name: *secret
+          key: "db-url"

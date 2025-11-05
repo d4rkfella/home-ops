@@ -8,3 +8,5 @@ spec:
     - fqdn:
         hostname: artifactory.artifactory.svc.cluster.local
         port: 8082
+  tls:
+    insecureSkipVerify: true

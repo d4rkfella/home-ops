@@ -12,7 +12,7 @@ metadata:
   name: artifactory-ca
 spec:
   isCA: true
-  commonName: "artifactory.artifactory.svc.cluster.local"
+  commonName: "Artifactory-Root-CA"
   secretName: artifactory-ca
   duration: 87600h
   renewBefore: 720h

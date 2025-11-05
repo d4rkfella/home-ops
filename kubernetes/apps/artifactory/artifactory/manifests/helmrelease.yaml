@@ -56,6 +56,10 @@ spec:
         digest: sha256:89a8a6f09cfb88c45da613903ded11832371c63ae8aab78eaede0716b12819fc
         pullPolicy: IfNotPresent
       extraSystemYaml:
+        artifactory:
+          tomcat:
+            httpsConnector:
+                enabled: true
         observability:
           consumption:
             allow: ""

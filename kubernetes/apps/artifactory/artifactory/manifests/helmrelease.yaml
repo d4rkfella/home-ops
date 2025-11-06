@@ -38,6 +38,8 @@ spec:
               value:
                 - name: ghcr-pull-secret
   values:
+    jfconnect:
+      enabled: false
     router:
       tlsEnabled: true
     access:

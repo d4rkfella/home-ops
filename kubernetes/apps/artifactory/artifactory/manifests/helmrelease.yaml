@@ -38,6 +38,13 @@ spec:
               value:
                 - name: ghcr-pull-secret
   values:
+    router:
+      tlsEnabled: true
+    access:
+      accessConfig:
+        security:
+          tls: true
+      customCertificatesSecretName: artifactory-ca
     jfconnect:
       enabled: false
     onemodel:
@@ -57,6 +64,11 @@ spec:
         pullPolicy: IfNotPresent
       persistence:
         size: 200Gi
+      extraSystemYaml:
+        artifactory:
+          tomcat:
+            httpsConnector:
+                enabled: true
       masterKeySecretName: artifactory-secret
       joinKeySecretName: artifactory-secret
       admin:
@@ -97,7 +109,6 @@ spec:
                 secretKeyRef:
                   name: artifactory-secret
                   key: db-user
-
     nginx:
       enabled: false
     postgresql:

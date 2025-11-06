@@ -46,7 +46,7 @@ spec:
           tls: true
       customCertificatesSecretName: artifactory-ca
     onemodel:
-      enabled: false
+      enabled: true
     artifactory:
       statefulset:
         annotations:

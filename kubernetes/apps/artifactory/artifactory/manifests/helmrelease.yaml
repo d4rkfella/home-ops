@@ -125,42 +125,4 @@ spec:
           name: *secret
           key: "db-url"
     nginx:
-      enabled: true
-      kind: Deployment
-      name: nginx
-      labels: {}
-      hosts: []
-      replicaCount: 1
-      podSecurityContext:
-        enabled: true
-        runAsUser: 104
-        runAsGroup: 107
-        fsGroup: 107
-      containerSecurityContext:
-        enabled: true
-        runAsNonRoot: true
-        privileged: false
-        readOnlyRootFilesystem: false
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop: ["ALL"]
-        seccompProfile:
-          type: "RuntimeDefault"
-      image:
-        registry: releases-docker.jfrog.io
-        repository: jfrog/nginx-artifactory-pro
-        pullPolicy: IfNotPresent
-      service:
-        type: LoadBalancer
-        ssloffload: true
-        ssloffloadForceHttps: true
-        annotations:
-          lbipam.cilium.io/ips: 192.168.91.50
-          external-dns.alpha.kubernetes.io/hostname: packages.darkfellanetwork.com
-      tlsSecretName: artifactory-tls
-      loggers:
-        - access.log
-        - error.log
-      logs:
-        stderr: true
-        stdout: true
+      enabled: false

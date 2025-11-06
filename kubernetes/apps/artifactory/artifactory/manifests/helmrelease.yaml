@@ -111,8 +111,6 @@ spec:
                 secretKeyRef:
                   name: artifactory-secret
                   key: db-user
-    nginx:
-      enabled: false
     postgresql:
       enabled: false
     database:
@@ -128,3 +126,42 @@ spec:
         url:
           name: *secret
           key: "db-url"
+    nginx:
+      enabled: true
+      kind: Deployment
+      name: nginx
+      labels: {}
+      hosts: []
+      replicaCount: 1
+      podSecurityContext:
+        enabled: true
+        runAsUser: 104
+        runAsGroup: 107
+        fsGroup: 107
+      containerSecurityContext:
+        enabled: true
+        runAsNonRoot: true
+        privileged: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        seccompProfile:
+          type: "RuntimeDefault"
+      image:
+        registry: releases-docker.jfrog.io
+        repository: jfrog/nginx-artifactory-pro
+        pullPolicy: IfNotPresent
+      service:
+        type: LoadBalancer
+        ssloffload: false
+        ssloffloadForceHttps: false
+        annotations: {}
+        loadBalancerIP:
+      http:
+        enabled: false
+      https:
+        enabled: true
+        externalPort: 443
+        internalPort: 8443
+      tlsSecretName: chart-example-tls

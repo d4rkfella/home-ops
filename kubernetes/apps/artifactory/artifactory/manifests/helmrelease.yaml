@@ -40,13 +40,6 @@ spec:
   values:
     jfconnect:
       enabled: false
-    router:
-      tlsEnabled: true
-    access:
-      accessConfig:
-        security:
-          tls: true
-      customCertificatesSecretName: artifactory-ca
     onemodel:
       enabled: true
     artifactory:
@@ -64,11 +57,6 @@ spec:
         pullPolicy: IfNotPresent
       persistence:
         size: 200Gi
-      extraSystemYaml:
-        artifactory:
-          tomcat:
-            httpsConnector:
-                enabled: true
       masterKeySecretName: artifactory-secret
       joinKeySecretName: artifactory-secret
       admin:

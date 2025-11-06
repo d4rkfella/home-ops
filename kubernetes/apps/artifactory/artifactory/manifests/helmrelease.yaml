@@ -39,12 +39,12 @@ spec:
                 - name: ghcr-pull-secret
   values:
     router:
-      tlsEnabled: true
+      tlsEnabled: false
     access:
       accessConfig:
         security:
-          tls: true
-      customCertificatesSecretName: artifactory-ca
+          tls: false
+      #customCertificatesSecretName: artifactory-ca
     onemodel:
       enabled: false
     artifactory:
@@ -64,10 +64,7 @@ spec:
         artifactory:
           tomcat:
             httpsConnector:
-                enabled: true
-        observability:
-          consumption:
-            allow: ""
+                enabled: false
       masterKeySecretName: artifactory-secret
       joinKeySecretName: artifactory-secret
       admin:

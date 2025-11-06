@@ -46,7 +46,7 @@ spec:
       accessConfig:
         security:
           tls: true
-      customCertificatesSecretName: artifactory-ca
+      #customCertificatesSecretName: artifactory-ca
     onemodel:
       enabled: true
     artifactory:

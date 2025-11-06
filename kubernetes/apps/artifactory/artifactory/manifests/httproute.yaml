@@ -13,16 +13,17 @@ spec:
     - matches:
       - path:
           type: PathPrefix
-          value: /
-      backendRefs:
-        - group: gateway.envoyproxy.io
-          kind: Backend
-          name: artifactory-default-backend
-    - matches:
-      - path:
-          type: PathPrefix
           value: /artifactory/
       backendRefs:
         - group: gateway.envoyproxy.io
           kind: Backend
           name: artifactory-router-backend
+
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: artifactory-default-backend

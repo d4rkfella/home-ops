@@ -156,12 +156,12 @@ spec:
         type: LoadBalancer
         ssloffload: false
         ssloffloadForceHttps: false
-        annotations: {}
-        loadBalancerIP:
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.66
       http:
         enabled: false
       https:
         enabled: true
         externalPort: 443
         internalPort: 8443
-      tlsSecretName: chart-example-tls
+      tlsSecretName: artifactory-tls

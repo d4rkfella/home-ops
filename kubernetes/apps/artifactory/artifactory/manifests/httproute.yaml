@@ -17,7 +17,7 @@ spec:
       backendRefs:
         - group: gateway.envoyproxy.io
           kind: Backend
-          name: artifactory-tls-backend-test
+          name: artifactory-tls-backend
     - matches:
         - path:
             type: PathPrefix

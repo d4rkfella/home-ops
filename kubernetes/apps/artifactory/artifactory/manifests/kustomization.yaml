@@ -4,5 +4,5 @@ resources:
   - ./certificate.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./backend.yaml
-  - ./httproute.yaml
+  #- ./backend.yaml
+  #- ./httproute.yaml

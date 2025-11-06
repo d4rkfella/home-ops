@@ -46,7 +46,7 @@ spec:
           tls: true
       customCertificatesSecretName: artifactory-ca
     jfconnect:
-      enabled: false
+      enabled: true
     onemodel:
       enabled: true
     artifactory:

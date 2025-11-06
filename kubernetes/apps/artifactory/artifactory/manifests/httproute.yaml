@@ -13,15 +13,7 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /artifactory
-      backendRefs:
-        - group: gateway.envoyproxy.io
-          kind: Backend
-          name: artifactory-tls-backend
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /ui
+            value: /
       backendRefs:
         - group: gateway.envoyproxy.io
           kind: Backend

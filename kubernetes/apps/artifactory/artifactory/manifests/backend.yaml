@@ -10,15 +10,3 @@ spec:
         port: 8082
   tls:
     insecureSkipVerify: true
----
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: Backend
-metadata:
-  name: artifactory-tls-backend-test
-spec:
-  endpoints:
-    - fqdn:
-        hostname: artifactory.artifactory.svc.cluster.local
-        port: 8081
-  tls:
-    insecureSkipVerify: true

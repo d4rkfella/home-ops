@@ -15,6 +15,6 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - group: gateway.envoyproxy.io
-          kind: Backend
-          name: artifactory-tls-backend
+        - name: artifactory
+          namespace: artifactory
+          port: 8082

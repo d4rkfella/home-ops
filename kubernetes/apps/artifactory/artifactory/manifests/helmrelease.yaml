@@ -48,14 +48,14 @@ spec:
     jfconnect:
       enabled: true
     onemodel:
-      enabled: true
+      enabled: false
     artifactory:
       statefulset:
         annotations:
           reloader.stakater.com/auto: "true"
-      #license:
-        #secret: artifactory-secret
-        #dataKey: license-key
+      license:
+        secret: artifactory-secret
+        dataKey: license-key
       image:
         registry: ghcr.io
         repository: d4rkfella/artifactory-pro
@@ -69,8 +69,8 @@ spec:
           tomcat:
             httpsConnector:
                 enabled: true
-      #masterKeySecretName: artifactory-secret
-      #joinKeySecretName: artifactory-secret
+      masterKeySecretName: artifactory-secret
+      joinKeySecretName: artifactory-secret
       admin:
         secret: artifactory-secret
         dataKey: bootstrap.creds

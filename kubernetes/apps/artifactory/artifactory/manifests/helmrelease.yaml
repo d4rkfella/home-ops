@@ -46,7 +46,7 @@ spec:
       accessConfig:
         security:
           tls: true
-      #customCertificatesSecretName: artifactory-ca
+      customCertificatesSecretName: artifactory-ca
     onemodel:
       enabled: true
     artifactory:
@@ -62,6 +62,8 @@ spec:
         tag: 7.125.6
         digest: sha256:89a8a6f09cfb88c45da613903ded11832371c63ae8aab78eaede0716b12819fc
         pullPolicy: IfNotPresent
+      persistence:
+        size: 200Gi
       extraSystemYaml:
         artifactory:
           tomcat:

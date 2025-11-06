@@ -157,6 +157,6 @@ spec:
         ssloffload: false
         ssloffloadForceHttps: false
         annotations:
-          lbipam.cilium.io/ips: 192.168.91.66
+          lbipam.cilium.io/ips: 192.168.91.50
           external-dns.alpha.kubernetes.io/hostname: packages.darkfellanetwork.com
       tlsSecretName: artifactory-tls

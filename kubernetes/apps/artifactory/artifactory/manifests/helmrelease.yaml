@@ -53,9 +53,9 @@ spec:
       statefulset:
         annotations:
           reloader.stakater.com/auto: "true"
-      license:
-        secret: artifactory-secret
-        dataKey: license-key
+      #license:
+        #secret: artifactory-secret
+        #dataKey: license-key
       image:
         registry: ghcr.io
         repository: d4rkfella/artifactory-pro

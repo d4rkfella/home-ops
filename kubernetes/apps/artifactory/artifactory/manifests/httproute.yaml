@@ -11,10 +11,18 @@ spec:
       sectionName: https
   rules:
     - matches:
-        - path:
-            type: PathPrefix
-            value: /
+      - path:
+          type: PathPrefix
+          value: /
       backendRefs:
         - group: gateway.envoyproxy.io
           kind: Backend
-          name: artifactory-tls-backend
+          name: artifactory-default-backend
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /artifactory/
+      backendRefs:
+        - group: gateway.envoyproxy.io
+          kind: Backend
+          name: artifactory-router-backend

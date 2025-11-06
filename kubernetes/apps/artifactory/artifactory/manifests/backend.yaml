@@ -2,7 +2,19 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
-  name: artifactory-tls-backend
+  name: artifactory-router-backend
+spec:
+  endpoints:
+    - fqdn:
+        hostname: artifactory.artifactory.svc.cluster.local
+        port: 8081
+  tls:
+    insecureSkipVerify: true
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: artifactory-default-backend
 spec:
   endpoints:
     - fqdn:

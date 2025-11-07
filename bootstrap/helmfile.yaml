@@ -107,7 +107,7 @@ releases:
     namespace: external-secrets
     atomic: true
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    version: 0.20.4
+    version: 1.0.0
     values: ['./values.yaml.gotmpl']
     needs: ['vault/vault','cert-manager/cert-manager']
     hooks:

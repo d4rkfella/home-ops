@@ -204,13 +204,13 @@ spec:
     session:
       resumption:
         stateless: {}
-    targetSelectors:
-      - group: gateway.networking.k8s.io
-        kind: Gateway
-        name: external
-      - group: gateway.networking.k8s.io
-        kind: Gateway
-        name: internal
+  targetSelectors:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: external
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: internal
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: ClientTrafficPolicy
@@ -255,10 +255,10 @@ spec:
     session:
       resumption:
         stateless: {}
-    targetSelectors:
-      - group: gateway.networking.k8s.io
-        kind: Gateway
-        name: artifactory
+  targetSelectors:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: artifactory
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute

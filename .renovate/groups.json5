@@ -108,7 +108,7 @@
     {
       description: "Barman Cloud Plugin",
       group: "Barman Cloud",
-      matchDatasources: ["docker"],
+      matchDatasources: ["docker", "github-releases"],
       matchPackageNames: ["/plugin-barman-cloud/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",

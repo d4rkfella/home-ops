@@ -29,16 +29,6 @@ spec:
                     rekor:
                       url: https://rekor.sigstore.dev
         - imageReferences:
-          - "ghcr.io/d4rkfella/**"
-          failureAction: Enforce
-          attestors:
-            - entries:
-                - keyless:
-                    subjectRegExp: "https://github.com/d4rkfella/*"
-                    issuer: "https://token.actions.githubusercontent.com"
-                    rekor:
-                      url: https://rekor.sigstore.dev
-        - imageReferences:
           - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce
           attestors:

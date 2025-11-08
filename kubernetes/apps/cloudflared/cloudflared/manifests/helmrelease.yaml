@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/cloudflared
-              tag: 2025.11.0@sha256:f0c04491b12755d9dd4175cfe39739e298e9952afa4640e23063b5b1126d1e2a
+              tag: 2025.11.1@sha256:9e186694be2ce9536ea7fa4b0054c8f57a6d863ab44fccff35c0d2b67d72089b
             env:
               NO_AUTOUPDATE: true
               TUNNEL_METRICS: 0.0.0.0:8080

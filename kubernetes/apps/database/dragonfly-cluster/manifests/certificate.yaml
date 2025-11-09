@@ -6,7 +6,7 @@ metadata:
 spec:
   secretName: dragonfly-internal-tls
   duration: 2160h
-  renewBefore: 360h
+  renewBefore: 720h
   privateKey:
     algorithm: ECDSA
     encoding: PKCS8

@@ -97,19 +97,19 @@
     },
     {
       description: "Talos Group",
-      groupName: "talos",
+      groupName: "Talos",
       matchDatasources: ["docker"],
       matchPackageNames: ["/installer-secureboot/", "/talosctl/", "/installer/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 2,
+      minimumGroupSize: 3,
     },
     {
-      description: "Barman Cloud Plugin",
-      group: "Barman Cloud",
+      description: "Barman Cloud Plugin Group",
+      group: "Barman Cloud Plugin",
       matchDatasources: ["docker", "github-releases"],
-      matchPackageNames: ["/plugin-barman-cloud/"],
+      matchPackageNames: ["/plugin-barman-cloud/", "/plugin-barman-cloud-sidecar/"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

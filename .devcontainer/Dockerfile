@@ -101,7 +101,7 @@ ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
-
+COPY requirements.txt /tmp/requirements.txt
 RUN apk add --no-cache \
         curl \
         jq \
@@ -123,8 +123,6 @@ RUN apk add --no-cache \
         aws-cli \
         python3 \
         py3-pip \
-        py3-yaml \
-        py3-boto3 \
         cosign && \
     addgroup -g $USER_GID $USERNAME && \
     adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
@@ -134,8 +132,10 @@ RUN apk add --no-cache \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install https://github.com/databus23/helm-diff && \
-    pip install hvac --break-system-packages
-    WORKDIR /project
+    pip install --break-system-packages -r /tmp/requirements.txt && \
+    rm -f /tmp/requirements.txt
+
+WORKDIR /project
 
 USER $USERNAME
 

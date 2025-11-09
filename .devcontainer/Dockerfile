@@ -18,7 +18,8 @@ ARG SOPS_VERSION=v3.11.0
 ARG FLUX_VERSION=v2.7.3
 # renovate: datasource=github-releases depName=junegunn/fzf
 ARG FZF_VERSION=v0.66.1
-
+# renovate: datasource=github-releases depName=sigstore/cosign
+ARG COSIGN_VERSION=v3.0.2
 WORKDIR /tmp
 
 RUN apk add --no-cache \
@@ -28,6 +29,11 @@ RUN apk add --no-cache \
         cosign \
         gnupg \
         unzip && \
+    # Download latest cosign (v4+) release
+    curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
+    curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
+    cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
+    chmod +x /usr/local/bin/cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \

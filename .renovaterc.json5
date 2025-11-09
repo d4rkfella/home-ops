@@ -35,4 +35,8 @@
   kubernetes: {
     managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],
   },
+  pip_requirements: {
+    enabled: true,
+    managerFilePatterns: ["/(^|/)[\\w-]*requirements([-.]\\w+)?\\.(txt|pip)$/"],
+  },
 }

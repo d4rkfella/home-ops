@@ -120,7 +120,6 @@ RUN apk add --no-cache \
         tigervnc-client \
         fontconfig \
         ttf-dejavu \
-        aws-cli \
         python3 \
         py3-pip \
         cosign && \

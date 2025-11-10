@@ -33,10 +33,6 @@ spec:
             - op: add
               path: /spec/template/spec/hostUsers
               value: false
-            - op: add
-              path: /spec/template/spec/imagePullSecrets
-              value:
-                - name: ghcr-pull-secret
   values:
     mc:
       enabled: true
@@ -60,7 +56,7 @@ spec:
         registry: ghcr.io
         repository: d4rkfella/artifactory-pro
         tag: 7.125.6
-        digest: sha256:89a8a6f09cfb88c45da613903ded11832371c63ae8aab78eaede0716b12819fc
+        digest: sha256:ddb50aae4c2793395799c97b8fcf8a686f0bcc583bd51e3bcde6af850ee9e4a0
         pullPolicy: IfNotPresent
       persistence:
         size: 200Gi

@@ -84,7 +84,7 @@ spec:
               defaultMode: 256
         initContainers:
           - name: oauth-proxy
-            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:d25da1209cda2978c4213071a6e58b2c3de2f4323adb4f921844d79ca74151cc
+            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:ec2c8099e79ca27ebf3447435afc9695c2b38bf282d806ffeccef845de6e3cce
             args:
             - --config=/etc/oauth2-proxy.cfg
             env:
@@ -232,7 +232,7 @@ spec:
               - "accounts.darkfellanetwork.com"
         initContainers:
           - name: oauth-proxy
-            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:d25da1209cda2978c4213071a6e58b2c3de2f4323adb4f921844d79ca74151cc
+            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:ec2c8099e79ca27ebf3447435afc9695c2b38bf282d806ffeccef845de6e3cce
             args:
             - --config=/etc/oauth2-proxy.cfg
             env:

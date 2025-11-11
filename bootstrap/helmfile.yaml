@@ -275,7 +275,7 @@ releases:
     namespace: envoy-gateway-system
     atomic: true
     chart: oci://docker.io/envoyproxy/gateway-helm
-    version: 1.5.4
+    version: 1.6.0
     needs: ['cert-manager/cert-manager','kube-system/cilium']
     hooks:
       - events: ["prepare"]

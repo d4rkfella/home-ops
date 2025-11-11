@@ -33,6 +33,10 @@ spec:
             - op: add
               path: /spec/template/spec/hostUsers
               value: false
+            - op: add
+              path: /spec/template/spec/imagePullSecrets
+              value:
+                - name: ghcr-pull-secret
   values:
     mc:
       enabled: true

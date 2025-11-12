@@ -7,79 +7,85 @@ data:
     <!DOCTYPE html>
     <html>
     <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>404</title></head>
-    <body style="margin:0;padding:0;background:#1a1a2e;display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden">
-    <svg viewBox="0 0 1000 480" style="max-width:90vw;height:auto">
+    <body style="margin:0;padding:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:Arial,sans-serif">
+    <div style="text-align:center">
+    <svg width="620" height="250" viewBox="0 0 620 250" style="display:block;margin:0 auto">
     <style>
-    @keyframes cloud{0%,100%{opacity:.3;transform:translateX(46px) skewX(20deg)}65%{opacity:1;transform:translateX(0) skewX(0)}}
-    @keyframes moon-float{0%,100%{transform:translate(0,20px) scale(1.1)}65%{transform:translate(0,0) scale(1)}}
-    @keyframes blink-l{0%,4%,20%,24%,30%,34%,70%,74%,100%{transform:rotateX(0)}2%,22%,32%,72%{transform:rotateX(80deg)}}
-    @keyframes blink-r{0%,4%,30%,34%,50%,54%,100%{transform:rotateX(0)}2%,32%,52%{transform:rotateX(80deg)}}
-    @keyframes monkey-arm{0%,100%{transform:rotateZ(-10deg)}50%{transform:rotateZ(20deg)}}
-    @keyframes star{0%,30%,100%{transform:scale(.5) rotateZ(0);opacity:0}15%{transform:scale(1) rotateZ(360deg);opacity:1}}
-    @keyframes sword{0%,15%,100%{transform:rotate(-40deg)}87%{transform:rotate(50deg)}}
-    @keyframes tetris{0%{transform:rotateZ(0)}25%{transform:rotateZ(90deg)}50%{transform:rotateZ(180deg)}75%{transform:rotateZ(270deg)}100%{transform:rotateZ(360deg)}}
-    @keyframes float{0%,100%{transform:translate(0,0) scale(.9)}65%{transform:translate(0,30px) scale(1)}}
-    #cloud{animation:cloud 9s infinite ease-in-out}
-    #moon{transform-origin:640px 81px;animation:moon-float 6s infinite ease-in-out}
-    #monkey-eye-l{transform-origin:191px 257px;animation:blink-l 12s infinite}
-    #monkey-eye-r{transform-origin:205px 256px;animation:blink-r 12s infinite}
-    #monkey_arm{transform-origin:155px 298px;animation:monkey-arm 4s infinite ease-in-out}
-    #star1,#star2,#star3,#star4{animation:star 12s infinite}
-    #star2{animation-delay:3s}
-    #star3{animation-delay:6s}
-    #star4{animation-delay:9s}
-    #sword{transform-origin:458px 206px;animation:sword 4s infinite ease-out}
-    #tetris-path{transform-origin:538px 374px;animation:float 5s infinite ease-in-out}
-    #tetris{transform-origin:538px 374px;animation:tetris 10s steps(1) infinite}
-    #triforce{transform-origin:175px 91px;animation:float 3s infinite ease-in-out}
+    polygon{transform:rotateY(-180deg) scale(0);transition:all 0.4s cubic-bezier(0.59,0.72,0.375,1.65);transform-origin:center}
+    polygon:nth-child(n){animation:pop 0.4s forwards}
+    polygon:nth-child(2n){animation-delay:0.05s}
+    polygon:nth-child(3n){animation-delay:0.1s}
+    polygon:nth-child(4n){animation-delay:0.15s}
+    polygon:nth-child(5n){animation-delay:0.2s}
+    @keyframes pop{to{transform:rotateY(0) scale(1)}}
     </style>
-    <path id="cloud" fill="#E8EBED" d="M658.4,345.2c-10.9,0-19.7-8.8-19.7-19.7c0-10.9,8.8-19.7,19.7-19.7h50.1c9.9-1.5,17.5-10,17.5-20.3c0-11.4-9.2-20.6-20.6-20.6v-0.2H633c-11.4,0-20.6-6.7-20.6-18.1c0-11.4,9.2-19.3,20.6-19.3h70.4l2-0.2c7.3-3.1,12.5-11,12.5-19.5c0-8.5-4.2-16.7-11.4-19.2l-2.5-0.3h-11.3c-11.9,0-21.6-8.9-21.6-19.9c0-11,9.7-19.9,21.6-19.9h15.8l1.4-0.3c8.6-2.5,14.8-10.1,14.8-19.5c0-11.4-9.2-20.6-20.6-20.6h-1.2h-69.2H382.5c-19.8-0.9-19.9-15.9-19.8-17.8c0-0.1,0-0.1,0-0.2c0-9.9-8.1-18-18-18h-93.5c-9.9,0-18,8.1-18,18c0,9.4,7.2,17.1,16.3,17.9h9.3c0.2,0,0,0,0.6,0l0.5,0l0.4,0l0.2,0c10.1,0.9,18,9.3,18,19.6c0,10.9-8.8,19.7-19.7,19.7h-70.7c-11.3,0-20.5,9.2-20.5,20.6c0,11.3,9.1,20.5,20.4,20.6h48.8c10.3,0,18.7,8.4,18.7,18.7c0,10.3-8.4,18.7-18.7,18.7h-23.2c-11.3,0.1-20.4,9.2-20.4,20.6c0,11.3,9.2,20.5,20.5,20.6h6.3c10.7,0,19.3,8.7,19.3,19.3c0,10.7-7.8,19.3-18.4,19.3l-1.5,0l-2.8,0.4c-7.3,3.1-11.8,11-11.5,18.9c0.3,8.5,4.2,16.5,11.7,19.6c1.1,0.7,3.4,0.9,4.4,0.9h4.5H296h19.7c3.9,0.5,8.2,4.2,7.4,10.4c0,0.4,0,0.8,0.1,1.1c0,0.5-0.1,1-0.1,1.5c0,9.7,7.9,17.5,17.5,17.5h60.2c9.7,0,17.5-7.9,17.5-17.5c0-0.4,0-0.8-0.1-1.2c0.1-0.3,0-0.7,0.1-1.1c0.3-6.5,6.4-10.9,10.6-10.8h110.1c8.5,0,16.9,6.6,16.9,14.8c0,8.2,6.6,14.8,14.8,14.8h92.6c8.2,0,14.8-6.6,14.8-14.8c0-8.2-6.6-14.8-14.8-14.8M332.8,187.1h-21.2c-11.4,0-20.6-9.2-20.6-20.6c0-11.4,9.2-20.6,20.6-20.6h21.2c11.4,0,20.6,9.2,20.6,20.6C353.3,177.9,344.1,187.1,332.8,187.1z"/>
-    <g id="triforce">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M138.4,59.5h36.9l-18.5,32L138.4,59.5z M193.8,91.5l18.5-32h-36.9L193.8,91.5z M175.4,123.5l18.5-32h-36.9L175.4,123.5z"/>
-    <path fill="#E8EBED" d="M156.9,91.5l-18.5-32l18.5,10.7L156.9,91.5z M193.8,70.2l-18.5-10.7l18.5,32L193.8,70.2z M175.4,102.2l-18.5-10.7l18.5,32L175.4,102.2z"/>
-    <path fill="#DBDFE1" d="M175.4,59.5l-18.5,10.7l-18.5-10.7H175.4z M175.4,59.5l18.5,10.7l18.5-10.7H175.4z M156.9,91.5l18.5,10.7l18.5-10.7H156.9z"/>
-    <path fill="#FFF" d="M150.6,66.6h12.5l-6.3,10.8L150.6,66.6z M193.8,77.4l6.3-10.8h-12.5L193.8,77.4z M175.4,109.4l6.3-10.8h-12.5L175.4,109.4z"/>
+    <g fill="none" stroke="#63C4AE" stroke-miterlimit="10">
+    <polygon points="515.4,111.4 520.3,95.3 522.9,85.5 491.6,100.4"/>
+    <polygon points="535,63.4 562.6,41.8 574.6,32.3 518,67.7"/>
+    <polygon points="522.9,82.9 523.5,84.3 534.1,64.5 520.9,67.7 516.3,68.8"/>
+    <polygon points="567.2,61.6 547.6,70.5 558.5,78.9 569.5,86.9 567.7,68"/>
+    <polygon points="535.8,63.6 546.8,70 578.1,30.3"/>
+    <polygon points="589.3,63.1 568,61.3 568.9,71.7 570,86.9 577.8,77.2"/>
+    <polygon points="584.7,170.8 580.7,153.9 570,159.3 587.3,182.9"/>
+    <polygon points="585.6,130 567.7,136.4 580.7,152.7 582.7,143.5"/>
+    <polygon points="550.2,123.4 556.5,128 567.2,135.5 589.9,104.5"/>
+    <polygon points="576.6,93.2 570,88.4 559.1,103 589.9,103"/>
+    <polygon points="546.2,185.2 548.5,169.1 529.2,161.9 533.8,168.5"/>
+    <polygon points="549.1,170.5 547.3,183.5 547,186.1 559.4,201.9"/>
+    <polygon points="567.7,191.8 571.2,186.4 549.6,169.7 560.5,202.4"/>
+    <polygon points="571.8,186.9 560.8,203.6 587.8,219.7"/>
+    <polygon points="577.2,149.3 567.7,137.5 569.7,158.8 580.4,153.3"/>
+    <polygon points="485.5,111.6 514.3,111.6 491,101"/>
+    <polygon points="570,160.5 572,185.8 587.6,184.1"/>
+    <polygon points="484.1,181.8 496.8,162.2 493.9,155 489.9,145.3 484.7,177.7"/>
+    <polygon points="477.5,129.2 476.3,131.8 500.5,130 485,112.5"/>
     </g>
-    <g id="monkey">
-    <path fill="#E8EBED" stroke="#89949B" stroke-width="3" d="M187.3,354.5c2.2-4.5,1.6-12.8-3.3-18.5l-9.3,2c2.2,3.5,8.3,7.7,2.3,20.8c-1.9,4.2-0.8,8.7,4,8.7h22.3c6.5,0,5.3-7.9,2-10.5c-4.2-3.3-10.2-3.6-15.3-1C187.9,357.1,185.3,358.7,187.3,354.5z"/>
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M166.3,354.5c2.2-4.5,1.6-12.8-3.3-18.5l-9.3,2c2.2,3.5,8.3,7.7,2.3,20.8c-1.9,4.2-0.8,8.7,4,8.7h22.3c6.5,0,5.3-7.9,2-10.5c-4.2-3.3-10.2-3.6-15.3-1C166.9,357.1,164.3,358.7,166.3,354.5z M199.8,299.3l9-55.5c0,0-2.1-3.6-7.2-7.1c1.4-1.2,2.2-3.1,1.8-5c-0.6-3.1-3.9-5.3-7.5-4.8c-2.9,0.4-5,2.4-5.4,4.8l0,0c-7.2-1.9-16.5-1.9-29.5,1.6c-1.5-3.1-5.6-5.4-9.3-5.7c-5.5-0.4-9.3,3.7-9.7,9.3c-0.3,4.4,2.2,8.3,6.1,9.9c-16,25.6-14.6,58.2-11,71.9c4.3,16.1,18.2,21.8,26.3,21.8c13,0,33.8-1.9,37.5-17.7C202.9,315,202,303.9,199.8,299.3z"/>
-    <path fill="#FFF" stroke="#89949B" stroke-width="2" d="M213.7,245.2c0,0-6-2.9-11,0.2c-4.6,2.8-9.4,1.7-14,0c-4.6-1.7-16-5.1-19.2,2.6c-2,3.8-2.3,9.7,3.8,16.3c-0.9,10.1-2.9,37.9,28.6,34.2c10.1-1.2,24.8-12.7,25.4-18.2s-1.7-7.4-6.5-6.5c-1.3-6.5-2.3-12.9-10.7-11.8c-3.9,0.2,7.5,0,8.1-7.5C218.6,247.8,213.7,245.2,213.7,245.2z"/>
-    <ellipse id="monkey-eye-r" fill="#89949B" cx="205" cy="255.5" rx="2.1" ry="2"/>
-    <ellipse id="monkey-eye-l" fill="#89949B" cx="191.5" cy="256.6" rx="2.7" ry="2.6"/>
-    <g id="monkey_arm">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M164.3,344.1c-0.9-0.3-1.8-0.2-2.5,0.2c-0.3-0.2-0.6-0.3-0.9-0.4c-0.8-0.3-1.5-0.5-2.3-0.5c-0.1,0-0.2-0.1-0.3-0.3c-2.4-11.4-1.1-27.6,0.3-43.8c0-0.1,1.2-5.7-2.6-7.2c-5.2-2.1-5.5,2.5-5.5,2.7c-0.5,4.8-3.6,39,1.1,51.4c0,0.1,0,0.2,0,0.3c-0.4,0.5-0.7,1-0.9,1.7c-1.5,3.9,0.7,8.3,4.8,9.9c4.1,1.6,8.7-0.3,10.1-4.2c0.5-1.3,0.6-2.7,0.3-4c0-0.1,0-0.2,0.1-0.2c0.5-0.7,0.9-1.6,0.5-2.9C166.2,345.5,165.4,344.4,164.3,344.1z"/>
+    <g fill="none" stroke="#63C4AE" stroke-miterlimit="10">
+    <polygon points="341.3,78.4 344.2,68.1 345.6,62.9 310.6,56.9"/>
+    <polygon points="281.3,192.5 279,196.3 270.3,209.8 284.1,205.2"/>
+    <polygon points="318,72.1 333.3,84.8 310.3,58.6 318,72.4"/>
+    <polygon points="341.9,78.7 368.6,99.1 346.2,63.5"/>
+    <polygon points="296.2,56 320.9,39.7 289.3,42.2"/>
+    <polygon points="289,41.4 318.6,39.1 282.7,34.8"/>
+    <polygon points="346.8,62.9 369.5,98.8 366.6,63.2"/>
+    <polygon points="297.6,56 308.3,55.7 320.9,40.8"/>
+    <polygon points="301.4,67.8 294.8,78.2 306.3,72.1 308,57.8"/>
+    <polygon points="307.4,68.4 306.8,72.1 317.2,72.1 308.9,57.2"/>
+    <polygon points="371.2,112.1 369.8,101.1 361.4,105.5 353.4,109.8 375.5,144"/>
+    <polygon points="353.1,110.6 348.8,129 347.4,135.1 375.5,145.4"/>
+    <polygon points="350.2,120.4 352.2,110.3 345.3,113.2 347.1,133"/>
+    <polygon points="309.1,55.7 344.8,62.1 322.4,39.9"/>
+    <polygon points="225.2,154.6 245.3,145.4 232.4,134.2 225.2,154.3"/>
+    <polygon points="262.3,183.3 257.7,172.7 245.6,146 225.2,155.5"/>
     </g>
-    </g>
-    <g id="tetris-path">
-    <g id="tetris">
-    <path fill="#FFF" stroke="#8894A0" stroke-width="3" d="M487.5,323.5h34v34h-34V323.5z M487.5,357.5h34v34h-34V357.5z M521.5,357.5h34v34h-34V357.5z M555.5,357.5h34v34h-34V357.5z M555.5,391.5h34v34h-34V391.5z"/>
-    </g>
-    </g>
-    <g id="stars">
-    <path id="star1" fill="#FFF" stroke="#89949B" stroke-width="3" d="M652.6,332.5c-5.3,3.1-12.1,1.2-15.1-4.1l-1.4-2.4l1.4,2.4c3.1,5.3,1.2,12.1-4.1,15.1l-2.4,1.4l2.4-1.4c5.3-3.1,12.1-1.2,15.1,4.1l1.4,2.4l-1.4-2.4C645.5,342.3,647.3,335.5,652.6,332.5l2.4-1.4L652.6,332.5z"/>
-    <path id="star2" fill="#FFF" stroke="#89949B" stroke-width="3" d="M503.4,73.7c-8,4.6-18.1,1.9-22.7-6.1l-2.1-3.6l2.1,3.6c4.6,8,1.9,18.1-6.1,22.7l-3.6,2.1l3.6-2.1c8-4.6,18.1-1.9,22.7,6.1l2.1,3.6l-2.1-3.6C492.7,88.4,495.4,78.3,503.4,73.7l3.6-2.1L503.4,73.7z"/>
-    <path id="star3" fill="#FFF" stroke="#89949B" stroke-width="3" d="M330.4,335.7c-8,4.6-18.1,1.9-22.7-6.1l-2.1-3.6l2.1,3.6c4.6,8,1.9,18.1-6.1,22.7l-3.6,2.1l3.6-2.1c8-4.6,18.1-1.9,22.7,6.1l2.1,3.6l-2.1-3.6C319.7,350.4,322.4,340.3,330.4,335.7l3.6-2.1L330.4,335.7z"/>
-    <path id="star4" fill="#FFF" stroke="#89949B" stroke-width="3" d="M135.6,176.5c-5.3,3.1-12.1,1.2-15.1-4.1l-1.4-2.4l1.4,2.4c3.1,5.3,1.2,12.1-4.1,15.1l-2.4,1.4l2.4-1.4c5.3-3.1,12.1-1.2,15.1,4.1l1.4,2.4l-1.4-2.4C128.5,186.3,130.3,179.5,135.6,176.5l2.4-1.4L135.6,176.5z"/>
-    </g>
-    <g id="moon">
-    <circle fill="#FFF" stroke="#89949B" stroke-width="3" cx="641" cy="81" r="47"/>
-    <path fill="#E8EBED" d="M622.5,55.9c1.3,2.3,0,5.8-3.1,7.7c-3,2-6.6,1.7-7.9-0.6c-1.3-2.3,0-5.8,3.1-7.7C617.6,53.3,621.1,53.6,622.5,55.9z M628.8,94.1c-4.1-6.1-11.6-9-16.7-6.4c-5.1,2.6-5.9,9.6-1.7,15.7c4.1,6.1,11.6,9,16.7,6.4C632.2,107.2,632.9,100.2,628.8,94.1z M644.5,109c-3.6,0-6.5,2.2-6.5,5s2.9,5,6.5,5s6.5-2.2,6.5-5S648.1,109,644.5,109z M645.7,95.8c-2.3-1.2-5-0.5-6,1.4c-1,2,0,4.5,2.3,5.7c2.3,1.2,5,0.5,6-1.4C649,99.6,648,97,645.7,95.8z"/>
-    </g>
-    <g id="number_4">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M379.5,235.5c0-4.9-3.9-9.1-8.7-9.1h-11.4v-72.5c0-9.1-8.5-15.7-17.6-15c-6,0-11.8,3.1-15.1,8l-52.7,79.8c-1.2,2.1-2.1,4.5-2.1,6.6c0,6.6,5,11.1,10.3,11.1H339v24.3c0,5.6,4.3,10.1,9.9,10.1c6,0,10.5-4.5,10.5-10.1v-24.3h11.4C375.6,244.3,379.5,240.4,379.5,235.5z M339,226.4h-45.5l45.5-67.8V226.4z"/>
-    </g>
-    <g id="number_0">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M502,208.9c0-34-15.9-70.9-54-70.9c-38.3,0-54,36.9-54,70.9s15.7,71.1,54,71.1C486.1,280,502,242.9,502,208.9z M481.1,208.9c0,26.8-8.7,53-33.1,53c-24.6,0-33.1-26.2-33.1-53c0-26.8,8.5-52.8,33.1-52.8C472.4,156.1,481.1,182.1,481.1,208.9z"/>
-    </g>
-    <g id="number_4_2">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M627,235.5c0-4.9-3.9-9.1-8.7-9.1h-11.4v-72.5c0-9.1-8.5-15.7-17.6-15c-6,0-11.8,3.1-15.1,8l-52.7,79.8c-1.2,2.1-2.1,4.5-2.1,6.6c0,6.6,5,11.1,10.3,11.1h56.7v24.3c0,5.6,4.3,10.1,9.9,10.1c6,0,10.5-4.5,10.5-10.1v-24.3h11.4C623.1,244.3,627,240.4,627,235.5z M586.5,226.4H541l45.5-67.8V226.4z"/>
-    </g>
-    <g id="sword-path">
-    <g id="sword">
-    <path fill="#FFF" stroke="#89949B" stroke-width="3" d="M444.6,196.6l0.6-0.8c1.5-2,1.8-4.3,3.8-2.8l8.9,6.8c2,1.5,2.4,4.3,0.9,6.3l-0.6,0.8c-1.5,2-4.3,2.4-6.3,0.9L443,201C441,199.5,443.1,198.5,444.6,196.6z M432.5,197.1l10.6-13.9c1.6-2.2,4.7-2.6,6.9-0.9c2.2,1.6,2.6,4.7,0.9,6.9l-10.6,13.9c-1.6,2.2-4.7,2.6-6.9,0.9C431.2,202.4,430.8,199.3,432.5,197.1z"/>
-    <polygon fill="#FFF" stroke="#89949B" stroke-width="3" points="437,199 446,187.3 387.3,138.9 366.3,136.7 372.2,154"/>
-    </g>
+    <g fill="none" stroke="#63C4AE" stroke-miterlimit="10">
+    <polygon points="89.3,111.4 94.2,95.3 96.8,85.5 65.5,100.4"/>
+    <polygon points="108.9,63.4 136.5,41.8 148.5,32.3 91.9,67.7"/>
+    <polygon points="96.8,82.9 97.4,84.3 108,64.5 94.8,67.7 90.2,68.8"/>
+    <polygon points="141.1,61.6 121.5,70.5 132.4,78.9 143.4,86.9 141.6,68"/>
+    <polygon points="109.7,63.6 120.7,70 152,30.3"/>
+    <polygon points="163.2,63.1 141.9,61.3 142.8,71.7 143.9,86.9 151.7,77.2"/>
+    <polygon points="158.6,170.8 154.6,153.9 143.9,159.3 161.2,182.9"/>
+    <polygon points="159.5,130 141.6,136.4 154.6,152.7 156.6,143.5"/>
+    <polygon points="124.1,123.4 130.4,128 141.1,135.5 163.8,104.5"/>
+    <polygon points="150.5,93.2 143.9,88.4 133,103 163.8,103"/>
+    <polygon points="120.1,185.2 122.4,169.1 103.1,161.9 107.7,168.5"/>
+    <polygon points="123,170.5 121.2,183.5 120.9,186.1 133.3,201.9"/>
+    <polygon points="141.6,191.8 145.1,186.4 123.5,169.7 134.5,202.4"/>
+    <polygon points="145.7,186.9 134.7,203.6 161.8,219.7"/>
+    <polygon points="151.1,149.3 141.6,137.5 143.7,158.8 154.3,153.3"/>
     </g>
     </svg>
+    <h1 style="color:#63C4AE;font-size:72px;margin:30px 0 10px;font-weight:700">404</h1>
+    <p style="color:#63C4AE;font-size:24px;margin:0 0 30px">Page Not Found</p>
+    <a href="/" style="display:inline-block;padding:12px 30px;background:#63C4AE;color:#000;text-decoration:none;border-radius:25px;font-weight:600;transition:all 0.3s">Return Home</a>
+    </div>
+    <script>
+    setTimeout(()=>{
+    document.querySelectorAll('polygon').forEach((p,i)=>{
+    setTimeout(()=>p.style.transform='rotateY(0) scale(1)',i*20)
+    })
+    },100)
+    </script>
     </body>
     </html>

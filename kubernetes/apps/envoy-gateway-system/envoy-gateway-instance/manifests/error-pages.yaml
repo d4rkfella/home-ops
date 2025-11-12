@@ -3,4 +3,18 @@ kind: ConfigMap
 metadata:
   name: custom-404
 data:
-  response.body: "<html><body><h1>404 Not Found</h1></body></html>"
+  response.body: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <title>404</title>
+    <style>
+    body { background: purple; color: white; text-align: center; padding: 100px; }
+    h1 { font-size: 100px; }
+    </style>
+    </head>
+    <body>
+    <h1>404</h1>
+    <p>Not Found</p>
+    </body>
+    </html>

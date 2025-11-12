@@ -20,6 +20,9 @@ spec:
             apiTokenSecretRef:
               name: *secret
               key: CF_API_TOKEN
+        selector:
+          dnsZones:
+            - darkfellanetwork.com
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer

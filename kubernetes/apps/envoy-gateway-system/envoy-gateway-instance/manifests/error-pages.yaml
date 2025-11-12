@@ -7,14 +7,54 @@ data:
     <!DOCTYPE html>
     <html>
     <head>
+    <meta charset="UTF-8">
     <title>404</title>
     <style>
-    body { background: purple; color: white; text-align: center; padding: 100px; }
-    h1 { font-size: 100px; }
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      padding: 50px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 500px;
+    }
+    h1 {
+      font-size: 120px;
+      margin: 0;
+      color: #667eea;
+    }
+    p {
+      font-size: 18px;
+      color: #555;
+      margin: 20px 0;
+    }
+    a {
+      display: inline-block;
+      padding: 12px 30px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      margin-top: 20px;
+    }
     </style>
     </head>
     <body>
+    <div class="container">
     <h1>404</h1>
-    <p>Not Found</p>
+    <p><strong>Page Not Found</strong></p>
+    <p>The page you are looking for does not exist</p>
+    <a href="/">Go Home</a>
+    </div>
     </body>
     </html>

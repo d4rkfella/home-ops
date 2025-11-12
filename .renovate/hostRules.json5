@@ -3,7 +3,7 @@
   "hostRules": [
     {
       "matchHost": "https://api.github.com/repos/d4rkfella/artifactory-pro",
-      "token": "{{ secrets.BOT_GITHUB_TOKEN }}",
+      "token": "${{ secrets.BOT_GITHUB_TOKEN }}",
       "hostType": "github",
     }
   ]

@@ -59,6 +59,7 @@ try:
         locality="Sofia",
         organization="DarkfellaNET",
         ttl=TTL,
+        format="pem_bundle",
     )
     csr = generate_resp['data']['csr']
     with open(CSR_FILE, "w") as f:
@@ -69,6 +70,9 @@ try:
     sign_resp = client.write(
         f"{INT_MOUNT}/root/sign-intermediate",
         csr=csr,
+        country="Bulgaria",
+        locality="Sofia",
+        organization="DarkfellaNET",
         format="pem_bundle",
         ttl=TTL,
         common_name=COMMON_NAME,

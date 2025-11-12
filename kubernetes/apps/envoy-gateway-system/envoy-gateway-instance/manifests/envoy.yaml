@@ -160,6 +160,19 @@ spec:
     - group: gateway.networking.k8s.io
       kind: Gateway
   tcpKeepalive: {}
+  responseOverride:
+    - match:
+        statusCodes:
+          - type: Value
+            value: 404
+      response:
+        contentType: text/html
+        body:
+          type: ValueRef
+          valueRef:
+            group: ""
+            kind: ConfigMap
+            name: custom-404
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: ClientTrafficPolicy

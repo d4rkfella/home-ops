@@ -1,9 +1,0 @@
-module.exports = {
-  "hostRules": [
-    {
-      "matchHost": "https://api.github.com/repos/d4rkfella/artifactory-pro",
-      "token": process.env.RENOVATE_DOCKER_PAT,
-      "hostType": "github",
-    }
-  ]
-}

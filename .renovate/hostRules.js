@@ -1,5 +1,4 @@
 module.exports = {
-  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   "hostRules": [
     {
       "matchHost": "https://api.github.com/repos/d4rkfella/artifactory-pro",

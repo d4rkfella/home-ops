@@ -5,7 +5,7 @@
     'docker:enableMajor',
     'customManagers:dockerfileVersions',
     'helpers:pinGitHubActionDigests',
-    'github>d4rkfella/home-ops//.renovate/hostRules.json5',
+    'github>d4rkfella/home-ops//.renovate/hostRules.js',
     'github>d4rkfella/home-ops//.renovate/autoMerge.json5',
     'github>d4rkfella/home-ops//.renovate/customManagers.json5',
     'github>d4rkfella/home-ops//.renovate/grafanaDashboards.json5',

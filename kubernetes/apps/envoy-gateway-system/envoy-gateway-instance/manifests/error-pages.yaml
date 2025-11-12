@@ -6,54 +6,14 @@ data:
   response.body: |
     <!DOCTYPE html>
     <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>404</title>
-    <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #667eea;
-      font-family: Arial, sans-serif;
-    }
-    .container {
-      text-align: center;
-      padding: 50px;
-      background: white;
-      border-radius: 20px;
-      max-width: 500px;
-    }
-    h1 {
-      font-size: 120px;
-      margin: 0;
-      color: #667eea;
-    }
-    p {
-      font-size: 18px;
-      color: #555;
-      margin: 20px 0;
-    }
-    a {
-      display: inline-block;
-      padding: 12px 30px;
-      background: #667eea;
-      color: white;
-      text-decoration: none;
-      border-radius: 25px;
-      margin-top: 20px;
-    }
-    </style>
-    </head>
-    <body>
-    <div class="container">
-    <h1>404</h1>
-    <p><strong>Page Not Found</strong></p>
-    <p>The page you are looking for does not exist</p>
-    <a href="/">Go Home</a>
+    <head><meta charset="UTF-8"><title>404</title></head>
+    <body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#667eea;font-family:Arial">
+    <div style="text-align:center;padding:60px;background:white;border-radius:20px;max-width:500px">
+    <h1 style="font-size:140px;margin:0;color:#667eea">404</h1>
+    <div style="font-size:80px;margin:20px 0">🔍</div>
+    <p style="font-size:24px;color:#333;font-weight:600">Page Not Found</p>
+    <p style="font-size:16px;color:#666">The page you are looking for does not exist</p>
+    <a href="/" style="display:inline-block;padding:14px 32px;background:#667eea;color:white;text-decoration:none;border-radius:25px;margin-top:25px">Go Home</a>
     </div>
     </body>
     </html>

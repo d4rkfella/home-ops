@@ -3,7 +3,7 @@ import asyncio
 import os
 import sys
 import yaml
-import sops
+#import sops
 import json
 import tempfile
 import io
@@ -105,7 +105,7 @@ async def wait_for_crds(dyn, crd_names, timeout: int = 600):
             if not remaining:
                 break
             if asyncio.get_event_loop().time() > end_time:
-                raise TimeoutError(f"Timeout waiting for deployments: {remaining}")
+                raise TimeoutError(f"Timeout checking for the existence of provided CRDs: {remaining}")
     finally:
         await watcher.close()
 
@@ -159,8 +159,6 @@ async def wait_for_daemonsets(dyn, namespace: str, daemonsets: list[str], timeou
             if dep_name not in remaining:
                 continue
 
-            status = obj.status or {}
-
             desired = obj.status.desiredNumberScheduled or 0
             ready = obj.status.numberReady or 0
 
@@ -182,91 +180,64 @@ async def wait_for_daemonsets(dyn, namespace: str, daemonsets: list[str], timeou
         await watcher.close()
 
 
-async def vault_init_unseal_restore(vault_addr: str, backup_file: str):
-    client_vault = hvac.Client(url=vault_addr)
-    token_file = "/tmp/vault-keys.json"
-    keys_loaded = False
+async def vault_init_unseal_restore(vault_addr: str, config_file: str):
+    client = hvac.Client(url=vault_addr)
 
-    if not client_vault.sys.is_initialized():
+    if not client.sys.is_initialized():
         print("Vault not initialized. Initializing now...")
         try:
-            init_result = client_vault.sys.initialize()
-            with open(token_file, "w") as f:
-                json.dump(init_result, f)
-            print("Vault initialized successfully. Keys saved.")
-            keys_loaded = True
+            result = client.sys.initialize()
+            root_token = result['root_token']
+            keys = result['keys']
         except Exception as e:
             print(f"Vault initialization failed: {e}")
             return
     else:
-        print("Vault already initialized.")
-        if os.path.exists(token_file):
-            keys_loaded = True
+        print("Vault already initialized. Skipping unseal and restore operations...")
+        return
 
-    if client_vault.sys.is_sealed() and keys_loaded:
+    if client.sys.is_sealed():
         try:
-            with open(token_file) as f:
-                data = json.load(f)
-                keys = data.get('keys')
             print("Vault is sealed. Attempting unseal...")
-            client_vault.sys.submit_unseal_key(key=keys[0], reset=True)
-            for key in keys[1:]:
-                client_vault.sys.submit_unseal_key(key=key)
-            await asyncio.sleep(60)
-
-            if not client_vault.sys.is_sealed():
-                print("Vault unsealed successfully.")
-            else:
-                print("Vault remains sealed after attempted unseal operation.")
-                return
-        except FileNotFoundError as e:
-            print(f"Error reading token file: {e}")
-            return
-        except (KeyError, json.JSONDecodeError) as e:
-            print(f"Error reading keys from token file for unseal: {e}")
-            return
-
-    if not client_vault.sys.is_sealed() and keys_loaded:
-        print("Vault is already unsealed and init root token is available. Proceeding with Raft snapshot restoration....")
-
-        try:
-            with open(token_file) as f:
-                root_token = json.load(f)['root_token']
-
-            command = [
-                "vault-backup",
-                "restore",
-                "--force",
-                f"--config={backup_file}",
-                f"--vault-token={root_token}"
-                f"--vault-address={vault_addr}"
-            ]
-
-            print(f"Executing: {' '.join(command)} (VAULT_ADDR={vault_addr})")
-
-            process = await asyncio.create_subprocess_exec(
-                *command,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE,
-            )
-
-            stdout, stderr = await process.communicate()
-
-            if process.returncode != 0:
-                print(f"Vault restore FAILED (Exit Code {process.returncode}):")
-                print("STDOUT:\n", stdout.decode().strip())
-                print("STDERR:\n", stderr.decode().strip())
-                raise RuntimeError(f"Vault restore failed with exit code {process.returncode}")
-            else:
-                print("Vault restore completed successfully.")
-                print("STDOUT:\n", stdout.decode().strip())
-
-        except (FileNotFoundError, KeyError, json.JSONDecodeError) as e:
-            print(f"Vault restore skipped: Failed to read root token from token file. Error: {e}")
-        except FileNotFoundError:
-             print("Vault restore FAILED: 'vault-backup' command not found. Ensure it's in the PATH.")
+            client.sys.submit_unseal_keys(keys)
         except Exception as e:
-            print(f"An unexpected error occurred during vault restore: {e}")
+            print(f"Vault unseal failed: {e}")
+            return
+    else:
+        print("Vault already unsealed. Skipping restore procedure...")
+        return
+
+    try:
+        command = [
+            "vault-backup",
+            "restore",
+            "--force",
+            f"--config={config_file}",
+            f"--vault-token={root_token}"
+            f"--vault-address={vault_addr}"
+        ]
+
+        process = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await process.communicate()
+
+        if process.returncode != 0:
+            print(f"Vault restore FAILED (Exit Code {process.returncode}):")
+            print("STDOUT:\n", stdout.decode().strip())
+            print("STDERR:\n", stderr.decode().strip())
+            raise RuntimeError(f"Vault restore failed with exit code {process.returncode}")
+        else:
+            print("Vault restore completed successfully.")
+            print("STDOUT:\n", stdout.decode().strip())
+
+    except FileNotFoundError:
+        print("Vault restore FAILED: 'vault-backup' command not found. Ensure it's in the PATH.")
+    except Exception as e:
+        print(f"An unexpected error occurred during vault restore: {e}")
 
 
 
@@ -357,7 +328,7 @@ if __name__ == "__main__":
     mf_parser.add_argument("--file", required=True, help="YAML manifest file")
     mf_parser.add_argument("--namespace", help="Namespace override")
 
-    sops_parser = subparsers.add_parser("sops", help="Apply SOPS manifest")
+    sops_parser = subparsers.add_parser("apply-sops-encrypted-manifest", help="Apply SOPS encrypted manifest")
     sops_parser.add_argument("--file", required=True, help="SOPS YAML file")
     sops_parser.add_argument("--namespace", required=True, help="Namespace to apply in")
 
@@ -377,7 +348,7 @@ if __name__ == "__main__":
 
     vault_parser = subparsers.add_parser("init-vault", help="Init/unseal/restore Vault")
     vault_parser.add_argument("--addr", required=True, help="Vault address")
-    vault_parser.add_argument("--backup", default="/project/.vault/vault-backup.yaml", help="Vault backup file")
+    vault_parser.add_argument("--config", default="/project/.vault/vault-backup.yaml", help="vault-backup cli config file")
 
     args = parser.parse_args()
 
@@ -401,7 +372,7 @@ if __name__ == "__main__":
             elif args.command == "wait-daemonsets":
                 await wait_for_daemonsets(dyn, args.namespace, args.names.split(","))
             elif args.command == "init-vault":
-                await vault_init_unseal_restore(args.addr, args.backup)
+                await vault_init_unseal_restore(args.addr, args.config)
             else:
                 parser.print_help()
 

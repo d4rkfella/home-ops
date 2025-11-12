@@ -13,13 +13,9 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "kube-system"]
-        showlogs: true
-      - events: ["prepare"]
-        command: python
         args:
           - "scripts/helm_hooks.py"
-          - "crds"
+          - "wait-crds"
           - "--names"
           - "ciliuml2announcementpolicies.cilium.io,ciliumloadbalancerippools.cilium.io,kubevirts.kubevirt.io,cdis.cdi.kubevirt.io"
         showlogs: true
@@ -27,7 +23,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/cilium/manifests/networks.yaml"
           - "--namespace"
@@ -60,13 +56,13 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "cert-manager"]
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "cert-manager"]
         showlogs: true
       - events: ["postsync"]
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "crds"
+          - "wait-crds"
           - "--names"
           - "clusterissuers.cert-manager.io,certificates.cert-manager.io"
         showlogs: true
@@ -74,7 +70,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml"
           - "--namespace"
@@ -84,7 +80,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/rbac.yaml"
           - "--namespace"
@@ -94,7 +90,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "sops"
+          - "apply-sops-encrypted-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml"
           - "--namespace"
@@ -107,17 +103,17 @@ releases:
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 1.0.0
     values: ['./values.yaml.gotmpl']
-    needs: ['vault/vault','cert-manager/cert-manager']
+    needs: ['vault/vault']
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "external-secrets"]
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "external-secrets"]
         showlogs: true
       - events: ["postsync"]
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "crds"
+          - "wait-crds"
           - "--names"
           - "clustersecretstores.external-secrets.io"
         showlogs: true
@@ -125,7 +121,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml"
           - "--namespace"
@@ -142,13 +138,13 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "openebs-system"]
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "openebs-system"]
         showlogs: true
       - events: ["presync"]
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'BOOTSTRAP_DIR' }}/create-zpool.yaml"
           - "--namespace"
@@ -158,7 +154,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml"
           - "--namespace"
@@ -168,7 +164,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml"
           - "--namespace"
@@ -181,13 +177,17 @@ releases:
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
     version: 0.31.0
     values: ['./values.yaml.gotmpl']
-    needs: ['cert-manager/cert-manager','openebs-system/zfs-localpv']
+    needs: ['kube-system/cilium','cert-manager/cert-manager','openebs-system/zfs-localpv']
     hooks:
+      - events: ["prepare"]
+        command: python
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "vault"]
+        showlogs: true
       - events: ["prepare"]
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "sops"
+          - "apply-sops-encrypted-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/vault/vault/manifests/vault.secret.sops.yaml"
           - "--namespace"
@@ -197,7 +197,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "vault"
+          - "vault-init"
           - "--addr"
           - "https://vault.darkfellanetwork.com:8200"
         showlogs: true
@@ -214,7 +214,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kube-system/multus/manifests/rbac.yaml"
           - "--namespace"
@@ -224,7 +224,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/kubevirt/kubevirt-instance/manifests/kubevirt.yaml"
           - "--namespace"
@@ -234,7 +234,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/cdi.yaml"
           - "--namespace"
@@ -244,7 +244,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "manifest"
+          - "apply-manifest"
           - "--file"
           - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/cdi/cdi-instance/manifests/storageprofile.yaml"
           - "--namespace"
@@ -254,7 +254,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "deployments"
+          - "wait-deployments"
           - "--namespace"
           - "virtualization"
           - "--names"
@@ -264,7 +264,7 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "daemonsets"
+          - "wait-daemonsets"
           - "--namespace"
           - "virtualization"
           - "--names"
@@ -280,7 +280,7 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "envoy-gateway-system"]
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "envoy-gateway-system"]
         showlogs: true
 
   - name: flux-operator
@@ -292,7 +292,7 @@ releases:
     hooks:
       - events: ["prepare"]
         command: python
-        args: ["scripts/helm_hooks.py", "namespace", "--name", "flux-system"]
+        args: ["scripts/helm_hooks.py", "ensure-namespace", "--name", "flux-system"]
         showlogs: true
 
   - name: flux-instance
@@ -307,9 +307,9 @@ releases:
         command: python
         args:
           - "scripts/helm_hooks.py"
-          - "sops"
+          - "apply-sops-encrypted-manifest"
           - "--file"
-          - "{{ requiredEnv 'KUBERNETES_DIR' }}/components/common/sops/secret.sops.yaml"
+          - "{{ requiredEnv 'KUBERNETES_DIR' }}/apps/flux-system/flux-instance/manifests/secret.sops.yaml"
           - "--namespace"
           - "flux-system"
         showlogs: true

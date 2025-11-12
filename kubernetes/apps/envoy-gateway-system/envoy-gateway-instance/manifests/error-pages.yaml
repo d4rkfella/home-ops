@@ -3,33 +3,4 @@ kind: ConfigMap
 metadata:
   name: custom-404
 data:
-  response.body: |
-    <!DOCTYPE html>
-    <html>
-    <head>
-    <meta charset="UTF-8">
-    <title>404</title>
-    <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a0a1e;overflow:hidden}
-    .block404{position:relative;width:100vw;height:100vh;background:#1a1a2e;overflow:hidden;display:flex;align-items:center;justify-content:center}
-    .content{position:relative;z-index:10;text-align:center}
-    .t404{font-size:150px;font-weight:bold;color:#667eea;text-shadow:0 0 20px rgba(102,126,234,0.5);animation:glitch 1s infinite}
-    .obj{width:200px;height:200px;margin:0 auto;animation:float 6s infinite ease-in-out}
-    .obj img{width:100%;height:100%;filter:drop-shadow(0 0 10px rgba(102,126,234,0.3))}
-    @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(-5deg)}}
-    @keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(2px,-2px)}}
-    .waves{position:absolute;width:100%;height:100%;background:linear-gradient(45deg,#1a1a2e 25%,transparent 25%,transparent 75%,#1a1a2e 75%,#1a1a2e),linear-gradient(45deg,#1a1a2e 25%,transparent 25%,transparent 75%,#1a1a2e 75%,#1a1a2e);background-size:60px 60px;background-position:0 0,30px 30px;opacity:0.1;animation:wave 20s linear infinite}
-    @keyframes wave{0%{background-position:0 0,30px 30px}100%{background-position:60px 60px,90px 90px}}
-    </style>
-    </head>
-    <body>
-    <div class="block404">
-    <div class="waves"></div>
-    <div class="content">
-    <div class="t404">404</div>
-    <p style="color:#888;font-size:20px;margin-top:20px">Page Not Found</p>
-    </div>
-    </div>
-    </body>
-    </html>
+  response.body: "<html><body><h1>404 Not Found</h1></body></html>"

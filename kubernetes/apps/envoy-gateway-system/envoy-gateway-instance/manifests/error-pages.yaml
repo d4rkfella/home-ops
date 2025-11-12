@@ -3,4 +3,33 @@ kind: ConfigMap
 metadata:
   name: custom-404
 data:
-  response.body: "PCFET0NUWVBFIGh0bWw+PGh0bWw+PGhlYWQ+PG1ldGEgY2hhcnNldD0iVVRGLTgiPjx0aXRsZT40MDQ8L3RpdGxlPjxzdHlsZT4qe21hcmdpbjowO3BhZGRpbmc6MH1ib2R5e2Rpc3BsYXk6ZmxleDtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2FsaWduLWl0ZW1zOmNlbnRlcjttaW4taGVpZ2h0OjEwMHZoO2JhY2tncm91bmQ6IzFhMWEyZX0uYmxvY2s0MDR7cG9zaXRpb246cmVsYXRpdmU7YmFja2dyb3VuZC1pbWFnZTp1cmwoaHR0cHM6Ly9pLmltZ3VyLmNvbS9lSFZ5V1RNLmpwZyk7d2lkdGg6MTI0OHB4O2hlaWdodDo2MjBweDttYXgtd2lkdGg6MTAwdnc7bWF4LWhlaWdodDoxMDB2aDtvdmVyZmxvdzpoaWRkZW59LnQ0MDR7cG9zaXRpb246YWJzb2x1dGU7d2lkdGg6MzY0cHg7aGVpZ2h0OjE0NnB4O3RvcDo1MCU7bGVmdDo1MCU7dHJhbnNmb3JtOnRyYW5zbGF0ZSgtNTAlLC01MCUpO2JhY2tncm91bmQtaW1hZ2U6dXJsKGh0dHBzOi8vaS5pbWd1ci5jb20vS1BabzlZWC5wbmcpO2JhY2tncm91bmQtc2l6ZTpjb250YWluO2JhY2tncm91bmQtcmVwZWF0Om5vLXJlcGVhdDt6LWluZGV4OjJ9Lm9iant3aWR0aDoyMDRweDtoZWlnaHQ6MjA5cHg7cG9zaXRpb246YWJzb2x1dGU7dG9wOjUwJTtsZWZ0OjUwJTt0cmFuc2Zvcm06dHJhbnNsYXRlKC01MCUsLTUwJSk7YW5pbWF0aW9uOmEgNnMgaW5maW5pdGUgZWFzZS1pbi1vdXQ7ei1pbmRleDoxfS5vYmogaW1ne3dpZHRoOjEwMCU7aGVpZ2h0OjEwMCV9QGtleWZyYW1lcyBhezAlLDEwMCV7dHJhbnNmb3JtOnRyYW5zbGF0ZSgtNTAlLC01MCUpIHJvdGF0ZSgwKX01MCV7dHJhbnNmb3JtOnRyYW5zbGF0ZSgtNTMlLC00MiUpIHJvdGF0ZSgtNWRlZyl9fS53YXZlc3twb3NpdGlvbjphYnNvbHV0ZTt3aWR0aDoxMDAlO2hlaWdodDoxMDAlO2JhY2tncm91bmQtaW1hZ2U6dXJsKGh0dHBzOi8vaS5pbWd1ci5jb20vZUhWeVdUTS5qcGcpO2ZpbHRlcjp1cmwoI2dsaXRjaCl9c3Zne3Bvc2l0aW9uOmFic29sdXRlO3dpZHRoOjA7aGVpZ2h0OjB9PC9zdHlsZT48L2hlYWQ+PGJvZHk+PGRpdiBjbGFzcz0iYmxvY2s0MDQiPjxkaXYgY2xhc3M9IndhdmVzIj48L2Rpdj48ZGl2IGNsYXNzPSJvYmoiPjxpbWcgc3JjPSJodHRwczovL2kuaW1ndXIuY29tL3cwWWI0TVgucG5nIiBhbHQ9IjQwNCI+PC9kaXY+PGRpdiBjbGFzcz0idDQwNCI+PC9kaXY+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxkZWZzPjxmaWx0ZXIgaWQ9ImdsaXRjaCI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDEgMC4wMyIgbnVtT2N0YXZlcz0iMSIgcmVzdWx0PSJ3YXJwIi8+PGZlQ29sb3JNYXRyaXggaW49IndhcnAiIHJlc3VsdD0iaHVlZHR1cmIiIHR5cGU9Imh1ZVJvdGF0ZSIgdmFsdWVzPSI5MCI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0idmFsdWVzIiB2YWx1ZXM9IjA7MTgwOzM2MCIgZHVyPSIzcyIgcmVwZWF0Q291bnQ9ImluZGVmaW5pdGUiLz48L2ZlQ29sb3JNYXRyaXg+PGZlRGlzcGxhY2VtZW50TWFwIHhDaGFubmVsU2VsZWN0b3I9IlIiIHlDaGFubmVsU2VsZWN0b3I9IkciIHNjYWxlPSI1MCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iaHVlZHR1cmIiLz48L2ZpbHRlcj48L2RlZnM+PC9zdmc+PC9kaXY+PC9ib2R5PjwvaHRtbD4="
+  response.body: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta charset="UTF-8">
+    <title>404</title>
+    <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#0a0a1e;overflow:hidden}
+    .block404{position:relative;width:100vw;height:100vh;background:#1a1a2e;overflow:hidden;display:flex;align-items:center;justify-content:center}
+    .content{position:relative;z-index:10;text-align:center}
+    .t404{font-size:150px;font-weight:bold;color:#667eea;text-shadow:0 0 20px rgba(102,126,234,0.5);animation:glitch 1s infinite}
+    .obj{width:200px;height:200px;margin:0 auto;animation:float 6s infinite ease-in-out}
+    .obj img{width:100%;height:100%;filter:drop-shadow(0 0 10px rgba(102,126,234,0.3))}
+    @keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(-5deg)}}
+    @keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(2px,-2px)}}
+    .waves{position:absolute;width:100%;height:100%;background:linear-gradient(45deg,#1a1a2e 25%,transparent 25%,transparent 75%,#1a1a2e 75%,#1a1a2e),linear-gradient(45deg,#1a1a2e 25%,transparent 25%,transparent 75%,#1a1a2e 75%,#1a1a2e);background-size:60px 60px;background-position:0 0,30px 30px;opacity:0.1;animation:wave 20s linear infinite}
+    @keyframes wave{0%{background-position:0 0,30px 30px}100%{background-position:60px 60px,90px 90px}}
+    </style>
+    </head>
+    <body>
+    <div class="block404">
+    <div class="waves"></div>
+    <div class="content">
+    <div class="t404">404</div>
+    <p style="color:#888;font-size:20px;margin-top:20px">Page Not Found</p>
+    </div>
+    </div>
+    </body>
+    </html>

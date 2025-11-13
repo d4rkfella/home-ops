@@ -136,7 +136,7 @@ RUN apk add --no-cache \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
-    helm plugin install https://github.com/databus23/helm-diff && \
+    helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     pip install --break-system-packages -r /tmp/requirements.txt && \
     rm -f /tmp/requirements.txt
 

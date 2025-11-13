@@ -100,7 +100,7 @@ spec:
           apiGroup: rbac.authorization.k8s.io
           kind: Role
           name: vault-issuer
-      - |
+      - |-
         apiVersion: monitoring.coreos.com/v1
         kind: PrometheusRule
         metadata:

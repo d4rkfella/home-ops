@@ -1,9 +1,0 @@
-{
-  "hostRules": [
-    {
-      "matchHost": "ghcr.io/d4rkfella/artifactory-pro",
-      "username": "d4rkfella",
-      "password": "{{ secrets.RENOVATE_GITHUB_PAT }}",
-    }
-  ]
-}

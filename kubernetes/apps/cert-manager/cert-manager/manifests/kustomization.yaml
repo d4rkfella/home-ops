@@ -5,3 +5,4 @@ resources:
   - ./issuer.secret.sops.yaml
   - ./helmrelease.yaml
   - ./clusterissuer.yaml
+  - ./prometheusrule.yaml

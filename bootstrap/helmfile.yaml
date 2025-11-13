@@ -8,7 +8,7 @@ releases:
     namespace: kube-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/cilium
-    version: 1.18.3
+    version: 1.18.4
     values: ['./values.yaml.gotmpl']
     hooks:
       - events: ["prepare"]

@@ -125,7 +125,6 @@ RUN apk add --no-cache \
         gnupg \
         docker-cli \
         docker-cli-buildx \
-        buildkit \
         tigervnc-client \
         fontconfig \
         ttf-dejavu \

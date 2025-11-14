@@ -2,7 +2,7 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer:latest@sha256:6c09a4560a35f027021a167039b96f303116d10b48147a75290645972ff34a5a",
+    "image": "ghcr.io/d4rkfella/devcontainer:latest@sha256:6f0b93381d044902fb410d37ae22634a3f89118afc99742819b76c22b23e2d68",
     "workspaceFolder": "/project",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
@@ -81,7 +81,7 @@
             "material-icon-theme.hidesExplorerArrows": true,
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,
-            "yaml.schemaStore.enable": false,
+            "yaml.schemaStore.enable": true,
             "yaml.schemas": {
                 "kubernetes": "./kubernetes/**/*.yaml"
             }

@@ -101,6 +101,8 @@ FROM alpine:3.22.2
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 ARG USERNAME=vscode
 ARG USER_UID=2100
@@ -137,7 +139,9 @@ RUN apk add --no-cache \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
-    pip install --break-system-packages -r /tmp/requirements.txt && \
+    python3 -m venv .venv && \
+    source .venv/bin/activate && \
+    pip install -r /tmp/requirements.txt && \
     rm -f /tmp/requirements.txt
 
 WORKDIR /project

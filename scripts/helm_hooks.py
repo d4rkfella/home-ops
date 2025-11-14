@@ -1,17 +1,10 @@
 #!/usr/bin/env python3
 import asyncio
-import os
-import sys
-import yaml
-#import sops
-import json
-import tempfile
-import io
 import aiohttp
-import subprocess
-from kubernetes_asyncio import client, config, dynamic, watch
-from kubernetes_asyncio.dynamic import DynamicClient
-from kubernetes_asyncio.client.exceptions import ApiException
+import yaml
+from kubernetes_asyncio import client, config, dynamic, watch # type: ignore
+from kubernetes_asyncio.dynamic import DynamicClient # type: ignore
+from kubernetes_asyncio.client.exceptions import ApiException # type: ignore
 import hvac
 
 
@@ -68,7 +61,6 @@ async def apply_sops_manifest(dyn: DynamicClient, file_path: str, namespace: str
     except subprocess.CalledProcessError as e:
         print(f"Error decrypting SOPS file '{file_path}' (SOPS CLI Failed). Output:")
         print(e.stderr.strip())
-        print(f"Attempted to use key file path from SOPS_AGE_KEY_FILE: {age_key_file}")
         return
     except Exception as e:
         print(f"An unexpected error occurred during SOPS decryption: {e}")
@@ -91,7 +83,7 @@ async def apply_sops_manifest(dyn: DynamicClient, file_path: str, namespace: str
         print(f"Applied {doc['kind']} {doc['metadata']['name']} (SOPS)")
 
 
-async def wait_for_crds(dyn, crd_names, timeout: int = 600):
+async def wait_for_crds(dyn, crd_names, timeout: int = 60):
     api = await dyn.resources.get(api_version="apiextensions.k8s.io/v1", kind="CustomResourceDefinition")
     remaining = set(crd_names)
     watcher = watch.Watch()
@@ -109,7 +101,7 @@ async def wait_for_crds(dyn, crd_names, timeout: int = 600):
     finally:
         await watcher.close()
 
-async def wait_for_deployments(dyn, namespace: str, deployments: list[str], timeout: int = 600):
+async def wait_for_deployments(dyn, namespace: str, deployments: list[str], timeout: int = 120):
     api = await dyn.resources.get(api_version="apps/v1", kind="Deployment")
     remaining = set(deployments)
     end_time = asyncio.get_event_loop().time() + timeout
@@ -146,7 +138,7 @@ async def wait_for_deployments(dyn, namespace: str, deployments: list[str], time
         await watcher.close()
 
 
-async def wait_for_daemonsets(dyn, namespace: str, daemonsets: list[str], timeout: int = 600):
+async def wait_for_daemonsets(dyn, namespace: str, daemonsets: list[str], timeout: int = 120):
     api = await dyn.resources.get(api_version="apps/v1", kind="DaemonSet")
     remaining = set(daemonsets)
     end_time = asyncio.get_event_loop().time() + timeout

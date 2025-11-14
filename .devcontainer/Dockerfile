@@ -124,6 +124,7 @@ RUN apk add --no-cache \
         yq \
         gnupg \
         docker-cli \
+        docker-cli-buildx \
         buildkit \
         tigervnc-client \
         fontconfig \
@@ -141,7 +142,7 @@ RUN apk add --no-cache \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     python3 -m venv .venv && \
     source .venv/bin/activate && \
-    pip install -r /tmp/requirements.txt && \
+    pip install --upgrade pip -r /tmp/requirements.txt && \
     rm -f /tmp/requirements.txt
 
 WORKDIR /project

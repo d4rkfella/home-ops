@@ -33,7 +33,7 @@ spec:
                   name: microbin-secret
             image:
               repository: ghcr.io/dvdsk/microbin
-              tag: 2.0.1@sha256:3106a5e9629b6d7912dfcd75883aaa961968e79361bc84b9e6fde80ac23ef907
+              tag: 2.0.2@sha256:4330f12e6ba110fc899010b038cd09c329f6c5205c1a5ed806924e5cc430d609
             probes:
               liveness:
                 enabled: true

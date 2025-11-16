@@ -17,7 +17,7 @@ rules:
   verbs: ["get", "create", "delete", "list", "watch"]
 - apiGroups: ["kubevirt.io"]
   resources: ["virtualmachineinstances"]
-  verbs: ["get"]
+  verbs: ["get", "watch"]
 - apiGroups: ["subresources.kubevirt.io"]
   resources: ["virtualmachineinstances/portforward", "virtualmachineinstances/guestosinfo"]
   verbs: ["get"]

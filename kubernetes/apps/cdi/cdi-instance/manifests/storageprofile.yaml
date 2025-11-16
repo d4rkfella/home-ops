@@ -38,3 +38,13 @@ spec:
     - accessModes:
       - ReadWriteMany
       volumeMode: Block
+---
+apiVersion: cdi.kubevirt.io/v1beta1
+kind: StorageProfile
+metadata:
+  name: openebs-zfs-block-16k
+spec:
+  claimPropertySets:
+    - accessModes:
+      - ReadWriteMany
+      volumeMode: Block

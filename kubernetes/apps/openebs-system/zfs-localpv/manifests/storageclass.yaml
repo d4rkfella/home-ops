@@ -68,4 +68,19 @@ parameters:
     thinprovision: "yes"
     dedup: "off"
     shared: "yes"
-
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-zfs-block-16k
+  annotations:
+    cdi.kubevirt.io/clone-strategy: snapshot
+provisioner: zfs.csi.openebs.io
+allowVolumeExpansion: true
+parameters:
+    poolname: "ssd_pool"
+    compression: "on"
+    volblocksize: "16k"
+    thinprovision: "yes"
+    dedup: "off"
+    shared: "yes"

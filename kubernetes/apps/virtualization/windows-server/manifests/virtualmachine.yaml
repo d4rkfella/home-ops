@@ -99,6 +99,7 @@ spec:
         name: windows-server-2025-os-disk
       spec:
         storage:
+          storageClassName: openebs-zfs-block-64k
           accessModes:
             - ReadWriteOnce
           resources:
@@ -113,6 +114,7 @@ spec:
         name: windows-virtio-drivers
       spec:
         storage:
+          storageClassName: openebs-zfs-block-64k
           accessModes:
             - ReadWriteOnce
           resources:

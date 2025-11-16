@@ -11,7 +11,7 @@ rules:
   verbs: ["*"]
 - apiGroups: [""]
   resources: ["secrets"]
-  verbs: ["get","create"]
+  verbs: ["get", "create", "delete", "patch"]
 - apiGroups: ["kubevirt.io"]
   resources: ["virtualmachines"]
   verbs: ["get", "create", "delete", "list", "watch"]

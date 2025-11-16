@@ -205,7 +205,7 @@ async def vault_init_unseal_restore(vault_addr: str, config_file: str):
             "restore",
             "--force",
             f"--config={config_file}",
-            f"--vault-token={root_token}"
+            f"--vault-token={root_token}",
             f"--vault-address={vault_addr}"
         ]
 

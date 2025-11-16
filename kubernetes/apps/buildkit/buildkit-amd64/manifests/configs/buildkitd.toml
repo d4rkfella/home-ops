@@ -10,6 +10,7 @@
   enabled = true
   rootless = false
   noProcessSandbox = false
+  gc_period = "60m"
 
   gc = true
 

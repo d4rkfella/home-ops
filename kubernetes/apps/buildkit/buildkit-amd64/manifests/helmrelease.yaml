@@ -84,7 +84,7 @@ spec:
         storageClass: openebs-zfs-128k
         accessMode: ReadWriteOnce
         retain: true
-        size: 100Gi
+        size: 300Gi
         globalMounts:
           - path: /var/lib/buildkit
       run:

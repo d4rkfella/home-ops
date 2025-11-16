@@ -46,7 +46,6 @@ spec:
         firmware:
           bootloader:
             efi: {}
-          uuid: 360185c7-bdca-4d57-bcaf-c25ad8c1b5ba
         devices:
           autoattachVSOCK: false
           autoattachInputDevice: true
@@ -67,14 +66,6 @@ spec:
                 bus: virtio
               name: os-disk
               bootOrder: 1
-            - disk:
-                bus: virtio
-              name: wds
-            - name: iso
-              bootOrder: 2
-              cdrom:
-                readonly: true
-                bus: sata
             - name: virtio-drivers
               cdrom:
                 readonly: true
@@ -97,61 +88,36 @@ spec:
           #secret:
             #name: sysprep-secret
       - dataVolume:
-          name: windows-server-2025-iso
-        name: iso
-      - dataVolume:
           name: windows-server-2025-os-disk
         name: os-disk
       - dataVolume:
-          name: windows-server-2025-wds
-        name: wds
-      - dataVolume:
           name: windows-virtio-drivers
         name: virtio-drivers
+
   dataVolumeTemplates:
-  - metadata:
-      name: windows-server-2025-iso
-    spec:
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 12Gi
-      source:
-        http:
-          url: "https://go.microsoft.com/fwlink/?linkid=2293312&clcid=0x409&culture=en-us&country=us"
-  - metadata:
-      name: windows-server-2025-os-disk
-    spec:
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 96Gi
-      source:
-        blank: {}
-  - metadata:
-      name: windows-server-2025-wds
-    spec:
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 64Gi
-      source:
-        blank: {}
-  - metadata:
-      name: windows-virtio-drivers
-    spec:
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
-      source:
-        http:
-          url: "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso"
+    - metadata:
+        name: windows-server-2025-os-disk
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 96Gi
+        source:
+          registry:
+            url: "docker://ghcr.io/d4rkfella/windows-server-2025-vm-disk@sha256:a75986558e1355667b7900a9e06e1553eb33e0c2907321994c9a43b75a8dbc63"
+            secretRef: endpoint-secret
+
+    - metadata:
+        name: windows-virtio-drivers
+      spec:
+        storage:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 2Gi
+        source:
+          http:
+            url: "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/latest-virtio/virtio-win.iso"

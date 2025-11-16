@@ -13,7 +13,7 @@ rules:
   resources: ["secrets"]
   verbs: ["get","create"]
 - apiGroups: ["kubevirt.io"]
-  resources: ["virtualmachines", "virtualmachineinstances"]
+  resources: ["virtualmachines"]
   verbs: ["get", "create", "delete"]
 - apiGroups: ["kubevirt.io"]
   resources: ["virtualmachineinstances"]

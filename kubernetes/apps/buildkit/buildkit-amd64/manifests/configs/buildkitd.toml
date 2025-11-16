@@ -19,7 +19,7 @@
   reservedSpace = "10GiB"
 [[worker.oci.gcpolicy]]
   all = true
-  reservedSpace = "50GiB"
+  reservedSpace = "100GiB"
 
 [worker.containerd]
   address = "/run/containerd/containerd.sock"
@@ -38,4 +38,4 @@
   reservedSpace = "10GiB"
 [[worker.containerd.gcpolicy]]
   all = true
-  reservedSpace = "50GiB"
+  reservedSpace = "100GiB"

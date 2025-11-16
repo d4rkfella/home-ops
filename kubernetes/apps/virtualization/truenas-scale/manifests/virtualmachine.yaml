@@ -74,16 +74,17 @@ spec:
           name: truenas-os-disk
         name: os-disk
   dataVolumeTemplates:
-  - metadata:
-      name: truenas-os-disk
-    spec:
-      storage:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 32Gi
-      source:
-        registry:
-          url: "docker://ghcr.io/d4rkfella/truenas-vm-disk@sha256:350ff8693d9767910bd3374073220ed1af49ae340e4283b4a88105abd9311390"
-          secretRef: endpoint-secret
+    - metadata:
+        name: truenas-os-disk
+      spec:
+        storage:
+          storageClassName: openebs-zfs-block-16k
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 32Gi
+        source:
+          registry:
+            url: "docker://ghcr.io/d4rkfella/truenas-vm-disk@sha256:4e07517490140279ce16c742b511afda03bfec48a5e7ca98630e6fcfd1169ff9"
+            secretRef: endpoint-secret

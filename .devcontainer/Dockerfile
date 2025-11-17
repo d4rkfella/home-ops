@@ -22,13 +22,23 @@ ARG FZF_VERSION=v0.66.1
 ARG COSIGN_VERSION=v3.0.2
 WORKDIR /tmp
 
+COPY requirements.txt /tmp/requirements.txt
+
 RUN apk add --no-cache \
         curl \
         ca-certificates \
         coreutils \
         cosign \
         gnupg \
+        python3 \
+        py3-pip \
+        python3-dev \
+        gcc \
+        g++ \
+        musl-dev \
+        linux-headers \
         unzip && \
+    python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
@@ -96,7 +106,6 @@ RUN vault-backup --version
 COPY --from=ghcr.io/helmfile/helmfile:v1.1.9 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
-
 FROM alpine:3.22.2
 
 ENV LANG="C.UTF-8"
@@ -109,7 +118,8 @@ ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
-COPY requirements.txt /tmp/requirements.txt
+COPY --from=build /tmp/wheels /tmp/wheels
+
 RUN apk add --no-cache \
         curl \
         jq \
@@ -141,8 +151,8 @@ RUN apk add --no-cache \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     python3 -m venv .venv && \
     source .venv/bin/activate && \
-    pip install --upgrade pip -r /tmp/requirements.txt && \
-    rm -f /tmp/requirements.txt
+    pip install --upgrade pip --no-index --find-links=/tmp/wheels /tmp/wheels/* && \
+    rm -rf /tmp/wheels
 
 WORKDIR /project
 

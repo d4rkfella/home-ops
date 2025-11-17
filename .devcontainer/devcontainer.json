@@ -4,7 +4,7 @@
 
     "image": "ghcr.io/d4rkfella/devcontainer:latest@sha256:996725488c010c202256162f976f99ee91a7167823fc35c4492b396d24358933",
     "workspaceFolder": "/project",
-    "postStartCommand": "/usr/bin/direnv allow /project/.envrc && source /.venv/bin/activate",
+    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
     "mounts": [
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
@@ -19,9 +19,16 @@
             "editorconfig.editorconfig",
             "ms-azuretools.vscode-containers",
             "GitHub.vscode-pull-request-github",
-            "donjayamanne.githistory"
+            "donjayamanne.githistory",
+            "ms-python.vscode-python-envs",
+            "ms-python.mypy-type-checker",
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "ms-python.debugpy"
         ],
         "settings": {
+            "python.terminal.activateEnvInCurrentTerminal": true,
+            "python.defaultInterpreterPath": "/.venv/bin/python",
             "git.path": "/usr/bin/git",
             "git.enableCommitSigning": true,
             "docker.dockerPath": "/usr/bin/docker",

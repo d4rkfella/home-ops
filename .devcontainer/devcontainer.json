@@ -4,7 +4,6 @@
 
     "image": "ghcr.io/d4rkfella/devcontainer@sha256:51517c59b33662b764d25c101a78096bcac571445035d3ae19e9b84141e11a6b",
     "workspaceFolder": "/project",
-    "postCreateCommand": "chown -R $(id -u):$(id -g) /var/lib/pgadmin /var/log/pgadmin",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
     "mounts": [

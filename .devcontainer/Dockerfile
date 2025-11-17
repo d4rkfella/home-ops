@@ -152,8 +152,8 @@ RUN apk add --no-cache \
     python3 -m venv .venv && \
     source .venv/bin/activate && \
     pip install --upgrade pip --no-index --find-links=/tmp/wheels /tmp/wheels/* && \
-    mkdir -p /var/lib/pgadmin && \
-    chown -R $USERNAME:$USERNAME /var/lib/pgadmin && \
+    mkdir -p /var/lib/pgadmin /var/log/pgadmin && \
+    chown -R $USERNAME:$USERNAME /var/lib/pgadmin /var/log/pgadmin && \
     rm -rf /tmp/wheels
 
 WORKDIR /project

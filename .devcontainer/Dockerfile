@@ -158,6 +158,4 @@ RUN apk add --no-cache \
 
 WORKDIR /project
 
-USER $USERNAME
-
 ENTRYPOINT ["/bin/bash"]

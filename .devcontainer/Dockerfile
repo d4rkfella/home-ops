@@ -152,7 +152,10 @@ RUN apk add --no-cache \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     python3 -m venv .venv && \
     source .venv/bin/activate && \
-    pip install --upgrade pip --no-index --find-links=/tmp/wheels /tmp/wheels/* && \
+    pip install --upgrade pip \
+    --no-index --find-links=/tmp/wheels --no-cache-dir \
+    /tmp/wheels/*.whl \
+    git+https://github.com/kubevirt/client-python.git@master#egg=kubevirt && \
     rm -rf /tmp/wheels
 
 WORKDIR /project

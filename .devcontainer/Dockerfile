@@ -42,8 +42,7 @@ RUN apk add --no-cache \
     # Clone and patch KubeVirt client to fix version string
     git clone https://github.com/kubevirt/client-python.git /tmp/kubevirt && \
     cd /tmp/kubevirt && \
-    sed -i -E "s/version='(v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/version='\\1'/" setup.py && \
-    [ -f pyproject.toml ] && sed -i -E "s/version = '(v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/version = '\\1'/" pyproject.toml || true && \
+    sed -i -E "s/(VERSION\s*=\s*\"v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/\1\"/" /tmp/kubevirt/setup.py && \
     python3 -m pip wheel --wheel-dir /tmp/wheels /tmp/kubevirt -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
@@ -157,9 +156,7 @@ RUN apk add --no-cache \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     python3 -m venv .venv && \
     source .venv/bin/activate && \
-    pip install --upgrade pip \
-    --no-index --find-links=/tmp/wheels --no-cache-dir \
-    /tmp/wheels/*.whl && \
+    pip install --upgrade pip --no-index --find-links=/tmp/wheels --no-cache-dir /tmp/wheels/*.whl && \
     rm -rf /tmp/wheels
 
 WORKDIR /project

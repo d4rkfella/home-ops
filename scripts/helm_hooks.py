@@ -27,7 +27,7 @@ async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
         else:
             raise
 
-async def apply_manifest_file(dyn, file_path: str, namespace: str = None):
+async def apply_manifest_file(dyn, file_path: str, namespace: str):
     with open(file_path) as f:
         for doc in yaml.safe_load_all(f):
             if not doc:

@@ -1,44 +1,39 @@
 #!/usr/bin/env python3
-import json
-import subprocess
 import sys
-
+import kubevirt
+from kubevirt.rest import ApiException
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static, ListView, ListItem, Label
-from textual.containers import Vertical
-
-
-def run_cmd(cmd):
-    """Run a shell command and return stdout, raise on error."""
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        print(f"❌ Command failed: {' '.join(cmd)}")
-        print(e.stderr)
-        sys.exit(1)
 
 
 def list_running_vms():
-    raw = run_cmd(["kubectl", "get", "vms", "--all-namespaces", "-o", "json"])
-    data = json.loads(raw)
+    """Return a list of (namespace, name) tuples of running VMs using kubevirt API."""
+    api_instance = kubevirt.DefaultApi()
+
+    try:
+        # List VMs across all namespaces
+        all_vms = api_instance.list_virtual_machine_for_all_namespaces()
+    except ApiException as e:
+        print(f"❌ Failed to fetch VMs: {e}", file=sys.stderr)
+        sys.exit(1)
 
     vms = []
-    for item in data.get("items", []):
-        status = item.get("status", {}).get("printableStatus")
+    for item in all_vms.items:
+        status = getattr(item.status, "printableStatus", None)
         if status == "Running":
-            ns = item["metadata"]["namespace"]
-            name = item["metadata"]["name"]
+            ns = item.metadata.namespace
+            name = item.metadata.name
             vms.append((ns, name))
-
     return vms
 
 
 class VMListItem(ListItem):
+    """ListItem storing VM metadata."""
+
     def __init__(self, namespace: str, name: str):
         super().__init__(Label(f"{namespace:20} {name}"))
         self.namespace = namespace
-        self.name = name
+        self.vm_name = name
 
 
 class VMSelectorApp(App):
@@ -53,36 +48,30 @@ class VMSelectorApp(App):
     def __init__(self, vms):
         super().__init__()
         self.vms = vms
+        self.selected_vm = None
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Static("Select a running VM (Enter to connect)", classes="title")
-        yield ListView(
-            *[VMListItem(ns, name) for ns, name in self.vms],
-            id="vm-list"
-        )
+        yield ListView(*[VMListItem(ns, name) for ns, name in self.vms], id="vm-list")
         yield Footer()
 
     async def on_list_view_selected(self, event: ListView.Selected) -> None:
-        """Triggered when user presses Enter on a list item."""
         item = event.item
-        namespace = item.namespace
-        name = item.name
-
+        self.selected_vm = (item.namespace, item.vm_name)
         await self.action_quit()
 
-        print(f"🔌 Connecting to VMI {name} in namespace {namespace}...")
 
-        try:
-            exit_code = subprocess.call(["virtctl", "vnc", name, "-n", namespace])
-        except FileNotFoundError:
-            print("❌ virtctl not found in PATH.")
-            sys.exit(1)
+def connect_vnc(vm_name: str, namespace: str, preserve_session: bool = True):
+    """Open a VNC connection to a VMI using kubevirt Python client."""
+    api_instance = kubevirt.DefaultApi()
 
-        if exit_code != 0:
-            print(f"❌ virtctl command failed with exit code {exit_code}")
-
-        sys.exit(exit_code)
+    try:
+        api_instance.v1_vnc(name=vm_name, namespace=namespace, preserve_session=preserve_session)
+        print(f"🔌 Connected to VMI {vm_name} in namespace {namespace} (VNC)")
+    except ApiException as e:
+        print(f"❌ Failed to connect to VNC: {e}")
+        sys.exit(1)
 
 
 def main():
@@ -92,7 +81,15 @@ def main():
         sys.exit(0)
 
     app = VMSelectorApp(vms)
-    app.run()
+    app.run()  # blocks until TUI exits
+
+    if app.selected_vm:
+        namespace, vm_name = app.selected_vm
+        connect_vnc(vm_name, namespace)
+        sys.exit(0)
+
+    print("❌ Selection cancelled.")
+    sys.exit(1)
 
 
 if __name__ == "__main__":

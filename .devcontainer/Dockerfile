@@ -44,7 +44,7 @@ RUN apk add --no-cache \
     cd /tmp/kubevirt && \
     sed -i -E "s/version='(v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/version='\\1'/" setup.py && \
     [ -f pyproject.toml ] && sed -i -E "s/version = '(v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/version = '\\1'/" pyproject.toml || true && \
-    python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
+    python3 -m pip wheel --wheel-dir /tmp/wheels /tmp/kubevirt -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \

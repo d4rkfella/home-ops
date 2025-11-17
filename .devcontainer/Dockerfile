@@ -25,6 +25,7 @@ WORKDIR /tmp
 COPY requirements.txt /tmp/requirements.txt
 
 RUN apk add --no-cache \
+        git \
         curl \
         ca-certificates \
         coreutils \

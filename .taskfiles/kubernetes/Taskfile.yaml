@@ -55,7 +55,7 @@ tasks:
       - which kubectl virtctl fzf jq
 
   start-pgadmin:
-    desc: Start pgAdmin Docker container
+    desc: Start pgAdmin server
     silent: true
     cmds:
       - |
@@ -63,16 +63,7 @@ tasks:
         kubectl port-forward svc/postgres-db-rw 5432:5432 -n database >/dev/null 2>&1 &
 
         echo "🚀 Starting pgAdmin..."
-        docker run --rm --name pgadmin \
-          --add-host=host.docker.internal:host-gateway \
-          -e PGADMIN_DEFAULT_EMAIL=georgi.panov@darkfellanetwork.com \
-          -e PGADMIN_DEFAULT_PASSWORD=admin \
-          -e PGADMIN_REPLACE_SERVERS_ON_STARTUP=True \
-          -e PGPASS_FILE=/.pgpass \
-          -v /home/darkfella/home-ops/.pgadmin/servers.json:/pgadmin4/servers.json \
-          -v /home/darkfella/home-ops/.pgadmin/.pgpass:/.pgpass \
-          -p 8080:80 \
-          dpage/pgadmin4:9.6.0
+        pgadmin4
 
     preconditions:
-      - which docker kubectl
+      - which kubectl pgadmin4 python

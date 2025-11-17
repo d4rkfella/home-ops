@@ -2,11 +2,15 @@
 {
     "name": "Kubernetes Management",
 
-    "image": "ghcr.io/d4rkfella/devcontainer@sha256:51517c59b33662b764d25c101a78096bcac571445035d3ae19e9b84141e11a6b",
+    "image": "ghcr.io/d4rkfella/devcontainer@sha256:da08f8621771f5b1d22fea648d61e5ad8375e0b7f88e558f5e2cf14a6fe08c80",
+    "containerUser": "vscode",
+    "remoteUser": "vscode",
     "workspaceFolder": "/project",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
     "mounts": [
+      "source=/var/lib/pgadmin,target=/var/lib/pgadmin,type=bind,consistency=consistent",
+      "source=/var/log/pgadmin,target=/var/log/pgadmin,type=bind,consistency=consistent",
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
     "customizations": {

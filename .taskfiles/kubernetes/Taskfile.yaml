@@ -46,11 +46,11 @@ tasks:
     preconditions:
       - which flux helm
 
-  vnc-connect:
-    desc: "Connect to a running VM via virtctl VNC"
+  kubevirt-vm-manager:
+    desc: "Manage KubeVirt VMs"
     silent: true
     cmds:
-      - ./.taskfiles/kubernetes/vnc_connect.py
+      - ./.taskfiles/kubernetes/vm_manage.py
     preconditions:
       - which kubectl virtctl fzf jq
 

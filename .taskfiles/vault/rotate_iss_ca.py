@@ -6,6 +6,7 @@ Stores temp files in /tmp and cleans them up afterwards.
 """
 
 import hvac
+import hvac.exceptions
 import sys
 import os
 import getpass
@@ -23,21 +24,23 @@ SIGNED_FILE = os.path.join(TMP_DIR, "issuing_ca_reissue_signed.pem")
 VAULT_ADDR = os.getenv("VAULT_ADDR") or input("Vault URL (e.g., https://vault.example.com:8200): ").strip()
 client = hvac.Client(url=VAULT_ADDR)
 
-VAULT_TOKEN = os.getenv("VAULT_TOKEN")
+VAULT_TOKEN: str | None = os.getenv("VAULT_TOKEN")
+
 if not VAULT_TOKEN:
     print("Vault token not found, logging in with username/password.")
     username = input("Vault username: ").strip()
     password = getpass.getpass("Vault password: ").strip()
     try:
         login_resp = client.auth.userpass.login(username=username, password=password)
+        assert isinstance(login_resp, dict), "Expected dict response from Vault"
         VAULT_TOKEN = login_resp['auth']['client_token']
-        client.token = VAULT_TOKEN
         print("✅ Logged in successfully. Vault token acquired.")
     except hvac.exceptions.InvalidRequest as e:
         print(f"❌ Vault login failed: {e}")
         sys.exit(1)
-else:
-    client.token = VAULT_TOKEN
+
+assert VAULT_TOKEN is not None, "Vault token must be set"
+client.token = VAULT_TOKEN
 
 if not client.is_authenticated():
     print("❌ Authentication to Vault failed.")
@@ -60,7 +63,9 @@ try:
         organization="DarkfellaNET",
         ttl=TTL,
         format="pem_bundle",
+        wrap_ttl=None,
     )
+    assert isinstance(generate_resp, dict), "Expected dict response from Vault"
     csr = generate_resp['data']['csr']
     with open(CSR_FILE, "w") as f:
         f.write(csr)
@@ -76,16 +81,20 @@ try:
         format="pem_bundle",
         ttl=TTL,
         common_name=COMMON_NAME,
+        wrap_ttl=None,
     )
+    assert isinstance(sign_resp, dict), "Expected dict response from Vault"
     signed_cert = sign_resp['data']['certificate']
     with open(SIGNED_FILE, "w") as f:
         f.write(signed_cert)
     print(f"✅ Signed certificate saved to {SIGNED_FILE}")
 
     print(f"📦 Importing signed certificate back into {ISS_MOUNT}...")
-    client.write(f"{ISS_MOUNT}/intermediate/set-signed", certificate=signed_cert)
+    client.write(f"{ISS_MOUNT}/intermediate/set-signed", certificate=signed_cert, wrap_ttl=None)
 
-    issuers = client.list(f"{ISS_MOUNT}/issuers")['data']['keys']
+    issuers_resp = client.list(f"{ISS_MOUNT}/issuers")
+    assert isinstance(issuers_resp, dict), "Expected dict response from Vault"
+    issuers = issuers_resp['data']['keys']
     new_issuers = [i for i in issuers if i not in old_issuers]
     if not new_issuers:
         print("⚠️ Could not determine new issuer ID. Using last issuer in list.")
@@ -93,7 +102,7 @@ try:
     else:
         new_issuer_id = new_issuers[0]
 
-    client.write(f"{ISS_MOUNT}/config/issuers", default=new_issuer_id)
+    client.write(f"{ISS_MOUNT}/config/issuers", default=new_issuer_id, wrap_ttl=None)
     print(f"✅ New issuer {new_issuer_id} set as default")
 
     issuer_info = client.read(f"{ISS_MOUNT}/issuer/{new_issuer_id}")

@@ -1,92 +1,99 @@
 #!/usr/bin/env python3
 import os
 import boto3
-import configparser
+from botocore.exceptions import ClientError, NoCredentialsError, ProfileNotFound, SSLError, EndpointConnectionError
 
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, ListView, ListItem, Label, Static
 from textual.screen import Screen
 
-AWS_DIR = os.path.join(os.getcwd(), ".aws")
-os.environ["AWS_SHARED_CREDENTIALS_FILE"] = os.path.join(AWS_DIR, "credentials")
-os.environ["AWS_CONFIG_FILE"] = os.path.join(AWS_DIR, "config")
-
-
-# -------------------------------
-# Helpers
-# -------------------------------
-
-def load_endpoints():
-    session = boto3.session.Session()
-    profiles = session.available_profiles
-    cfg = configparser.ConfigParser()
-    cfg.read(os.environ["AWS_CONFIG_FILE"])
-
-    endpoints = {}
-    for profile in profiles:
-        section_name = "profile " + profile if profile != "default" else "default"
-        if cfg.has_option(section_name, "endpoint_url"):
-            endpoints[profile] = cfg.get(section_name, "endpoint_url")
-    return endpoints
-
-
-# -------------------------------
-# Screens
-# -------------------------------
 
 class ProfileSelectScreen(Screen):
-
-    def __init__(self, endpoints):
-        super().__init__()
-        self.endpoints = endpoints
 
     def compose(self) -> ComposeResult:
         yield Header()
         yield Static("Select AWS/R2 profile", classes="title")
 
-        session = boto3.session.Session()
-        profiles = session.available_profiles or []
+        try:
+            session = boto3.session.Session()
+            profiles = session.available_profiles
 
-        yield ListView(
-            *(ListItem(Label(profile), name=profile) for profile in profiles),
-            id="profiles"
-        )
+            yield ListView(
+                *(ListItem(Label(profile), name=profile) for profile in profiles),
+                id="profiles"
+            )
+        except Exception as e:
+            self.app.notify(f"{e}", severity="error")
 
         yield Footer()
 
     async def on_list_view_selected(self, event: ListView.Selected):
         profile = event.item.name
-        endpoint = self.endpoints.get(profile)
-        session = boto3.session.Session(profile_name=profile)
-        await self.app.push_screen(BucketSelectScreen(session, endpoint))
+        try:
+            session = boto3.session.Session(profile_name=profile)
+            await self.app.push_screen(BucketSelectScreen(session, profile))
+        except ProfileNotFound:
+            self.app.notify(f"Profile '{profile}' not found in config", severity="error")
+        except NoCredentialsError:
+            self.app.notify(f"No credentials found for profile '{profile}'", severity="error")
+        except Exception as e:
+            self.app.notify(f"Error loading profile: {e}", severity="error")
 
 
 class BucketSelectScreen(Screen):
     BINDINGS = [("b", "back", "Back")]
 
-    def __init__(self, session, endpoint):
+    def __init__(self, session, profile_name):
         super().__init__()
         self.session = session
-        self.endpoint = endpoint
-        self.session = session
+        self.profile_name = profile_name
+        self.buckets_loaded = False
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("Select Bucket", classes="title")
-
-        s3 = self.session.client("s3", endpoint_url=self.endpoint)
-        buckets = s3.list_buckets().get("Buckets", [])
-
-        yield ListView(
-            *(ListItem(Label(b["Name"]), name=b["Name"]) for b in buckets),
-            id="buckets"
-        )
-
+        yield Static(f"Select Bucket (Profile: {self.profile_name})", classes="title")
+        yield ListView(id="buckets")
         yield Footer()
+
+    async def on_mount(self):
+        """Load buckets asynchronously after mount to avoid blocking"""
+        await self.load_buckets()
+
+    async def load_buckets(self):
+        lv = self.query_one("#buckets", ListView)
+
+        try:
+            s3 = self.session.client("s3")
+            buckets = s3.list_buckets().get("Buckets", [])
+
+            if not buckets:
+                self.app.notify(f"No buckets found in profile '{self.profile_name}'")
+            else:
+                for b in buckets:
+                    lv.append(ListItem(Label(b["Name"]), name=b["Name"]))
+                self.app.notify(f"Loaded {len(buckets)} buckets")
+
+        except SSLError as e:
+            self.app.notify(f"{e}", severity="error")
+            self.dismiss()
+        except EndpointConnectionError as e:
+            self.app.notify(f"{e}", severity="error")
+            self.dismiss()
+        except NoCredentialsError as e:
+            self.app.notify(f"{e}", severity="error")
+            self.dismiss()
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_msg = e.response.get('Error', {}).get('Message', str(e))
+            self.app.notify(f"({error_code}): {error_msg}", severity="error")
+            self.dismiss()
+        except Exception as e:
+            self.app.notify(f"{e}", severity="error")
+            self.dismiss()
 
     async def on_list_view_selected(self, event: ListView.Selected):
         bucket = event.item.name
-        await self.app.push_screen(ObjectBrowserScreen(self.session, self.endpoint, bucket))
+        await self.app.push_screen(ObjectBrowserScreen(self.session, bucket, self.profile_name))
 
     async def action_back(self):
         await self.app.pop_screen()
@@ -98,11 +105,11 @@ class ObjectBrowserScreen(Screen):
         ("d", "delete", "Delete"),
     ]
 
-    def __init__(self, session, endpoint, bucket):
+    def __init__(self, session, bucket, profile_name):
         super().__init__()
         self.bucket = bucket
         self.session = session
-        self.endpoint = endpoint
+        self.profile_name = profile_name
         self.prefix = ""
 
     def compose(self) -> ComposeResult:
@@ -118,20 +125,31 @@ class ObjectBrowserScreen(Screen):
     def refresh_objects(self):
         self.title_static.update(f"Bucket: {self.bucket}/{self.prefix}")
 
-        s3 = self.session.client("s3", endpoint_url=self.endpoint)
-        paginator = s3.get_paginator("list_objects_v2")
-
-        items = [ListItem(Label("../"), name="../")]
-        for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix, Delimiter="/"):
-            for p in page.get("CommonPrefixes", []):
-                items.append(ListItem(Label(p["Prefix"]), name=p["Prefix"]))
-            for o in page.get("Contents", []):
-                items.append(ListItem(Label(o["Key"]), name=o["Key"]))
-
         lv = self.query_one("#objects", ListView)
         lv.clear()
-        for item in items:
-            lv.append(item)
+
+        try:
+            s3 = self.session.client("s3")
+            paginator = s3.get_paginator("list_objects_v2")
+
+            items = [ListItem(Label("../"), name="../")]
+            for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix, Delimiter="/"):
+                for p in page.get("CommonPrefixes", []):
+                    items.append(ListItem(Label(p["Prefix"]), name=p["Prefix"]))
+                for o in page.get("Contents", []):
+                    items.append(ListItem(Label(o["Key"]), name=o["Key"]))
+
+            for item in items:
+                lv.append(item)
+
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_msg = e.response.get('Error', {}).get('Message', str(e))
+            lv.append(ListItem(Label(f"❌ Error: {error_code} - {error_msg}")))
+            self.app.notify(f"❌ Error listing objects: {error_msg}", severity="error")
+        except Exception as e:
+            lv.append(ListItem(Label(f"❌ Error: {type(e).__name__}")))
+            self.app.notify(f"❌ Error listing objects: {e}", severity="error")
 
     async def on_list_view_selected(self, event: ListView.Selected):
         choice = event.item.name
@@ -159,8 +177,10 @@ class ObjectBrowserScreen(Screen):
         if not item:
             return
         key = item.name
+        if key == "../" or not key:
+            return
         await self.app.push_screen(
-            ConfirmDeleteScreen(self.session, self.endpoint, self.bucket, key, self)
+            ConfirmDeleteScreen(self.session, self.bucket, key, self)
         )
 
     async def action_back(self):
@@ -170,6 +190,7 @@ class ObjectBrowserScreen(Screen):
             parts = self.prefix.rstrip("/").split("/")
             self.prefix = "/".join(parts[:-1]) + ("/" if len(parts) > 1 else "")
             self.refresh_objects()
+
 
 class ModalMessageScreen(Screen):
     BINDINGS = [("escape", "close", "Close")]
@@ -189,10 +210,9 @@ class ModalMessageScreen(Screen):
 class ConfirmDeleteScreen(Screen):
     BINDINGS = [("y", "yes", "Yes"), ("n", "cancel", "No"), ("d", "dry", "Dry Run")]
 
-    def __init__(self, session, endpoint, bucket, key, caller):
+    def __init__(self, session, bucket, key, caller):
         super().__init__()
         self.session = session
-        self.endpoint = endpoint
         self.bucket = bucket
         self.key = key
         self.caller = caller
@@ -201,13 +221,23 @@ class ConfirmDeleteScreen(Screen):
         yield Static(f"Delete {self.key} from {self.bucket}? (y/n/d)")
 
     async def action_yes(self):
-        s3 = self.session.client("s3", endpoint_url=self.endpoint)
-        s3.delete_object(Bucket=self.bucket, Key=self.key)
-        await self.app.pop_screen()
         try:
-            self.caller.refresh_objects()
-        except Exception:
-            pass
+            s3 = self.session.client("s3")
+            s3.delete_object(Bucket=self.bucket, Key=self.key)
+            self.app.notify(f"✅ Deleted: {self.key}")
+            await self.app.pop_screen()
+            try:
+                self.caller.refresh_objects()
+            except Exception as e:
+                self.app.notify(f"⚠️ Error refreshing list: {e}", severity="warning")
+        except ClientError as e:
+            error_code = e.response.get('Error', {}).get('Code', 'Unknown')
+            error_msg = e.response.get('Error', {}).get('Message', str(e))
+            self.app.notify(f"❌ Delete failed ({error_code}): {error_msg}", severity="error")
+            await self.app.pop_screen()
+        except Exception as e:
+            self.app.notify(f"❌ Delete failed: {e}", severity="error")
+            await self.app.pop_screen()
 
     async def action_dry(self):
         await self.app.push_screen(ModalMessageScreen(f"[DRY RUN]\nWould delete:\n{self.key}"))
@@ -216,18 +246,13 @@ class ConfirmDeleteScreen(Screen):
         await self.app.pop_screen()
 
 
-# -------------------------------
-# Main App
-# -------------------------------
-
 class R2Browser(App):
     TITLE = "R2 / AWS S3 Browser"
     CSS_PATH = None
     BINDINGS = [("q", "quit", "Quit")]
 
     def on_mount(self):
-        endpoints = load_endpoints()
-        self.push_screen(ProfileSelectScreen(endpoints))
+        self.push_screen(ProfileSelectScreen())
 
 
 if __name__ == "__main__":

@@ -3,6 +3,20 @@
   packageRules: [
     {
       description: [
+        'Devcontainer Dependencies Group',
+      ],
+      groupName: 'Devcontainer',
+      matchFileNames: [
+        '.devcontainer/**',
+        '**/requirements.txt',
+      ],
+      group: {
+        commitMessageTopic: '{{{groupName}}} group',
+      },
+      minimumGroupSize: 1,
+    },
+    {
+      description: [
         'Actions Runner Controller Group',
       ],
       groupName: 'Actions Runner Controller',

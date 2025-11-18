@@ -10,7 +10,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
   ref:
-    tag: 2.8.0
+    tag: 2.9.0
   verify:
     provider: cosign
 ---

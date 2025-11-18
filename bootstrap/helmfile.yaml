@@ -132,7 +132,7 @@ releases:
     namespace: openebs-system
     atomic: true
     chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
-    version: 2.8.0
+    version: 2.9.0
     values: ['./values.yaml.gotmpl']
     needs: ['kube-system/cilium','kube-system/coredns']
     hooks:

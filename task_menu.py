@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 import json
+from typing import cast
 import yaml
 import subprocess
 import sys
 import os
 
+from textual import work
 from textual.app import App, ComposeResult
+from textual.binding import Binding
 from textual.widgets import (
     Header,
     Footer,
@@ -16,7 +19,8 @@ from textual.widgets import (
     Input,
     Button,
 )
-from textual.containers import Vertical, Horizontal
+from textual.containers import Container
+from textual.screen import ModalScreen
 
 
 def run_cmd(cmd):
@@ -31,17 +35,14 @@ def run_cmd(cmd):
 
 
 def load_tasks():
-    """Returns a list of (task_name, description)."""
     raw = run_cmd(["task", "--list", "--json"])
     data = json.loads(raw)
     return [(t["name"], t["desc"]) for t in data.get("tasks", [])]
 
 
 def load_taskfile_and_vars(task_name):
-    """Return (list_of_required_vars, canonical_taskfile_path)."""
     parts = task_name.split(":")
 
-    # Base Taskfile.yaml
     if len(parts) == 1:
         included_file = "Taskfile.yaml"
         key = parts[0]
@@ -73,22 +74,123 @@ class TaskItem(ListItem):
         self.description = desc
 
 
-class TaskRunnerApp(App):
-    TITLE = "Task Runner"
+class VarInputScreen(ModalScreen[dict[str, str] | None]):
+
+    CSS = """
+    VarInputScreen {
+        align: center middle;
+    }
+
+    #dialog {
+        width: 60;
+        height: auto;
+        border: thick $background 80%;
+        background: $surface;
+        padding: 1 2;
+    }
+
+    #title {
+        text-align: center;
+        padding: 1;
+        text-style: bold;
+    }
+
+    .var-row {
+        height: auto;
+        margin: 1 0;
+    }
+
+    .var-label {
+        padding: 0 0 0 1;
+        width: 100%;
+    }
+
+    Input {
+        margin: 0 0 1 0;
+    }
+
+    #buttons {
+        layout: horizontal;
+        align: center middle;
+        height: auto;
+        margin-top: 1;
+    }
+
+    Button {
+        margin: 0 1;
+    }
+    """
+
+    def __init__(self, var_names: list[str]):
+        super().__init__()
+        self.var_names = var_names
+
+    def compose(self) -> ComposeResult:
+        with Container(id="dialog"):
+            yield Static("Enter values for required variables:", id="title")
+
+            for var_name in self.var_names:
+                with Container(classes="var-row"):
+                    yield Static(f"[b]{var_name}[/b]:", classes="var-label")
+                    yield Input(placeholder=f"Value for {var_name}", id=f"input-{var_name}")
+
+            with Container(id="buttons"):
+                yield Button("OK", variant="primary", id="ok-button", disabled=True)
+                yield Button("Cancel", variant="default", id="cancel-button")
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        if event.button.id == "ok-button":
+            values = {}
+            all_filled = True
+
+            for var_name in self.var_names:
+                input_widget = self.query_one(f"#input-{var_name}", Input)
+                value = input_widget.value.strip()
+                if not value:
+                    all_filled = False
+                    input_widget.focus()
+                    break
+                values[var_name] = value
+
+            if all_filled:
+                self.dismiss(values)
+        elif event.button.id == "cancel-button":
+            self.dismiss(None)
+
+    def on_input_changed(self, event: Input.Changed) -> None:
+        all_filled = all(
+            self.query_one(f"#input-{var_name}", Input).value.strip()
+            for var_name in self.var_names
+        )
+        self.query_one("#ok-button", Button).disabled = not all_filled
+
+    def on_input_submitted(self, event: Input.Submitted) -> None:
+        current_id = event.input.id
+        if not current_id:
+            return
+
+        current_var = current_id.replace("input-", "")
+        current_index = self.var_names.index(current_var)
+
+        if current_index < len(self.var_names) - 1:
+            next_var = self.var_names[current_index + 1]
+            self.query_one(f"#input-{next_var}", Input).focus()
+        else:
+            self.query_one("#ok-button", Button).press()
+
+
+class TaskSelectionApp(App):
+    TITLE = "Task Selection Menu"
 
     CSS = """
     ListView {
         height: 1fr;
         width: 100%;
     }
-
-    #prompt-box {
-        border: solid green;
-        padding: 2;
-        width: 50%;
-        height: auto;
-    }
     """
+    BINDINGS = [
+        Binding("q", "quit", "Quit", priority=True),
+    ]
 
     def __init__(self, tasks):
         super().__init__()
@@ -96,76 +198,32 @@ class TaskRunnerApp(App):
         self.selected_task_name = None
         self.required_vars = []
         self.var_values = {}
-        self.var_index = 0
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static("Select a task (Enter to run)", classes="title")
         yield ListView(
             *[TaskItem(name, desc) for name, desc in self.tasks],
             id="task-list",
         )
         yield Footer()
 
+    @work
     async def on_list_view_selected(self, event: ListView.Selected):
-        item = event.item
+        item = cast(TaskItem, event.item)
         self.selected_task_name = item.task_name
 
-        # Load required vars
         self.required_vars, _, _ = load_taskfile_and_vars(
             self.selected_task_name
         )
 
-        # If variables required → prompt user
         if self.required_vars:
-            await self.ask_next_var()
+            if result := await self.push_screen_wait(VarInputScreen(self.required_vars)):
+                self.var_values = result
+                await self.action_quit()
+            else:
+                self.selected_task_name = None
         else:
             await self.action_quit()
-
-    async def ask_next_var(self):
-        """Show a modal input box for the next var."""
-        if self.var_index >= len(self.required_vars):
-            await self.action_quit()
-            return
-
-        var_name = self.required_vars[self.var_index]
-
-        self.query_one("#task-list").display = False
-
-        # Build popup
-        box = Vertical(
-            Static(f"Enter value for: [b]{var_name}[/b]"),
-            Input(id="var-input"),
-            Button("OK", id="ok-button"),
-            id="prompt-box",
-        )
-        self.mount(box)
-
-        self.set_focus("#var-input")
-
-    async def on_button_pressed(self, event: Button.Pressed):
-        if event.button.id == "ok-button":
-            inputbox = self.query_one("#var-input", Input)
-            value = inputbox.value.strip()
-            if value:
-                var_name = self.required_vars[self.var_index]
-                self.var_values[var_name] = value
-                self.var_index += 1
-
-                # Remove popup
-                prompt = self.query_one("#prompt-box")
-                prompt.remove()
-
-                # Restore list (if more vars left)
-                if self.var_index < len(self.required_vars):
-                    self.query_one("#task-list").display = True
-                    await self.ask_next_var()
-                else:
-                    await self.action_quit()
-            else:
-                # re-focus input if empty
-                self.set_focus("#var-input")
-
 
 def main():
     tasks = load_tasks()
@@ -173,20 +231,18 @@ def main():
         print("❌ No tasks found.")
         sys.exit(0)
 
-    app = TaskRunnerApp(tasks)
+    app = TaskSelectionApp(tasks)
     app.run()
 
-    # After Textual exits:
     if not app.selected_task_name:
-        print("❌ No task selected.")
-        sys.exit(1)
+        print("❌ Task selection cancelled.")
+        sys.exit(0)
 
-    # Build command
     cmd = ["task", app.selected_task_name]
     for k, v in app.var_values.items():
         cmd.append(f"{k}={v}")
 
-    print(f"➡️ Running: {' '.join(cmd)}")
+    print(f"Running {' '.join(cmd)}")
     subprocess.run(cmd)
 
 

@@ -89,23 +89,13 @@
         'OpenEBS Group',
       ],
       groupName: 'OpenEBS',
-      matchPackagePatterns: [
-        '/zfs-localpv/',
-        'sig-storage/csi-node-driver-registrar',
-        'sig-storage/csi-resizer',
-        'sig-storage/csi-snapshotter',
-        'sig-storage/snapshot-controller',
-        'sig-storage/csi-provisioner',
-        'kubernetes-csi/external-snapshotter',
-      ],
-      matchDatasources: [
-        'github-tags',
-        'docker',
+      matchFileNames: [
+        'kubernetes/apps/openebs-system/zfs-localpv/manifests/helmrelease.yaml',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
-      minimumGroupSize: 2,
+      minimumGroupSize: 1,
     },
     {
       description: "Kubernetes Group",

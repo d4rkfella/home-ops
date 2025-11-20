@@ -59,7 +59,7 @@ spec:
         image:
           registry: registry.k8s.io/
           repository: sig-storage/csi-provisioner
-          tag: v6.0.0
+          tag: v6.1.0
     zfs:
       bin: /usr/local/sbin/zfs
 

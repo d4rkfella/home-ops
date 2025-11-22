@@ -3,8 +3,9 @@
 version: '3'
 
 tasks:
-  s3-manager:
-    desc: Fully interactive R2 S3 browser + manager (inline)
+  s3-browser:
+    desc: Interactive S3 object storage browser
     silent: true
+    interactive: true
     cmds:
       - ./.taskfiles/aws/s3_browser.py

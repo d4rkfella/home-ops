@@ -15,3 +15,15 @@ tasks:
     preconditions:
       - test -f {{.ROOT_DIR}}/talosconfig
       - test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml
+
+  regenerate-talosconfig:
+    desc: Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.
+    prompt: Regenerate talosconfig ... continue?
+    cmd: |
+      python3 {{.ROOT_DIR}}/.taskfiles/talos/scripts/regen-talosconfig.py {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}
+    requires:
+      vars: ['MACHINE_CONFIG_FILEPATH', 'CONTEXT_NAME', 'ENDPOINTS', 'NODES']
+    preconditions:
+      - which talosctl
+      - which sops
+      - which python

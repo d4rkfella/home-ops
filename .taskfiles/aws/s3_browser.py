@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import os
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError, ProfileNotFound, SSLError, EndpointConnectionError
 
@@ -59,7 +58,6 @@ class BucketSelectScreen(Screen):
         yield Footer()
 
     async def on_mount(self):
-        """Load buckets asynchronously after mount to avoid blocking"""
         await self.load_buckets()
 
     async def load_buckets(self):
@@ -100,7 +98,6 @@ class BucketSelectScreen(Screen):
         await self.app.push_screen(ObjectBrowserTreeScreen(self.session, bucket, self.profile_name))
 
     async def action_delete(self):
-        """Delete the currently selected bucket"""
         lv = self.query_one("#buckets", ListView)
         item = getattr(lv, "highlighted_child", None)
         if not item:
@@ -218,7 +215,6 @@ class ObjectBrowserTreeScreen(Screen):
             node.toggle()
 
     async def action_delete(self):
-        """Delete the currently selected object or folder"""
         tree = self.query_one("#object-tree", Tree)
         node = tree.cursor_node
 

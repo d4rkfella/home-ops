@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-from typing import Type
+import datetime
+from typing import Any
 import boto3
 import os
-from botocore.exceptions import NoCredentialsError, ProfileNotFound, ClientError
+from botocore.exceptions import NoCredentialsError, ProfileNotFound
 
 from textual.app import App, ComposeResult
 from textual.containers import Horizontal, Vertical
 from mypy_boto3_s3.client import S3Client
+from mypy_boto3_s3.type_defs import DeleteTypeDef
 from textual.widgets import Header, Footer, ListView, ListItem, Label, Static, Tree, Markdown, TextArea, ProgressBar
 from textual.widgets.tree import TreeNode
 from textual.color import Gradient
@@ -48,6 +50,7 @@ class FilePreviewScreen(ModalScreen):
     @work(thread=True)
     def load_content(self):
         s3 = self.app.s3
+        assert s3 is not None
         text_area = self.query_one("#code-view", TextArea)
         try:
             response = s3.get_object(Bucket=self.bucket, Key=self.key, Range='bytes=0-15000')
@@ -97,6 +100,7 @@ class DownloadScreen(ModalScreen):
     @work(thread=True)
     def download_file(self):
         s3 = self.app.s3
+        assert s3 is not None
         pbar = self.query_one("#pbar", ProgressBar)
         try:
             meta = s3.head_object(Bucket=self.bucket, Key=self.key)
@@ -179,6 +183,7 @@ class BucketSelectScreen(Screen):
     def load_buckets(self):
         try:
             s3 = self.app.s3
+            assert s3 is not None
             buckets = s3.list_buckets().get("Buckets", [])
             self.app.call_from_thread(self.update_bucket_list, buckets)
         except Exception as e:
@@ -195,21 +200,26 @@ class BucketSelectScreen(Screen):
             self.app.notify(f"Loaded {len(buckets)} buckets")
 
     @work(thread=True)
-    def delete_bucket_worker(self, bucket_name: str):
+    def delete_bucket(self, bucket_name: str):
         try:
             s3 = self.app.s3
+            assert s3 is not None
             paginator = s3.get_paginator("list_objects_v2")
             object_keys = []
             for page in paginator.paginate(Bucket=bucket_name):
                 for obj in page.get("Contents", []):
-                    object_keys.append(obj["Key"])
+                    key = obj.get("Key")
+                    assert key is not None
+                    object_keys.append(key)
 
             if object_keys:
                 self.app.call_from_thread(self.app.notify, f"Deleting {len(object_keys)} objects in {bucket_name}...", timeout=5)
                 batch_size = 1000
                 for i in range(0, len(object_keys), batch_size):
-                    batch = object_keys[i:i + batch_size]
-                    delete_dict = {'Objects': [{'Key': key} for key in batch], 'Quiet': True}
+                    delete_dict: DeleteTypeDef = {
+                        "Objects": [{"Key": key} for key in object_keys[i:i + batch_size]],
+                        "Quiet": True,
+                    }
                     s3.delete_objects(Bucket=bucket_name, Delete=delete_dict)
 
             s3.delete_bucket(Bucket=bucket_name)
@@ -233,7 +243,7 @@ class BucketSelectScreen(Screen):
         bucket_name = item.name
         result = await self.app.push_screen_wait(ConfirmDeleteBucketScreen(bucket_name))
         if result is True:
-            self.delete_bucket_worker(bucket_name)
+            self.delete_bucket(bucket_name)
 
     async def action_back(self):
         await self.app.pop_screen()
@@ -285,94 +295,120 @@ class ObjectBrowserTreeScreen(Screen):
         self.load_node_worker(tree.root, "")
 
     @work(thread=True)
-    def load_node_worker(self, node: TreeNode, prefix: str):
+    def load_node_worker(self, node: TreeNode, prefix: str) -> None:
         s3 = self.app.s3
+        assert s3 is not None
+
         paginator = s3.get_paginator("list_objects_v2")
-        prefixes_found = set()
-        files_found = []
+        items_to_add: list[dict] = []
         is_empty = True
+
         try:
             for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix, Delimiter="/"):
                 for p in page.get("CommonPrefixes", []):
+                    folder_prefix = p.get("Prefix")
+                    assert folder_prefix is not None
                     is_empty = False
-                    prefixes_found.add(p["Prefix"])
-                for o in page.get("Contents", []):
-                    if o["Key"] != prefix:
-                        is_empty = False
-                        files_found.append(o)
-            self.app.call_from_thread(
-                self.populate_node, node, prefix, prefixes_found, files_found, is_empty
-            )
-        except Exception as e:
-            self.app.call_from_thread(self.app.notify, f"Error listing objects: {e}", severity="error")
+                    items_to_add.append({"type": "prefix", "key": folder_prefix})
 
-    def populate_node(self, node: TreeNode, prefix: str, prefixes: set[str], files: list[dict], is_empty: bool):
+                for o in page.get("Contents", []):
+                    key = o.get("Key")
+                    assert key is not None
+                    is_empty = False
+                    items_to_add.append({"type": "object", "key": key, "object_reference": o})
+
+            self.app.call_from_thread(
+                self.populate_node, node, prefix, items_to_add, is_empty
+            )
+
+        except Exception as e:
+            self.app.call_from_thread(
+                self.app.notify, f"Error listing objects: {e}", severity="error"
+            )
+
+
+    def populate_node(self, node: TreeNode, prefix: str, items: list[dict], is_empty: bool):
         if is_empty and not node.children:
             node.add_leaf("(empty)", data={"type": "empty", "key": ""})
             return
-        for p in sorted(prefixes):
-            folder_name = p[len(prefix):].rstrip("/")
-            child = node.add(f"📁 {folder_name}", data={"type": "prefix", "key": p})
-            child.allow_expand = True
-        for f in files:
-            key = f["Key"]
-            name = key[len(prefix):]
-            size_mb = f.get("Size", 0) / (1024 * 1024)
-            label = f"📄 {name} ({size_mb:.2f} MB)"
-            node.add_leaf(label, data={"type": "object", "key": key})
+
+        for item in items:
+            key = item["key"]
+            if item["type"] == "prefix":
+                node.add(f"📁 {key[len(prefix):].rstrip('/')}", data=item)
+            else:
+                node.add_leaf(f"📄 {key[len(prefix):]}", data=item)
 
     def on_tree_node_expanded(self, event: Tree.NodeExpanded):
         node = event.node
         if node.data and node.data.get("type") == "prefix":
             if id(node) not in self.loaded_nodes:
                 self.loaded_nodes.add(id(node))
-                self.load_node_worker(node, node.data['key'])
+                self.load_node_worker(node, node.data["key"])
 
     def on_tree_node_highlighted(self, event: Tree.NodeHighlighted):
         node = event.node
-        if not node.data: return
-        info_title = self.query_one("#info-title", Static)
+        if not node.data:
+            return
+        key = node.data["key"]
+        self.query_one("#info-title", Static).update(key)
         info_details = self.query_one("#info-details", Markdown)
-        key = node.data.get("key", "")
-        info_title.update(key if key else "Unknown")
         if node.data.get("type") == "object":
-            self.fetch_metadata(key)
+            metadata = node.data["object_reference"]
+            self.display_metadata(metadata)
         elif node.data.get("type") == "prefix":
-            info_details.update("\n**Type:** Folder\n\nExpand to see contents.")
+            info_details.update("\nExpand to see contents.")
         else:
             info_details.update("")
 
-    @work(thread=True)
-    def fetch_metadata(self, key):
-        s3 = self.app.s3
-        try:
-            meta = s3.head_object(Bucket=self.bucket, Key=key)
-            size = meta['ContentLength']
-            size_str = f"{size/(1024**2):.2f} MB" if size >= 1024**2 else f"{size/1024:.2f} KB" if size >= 1024 else f"{size} B"
-            markdown_info = (
-                f"**Size:** {size_str}  \n"
-                f"**Last Modified:** {meta['LastModified']}  \n"
-                f"**Content Type:** {meta.get('ContentType', 'N/A')}  \n"
-                f"**Storage Class:** {meta.get('StorageClass', 'STANDARD')}  \n"
-                f"**ETag:** `{meta['ETag'].strip('\"')}`\n"
-            )
-            self.app.call_from_thread(self.query_one("#info-details", Markdown).update, markdown_info)
-        except ClientError as e:
-            error_response = e.response.get('Error', {})
-            error_code = error_response.get('Code', 'N/A')
-            error_message = error_response.get('Message', str(e))
-            if error_code == '404':
-                self.app.call_from_thread(self.query_one("#info-details", Markdown).update,
-                    f"**Error:** Object Not Found ({error_code})"
+    def display_metadata(self, obj: dict[str, Any]) -> None:
+        def format_value(v: Any) -> str:
+            if isinstance(v, int):
+                return (
+                    f"{v/(1024**2):.2f} MB"
+                    if v >= 1024**2 else
+                    f"{v/1024:.2f} KB"
+                    if v >= 1024 else
+                    f"{v} B"
                 )
+            if isinstance(v, datetime.datetime):
+                return v.isoformat()
+            if isinstance(v, bytes):
+                try:
+                    return v.decode("utf-8", errors="replace")
+                except Exception:
+                    return repr(v)
+            if isinstance(v, list):
+                return ", ".join(format_value(x) for x in v)
+            if isinstance(v, dict):
+                lines = []
+                for kk, vv in v.items():
+                    if vv not in (None, {}, [], ""):
+                        lines.append(f"    {kk}: {format_value(vv)}")
+                return "\n".join(lines)
+            return str(v)
+
+        markdown_lines: list[str] = []
+
+        for k, v in obj.items():
+            if k == "Key":
+                continue
+            if v in (None, {}, [], ""):
+                continue
+
+            if k == "ETag" and isinstance(v, str):
+                val = v.strip('"')
             else:
-                self.app.call_from_thread(self.query_one("#info-details", Markdown).update,
-                    f"**Error:** S3 Client Error ({error_code})  \n"
-                    f"**S3 Message:** {error_message}"
-                )
-        except Exception as e:
-            self.app.call_from_thread(self.query_one("#info-details", Markdown).update,
-                                      f"**Error:** Could not fetch metadata. {type(e).__name__}: {e}")
+                val = v
+
+            formatted = format_value(val)
+            if "\n" in formatted:
+                markdown_lines.append(f"**{k}:**\n{formatted}")
+            else:
+                markdown_lines.append(f"**{k}:** {formatted}")
+
+        markdown = "  \n".join(markdown_lines) if markdown_lines else "_No metadata available_"
+        self.query_one("#info-details", Markdown).update(markdown)
 
     async def action_preview(self):
         node = self.query_one("#object-tree", Tree).cursor_node
@@ -388,6 +424,7 @@ class ObjectBrowserTreeScreen(Screen):
         node = self.query_one("#object-tree", Tree).cursor_node
         if node and node.data and node.data.get("type") == "object":
             s3 = self.app.s3
+            assert s3 is not None
             try:
                 url = s3.generate_presigned_url(
                     'get_object',
@@ -415,18 +452,23 @@ class ObjectBrowserTreeScreen(Screen):
     @work(thread=True)
     def delete_object(self, key: str, node_type: str, node: TreeNode):
         s3 = self.app.s3
+        assert s3 is not None
         try:
             if node_type == "prefix":
                 objects_to_delete = []
                 paginator = s3.get_paginator("list_objects_v2")
                 for page in paginator.paginate(Bucket=self.bucket, Prefix=key):
                     for obj in page.get("Contents", []):
-                        objects_to_delete.append(obj["Key"])
+                        obj_key = obj.get("Key")
+                        assert obj_key is not None
+                        objects_to_delete.append(obj_key)
                 if objects_to_delete:
                     batch_size = 1000
                     for i in range(0, len(objects_to_delete), batch_size):
-                        batch = objects_to_delete[i:i + batch_size]
-                        delete_dict = {'Objects': [{'Key': k} for k in batch], 'Quiet': True}
+                        delete_dict: DeleteTypeDef = {
+                            "Objects": [{"Key": key} for key in objects_to_delete[i:i + batch_size]],
+                            "Quiet": True,
+                        }
                         s3.delete_objects(Bucket=self.bucket, Delete=delete_dict)
                     msg = f"✅ Deleted folder: {key} ({len(objects_to_delete)} objects)"
                 else:
@@ -496,6 +538,7 @@ class ConfirmDeleteBucketScreen(ModalScreen):
         status = self.query_one("#bucket-count-status", Static)
         try:
             s3 = self.app.s3
+            assert s3 is not None
             paginator = s3.get_paginator("list_objects_v2")
             count = 0
             for page in paginator.paginate(Bucket=self.bucket_name):
@@ -579,12 +622,15 @@ class ConfirmDeleteFolderScreen(ModalScreen[bool]):
         status = self.query_one("#count-status", Static)
         try:
             s3 = self.app.s3
+            assert s3 is not None
             paginator = s3.get_paginator("list_objects_v2")
             count = 0
             self.objects_to_delete = []
             for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix):
                 for obj in page.get("Contents", []):
-                    self.objects_to_delete.append(obj["Key"])
+                    obj_key = obj.get("Key")
+                    assert obj_key is not None
+                    self.objects_to_delete.append(obj_key)
                     count += 1
             msg = "⚠️ No objects found" if count == 0 else f"⚠️ This will delete {count} object(s)"
             self.app.call_from_thread(status.update, msg)

@@ -4,7 +4,7 @@ import sys
 import asyncio
 import aiohttp
 import subprocess
-from ruamel.yaml import YAML
+from ruamel.yaml import YAML, YAMLError
 from collections.abc import Callable
 import hvac
 from kubernetes_asyncio import client, config, dynamic, watch # type: ignore
@@ -12,7 +12,7 @@ from kubernetes_asyncio.dynamic import DynamicClient # type: ignore
 from kubernetes_asyncio.client.exceptions import ApiException # type: ignore
 
 yaml = YAML(typ="safe")
-
+yaml.constructor.add_constructor('tag:yaml.org,2002:value', lambda loader, node: loader.construct_scalar(node))
 
 async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
     api = await dyn.resources.get(api_version="v1", kind="Namespace")
@@ -153,7 +153,7 @@ async def wait_for_deployments(dyn, namespace: str, deployment_names: list[str],
         names=deployment_names,
         api_version="apps/v1",
         namespace=namespace,
-        readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0),
+        readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0), # type: ignore
         timeout=timeout,
     )
 
@@ -164,7 +164,7 @@ async def wait_for_daemonsets(dyn, namespace: str, daemonset_names: list[str], t
         names=daemonset_names,
         api_version="apps/v1",
         namespace=namespace,
-        readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) >= (getattr(obj.status, "desiredNumberScheduled", 0) or 0),
+        readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) >= (getattr(obj.status, "desiredNumberScheduled", 0) or 0), # type: ignore
         timeout=timeout,
     )
 
@@ -175,7 +175,7 @@ async def wait_for_statefulsets(dyn, namespace: str, statefulset_names: list[str
         names=statefulset_names,
         api_version="apps/v1",
         namespace=namespace,
-        readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0),
+        readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0), # type: ignore
         timeout=timeout,
     )
 
@@ -243,11 +243,11 @@ async def vault_init_unseal_restore(vault_addr: str, config_file: str):
 async def fetch_and_apply_crds(dyn, crd_yaml_path):
     try:
         with open(crd_yaml_path) as f:
-            data = yaml.safe_load(f)
+            data = yaml.load(f)
     except FileNotFoundError:
         print(f"Error: CRD list file not found at {crd_yaml_path}")
         return
-    except yaml.YAMLError as e:
+    except YAMLError as e:
         print(f"Error: Could not parse CRD list file at {crd_yaml_path}: {e}")
         return
 
@@ -298,7 +298,7 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path):
                 print(f"Failed to apply CRDs from {url}: Kubernetes API Error {e.status}")
                 print(f"  Reason: {e.reason}")
 
-            except yaml.YAMLError as e:
+            except YAMLError as e:
                 print(f"YAML parsing error when applying CRDs from {url}: {e}")
 
             except Exception as e:

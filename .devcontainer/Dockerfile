@@ -7,7 +7,7 @@ ARG VIRTCTL_VERSION=v1.6.3
 # renovate: datasource=github-releases depName=hashicorp/vault
 ARG VAULT_VERSION=v1.21.1
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.0.0
+ARG HELM_VERSION=v4.0.1
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 ARG KUBECTL_VERSION=v1.34.2
 # renovate: datasource=github-releases depName=getsops/sops

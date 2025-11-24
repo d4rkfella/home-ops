@@ -4,8 +4,6 @@ FROM alpine:3.22.2 AS build
 ARG TASK_VERSION=v3.45.5
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.6.3
-# renovate: datasource=github-releases depName=a8m/envsubst
-ARG ENVSUBST_VERSION=v1.4.3
 # renovate: datasource=github-releases depName=hashicorp/vault
 ARG VAULT_VERSION=v1.21.1
 # renovate: datasource=github-releases depName=helm/helm
@@ -16,8 +14,6 @@ ARG KUBECTL_VERSION=v1.34.2
 ARG SOPS_VERSION=v3.11.0
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.7.3
-# renovate: datasource=github-releases depName=junegunn/fzf
-ARG FZF_VERSION=v0.67.0
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.0.2
 WORKDIR /tmp
@@ -82,8 +78,6 @@ RUN apk add --no-cache \
     curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv task /usr/local/bin/task && \
-    #Download envsubst binary
-    curl -fsSL -o /usr/local/bin/envsubst https://github.com/a8m/envsubst/releases/download/$ENVSUBST_VERSION/envsubst-`uname -s`-`uname -m` && \
     #Download and verify vault binary
     curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
     curl -fsSLO "https://releases.hashicorp.com/vault/${VAULT_VERSION#v}/vault_${VAULT_VERSION#v}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig}" && \
@@ -96,7 +90,6 @@ RUN apk add --no-cache \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
-    wget -O- "https://github.com/junegunn/fzf/releases/download/${FZF_VERSION}/fzf-${FZF_VERSION#v}-linux_amd64.tar.gz" | tar -xzf - -C /usr/local/bin && \
     #Download kubectl node-shell plugin
     curl -fsSL -o /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
     #Set permissions

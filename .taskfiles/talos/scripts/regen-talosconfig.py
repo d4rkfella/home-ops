@@ -159,23 +159,19 @@ def main():
     parser = argparse.ArgumentParser(
         description='Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.',
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Generate talosconfig in current directory
-  %(prog)s controlplane.yaml
-
-  # Specify output location
-  %(prog)s controlplane.yaml -o ~/.talos/config
-
-  # Add endpoints and custom context name
-  %(prog)s controlplane.yaml -o talosconfig -e 192.168.1.10 192.168.1.11 --context prod
-
-  # Skip SOPS decryption
-  %(prog)s controlplane.yaml --no-sops
-
-  # Keep temp files for debugging
-  %(prog)s controlplane.yaml --keep-temp
-        """
+        epilog = (
+            "examples:\n"
+            "  # Generate talosconfig in current directory\n"
+            "  %(prog)s controlplane.yaml\n\n"
+            "  # Specify output location\n"
+            "  %(prog)s controlplane.yaml -o ~/.talos/config\n\n"
+            "  # Add endpoints and custom context name\n"
+            "  %(prog)s controlplane.yaml -o talosconfig -e 192.168.1.10 192.168.1.11 --context prod\n\n"
+            "  # Skip SOPS decryption\n"
+            "  %(prog)s controlplane.yaml --no-sops\n\n"
+            "  # Keep temp files for debugging\n"
+            "  %(prog)s controlplane.yaml --keep-temp\n"
+        )
     )
     parser.add_argument(
         'controlplane',

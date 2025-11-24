@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
 import datetime
-from typing import Any
+from typing import Any, cast
 import boto3
 import os
 from botocore.exceptions import NoCredentialsError, ProfileNotFound
 
 from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical
+from textual.events import Paste
+from textual.containers import Horizontal, Vertical, Container
 from mypy_boto3_s3.client import S3Client
 from mypy_boto3_s3.type_defs import DeleteTypeDef
-from textual.widgets import Header, Footer, ListView, ListItem, Label, Static, Tree, Markdown, TextArea, ProgressBar
+from textual.widgets import Header, Footer, ListView, ListItem, Label, Static, Tree, Markdown, TextArea, ProgressBar, DirectoryTree
 from textual.widgets.tree import TreeNode
 from textual.color import Gradient
 from textual.screen import Screen, ModalScreen
@@ -21,13 +22,12 @@ class S3Browser(App):
     CSS_PATH = None
     BINDINGS = [("q", "quit", "Quit")]
 
-    session: boto3.session.Session | None
     s3: S3Client | None
 
     def on_mount(self):
-        self.session = None
         self.s3 = None
         self.push_screen(ProfileSelectScreen())
+
 
 class FilePreviewScreen(ModalScreen):
     app: "S3Browser" # type: ignore[assignment]
@@ -148,10 +148,7 @@ class ProfileSelectScreen(Screen):
         profile = event.item.name
         try:
             session = boto3.session.Session(profile_name=profile)
-            self.app.session = session
             self.app.s3 = session.client("s3")
-            assert self.app.s3 is not None
-            assert self.app.session is not None
             await self.app.push_screen(BucketSelectScreen(profile))
         except ProfileNotFound:
             self.app.notify(f"Profile '{profile}' not found in config", severity="error")
@@ -197,7 +194,6 @@ class BucketSelectScreen(Screen):
         else:
             for b in buckets:
                 lv.append(ListItem(Label(b["Name"]), name=b["Name"]))
-            self.app.notify(f"Loaded {len(buckets)} buckets")
 
     @work(thread=True)
     def delete_bucket(self, bucket_name: str):
@@ -241,7 +237,7 @@ class BucketSelectScreen(Screen):
             return
 
         bucket_name = item.name
-        result = await self.app.push_screen_wait(ConfirmDeleteBucketScreen(bucket_name))
+        result = await self.app.push_screen_wait(ConfirmDeleteScreen(bucket=bucket_name, bucket_delete=True))
         if result is True:
             self.delete_bucket(bucket_name)
 
@@ -259,6 +255,7 @@ class ObjectBrowserTreeScreen(Screen):
         ("r", "refresh", "Refresh"),
         ("p", "preview", "Quick Look"),
         ("s", "share", "Share Link"),
+        ("u", "upload", "Upload"),
     ]
 
     CSS = """
@@ -420,6 +417,49 @@ class ObjectBrowserTreeScreen(Screen):
         if node and node.data and node.data.get("type") == "object":
             await self.app.push_screen(DownloadScreen(self.bucket, node.data['key']))
 
+    @work
+    async def action_upload(self):
+        if not (local_path := await self.app.push_screen_wait(FileSelectionScreen())):
+            return
+        self._upload(local_path)
+
+    @work(thread=True)
+    def _upload(self, local_path):
+        bucket = self.bucket
+        s3 = self.app.s3
+        assert s3 is not None
+
+        tree = self.query_one("#object-tree", Tree)
+        node = tree.cursor_node
+        prefix = ""
+
+        if node and node.data and node.data.get("type") == "prefix":
+            prefix = node.data["key"]
+
+        try:
+            if os.path.isfile(local_path):
+                filename = os.path.basename(local_path)
+                key = f"{prefix}{filename}"
+                s3.upload_file(local_path, bucket, key)
+            else:
+                base = os.path.basename(local_path)
+
+                for root, _, files in os.walk(local_path):
+                    for filename in files:
+                        full = os.path.join(root, filename)
+                        relative = os.path.relpath(full, local_path)
+                        key = f"{prefix}{base}/{relative}"
+
+                        s3.upload_file(full, bucket, key)
+
+            self.app.call_from_thread(self.app.notify, "Upload complete.")
+            self.app.call_from_thread(self.action_refresh)
+
+        except Exception as e:
+            self.app.call_from_thread(
+                self.app.notify, f"Upload failed: {e}", severity="error"
+            )
+
     async def action_share(self):
         node = self.query_one("#object-tree", Tree).cursor_node
         if node and node.data and node.data.get("type") == "object":
@@ -440,12 +480,19 @@ class ObjectBrowserTreeScreen(Screen):
         tree = self.query_one("#object-tree", Tree)
         node = tree.cursor_node
         if not node or not node.data or node.data.get("type") in ["empty", "error"]:
-            self.app.notify("No object or folder selected for deletion.", severity="warning")
             return
-        key = node.data.get("key", "")
+
         node_type = node.data.get("type")
-        screen_class = ConfirmDeleteFolderScreen if node_type == "prefix" else ConfirmDeleteScreen
-        confirmed = await self.app.push_screen_wait(screen_class(self.bucket, key))
+        key = node.data.get("key", "")
+
+        if node_type == "object":
+            screen = ConfirmDeleteScreen(bucket=self.bucket, key=key)
+        elif node_type == "prefix":
+            screen = ConfirmDeleteScreen(bucket=self.bucket, prefix=key)
+        else:
+            return
+
+        confirmed = await self.app.push_screen_wait(screen)
         if confirmed:
             self.delete_object(key, node_type, node)
 
@@ -471,8 +518,6 @@ class ObjectBrowserTreeScreen(Screen):
                         }
                         s3.delete_objects(Bucket=self.bucket, Delete=delete_dict)
                     msg = f"✅ Deleted folder: {key} ({len(objects_to_delete)} objects)"
-                else:
-                    msg = f"✅ Deleted empty folder: {key}"
             else:
                 s3.delete_object(Bucket=self.bucket, Key=key)
                 msg = f"✅ Deleted object: {key}"
@@ -498,6 +543,33 @@ class ObjectBrowserTreeScreen(Screen):
     async def action_back(self):
         await self.app.pop_screen()
 
+class FileSelectionScreen(ModalScreen):
+    BINDINGS = [
+        ("escape", "cancel", "Cancel"),
+        ("s", "select", "Select"),
+    ]
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def compose(self):
+        yield Header()
+        yield Footer()
+        with Container():
+            yield Label("Select a file to upload", id="title", classes="p-2 text-bold")
+            yield DirectoryTree(os.path.abspath(os.sep), id="file-tree")
+
+    def action_cancel(self):
+        self.dismiss(None)
+
+    def action_select(self):
+        tree = self.query_one("#file-tree", DirectoryTree)
+        node = tree.cursor_node
+        if not node or not node.data:
+            return
+
+        path = node.data.path
+        self.dismiss(path)
 
 class ModalMessageScreen(ModalScreen):
     BINDINGS = [("escape", "close", "Close")]
@@ -514,53 +586,9 @@ class ModalMessageScreen(ModalScreen):
         await self.app.pop_screen()
 
 
-class ConfirmDeleteBucketScreen(ModalScreen):
-    app: "S3Browser" # type: ignore[assignment]
-
-    BINDINGS = [("y", "yes", "Yes"), ("n", "cancel", "No"), ("d", "dry", "Dry Run")]
-
-    def __init__(self, bucket_name):
-        super().__init__()
-        self.bucket_name = bucket_name
-        self.object_count = 0
-
-    def compose(self) -> ComposeResult:
-        yield Static(f"🗑️  DELETE ENTIRE BUCKET: **{self.bucket_name}**")
-        yield Static("Counting objects...", id="bucket-count-status")
-        yield Static("⚠️  WARNING: This will delete ALL objects in the bucket!", classes="hint")
-        yield Static("(y: confirm / n: cancel / d: dry run)", classes="hint")
-
-    def on_mount(self):
-        self.count_objects()
-
-    @work(thread=True)
-    def count_objects(self):
-        status = self.query_one("#bucket-count-status", Static)
-        try:
-            s3 = self.app.s3
-            assert s3 is not None
-            paginator = s3.get_paginator("list_objects_v2")
-            count = 0
-            for page in paginator.paginate(Bucket=self.bucket_name):
-                count += len(page.get("Contents", []))
-            self.object_count = count
-            msg = "Bucket is empty - ready to delete" if count == 0 else f"⚠️  Bucket contains {count} object(s) - press Y to delete ALL"
-            self.app.call_from_thread(status.update, msg)
-        except Exception as e:
-            self.app.call_from_thread(status.update, f"Error: {e}")
-
-    async def action_yes(self):
-        self.dismiss(True)
-
-    async def action_dry(self):
-        msg = f"[DRY RUN]\nWould delete bucket: {self.bucket_name}\nIncluding {self.object_count} objects."
-        await self.app.push_screen(ModalMessageScreen(msg))
-
-    async def action_cancel(self):
-        self.dismiss(False)
-
-
 class ConfirmDeleteScreen(ModalScreen[bool]):
+    app: "S3Browser"  # type: ignore[assignment]
+
     CSS = """
     ConfirmDeleteScreen {
         width: 50%;
@@ -572,78 +600,81 @@ class ConfirmDeleteScreen(ModalScreen[bool]):
     }
     """
 
-    BINDINGS = [("y", "yes", "Yes (Delete)"), ("n", "cancel", "No (Cancel)"), ("d", "dry", "Dry Run")]
+    BINDINGS = [
+        ("y", "yes", "Yes (Delete)"),
+        ("n", "cancel", "No (Cancel)"),
+        ("d", "dry", "Dry Run")
+    ]
 
-    def __init__(self, bucket, key, **kwargs):
-        super().__init__(**kwargs)
-        self.bucket = bucket
-        self.key = key
-
-    def compose(self) -> ComposeResult:
-        text = (
-            "⚠️  **Are you sure you want to permanently delete this object?** ⚠️\n\n"
-            "---\n\n"
-            "**Object:** `" + self.key + "`  \n"
-            "**Bucket:** `" + self.bucket + "`  \n\n"
-            "---\n\n"
-            "Press **y** to confirm or **n** to cancel."
-        )
-        yield Markdown(text)
-
-    async def action_yes(self):
-        self.dismiss(True)
-
-    async def action_cancel(self):
-        self.dismiss(False)
-
-
-class ConfirmDeleteFolderScreen(ModalScreen[bool]):
-    app: "S3Browser" # type: ignore[assignment]
-
-    BINDINGS = [("y", "yes", "Yes (Delete)"), ("n", "cancel", "No (Cancel)"), ("d", "dry", "Dry Run")]
-
-    def __init__(self, bucket, prefix, **kwargs):
+    def __init__(self, bucket: str, key: str | None = None, prefix: str | None = None, **kwargs) -> None:
         super().__init__(**kwargs)
         self.bucket = bucket
         self.prefix = prefix
-        self.objects_to_delete = []
+        self.key = key
+        self.objects_to_delete: list[str] = []
 
     def compose(self) -> ComposeResult:
-        yield Static(f"🗑️  **PERMANENTLY DELETE FOLDER AND CONTENTS?**")
-        yield Static(f"\nPrefix: **{self.prefix}**\n")
-        yield Static("Counting objects...", id="count-status")
-        yield Static("(y: confirm / n: cancel / d: dry run)", classes="hint")
+        yield Markdown(None)
 
     def on_mount(self):
-        self.count_objects()
+        self.update_markdown()
 
     @work(thread=True)
-    def count_objects(self):
-        status = self.query_one("#count-status", Static)
+    def update_markdown(self):
+        markdown_widget = self.query_one(Markdown)
         try:
             s3 = self.app.s3
             assert s3 is not None
             paginator = s3.get_paginator("list_objects_v2")
-            count = 0
             self.objects_to_delete = []
-            for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix):
-                for obj in page.get("Contents", []):
-                    obj_key = obj.get("Key")
-                    assert obj_key is not None
-                    self.objects_to_delete.append(obj_key)
-                    count += 1
-            msg = "⚠️ No objects found" if count == 0 else f"⚠️ This will delete {count} object(s)"
-            self.app.call_from_thread(status.update, msg)
+
+            if self.prefix:
+                for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix):
+                    self.objects_to_delete.extend(
+                        cast(str, obj.get("Key")) for obj in page.get("Contents", [])
+                    )
+                count_msg = "No objects found." if not self.objects_to_delete else f"{len(self.objects_to_delete)} object(s) will be deleted."
+
+            if self.key:
+                markdown_text = (
+                    f"# ⚠️ Delete Object\n\n"
+                    f"**Bucket:** `{self.bucket}`  \n"
+                    f"**Object:** `{self.key}`\n\n"
+                    "This action will permanently delete the object.\n\n"
+                    "---\n\n"
+                    "Press **y** to confirm, **n** to cancel."
+                )
+            elif self.prefix != "":
+                markdown_text = (
+                    f"# ⚠️ Delete Objects\n\n"
+                    f"**Bucket:** `{self.bucket}`  \n"
+                    f"**Prefix:** `{self.prefix}`\n\n"
+                    f"{count_msg}\n\n"
+                    f"This action will permanently delete all objects located under `{self.prefix}`.\n\n"
+                    "---\n\n"
+                    "Press **y** to confirm, **n** to cancel, or **d** for dry run."
+                )
+            elif self.bucket_delete:
+                markdown_text = (
+                    f"# ⚠️ Delete Bucket\n\n"
+                    f"**Bucket:** `{self.bucket}`\n\n"
+                    f"{count_msg}\n\n"
+                    "This action will permanently delete the bucket and all its contents.\n\n"
+                    "---\n\n"
+                    "Press **y** to confirm, **n** to cancel, or **d** for dry run."
+                )
+
+            self.app.call_from_thread(markdown_widget.update, markdown_text)
+
         except Exception as e:
             self.app.call_from_thread(self.app.notify, f"Error counting objects: {e}", severity="error")
-            self.app.call_from_thread(status.update, f"Error: {e}")
+            self.app.call_from_thread(markdown_widget.update, f"Error: {e}")
 
     async def action_yes(self):
         self.dismiss(True)
 
     async def action_dry(self):
-        preview = "\n".join(self.objects_to_delete[:10])
-        if len(self.objects_to_delete) > 10: preview += "\n..."
+        preview = "\n".join(self.objects_to_delete)
         await self.app.push_screen(ModalMessageScreen(f"[DRY RUN]\nWould delete {len(self.objects_to_delete)} objects:\n{preview}"))
         self.dismiss(False)
 

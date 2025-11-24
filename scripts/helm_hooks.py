@@ -325,21 +325,26 @@ if __name__ == "__main__":
     fetch_crd_parser = subparsers.add_parser("apply-crds", help="Fetch and apply CRDs from YAML")
     fetch_crd_parser.add_argument("--file", required=True, help="YAML file listing CRD URLs")
 
-    wait_crd_parser = subparsers.add_parser("wait-crds", help="Wait for CRDs to be established")
-    wait_crd_parser.add_argument("--names", required=True, help="Comma-separated CRD names to wait for")
+    wait_crd_parser = subparsers.add_parser("wait-crds", help="Watch and wait for the provided CRDs existance on the cluster")
+    wait_crd_parser.add_argument("--names", nargs='+', help="CRD names (one or more, separated by spaces)")
     wait_crd_parser.add_argument("--timeout", default=120)
 
-    dep_parser = subparsers.add_parser("wait-deployments", help="Wait for deployments")
+    dep_parser = subparsers.add_parser("wait-deployments", help="Watch and wait for the provided Deployments to become ready")
     dep_parser.add_argument("--namespace", required=True)
     dep_parser.add_argument("--names", nargs='+', help="Deployment names (one or more, separated by spaces)")
     dep_parser.add_argument("--timeout", default=240)
 
-    ds_parser = subparsers.add_parser("wait-daemonsets", help="Wait for daemonsets")
+    ds_parser = subparsers.add_parser("wait-daemonsets", help="Watch and wait for the provided DaemonSets to become ready")
     ds_parser.add_argument("--namespace", required=True)
-    ds_parser.add_argument("--names", required=True, help="Comma-separated daemonset names")
+    ds_parser.add_argument("--names", nargs='+', help="DaemonSet names (one or more, separated by spaces)")
     ds_parser.add_argument("--timeout", default=240)
 
-    vault_parser = subparsers.add_parser("init-vault", help="Init/unseal/restore Vault")
+    ss_parser = subparsers.add_parser("wait-statefulsets", help="Watch and wait for the provided StatefulSets to become ready")
+    ss_parser.add_argument("--namespace", required=True)
+    ss_parser.add_argument("--names", nargs='+', help="StatefulSets names (one or more, separated by spaces)")
+    ss_parser.add_argument("--timeout", default=240)
+
+    vault_parser = subparsers.add_parser("init-vault", help="Init/unseal/restore a Vault cluster")
     vault_parser.add_argument("--addr", required=True, help="Vault address")
     vault_parser.add_argument("--config", default="/project/.vault/vault-backup.yaml", help="vault-backup cli config file")
 
@@ -364,6 +369,8 @@ if __name__ == "__main__":
                 await wait_for_deployments(dyn, args.namespace, args.names, args.timeout)
             elif args.command == "wait-daemonsets":
                 await wait_for_daemonsets(dyn, args.namespace, args.names, args.timeout)
+            elif args.command == "wait-statefulsets":
+                await wait_for_statefulsets(dyn, args.namespace, args.names, args.timeout)
             elif args.command == "init-vault":
                 await vault_init_unseal_restore(args.addr, args.config)
             else:

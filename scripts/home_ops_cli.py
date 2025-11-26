@@ -8,9 +8,10 @@ import base64
 import shutil
 import tempfile
 import time
+from datetime import datetime
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
-from typing import Any, cast
+from typing import Any, Literal, overload
 from contextlib import asynccontextmanager
 from functools import wraps
 from pathlib import Path
@@ -961,6 +962,70 @@ async def fetch_aws_ips(
 
         typer.echo(f"Wrote {len(cidrs)} CIDRs to {output_file}.")
 
+@overload
+async def make_request_and_handle_ratelimit(
+    session: aiohttp.ClientSession,
+    method: Literal["GET"],
+    url: str,
+    console: Console,
+    **kwargs: Any
+) -> dict[str, Any]:
+    ...
+
+@overload
+async def make_request_and_handle_ratelimit(
+    session: aiohttp.ClientSession,
+    method: Literal["DELETE", "POST", "PATCH", "PUT", "HEAD", "OPTIONS"],
+    url: str,
+    console: Console,
+    **kwargs: Any
+) -> int:
+    ...
+
+async def make_request_and_handle_ratelimit(
+    session: aiohttp.ClientSession,
+    method: str,
+    url: str,
+    console: Console,
+    **kwargs: Any
+) -> dict[str, Any] | int:
+    sem = asyncio.Semaphore(20)
+    max_retries = 3
+    attempt = 0
+    while True:
+        attempt += 1
+
+        async with sem:
+            async with session.request(method, url, **kwargs) as resp:
+
+                if resp.status in (403, 429):
+                    reset_time = int(resp.headers.get("x-ratelimit-reset", 0))
+                    current_time = int(time.time())
+                    sleep_time = max(reset_time - current_time, 0) + 120
+
+                    if sleep_time < 5 and resp.status == 429:
+                        sleep_time = int(resp.headers.get("Retry-After", 120))
+
+                    msg = f"[yellow]Rate limit hit ({resp.status}). Waiting {sleep_time:.0f}s until reset...[/yellow]"
+                    console.print(msg)
+                    await asyncio.sleep(sleep_time)
+                    continue
+
+                if resp.status >= 400:
+
+                    if attempt >= max_retries:
+                        console.print(f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {resp.status}.[/bold red]")
+                        resp.raise_for_status()
+
+                    console.print(f"[red]Error {resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]")
+                    await asyncio.sleep(5)
+                    continue
+
+                if method == "GET":
+                    resp.raise_for_status()
+                    return await resp.json()
+                else:
+                    return resp.status
 
 @app.command(help="Delete GitHub Actions workflow runs")
 @async_command
@@ -992,70 +1057,22 @@ async def dwr(
     }
     api_base_url = f"https://api.github.com/repos/{repo}/actions/runs"
     per_page = 100
-    sem = asyncio.Semaphore(20)
-    max_retries = 3
-
-    async def make_request_and_handle_ratelimit(
-        session: aiohttp.ClientSession,
-        method: str,
-        url: str,
-        console: Console,
-        **kwargs: Any
-    ) -> dict[str, Any] | int:
-        attempt = 0
-        while True:
-            attempt += 1
-
-            async with sem:
-                async with session.request(method, url, **kwargs) as resp:
-
-                    if resp.status in (403, 429):
-                        reset_time = int(resp.headers.get("x-ratelimit-reset", 0))
-                        current_time = int(time.time())
-                        sleep_time = max(reset_time - current_time, 0) + 120
-
-                        if sleep_time < 5 and resp.status == 429:
-                            sleep_time = int(resp.headers.get("Retry-After", 120))
-
-                        msg = f"[yellow]Rate limit hit ({resp.status}). Waiting {sleep_time:.0f}s until reset...[/yellow]"
-                        console.print(msg)
-                        await asyncio.sleep(sleep_time)
-                        continue
-
-                    if resp.status >= 400:
-
-                        if attempt >= max_retries:
-                            console.print(f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {resp.status}.[/bold red]")
-                            resp.raise_for_status()
-
-                        console.print(f"[red]Error {resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]")
-                        await asyncio.sleep(5)
-                        continue
-
-                    if method == "GET":
-                        resp.raise_for_status()
-                        return await resp.json()
-                    else:
-                        return resp.status
 
     async with aiohttp.ClientSession(headers=headers) as session:
         fetch_tasks: list[Awaitable[Any]] = []
         all_runs: list[dict[str, Any]] = []
-
 
         initial_params: dict[str, str | int] = {"per_page": 1, "page": 1}
         if status:
             initial_params["status"] = status.value
 
         console = Console()
+
         initial_data = await make_request_and_handle_ratelimit(
             session, "GET", api_base_url, console=console, params=initial_params
         )
 
-        actual_total_available = 0
-        if isinstance(initial_data, dict):
-             actual_total_available = initial_data.get("total_count", 0)
-
+        actual_total_available = initial_data.get("total_count", 0)
         runs_to_fetch = min(actual_total_available, limit)
 
         if runs_to_fetch == 0:
@@ -1126,7 +1143,7 @@ async def dwr(
         choices_list: list[tuple[str, int]] = []
 
         for run in all_runs:
-            s_date = run['created_at'].replace('T', ' ').replace('Z', '')
+            s_date = datetime.fromisoformat(run['created_at'].replace('Z', '+00:00')).strftime("%b %d %Y %H:%M")
 
             if run['status'] in ("queued", "in_progress"):
                 conclusion = run['status'].upper()
@@ -1172,7 +1189,6 @@ async def dwr(
     else:
         selected_ids = [run['id'] for run in all_runs]
 
-
     async with aiohttp.ClientSession(headers=headers) as session:
         with Progress(
             TextColumn("[bold red]{task.description}"),
@@ -1191,6 +1207,7 @@ async def dwr(
                     status_code = await make_request_and_handle_ratelimit(
                         session, "DELETE", del_url, console=progress.console
                     )
+
                     if status_code == 204:
                         progress.console.print(f"Deleted: {line_str}")
                         progress.update(delete_task_id, advance=1)

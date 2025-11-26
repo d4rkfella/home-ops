@@ -4,13 +4,23 @@ import asyncio
 import os
 import random
 import subprocess
+import base64
+import shutil
+import tempfile
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+from typing import Any
 from contextlib import asynccontextmanager
 from functools import wraps
 from pathlib import Path
 from collections.abc import Callable
+from requests import Response
+from github import Github
+from InquirerPy import inquirer
 
 import aiohttp
 import hvac
+from hvac.exceptions import VaultError, InvalidRequest, InvalidPath
 import typer
 from rich.progress import (
     BarColumn,
@@ -29,13 +39,21 @@ from kubernetes_asyncio.dynamic import DynamicClient  # type: ignore
 from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type: ignore
 
 
-yaml = YAML(typ="safe")
+yaml = YAML()
+yaml.preserve_quotes = True
 yaml.constructor.add_constructor(
     "tag:yaml.org,2002:value", lambda loader, node: loader.construct_scalar(node)
 )
 
 app = typer.Typer(name="home-ops-cli")
 
+debug_option = typer.Option(
+    "--debug",
+    "-d",
+    help="Enable debug mode.",
+    show_default=True,
+    default_factory=lambda: True,
+)
 
 @asynccontextmanager
 async def k8s_client():
@@ -44,6 +62,14 @@ async def k8s_client():
         dyn = await DynamicClient(api_client)
         yield dyn
 
+
+def with_debug(func):
+    @wraps(func)
+    def wrapper(*args, debug: bool = typer.Option(False, "--debug", help="Enable debug"), **kwargs):
+        if debug:
+            typer.echo("Debug mode enabled")
+        return func(*args, **kwargs)
+    return wrapper
 
 def async_command(f):
     @wraps(f)
@@ -658,6 +684,321 @@ async def init_vault(
 ):
     await vault_init_unseal_restore(addr, config)
 
+
+@app.command(help="Creates new talosconfig with key pair using the root Talos API CA from the control plane machine configuration.")
+def regen_talosconfig(
+    controlplane: Annotated[
+        Path,
+        typer.Argument(
+            help="Path to control plane machine configuration",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+        ),
+    ],
+    endpoints: Annotated[
+        list[str] | None,
+        typer.Option("--endpoints", "-e", help="control plane endpoints")] = None,
+    nodes: Annotated[
+        list[str] | None,
+        typer.Option("--nodes", "-n", help="nodes endpoints")] = None,
+    context: Annotated[
+        str,
+        typer.Option(help="context name to use for the new talosconfig")] = "default",
+    debug: Annotated[
+        bool,
+        typer.Option(help="enable debugging", is_flag=True)] = False,
+    decrypt: Annotated[
+        bool,
+        typer.Option(help="decrypt the machine configuration with SOPS", is_flag=True)] = True,
+    output: Annotated[
+        Path,
+        typer.Option(
+            "--output",
+            "-o",
+            file_okay=True,
+            dir_okay=False,
+            writable=True,
+            resolve_path=True,
+            help="output path for the new talosconfig",
+        ),
+    ] = Path("talosconfig"),
+):
+    work_dir = Path(tempfile.mkdtemp(prefix="talos-regen-"))
+    typer.echo(f"🔧 Working directory: {work_dir}")
+
+    try:
+        if not decrypt:
+            content = controlplane.read_text()
+        else:
+            content = subprocess.run(
+                ["sops", "-d", str(controlplane)],
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout
+
+        ca_crt_b64 = None
+        ca_key_b64 = None
+        for doc in yaml.load_all(content):
+            if doc and "machine" in doc and "ca" in doc.get("machine", {}):
+                ca_crt_b64 = doc["machine"]["ca"]["crt"]
+                ca_key_b64 = doc["machine"]["ca"]["key"]
+                break
+
+        if not ca_crt_b64 or not ca_key_b64:
+            typer.echo("Could not find machine.ca.crt or machine.ca.key in controlplane machine configuration", err=True)
+            raise typer.Exit(code=1)
+
+        ca_crt_path = work_dir / "ca.crt"
+        ca_key_path = work_dir / "ca.key"
+        ca_crt_path.write_bytes(base64.b64decode(ca_crt_b64))
+        ca_key_path.write_bytes(base64.b64decode(ca_key_b64))
+        typer.echo("✅ Extracted CA certificate and key")
+
+        subprocess.run(["talosctl", "gen", "key", "--name", "admin"], cwd=work_dir, check=True)
+        subprocess.run(["talosctl", "gen", "csr", "--key", "admin.key", "--ip", "127.0.0.1"], cwd=work_dir, check=True)
+        subprocess.run([
+            "talosctl", "gen", "crt",
+            "--ca", "ca",
+            "--csr", "admin.csr",
+            "--name", "admin",
+            "--hours", "8760"
+        ], cwd=work_dir, check=True)
+        typer.echo("✅ Generated admin key, CSR, and certificate")
+
+        admin_crt_path = work_dir / "admin.crt"
+        admin_key_path = work_dir / "admin.key"
+
+        config = {
+            "context": context,
+            "contexts": {
+                context: {
+                    "endpoints": endpoints or [],
+                    "nodes": nodes or [],
+                    "ca": base64.b64encode(ca_crt_path.read_bytes()).decode("utf-8"),
+                    "crt": base64.b64encode(admin_crt_path.read_bytes()).decode("utf-8"),
+                    "key": base64.b64encode(admin_key_path.read_bytes()).decode("utf-8"),
+                }
+            }
+        }
+
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with output.open("w", encoding="utf-8") as f:
+            yaml.dump(config, f)
+        typer.echo(f"✅ Created talosconfig: {output}")
+
+    finally:
+        if not debug:
+            shutil.rmtree(work_dir)
+            typer.echo("🧹 Cleaned up temporary files")
+        else:
+            typer.echo(f"📁 Temporary files kept in: {work_dir}")
+
+
+HVACResp = dict[str, Any] | Response |None
+def to_dict(resp: HVACResp) -> dict[str, Any]:
+    if isinstance(resp, Response):
+        return resp.json()
+    if resp is None:
+        return {}
+    return resp
+
+@app.command()
+def rotate_issuing_ca(
+    debug: Annotated[bool, debug_option],
+    vault_addr: Annotated[
+        str | None,
+        typer.Option(
+            "--vault-addr", "-a",
+            envvar="VAULT_ADDR",
+            help="Vault URL (e.g., https://vault.example.com:8200)",
+            prompt=True,
+        ),
+    ] = None,
+    token: Annotated[
+        str | None,
+        typer.Option(
+            "--token", "-t",
+            envvar="VAULT_TOKEN",
+            help="Vault token. If omitted, username/password login will be used.",
+            prompt=True,
+            prompt_required=False,
+        )
+    ] = None,
+):
+    if debug:
+        typer.echo("Debugging enabled")
+    ISS_MOUNT = "pki_iss"
+    INT_MOUNT = "pki_int"
+    COMMON_NAME = "DarkfellaNET Issuing CA v1.1.1"
+    TTL = "8760h"
+
+    client = hvac.Client(url=vault_addr)
+
+    if token:
+        client.token = token
+    else:
+        typer.echo("Vault token not found, logging in with username/password.")
+        username = typer.prompt("Vault username")
+        password = typer.prompt("Vault password", hide_input=True)
+        try:
+            login_resp = client.auth.userpass.login(username=username, password=password)
+            client.token = login_resp["auth"]["client_token"]
+            typer.echo("Logged in successfully.")
+        except InvalidRequest as e:
+            typer.echo(f"Vault login failed: {e}")
+            raise typer.Exit(1)
+
+    if not client.is_authenticated():
+        typer.echo("Authentication to Vault failed.")
+        raise typer.Exit(1)
+
+    typer.echo(f"Connected to Vault at {vault_addr}")
+
+    try:
+        typer.echo("Generating CSR using existing key material...")
+        generate_resp = to_dict(client.write(
+            f"{ISS_MOUNT}/issuers/generate/intermediate/existing",
+            common_name=COMMON_NAME,
+            country="Bulgaria",
+            locality="Sofia",
+            organization="DarkfellaNET",
+            ttl=TTL,
+            format="pem_bundle",
+            wrap_ttl=None,
+        ))
+        csr = generate_resp["data"]["csr"]
+    except (VaultError, InvalidRequest) as e:
+        typer.echo(f"Failed to generate CSR: {e}")
+        raise typer.Exit(1)
+
+    try:
+        typer.echo("Signing CSR with intermediate CA...")
+        sign_resp = to_dict(client.write(
+            f"{INT_MOUNT}/root/sign-intermediate",
+            csr=csr,
+            country="Bulgaria",
+            locality="Sofia",
+            organization="DarkfellaNET",
+            format="pem_bundle",
+            ttl=TTL,
+            common_name=COMMON_NAME,
+            wrap_ttl=None,
+        ))
+        signed_cert = sign_resp["data"]["certificate"]
+    except (VaultError, InvalidRequest) as e:
+        typer.echo(f"Failed to sign CSR: {e}")
+        raise typer.Exit(1)
+
+    try:
+        typer.echo(f"Importing signed certificate back into {ISS_MOUNT}...")
+        import_resp = to_dict(client.write(
+            f"{ISS_MOUNT}/intermediate/set-signed",
+            certificate=signed_cert,
+            wrap_ttl=None
+        ))
+        imported_issuers = import_resp.get("data", {}).get("imported_issuers", [])
+        if not imported_issuers:
+            raise RuntimeError("Vault did not return an imported issuer ID!")
+        new_issuer_id = imported_issuers[0]
+
+        client.write(f"{ISS_MOUNT}/config/issuers", default=new_issuer_id, wrap_ttl=None)
+        typer.echo(f"New issuer {new_issuer_id} set as default")
+    except (VaultError, InvalidRequest, InvalidPath) as e:
+        typer.echo(f"Failed to import signed certificate: {e}")
+        raise typer.Exit(1)
+
+    cert = x509.load_pem_x509_certificate(signed_cert.encode(), default_backend())
+    typer.echo("\nNew Issuing CA info:")
+    typer.echo(f"  Subject: {cert.subject.rfc4514_string()}")
+    typer.echo(f"  Serial: {cert.serial_number}")
+    typer.echo(f"  Expires: {cert.not_valid_after.isoformat()} UTC")
+
+    typer.echo("Done! Issuing CA successfully reissued and set as default.")
+
+
+@app.command(help="Fetch AWS IP ranges and optionally update a network policy YAML")
+@async_command
+async def fetch_aws_ips(
+    region: Annotated[str, typer.Option(help="AWS region to filter")] = "us-east-1",
+    service: Annotated[str, typer.Option(help="AWS service to filter")] = "AMAZON",
+    output_file: Annotated[Path, typer.Option(help="File to write filtered CIDRs")] = Path("aws-ip-ranges.txt"),
+    policy_file: Annotated[Path | None, typer.Option(help="Path to cilium network policy YAML to update", exists=True, file_okay=True, dir_okay=False, readable=True, writable=True, resolve_path=True)] = None
+) -> None:
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get("https://ip-ranges.amazonaws.com/ip-ranges.json") as resp:
+            resp.raise_for_status()
+            data = await resp.json()
+
+    cidrs = sorted({prefix["ip_prefix"] for prefix in data["prefixes"]
+                    if prefix["region"] == region and prefix["service"] == service})
+
+    if policy_file:
+        with open(policy_file, "r") as f:
+            policy = yaml.load(f)
+
+        egress_cidrs = policy["spec"]["egress"][3]["toCIDRSet"]
+        existing_cidrs = {entry["cidr"] for entry in egress_cidrs}
+
+        all_cidrs = sorted(existing_cidrs | set(cidrs))
+        policy["spec"]["egress"][3]["toCIDRSet"] = [{"cidr": c} for c in all_cidrs]
+
+        with open(policy_file, "w") as f:
+            yaml.dump(policy, f)
+
+        typer.echo(f"Updated {policy_file} with {len(all_cidrs)} unique CIDRs.")
+    else:
+        with open(output_file, "w") as f:
+            for c in cidrs:
+                f.write(f"- cidr: {c}\n")
+
+        typer.echo(f"Wrote {len(cidrs)} CIDRs to {output_file}.")
+
+
+@app.command(help="Delete GitHub Actions workflow runs")
+def dwr(
+    token: str = typer.Option(..., help="GitHub personal access token"),
+    repo: str = typer.Argument(..., help="GitHub repo in owner/repo format"),
+    all: bool = typer.Option(False, "--all", help="Delete all workflow runs")
+):
+    g = Github(token)
+    repository = g.get_repo(repo)
+    runs = repository.get_workflow_runs()
+
+    CONCLUSION_MAP = {"skipped": "SKIP", "success": "GOOD", "failure": "FAIL"}
+
+    def format_run(run) -> str:
+        conclusion = CONCLUSION_MAP.get(run.conclusion, run.conclusion)
+        created = run.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        return f"{conclusion}\t{created}\t{run.id}\t{run.event}\t{run.name}"
+
+    runs_list = [format_run(run) for run in runs]
+
+    if not all:
+        selected = inquirer.checkbox(
+            message="Select runs to delete:",
+            choices=runs_list,
+            transformer=lambda result: f"{len(result)} selected",
+            validate=lambda result: len(result) > 0 or "Select at least one run",
+            cycle=True,
+            long_instruction="Use arrows and space to select, Enter to confirm",
+            multiselect=True,
+            instruction="(fuzzy search supported)",
+        ).execute()
+    else:
+        selected = runs_list
+
+    for line in selected:
+        run_id = int(line.split("\t")[2])
+        repository.get_workflow_run(run_id).delete()
+        typer.echo(f"Deleted: {line}")
+
+if __name__ == "__main__":
+    app()
 
 if __name__ == "__main__":
     app()

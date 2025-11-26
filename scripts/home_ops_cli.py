@@ -19,6 +19,7 @@ from rich.console import Console
 from collections.abc import Callable, Awaitable
 from requests import Response
 import inquirer
+from inquirer.themes import RedSolace
 from enum import Enum
 
 import aiohttp
@@ -1178,7 +1179,7 @@ async def dwr(
                 autocomplete=autocomplete_runs,
             )
         ]
-        answers = inquirer.prompt(questions)
+        answers = inquirer.prompt(questions, theme=RedSolace())
 
         if not answers or not answers['selected_runs']:
             typer.echo("No runs selected, exiting.")

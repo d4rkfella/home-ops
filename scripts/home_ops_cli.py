@@ -10,7 +10,7 @@ import tempfile
 import time
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
-from typing import Any
+from typing import Any, cast
 from contextlib import asynccontextmanager
 from functools import wraps
 from pathlib import Path
@@ -992,7 +992,6 @@ async def dwr(
     }
     api_base_url = f"https://api.github.com/repos/{repo}/actions/runs"
     per_page = 100
-    pages_needed = (limit + per_page - 1) // per_page
     sem = asyncio.Semaphore(20)
     max_retries = 3
 
@@ -1043,6 +1042,28 @@ async def dwr(
         fetch_tasks: list[Awaitable[Any]] = []
         all_runs: list[dict[str, Any]] = []
 
+
+        initial_params: dict[str, str | int] = {"per_page": 1, "page": 1}
+        if status:
+            initial_params["status"] = status.value
+
+        console = Console()
+        initial_data = await make_request_and_handle_ratelimit(
+            session, "GET", api_base_url, console=console, params=initial_params
+        )
+
+        actual_total_available = 0
+        if isinstance(initial_data, dict):
+             actual_total_available = initial_data.get("total_count", 0)
+
+        runs_to_fetch = min(actual_total_available, limit)
+
+        if runs_to_fetch == 0:
+            typer.echo("No workflow runs found.")
+            raise typer.Exit()
+
+        pages_needed = (runs_to_fetch + per_page - 1) // per_page
+
         with Progress(
             TextColumn("[bold blue]{task.description}"),
             BarColumn(),
@@ -1051,7 +1072,7 @@ async def dwr(
             transient=False
         ) as progress:
 
-            fetch_task_id = progress.add_task(f"Fetching workflow runs for {repo}", total=limit)
+            fetch_task_id = progress.add_task(f"Fetching workflow runs for {repo}", total=runs_to_fetch)
 
             for page in range(1, pages_needed + 1):
                 params: dict[str, str | int] = {"per_page": per_page, "page": page}
@@ -1080,39 +1101,77 @@ async def dwr(
                 except Exception as e:
                     progress.console.print(f"[red]Error fetching page: {e}[/red]")
 
-            progress.update(fetch_task_id, total=len(all_runs))
+            progress.update(fetch_task_id, completed=len(all_runs))
 
     if not all_runs:
         typer.echo("No workflow runs found.")
         raise typer.Exit()
 
     all_runs.sort(key=lambda x: x['id'], reverse=True)
-    CONCLUSION_MAP = {"skipped": "SKIP", "success": "GOOD", "failure": "FAIL"}
-    runs_map = {}
-    display_list = []
 
-    for run in all_runs:
-        s_date = run['created_at'].replace('T', ' ').replace('Z', '')
-        display_str = f"{CONCLUSION_MAP.get(run['conclusion'], str(run['conclusion']).upper())}\t{s_date}\t{run['id']}\t{run['event']}\t{run['name']}"
-        display_list.append(display_str)
-        runs_map[display_str] = run
+    CONCLUSION_MAP = {
+        WorkflowStatus.SUCCESS.value: "GOOD",
+        WorkflowStatus.FAILURE.value: "FAIL",
+        WorkflowStatus.NEUTRAL.value: "NEUTR",
+        WorkflowStatus.CANCELLED.value: "CANC",
+        WorkflowStatus.SKIPPED.value: "SKIP",
+        WorkflowStatus.TIMED_OUT.value: "TIMEOUT",
+        WorkflowStatus.ACTION_REQUIRED.value: "ACT_REQ",
+    }
+
+    selected_ids: list[int] = []
 
     if not delete_all:
+
+        choices_list: list[tuple[str, int]] = []
+
+        for run in all_runs:
+            s_date = run['created_at'].replace('T', ' ').replace('Z', '')
+
+            if run['status'] in ("queued", "in_progress"):
+                conclusion = run['status'].upper()
+            else:
+                conclusion = CONCLUSION_MAP.get(run['conclusion'], str(run['conclusion']).upper())
+
+            display_str = (
+                f"{conclusion:<8}"
+                f"{s_date:<22}"
+                f"{run['id']:<14}"
+                f"{run['event']:<20}"
+                f"{run['name']}"
+            )
+
+            choices_list.append((display_str, run['id']))
+
+        def autocomplete_runs(text: str, state: Any) -> list[tuple[str, int]]:
+            if not text:
+                return choices_list
+
+            return [
+                choice_tuple for choice_tuple in choices_list
+                if text.lower() in choice_tuple[0].lower()
+            ]
+
         questions = [
             inquirer.Checkbox(
                 'selected_runs',
-                message=f"Select runs to delete (showing {len(display_list)}):",
-                choices=display_list,
+                message=f"Select workflows to delete (Total: {len(choices_list)})",
+                choices=choices_list,
                 carousel=True,
+                autocomplete=autocomplete_runs,
             )
         ]
         answers = inquirer.prompt(questions)
+
         if not answers or not answers['selected_runs']:
             typer.echo("No runs selected, exiting.")
             raise typer.Abort()
-        selected_strings = answers['selected_runs']
+
+        selected_ids = answers['selected_runs']
+
     else:
-        selected_strings = display_list
+        selected_ids = [run['id'] for run in all_runs]
+
 
     async with aiohttp.ClientSession(headers=headers) as session:
         with Progress(
@@ -1122,17 +1181,16 @@ async def dwr(
             TimeElapsedColumn(),
             transient=False
         ) as progress:
-            delete_task_id = progress.add_task("Deleting workflow runs", total=len(selected_strings))
+            delete_task_id = progress.add_task("Deleting workflow runs", total=len(selected_ids))
 
-            async def delete_run_task(line_str):
-                run_id = runs_map[line_str]['id']
+            async def delete_run_task(run_id: int):
                 del_url = f"{api_base_url}/{run_id}"
+                line_str = f"Run ID: {run_id}"
 
                 try:
                     status_code = await make_request_and_handle_ratelimit(
                         session, "DELETE", del_url, console=progress.console
                     )
-
                     if status_code == 204:
                         progress.console.print(f"Deleted: {line_str}")
                         progress.update(delete_task_id, advance=1)
@@ -1141,7 +1199,7 @@ async def dwr(
                 except Exception as e:
                     progress.console.print(f"[red]Error deleting {run_id}: {e}[/red]")
 
-            await asyncio.gather(*(delete_run_task(line) for line in selected_strings))
+            await asyncio.gather(*(delete_run_task(run_id) for run_id in selected_ids))
 
 if __name__ == "__main__":
     app()

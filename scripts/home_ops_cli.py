@@ -7,16 +7,18 @@ import subprocess
 import base64
 import shutil
 import tempfile
+import time
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from typing import Any
 from contextlib import asynccontextmanager
 from functools import wraps
 from pathlib import Path
-from collections.abc import Callable
+from rich.console import Console
+from collections.abc import Callable, Awaitable
 from requests import Response
-from github import Github
-from InquirerPy import inquirer
+import inquirer
+from enum import Enum
 
 import aiohttp
 import hvac
@@ -47,13 +49,17 @@ yaml.constructor.add_constructor(
 
 app = typer.Typer(name="home-ops-cli")
 
-debug_option = typer.Option(
-    "--debug",
-    "-d",
-    help="Enable debug mode.",
-    show_default=True,
-    default_factory=lambda: True,
-)
+class WorkflowStatus(str, Enum):
+    SUCCESS = "success"
+    FAILURE = "failure"
+    NEUTRAL = "neutral"
+    CANCELLED = "cancelled"
+    SKIPPED = "skipped"
+    TIMED_OUT = "timed_out"
+    ACTION_REQUIRED = "action_required"
+    COMPLETED = "completed"
+    IN_PROGRESS = "in_progress"
+    QUEUED = "queued"
 
 @asynccontextmanager
 async def k8s_client():
@@ -808,7 +814,6 @@ def to_dict(resp: HVACResp) -> dict[str, Any]:
 
 @app.command()
 def rotate_issuing_ca(
-    debug: Annotated[bool, debug_option],
     vault_addr: Annotated[
         str | None,
         typer.Option(
@@ -829,8 +834,6 @@ def rotate_issuing_ca(
         )
     ] = None,
 ):
-    if debug:
-        typer.echo("Debugging enabled")
     ISS_MOUNT = "pki_iss"
     INT_MOUNT = "pki_int"
     COMMON_NAME = "DarkfellaNET Issuing CA v1.1.1"
@@ -960,45 +963,185 @@ async def fetch_aws_ips(
 
 
 @app.command(help="Delete GitHub Actions workflow runs")
-def dwr(
-    token: str = typer.Option(..., help="GitHub personal access token"),
-    repo: str = typer.Argument(..., help="GitHub repo in owner/repo format"),
-    all: bool = typer.Option(False, "--all", help="Delete all workflow runs")
+@async_command
+async def dwr(
+    token: Annotated[
+        str,
+        typer.Option(..., help="GitHub personal access token")
+    ],
+    repo: Annotated[
+        str,
+        typer.Argument(..., help="GitHub repo in owner/repo format")
+    ],
+    status: Annotated[
+        WorkflowStatus | None,
+        typer.Option(help="Filter runs by status (e.g., 'success', 'failure')")
+    ] = None,
+    limit: Annotated[
+        int,
+        typer.Option(help="Max number of workflow runs to fetch")
+    ] = 100,
+    delete_all: Annotated[
+        bool,
+        typer.Option(help="Delete all workflow runs fetched (up to the --limit specified)")
+    ] = False,
 ):
-    g = Github(token)
-    repository = g.get_repo(repo)
-    runs = repository.get_workflow_runs()
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    api_base_url = f"https://api.github.com/repos/{repo}/actions/runs"
+    per_page = 100
+    pages_needed = (limit + per_page - 1) // per_page
+    sem = asyncio.Semaphore(20)
+    max_retries = 3
 
+    async def make_request_and_handle_ratelimit(
+        session: aiohttp.ClientSession,
+        method: str,
+        url: str,
+        console: Console,
+        **kwargs: Any
+    ) -> dict[str, Any] | int:
+        attempt = 0
+        while True:
+            attempt += 1
+
+            async with sem:
+                async with session.request(method, url, **kwargs) as resp:
+
+                    if resp.status in (403, 429):
+                        reset_time = int(resp.headers.get("x-ratelimit-reset", 0))
+                        current_time = int(time.time())
+                        sleep_time = max(reset_time - current_time, 0) + 120
+
+                        if sleep_time < 5 and resp.status == 429:
+                            sleep_time = int(resp.headers.get("Retry-After", 120))
+
+                        msg = f"[yellow]Rate limit hit ({resp.status}). Waiting {sleep_time:.0f}s until reset...[/yellow]"
+                        console.print(msg)
+                        await asyncio.sleep(sleep_time)
+                        continue
+
+                    if resp.status >= 400:
+
+                        if attempt >= max_retries:
+                            console.print(f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {resp.status}.[/bold red]")
+                            resp.raise_for_status()
+
+                        console.print(f"[red]Error {resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]")
+                        await asyncio.sleep(5)
+                        continue
+
+                    if method == "GET":
+                        resp.raise_for_status()
+                        return await resp.json()
+                    else:
+                        return resp.status
+
+    async with aiohttp.ClientSession(headers=headers) as session:
+        fetch_tasks: list[Awaitable[Any]] = []
+        all_runs: list[dict[str, Any]] = []
+
+        with Progress(
+            TextColumn("[bold blue]{task.description}"),
+            BarColumn(),
+            TextColumn("{task.completed}/{task.total}"),
+            TimeElapsedColumn(),
+            transient=False
+        ) as progress:
+
+            fetch_task_id = progress.add_task(f"Fetching workflow runs for {repo}", total=limit)
+
+            for page in range(1, pages_needed + 1):
+                params: dict[str, str | int] = {"per_page": per_page, "page": page}
+                if status:
+                    params["status"] = status.value
+
+                fetch_tasks.append(
+                    make_request_and_handle_ratelimit(
+                        session, "GET", api_base_url, console=progress.console, params=params
+                    )
+                )
+
+            for coro in asyncio.as_completed(fetch_tasks):
+                try:
+                    data = await coro
+                    runs = data.get("workflow_runs", [])
+
+                    for run in runs:
+                        if len(all_runs) >= limit:
+                            break
+                        all_runs.append(run)
+                        progress.update(fetch_task_id, advance=1)
+
+                    if len(all_runs) >= limit:
+                        break
+                except Exception as e:
+                    progress.console.print(f"[red]Error fetching page: {e}[/red]")
+
+            progress.update(fetch_task_id, total=len(all_runs))
+
+    if not all_runs:
+        typer.echo("No workflow runs found.")
+        raise typer.Exit()
+
+    all_runs.sort(key=lambda x: x['id'], reverse=True)
     CONCLUSION_MAP = {"skipped": "SKIP", "success": "GOOD", "failure": "FAIL"}
+    runs_map = {}
+    display_list = []
 
-    def format_run(run) -> str:
-        conclusion = CONCLUSION_MAP.get(run.conclusion, run.conclusion)
-        created = run.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        return f"{conclusion}\t{created}\t{run.id}\t{run.event}\t{run.name}"
+    for run in all_runs:
+        s_date = run['created_at'].replace('T', ' ').replace('Z', '')
+        display_str = f"{CONCLUSION_MAP.get(run['conclusion'], str(run['conclusion']).upper())}\t{s_date}\t{run['id']}\t{run['event']}\t{run['name']}"
+        display_list.append(display_str)
+        runs_map[display_str] = run
 
-    runs_list = [format_run(run) for run in runs]
-
-    if not all:
-        selected = inquirer.checkbox(
-            message="Select runs to delete:",
-            choices=runs_list,
-            transformer=lambda result: f"{len(result)} selected",
-            validate=lambda result: len(result) > 0 or "Select at least one run",
-            cycle=True,
-            long_instruction="Use arrows and space to select, Enter to confirm",
-            multiselect=True,
-            instruction="(fuzzy search supported)",
-        ).execute()
+    if not delete_all:
+        questions = [
+            inquirer.Checkbox(
+                'selected_runs',
+                message=f"Select runs to delete (showing {len(display_list)}):",
+                choices=display_list,
+                carousel=True,
+            )
+        ]
+        answers = inquirer.prompt(questions)
+        if not answers or not answers['selected_runs']:
+            typer.echo("No runs selected, exiting.")
+            raise typer.Abort()
+        selected_strings = answers['selected_runs']
     else:
-        selected = runs_list
+        selected_strings = display_list
 
-    for line in selected:
-        run_id = int(line.split("\t")[2])
-        repository.get_workflow_run(run_id).delete()
-        typer.echo(f"Deleted: {line}")
+    async with aiohttp.ClientSession(headers=headers) as session:
+        with Progress(
+            TextColumn("[bold red]{task.description}"),
+            BarColumn(),
+            TextColumn("{task.completed}/{task.total}"),
+            TimeElapsedColumn(),
+            transient=False
+        ) as progress:
+            delete_task_id = progress.add_task("Deleting workflow runs", total=len(selected_strings))
 
-if __name__ == "__main__":
-    app()
+            async def delete_run_task(line_str):
+                run_id = runs_map[line_str]['id']
+                del_url = f"{api_base_url}/{run_id}"
+
+                try:
+                    status_code = await make_request_and_handle_ratelimit(
+                        session, "DELETE", del_url, console=progress.console
+                    )
+
+                    if status_code == 204:
+                        progress.console.print(f"Deleted: {line_str}")
+                        progress.update(delete_task_id, advance=1)
+                    else:
+                        progress.console.print(f"[red]Failed ({status_code}): {line_str}[/red]")
+                except Exception as e:
+                    progress.console.print(f"[red]Error deleting {run_id}: {e}[/red]")
+
+            await asyncio.gather(*(delete_run_task(line) for line in selected_strings))
 
 if __name__ == "__main__":
     app()

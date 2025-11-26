@@ -557,7 +557,17 @@ async def apply_sops_encrypted_manifest(
 @app.command()
 @async_command
 async def apply_crds(
-    file: Annotated[str, typer.Option(help="YAML file listing CRD URLs")],
+    file: Annotated[
+        str,
+        typer.Argument(
+            help="YAML file listing CRD URLs",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+        )
+    ],
 ):
     async with k8s_client() as dyn:
         await fetch_and_apply_crds(dyn, file)
@@ -566,7 +576,7 @@ async def apply_crds(
 @app.command()
 @async_command
 async def wait_crds(
-    names: Annotated[list[str], typer.Option(help="CRD names")],
+    names: Annotated[list[str], typer.Argument(help="CRD names")],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 120,
 ):
     async with k8s_client() as dyn:
@@ -584,8 +594,8 @@ async def wait_crds(
 @app.command()
 @async_command
 async def wait_deployments(
-    namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
     names: Annotated[list[str], typer.Argument(help="Deployment names")],
+    namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:
@@ -603,8 +613,8 @@ async def wait_deployments(
 @app.command()
 @async_command
 async def wait_daemonsets(
+    names: Annotated[list[str], typer.Argument(help="DaemonSet names")],
     namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
-    names: Annotated[list[str], typer.Option(help="DaemonSet names")],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:
@@ -622,8 +632,8 @@ async def wait_daemonsets(
 @app.command()
 @async_command
 async def wait_statefulsets(
+    names: Annotated[list[str], typer.Argument(help="StatefulSet names")],
     namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
-    names: Annotated[list[str], typer.Option(help="StatefulSet names")],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:

@@ -21,6 +21,7 @@ WORKDIR /tmp
 COPY requirements.txt /tmp/requirements.txt
 
 RUN apk add --no-cache \
+        build-base \
         git \
         curl \
         ca-certificates \
@@ -30,10 +31,13 @@ RUN apk add --no-cache \
         python3 \
         py3-pip \
         python3-dev \
+        libguestfs-dev \
         gcc \
         g++ \
+        make \
         musl-dev \
         linux-headers \
+        pkgconfig \
         unzip && \
     # Clone and patch KubeVirt client to fix version string
     git clone https://github.com/kubevirt/client-python.git /tmp/kubevirt && \

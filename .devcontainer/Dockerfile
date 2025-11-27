@@ -19,23 +19,20 @@ ARG FLUX_VERSION=v2.7.5
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.0.2
 
-WORKDIR /tmp
 USER root
+WORKDIR /tmp
 
 COPY requirements.txt /tmp/requirements.txt
+
 SHELL ["/bin/bash", "-c"]
-# --- Install Debian Dependencies for Build Stage ---
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        # Core Build Tools (replaces Alpine's build-base)
         build-essential \
-        # Python/Pip Dependencies
         python3 \
         python3-pip \
         python3-dev \
-        # libguestfs dependencies (critical change)
         libguestfs-dev \
-        # Utilities
         git \
         cosign \
         curl \
@@ -43,7 +40,6 @@ RUN apt-get update && \
         coreutils \
         gnupg \
         unzip \
-        # Cleanup
         && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
@@ -137,9 +133,9 @@ RUN apt-get update && \
         libguestfs-tools \
         python3 \
         python3-pip \
+        python3.13-venv \
         direnv \
         yq \
-        cosign \
         docker.io \
         tigervnc-viewer \
         fontconfig \

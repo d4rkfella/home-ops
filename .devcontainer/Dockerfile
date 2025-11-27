@@ -34,7 +34,6 @@ RUN apt-get update && \
         python3-dev \
         # libguestfs dependencies (critical change)
         libguestfs-dev \
-        libguestfs-tools-c \
         # Utilities
         git \
         curl \

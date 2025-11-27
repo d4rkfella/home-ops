@@ -22,7 +22,7 @@ ARG COSIGN_VERSION=v3.0.2
 WORKDIR /tmp
 
 COPY requirements.txt /tmp/requirements.txt
-
+SHELL ["/bin/bash", "-c"]
 # --- Install Debian Dependencies for Build Stage ---
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \

@@ -52,7 +52,7 @@ tasks:
     cmds:
       - ./.taskfiles/kubernetes/vm_manage.py
     preconditions:
-      - which kubectl virtctl fzf jq
+      - which kubectl
 
   start-pgadmin:
     desc: Start pgAdmin server

@@ -1,0 +1,31 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: virt-exportproxy-route
+spec:
+  hostnames: ["virt-exportproxy.darkfellanetwork.com"]
+  parentRefs:
+    - name: internal
+      namespace: envoy-gateway-system
+      sectionName: https
+  rules:
+    - backendRefs:
+        - name: virt-exportproxy
+          port: 443
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: virt-exportproxy-backend-tls
+spec:
+  targetRefs:
+    - group: ""
+      kind: Service
+      name: virt-exportproxy
+  validation:
+    hostname: virt-exportproxy.kubevirt.svc.cluster.local
+    caCertificateRefs:
+      - kind: ConfigMap
+        name: kubevirt-export-ca
+        group: ""

@@ -20,6 +20,7 @@ ARG FLUX_VERSION=v2.7.5
 ARG COSIGN_VERSION=v3.0.2
 
 WORKDIR /tmp
+USER root
 
 COPY requirements.txt /tmp/requirements.txt
 SHELL ["/bin/bash", "-c"]

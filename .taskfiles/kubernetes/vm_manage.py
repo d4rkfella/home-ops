@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 import asyncio
 from typing import cast
+
 from kubernetes_asyncio import client, config, watch  # type: ignore
 from kubernetes_asyncio.client.api_client import ApiClient  # type: ignore
 from textual.app import App, ComposeResult
-from textual.widgets import Header, Footer, Static, ListView, ListItem, Label
 from textual.binding import Binding
-
+from textual.widgets import Footer, Header, Label, ListItem, ListView, Static
 
 STATUS_EMOJI: dict[str, str] = {
     "running": "🟢",

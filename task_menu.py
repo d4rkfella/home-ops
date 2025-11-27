@@ -1,26 +1,26 @@
 #!/usr/bin/env python3
 import json
-from typing import cast
-import yaml
+import os
 import subprocess
 import sys
-import os
+from typing import cast
 
+import yaml
 from textual import work
 from textual.app import App, ComposeResult
 from textual.binding import Binding
-from textual.widgets import (
-    Header,
-    Footer,
-    ListView,
-    ListItem,
-    Label,
-    Static,
-    Input,
-    Button,
-)
 from textual.containers import Container
 from textual.screen import ModalScreen
+from textual.widgets import (
+    Button,
+    Footer,
+    Header,
+    Input,
+    Label,
+    ListItem,
+    ListView,
+    Static,
+)
 
 
 def run_cmd(cmd) -> str:

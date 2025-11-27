@@ -1,31 +1,31 @@
 #!/usr/bin/env python3
 import datetime
-from typing import Any, cast
-import boto3
 import os
-from botocore.exceptions import NoCredentialsError, ProfileNotFound
+from typing import Any, cast
 
-from textual.app import App, ComposeResult
-from textual.containers import Horizontal, Vertical, Container
+import boto3
+from botocore.exceptions import NoCredentialsError, ProfileNotFound
 from mypy_boto3_s3.client import S3Client
 from mypy_boto3_s3.type_defs import DeleteTypeDef
+from textual import work
+from textual.app import App, ComposeResult
+from textual.color import Gradient
+from textual.containers import Container, Horizontal, Vertical
+from textual.screen import ModalScreen, Screen
 from textual.widgets import (
-    Header,
-    Footer,
-    ListView,
-    ListItem,
-    Label,
-    Static,
-    Tree,
-    Markdown,
-    TextArea,
-    ProgressBar,
     DirectoryTree,
+    Footer,
+    Header,
+    Label,
+    ListItem,
+    ListView,
+    Markdown,
+    ProgressBar,
+    Static,
+    TextArea,
+    Tree,
 )
 from textual.widgets.tree import TreeNode
-from textual.color import Gradient
-from textual.screen import Screen, ModalScreen
-from textual import work
 
 
 class S3Browser(App):

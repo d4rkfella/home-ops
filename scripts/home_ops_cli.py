@@ -1,33 +1,36 @@
 #!/usr/bin/env python3
 
 import asyncio
+import base64
 import os
 import random
-import subprocess
-import base64
+import re
 import shutil
+import subprocess
 import tempfile
 import time
-import re
-from datetime import datetime
-from cryptography import x509
-from cryptography.hazmat.backends import default_backend
-from typing import Any, Literal, overload
+from collections.abc import Awaitable, Callable
 from contextlib import asynccontextmanager
+from datetime import datetime
+from enum import Enum
 from functools import wraps
 from pathlib import Path
-from rich.console import Console
-from collections.abc import Callable, Awaitable
-from requests import Response
-from enum import Enum
+from typing import Any, Literal, overload
 
 import aiohttp
-
 import hvac
-from hvac.exceptions import VaultError, InvalidRequest, InvalidPath
-
+import inquirer
 import typer
-
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+from hvac.exceptions import InvalidPath, InvalidRequest, VaultError
+from inquirer.themes import RedSolace
+from kubernetes_asyncio import client, config, dynamic, watch  # type: ignore
+from kubernetes_asyncio.client.exceptions import ApiException  # type: ignore
+from kubernetes_asyncio.dynamic import DynamicClient  # type: ignore
+from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type: ignore
+from requests import Response
+from rich.console import Console
 from rich.progress import (
     BarColumn,
     Progress,
@@ -36,18 +39,8 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
-
-import inquirer
-from inquirer.themes import RedSolace
-
 from ruamel.yaml import YAML, YAMLError
 from typing_extensions import Annotated
-
-from kubernetes_asyncio import client, config, dynamic, watch  # type: ignore
-from kubernetes_asyncio.client.exceptions import ApiException  # type: ignore
-from kubernetes_asyncio.dynamic import DynamicClient  # type: ignore
-from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type: ignore
-
 
 yaml = YAML()
 yaml.preserve_quotes = True

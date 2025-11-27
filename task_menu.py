@@ -25,9 +25,7 @@ from textual.screen import ModalScreen
 
 def run_cmd(cmd) -> str:
     try:
-        result = subprocess.run(
-            cmd, check=True, capture_output=True, text=True
-        )
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError:
         print(f"❌ Command failed: {' '.join(cmd)}")
@@ -132,7 +130,9 @@ class VarInputScreen(ModalScreen[dict[str, str] | None]):
             for var_name in self.var_names:
                 with Container(classes="var-row"):
                     yield Static(f"[b]{var_name}[/b]:", classes="var-label")
-                    yield Input(placeholder=f"Value for {var_name}", id=f"input-{var_name}")
+                    yield Input(
+                        placeholder=f"Value for {var_name}", id=f"input-{var_name}"
+                    )
 
             with Container(id="buttons"):
                 yield Button("OK", variant="primary", id="ok-button", disabled=True)
@@ -206,6 +206,7 @@ class TaskSelectionApp(App[tuple[str, dict[str, str] | None] | None]):
                 self.exit((item.task_name, result))
         else:
             self.exit((item.task_name, None))
+
 
 def main():
     tasks = load_tasks()

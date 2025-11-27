@@ -52,8 +52,7 @@ from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type:
 yaml = YAML()
 yaml.preserve_quotes = True
 yaml.constructor.add_constructor(
-    "tag:yaml.org,2002:value", lambda loader, node: loader.construct_scalar(
-        node)
+    "tag:yaml.org,2002:value", lambda loader, node: loader.construct_scalar(node)
 )
 
 app = typer.Typer(name="home-ops-cli")
@@ -106,8 +105,7 @@ class RetryLimitExceeded(Exception):
     def __init__(self, last_exception: Exception, retries: int):
         self.last_exception = last_exception
         self.retries = retries
-        super().__init__(
-            f"Function failed after {retries} retries: {last_exception!r}")
+        super().__init__(f"Function failed after {retries} retries: {last_exception!r}")
 
 
 async def retry_with_backoff(
@@ -176,8 +174,7 @@ async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
             raise
 
 
-async def apply_manifests(
-        dyn: DynamicClient, docs: list[dict], namespace: str) -> None:
+async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) -> None:
     total_docs = len(docs)
 
     with Progress(
@@ -246,8 +243,7 @@ async def apply_manifests(
                                 'kind', 'Resource')}: API Error {
                             e.status}[/bold red]"
                     )
-                    doc_progress.console.print(
-                        f"  [red]Reason:[/red] {e.reason}")
+                    doc_progress.console.print(f"  [red]Reason:[/red] {e.reason}")
 
                 except ValueError as e:
                     doc_progress.console.print(
@@ -464,8 +460,7 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
             transient=True,
         ) as main_progress:
 
-            main_task = main_progress.add_task(
-                "Processing URLs...", total=len(urls))
+            main_task = main_progress.add_task("Processing URLs...", total=len(urls))
 
             async with aiohttp.ClientSession() as session:
 
@@ -597,11 +592,13 @@ def validate_kube_rfc1123_label(value: str | list[str]) -> str | list[str]:
 @app.command()
 @async_command
 async def ensure_namespace_exists(
-    name:
-    Annotated
-    [str, typer.Argument(
-        help="Namespace to create/check",
-        callback=validate_kube_rfc1123_label),],):
+    name: Annotated[
+        str,
+        typer.Argument(
+            help="Namespace to create/check", callback=validate_kube_rfc1123_label
+        ),
+    ],
+):
     async with k8s_client() as dyn:
         await ensure_namespace(dyn, name)
 
@@ -636,21 +633,36 @@ async def apply_manifest(
 @async_command
 async def apply_sops_encrypted_manifest(
     ctx: typer.Context,
-    file:
-    Annotated
-    [Path, typer.Argument(
-        help="SOPS encrypted YAML file", exists=True, file_okay=True,
-        dir_okay=False, readable=True, resolve_path=True,),],
-    namespace:
-    Annotated
-    [str, typer.Option(
-        help="Namespace to apply in", callback=validate_kube_rfc1123_label),],
-    sops_age_key:
-    Annotated
-    [Path, typer.Option(
-        help="Path to SOPS age key file (reads from SOPS_AGE_KEY_FILE env var)",
-        exists=True, file_okay=True, dir_okay=False, readable=True,
-        resolve_path=True, envvar="SOPS_AGE_KEY_FILE",),],):
+    file: Annotated[
+        Path,
+        typer.Argument(
+            help="SOPS encrypted YAML file",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+        ),
+    ],
+    namespace: Annotated[
+        str,
+        typer.Option(
+            help="Namespace to apply in", callback=validate_kube_rfc1123_label
+        ),
+    ],
+    sops_age_key: Annotated[
+        Path,
+        typer.Option(
+            help="Path to SOPS age key file (reads from SOPS_AGE_KEY_FILE env var)",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            resolve_path=True,
+            envvar="SOPS_AGE_KEY_FILE",
+        ),
+    ],
+):
     source = ctx.get_parameter_source("sops_age_key")
     assert source is not None
     if source.name == "COMMANDLINE":
@@ -709,13 +721,11 @@ async def wait_crds(
 async def wait_deployments(
     names: Annotated[
         list[str],
-        typer.Argument(help="Deployment names",
-                       callback=validate_kube_rfc1123_label),
+        typer.Argument(help="Deployment names", callback=validate_kube_rfc1123_label),
     ],
     namespace: Annotated[
         str,
-        typer.Option(help="Kubernetes namespace",
-                     callback=validate_kube_rfc1123_label),
+        typer.Option(help="Kubernetes namespace", callback=validate_kube_rfc1123_label),
     ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
@@ -726,8 +736,8 @@ async def wait_deployments(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (
-                getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0)
+            >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )
 
@@ -737,13 +747,11 @@ async def wait_deployments(
 async def wait_daemonsets(
     names: Annotated[
         list[str],
-        typer.Argument(help="DaemonSet names",
-                       callback=validate_kube_rfc1123_label),
+        typer.Argument(help="DaemonSet names", callback=validate_kube_rfc1123_label),
     ],
     namespace: Annotated[
         str,
-        typer.Option(help="Kubernetes namespace",
-                     callback=validate_kube_rfc1123_label),
+        typer.Option(help="Kubernetes namespace", callback=validate_kube_rfc1123_label),
     ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
@@ -754,9 +762,12 @@ async def wait_daemonsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) >= (
+            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0)
+            >= (
                 # type: ignore
-                getattr(obj.status, "desiredNumberScheduled", 0) or 0),
+                getattr(obj.status, "desiredNumberScheduled", 0)
+                or 0
+            ),
             timeout=timeout,
         )
 
@@ -766,13 +777,11 @@ async def wait_daemonsets(
 async def wait_statefulsets(
     names: Annotated[
         list[str],
-        typer.Argument(help="StatefulSet names",
-                       callback=validate_kube_rfc1123_label),
+        typer.Argument(help="StatefulSet names", callback=validate_kube_rfc1123_label),
     ],
     namespace: Annotated[
         str,
-        typer.Option(help="Kubernetes namespace",
-                     callback=validate_kube_rfc1123_label),
+        typer.Option(help="Kubernetes namespace", callback=validate_kube_rfc1123_label),
     ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
@@ -783,8 +792,8 @@ async def wait_statefulsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (
-                getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0)
+            >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )
 
@@ -825,12 +834,10 @@ def regen_talosconfig(
     context: Annotated[
         str, typer.Option(help="context name to use for the new talosconfig")
     ] = "default",
-    debug: Annotated[bool, typer.Option(
-        help="enable debugging", is_flag=True)] = False,
+    debug: Annotated[bool, typer.Option(help="enable debugging", is_flag=True)] = False,
     decrypt: Annotated[
         bool,
-        typer.Option(
-            help="decrypt the machine configuration with SOPS", is_flag=True),
+        typer.Option(help="decrypt the machine configuration with SOPS", is_flag=True),
     ] = True,
     output: Annotated[
         Path,
@@ -881,8 +888,8 @@ def regen_talosconfig(
         typer.echo("✅ Extracted CA certificate and key")
 
         subprocess.run(
-            ["talosctl", "gen", "key", "--name", "admin"],
-            cwd=work_dir, check=True)
+            ["talosctl", "gen", "key", "--name", "admin"], cwd=work_dir, check=True
+        )
         subprocess.run(
             ["talosctl", "gen", "csr", "--key", "admin.key", "--ip", "127.0.0.1"],
             cwd=work_dir,
@@ -1052,8 +1059,7 @@ def rotate_issuing_ca(
                 wrap_ttl=None,
             )
         )
-        imported_issuers = import_resp.get(
-            "data", {}).get("imported_issuers", [])
+        imported_issuers = import_resp.get("data", {}).get("imported_issuers", [])
         if not imported_issuers:
             raise RuntimeError("Vault did not return an imported issuer ID!")
         new_issuer_id = imported_issuers[0]
@@ -1066,8 +1072,7 @@ def rotate_issuing_ca(
         typer.echo(f"Failed to import signed certificate: {e}")
         raise typer.Exit(1)
 
-    cert = x509.load_pem_x509_certificate(
-        signed_cert.encode(), default_backend())
+    cert = x509.load_pem_x509_certificate(signed_cert.encode(), default_backend())
     typer.echo("\nNew Issuing CA info:")
     typer.echo(f"  Subject: {cert.subject.rfc4514_string()}")
     typer.echo(f"  Serial: {cert.serial_number}")
@@ -1079,10 +1084,8 @@ def rotate_issuing_ca(
 @app.command(help="Fetch AWS IP ranges and optionally update a network policy YAML")
 @async_command
 async def fetch_aws_ips(
-    region: Annotated[str, typer.Option(
-        help="AWS region to filter")] = "us-east-1",
-    service: Annotated[str, typer.Option(
-        help="AWS service to filter")] = "AMAZON",
+    region: Annotated[str, typer.Option(help="AWS region to filter")] = "us-east-1",
+    service: Annotated[str, typer.Option(help="AWS service to filter")] = "AMAZON",
     output_file: Annotated[
         Path, typer.Option(help="File to write filtered CIDRs")
     ] = Path("aws-ip-ranges.txt"),
@@ -1100,8 +1103,7 @@ async def fetch_aws_ips(
     ] = None,
 ) -> None:
 
-    typer.echo(
-        f"Fetching IP ranges for region='{region}' and service='{service}'...")
+    typer.echo(f"Fetching IP ranges for region='{region}' and service='{service}'...")
 
     async with aiohttp.ClientSession() as session:
         async with session.get(
@@ -1290,8 +1292,7 @@ def validate_github_token(value: str) -> str:
                 len(value)} characters."
         )
 
-    token_pattern = re.compile(
-        r"^(ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_]+$")
+    token_pattern = re.compile(r"^(ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_]+$")
     if not token_pattern.match(value):
         error_msg = (
             "Invalid token format. It must start with one of the required prefixes "
@@ -1320,12 +1321,10 @@ async def dwr(
     ],
     status: Annotated[
         WorkflowStatus | None,
-        typer.Option(
-            help="Filter runs by status (e.g., 'success', 'failure')"),
+        typer.Option(help="Filter runs by status (e.g., 'success', 'failure')"),
     ] = None,
     limit: Annotated[
-        int, typer.Option(
-            help="Max number of workflow runs to fetch", min=1, max=1000)
+        int, typer.Option(help="Max number of workflow runs to fetch", min=1, max=1000)
     ] = 100,
     delete_all: Annotated[
         bool,
@@ -1377,8 +1376,7 @@ async def dwr(
             )
 
             for page in range(1, pages_needed + 1):
-                params: dict[str, str | int] = {
-                    "per_page": per_page, "page": page}
+                params: dict[str, str | int] = {"per_page": per_page, "page": page}
                 if status:
                     params["status"] = status.value
 
@@ -1406,8 +1404,7 @@ async def dwr(
                     if len(all_runs) >= limit:
                         break
                 except Exception as e:
-                    progress.console.print(
-                        f"[red]Error fetching page: {e}[/red]")
+                    progress.console.print(f"[red]Error fetching page: {e}[/red]")
 
             progress.update(fetch_task_id, completed=len(all_runs))
 
@@ -1510,8 +1507,7 @@ async def dwr(
                             f"[red]Failed ({status_code}): {line_str}[/red]"
                         )
                 except Exception as e:
-                    progress.console.print(
-                        f"[red]Error deleting {run_id}: {e}[/red]")
+                    progress.console.print(f"[red]Error deleting {run_id}: {e}[/red]")
 
             await asyncio.gather(*(delete_run_task(run_id) for run_id in ids_to_delete))
 

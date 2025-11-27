@@ -180,8 +180,8 @@ class ProfileSelectScreen(Screen):
             )
         except NoCredentialsError:
             self.app.notify(
-                f"No credentials found for profile '{profile}  '",
-                severity="error")
+                f"No credentials found for profile '{profile}  '", severity="error"
+            )
         except Exception as e:
             self.app.notify(f"Error loading profile: {e}", severity="error")
 
@@ -218,8 +218,7 @@ class BucketSelectScreen(Screen):
         lv = self.query_one("#buckets", ListView)
         lv.clear()
         if not buckets:
-            self.app.notify(
-                f"No buckets found in profile '{self.profile_name}'")
+            self.app.notify(f"No buckets found in profile '{self.profile_name}'")
         else:
             for b in buckets:
                 lv.append(ListItem(Label(b["Name"]), name=b["Name"]))
@@ -247,7 +246,7 @@ class BucketSelectScreen(Screen):
                 for i in range(0, len(object_keys), batch_size):
                     delete_dict: DeleteTypeDef = {
                         "Objects": [
-                            {"Key": key} for key in object_keys[i: i + batch_size]
+                            {"Key": key} for key in object_keys[i : i + batch_size]
                         ],
                         "Quiet": True,
                     }
@@ -352,8 +351,7 @@ class ObjectBrowserTreeScreen(Screen):
                     folder_prefix = p.get("Prefix")
                     assert folder_prefix is not None
                     is_empty = False
-                    items_to_add.append(
-                        {"type": "prefix", "key": folder_prefix})
+                    items_to_add.append({"type": "prefix", "key": folder_prefix})
 
                 for o in page.get("Contents", []):
                     key = o.get("Key")
@@ -369,8 +367,8 @@ class ObjectBrowserTreeScreen(Screen):
 
         except Exception as e:
             self.app.call_from_thread(
-                self.app.notify, f"Error listing objects: {e}  ",
-                severity="error")
+                self.app.notify, f"Error listing objects: {e}  ", severity="error"
+            )
 
     def populate_node(
         self, node: TreeNode, prefix: str, items: list[dict], is_empty: bool
@@ -453,8 +451,8 @@ class ObjectBrowserTreeScreen(Screen):
                 markdown_lines.append(f"**{k}:** {formatted}")
 
         markdown = (
-            "  \n".join(markdown_lines)
-            if markdown_lines else "_No metadata available_")
+            "  \n".join(markdown_lines) if markdown_lines else "_No metadata available_"
+        )
         self.query_one("#info-details", Markdown).update(markdown)
 
     async def action_preview(self):
@@ -525,8 +523,7 @@ class ObjectBrowserTreeScreen(Screen):
                     ModalMessageScreen(f"Generated URL (Valid 1h):\n\n{url}")
                 )
             except Exception as e:
-                self.app.notify(
-                    f"Error generating link: {e}", severity="error")
+                self.app.notify(f"Error generating link: {e}", severity="error")
 
     @work
     async def action_delete(self):
@@ -568,12 +565,11 @@ class ObjectBrowserTreeScreen(Screen):
                         delete_dict: DeleteTypeDef = {
                             "Objects": [
                                 {"Key": key}
-                                for key in objects_to_delete[i: i + batch_size]
+                                for key in objects_to_delete[i : i + batch_size]
                             ],
                             "Quiet": True,
                         }
-                        s3.delete_objects(Bucket=self.bucket,
-                                          Delete=delete_dict)
+                        s3.delete_objects(Bucket=self.bucket, Delete=delete_dict)
                     msg = f"✅ Deleted folder: {key}  ({
                         len(objects_to_delete)}  objects) "
             else:
@@ -674,8 +670,8 @@ class ConfirmDeleteScreen(ModalScreen[bool]):
     ]
 
     def __init__(
-            self, bucket: str, key: str | None = None, prefix: str | None = None, **
-            kwargs) -> None:
+        self, bucket: str, key: str | None = None, prefix: str | None = None, **kwargs
+    ) -> None:
         super().__init__(**kwargs)
         self.bucket = bucket
         self.prefix = prefix
@@ -698,11 +694,10 @@ class ConfirmDeleteScreen(ModalScreen[bool]):
             self.objects_to_delete = []
 
             if self.prefix:
-                for page in paginator.paginate(
-                        Bucket=self.bucket, Prefix=self.prefix):
+                for page in paginator.paginate(Bucket=self.bucket, Prefix=self.prefix):
                     self.objects_to_delete.extend(
-                        cast(str, obj.get("Key"))
-                        for obj in page.get("Contents", []))
+                        cast(str, obj.get("Key")) for obj in page.get("Contents", [])
+                    )
                 count_msg = (
                     "No objects found."
                     if not self.objects_to_delete
@@ -742,8 +737,8 @@ class ConfirmDeleteScreen(ModalScreen[bool]):
 
         except Exception as e:
             self.app.call_from_thread(
-                self.app.notify, f"Error counting objects: {e}  ",
-                severity="error")
+                self.app.notify, f"Error counting objects: {e}  ", severity="error"
+            )
             self.app.call_from_thread(markdown_widget.update, f"Error: {e}")
 
     async def action_yes(self):

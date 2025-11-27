@@ -2,7 +2,7 @@
 import asyncio
 from typing import cast
 from kubernetes_asyncio import client, config, watch  # type: ignore
-from kubernetes_asyncio.client.api_client import ApiClient # type: ignore
+from kubernetes_asyncio.client.api_client import ApiClient  # type: ignore
 from textual.app import App, ComposeResult
 from textual.widgets import Header, Footer, Static, ListView, ListItem, Label
 from textual.binding import Binding
@@ -16,6 +16,7 @@ STATUS_EMOJI: dict[str, str] = {
     "starting": "🔵",
     "unknown": "⚪"
 }
+
 
 class VMListItem(ListItem):
     def __init__(self, namespace: str, name: str, status: str):
@@ -54,7 +55,8 @@ class VMManagerApp(App):
 
     def __init__(self) -> None:
         super().__init__()
-        self.vms: dict[tuple[str, str], str] = {}  # (namespace, name) -> status
+        # (namespace, name) -> status
+        self.vms: dict[tuple[str, str], str] = {}
         self.list_view: ListView | None = None
         self.actions_display: Static | None = None
         self.active_vnc: dict[tuple[str, str], asyncio.Task] = {}
@@ -95,7 +97,8 @@ class VMManagerApp(App):
 
         return base
 
-    def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
+    def check_action(
+            self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """Check if an action may run based on the selected VM's status."""
         vm_info = self.get_selected_vm()
         if not vm_info:
@@ -136,7 +139,9 @@ class VMManagerApp(App):
                         obj: dict = event["raw_object"]  # type: ignore
                         ns = obj["metadata"]["namespace"]
                         name = obj["metadata"]["name"]
-                        status = obj.get("status", {}).get("printableStatus", "Unknown")
+                        status = obj.get(
+                            "status", {}).get(
+                            "printableStatus", "Unknown")
 
                         key = (ns, name)
 
@@ -150,9 +155,12 @@ class VMManagerApp(App):
                                 for item in self.list_view.children:
                                     vm_item = cast(VMListItem, item)
                                     if vm_item.namespace == ns and vm_item.vm_name == name:
-                                        emoji = STATUS_EMOJI.get(status.lower(), "⚪")
-                                        label = cast(Label, vm_item.children[0])
-                                        label.update(f"{emoji} {name:25} {ns:20} {status}")
+                                        emoji = STATUS_EMOJI.get(
+                                            status.lower(), "⚪")
+                                        label = cast(
+                                            Label, vm_item.children[0])
+                                        label.update(
+                                            f"{emoji} {name:25} {ns:20} {status}")
                                         vm_item.status = status.lower()
                                         self.refresh_bindings()
                                         break
@@ -167,8 +175,11 @@ class VMManagerApp(App):
 
         except Exception as e:
             import traceback
-            self.notify(f"💥 Watcher crashed: {type(e).__name__}: {e}", severity="error")
-            self.notify(f"Traceback: {traceback.format_exc()}", severity="error")
+            self.notify(
+                f"💥 Watcher crashed: {type(e).__name__}: {e} ",
+                severity="error")
+            self.notify(
+                f"Traceback: {traceback.format_exc()}", severity="error")
 
     async def on_list_view_highlighted(self) -> None:
         self.refresh_bindings()
@@ -182,7 +193,9 @@ class VMManagerApp(App):
         except:
             return None
 
-    async def execute_virtctl(self, command: list[str], success_msg: str) -> None:
+    async def execute_virtctl(
+            self, command: list[str],
+            success_msg: str) -> None:
         try:
             proc = await asyncio.create_subprocess_exec(
                 *command,
@@ -191,7 +204,8 @@ class VMManagerApp(App):
             )
             stdout, stderr = await proc.communicate()
             if proc.returncode != 0:
-                msg = stderr.decode().strip() or stdout.decode().strip() or f"Return code {proc.returncode}"
+                msg = stderr.decode().strip() or stdout.decode(
+                ).strip() or f"Return code {proc.returncode}"
                 self.notify(f"❌ Command failed: {msg}", severity="error")
             else:
                 self.notify(success_msg)
@@ -308,6 +322,7 @@ class VMManagerApp(App):
                 task.cancel()
         await asyncio.gather(*self.active_vnc.values(), return_exceptions=True)
         self.exit()
+
 
 if __name__ == "__main__":
     app = VMManagerApp()

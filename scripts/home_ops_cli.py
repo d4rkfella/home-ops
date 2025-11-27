@@ -8,6 +8,7 @@ import base64
 import shutil
 import tempfile
 import time
+import re
 from datetime import datetime
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
@@ -18,14 +19,15 @@ from pathlib import Path
 from rich.console import Console
 from collections.abc import Callable, Awaitable
 from requests import Response
-import inquirer
-from inquirer.themes import RedSolace
 from enum import Enum
 
 import aiohttp
+
 import hvac
 from hvac.exceptions import VaultError, InvalidRequest, InvalidPath
+
 import typer
+
 from rich.progress import (
     BarColumn,
     Progress,
@@ -34,6 +36,10 @@ from rich.progress import (
     TextColumn,
     TimeElapsedColumn,
 )
+
+import inquirer
+from inquirer.themes import RedSolace
+
 from ruamel.yaml import YAML, YAMLError
 from typing_extensions import Annotated
 
@@ -46,10 +52,12 @@ from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type:
 yaml = YAML()
 yaml.preserve_quotes = True
 yaml.constructor.add_constructor(
-    "tag:yaml.org,2002:value", lambda loader, node: loader.construct_scalar(node)
+    "tag:yaml.org,2002:value", lambda loader, node: loader.construct_scalar(
+        node)
 )
 
 app = typer.Typer(name="home-ops-cli")
+
 
 class WorkflowStatus(str, Enum):
     SUCCESS = "success"
@@ -63,6 +71,7 @@ class WorkflowStatus(str, Enum):
     IN_PROGRESS = "in_progress"
     QUEUED = "queued"
 
+
 @asynccontextmanager
 async def k8s_client():
     await config.load_kube_config()
@@ -73,11 +82,17 @@ async def k8s_client():
 
 def with_debug(func):
     @wraps(func)
-    def wrapper(*args, debug: bool = typer.Option(False, "--debug", help="Enable debug"), **kwargs):
+    def wrapper(
+        *args,
+        debug: bool = typer.Option(False, "--debug", help="Enable debug"),
+        **kwargs,
+    ):
         if debug:
             typer.echo("Debug mode enabled")
         return func(*args, **kwargs)
+
     return wrapper
+
 
 def async_command(f):
     @wraps(f)
@@ -91,7 +106,8 @@ class RetryLimitExceeded(Exception):
     def __init__(self, last_exception: Exception, retries: int):
         self.last_exception = last_exception
         self.retries = retries
-        super().__init__(f"Function failed after {retries} retries: {last_exception!r}")
+        super().__init__(
+            f"Function failed after {retries} retries: {last_exception!r}")
 
 
 async def retry_with_backoff(
@@ -160,7 +176,8 @@ async def ensure_namespace(dyn: dynamic.DynamicClient, namespace: str):
             raise
 
 
-async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) -> None:
+async def apply_manifests(
+        dyn: DynamicClient, docs: list[dict], namespace: str) -> None:
     total_docs = len(docs)
 
     with Progress(
@@ -189,7 +206,15 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
                 transient=False,
             ) as doc_progress:
                 doc_task = doc_progress.add_task(
-                    f"Applying {doc.get('kind', '<unknown>')} {doc.get('metadata', {}).get('name', '<unknown>')}...",
+                    f"Applying {
+                        doc.get(
+                            'kind',
+                            '<unknown>')} {
+                        doc.get(
+                            'metadata',
+                            {}).get(
+                            'name',
+                            '<unknown>')}...",
                     total=None,
                 )
 
@@ -210,14 +235,19 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
                     name = doc["metadata"]["name"]
                     doc_progress.update(
                         doc_task,
-                        description=f"[green]✔ Applied {doc['kind']} {name}[/green]",
+                        description=f"[green]✔ Applied {
+                            doc['kind']} {name}[/green]",
                     )
 
                 except ApiException as e:
                     doc_progress.console.print(
-                        f"[bold red]❌ Failed to apply {doc.get('kind', 'Resource')}: API Error {e.status}[/bold red]"
+                        f"[bold red]❌ Failed to apply {
+                            doc.get(
+                                'kind', 'Resource')}: API Error {
+                            e.status}[/bold red]"
                     )
-                    doc_progress.console.print(f"  [red]Reason:[/red] {e.reason}")
+                    doc_progress.console.print(
+                        f"  [red]Reason:[/red] {e.reason}")
 
                 except ValueError as e:
                     doc_progress.console.print(
@@ -227,8 +257,13 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
 
                 except ResourceNotFoundError as e:
                     doc_progress.console.print(
-                        f"[bold red]❌ Failed to apply {doc.get('kind', 'Resource')} "
-                        f"{doc.get('metadata', {}).get('name', '<unknown>')}: Reason: {e}[/bold red]"
+                        f"[bold red]❌ Failed to apply {
+                            doc.get(
+                                'kind',
+                                'Resource')} "
+                        f"{doc.get('metadata',
+                                   {}).get('name',
+                                           '<unknown>')}: Reason: {e}[/bold red]"
                     )
                     raise typer.Exit(code=1)
 
@@ -304,12 +339,14 @@ async def wait_for_resources(
                     if remaining:
                         main_progress.update(
                             overall_task,
-                            description=f"Waiting for {kind}s: {', '.join(remaining)}",
+                            description=f"Waiting for {kind}s: {
+                                ', '.join(remaining)}",
                         )
                     else:
                         main_progress.update(
                             overall_task,
-                            description=f"[bold green]All {kind.lower()}s ready[/bold green]",
+                            description=f"[bold green]All {
+                                kind.lower()}s ready[/bold green]",
                         )
                         break
                 else:
@@ -322,7 +359,9 @@ async def wait_for_resources(
             await asyncio.wait_for(_watch_loop(), timeout=timeout)
         except asyncio.TimeoutError:
             main_progress.console.print(
-                f"[bold red]Timeout waiting for {kind.lower()}s: {', '.join(remaining)}[/bold red]"
+                f"[bold red]Timeout waiting for {
+                    kind.lower()}s: {
+                    ', '.join(remaining)}[/bold red]"
             )
             raise typer.Exit(code=1)
         except asyncio.CancelledError:
@@ -412,69 +451,74 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
         return
 
     with Progress(
-        TextColumn("[bold blue]{task.description}"),
-        BarColumn(),
-        TaskProgressColumn(),
-        TimeElapsedColumn(),
-        transient=False,
-    ) as main_progress:
+        SpinnerColumn(),
+        TextColumn("{task.description}"),
+        transient=True,
+    ) as spinner_progress:
 
-        main_task = main_progress.add_task("Processing URLs...", total=len(urls))
+        with Progress(
+            TextColumn("[bold blue]{task.description}"),
+            BarColumn(),
+            TextColumn("{task.completed}/{task.total}"),
+            TimeElapsedColumn(),
+            transient=True,
+        ) as main_progress:
 
-        async with aiohttp.ClientSession() as session:
+            main_task = main_progress.add_task(
+                "Processing URLs...", total=len(urls))
 
-            for url in urls:
-                with Progress(
-                    SpinnerColumn(),
-                    TextColumn("{task.description}"),
-                    transient=False,
-                ) as spinner_progress:
+            async with aiohttp.ClientSession() as session:
 
-                    fetch_task = spinner_progress.add_task(
+                async def worker(url: str):
+                    spinner_id = spinner_progress.add_task(
                         f"Fetching {url}", total=None
                     )
 
+                    async def fetch():
+                        async with session.get(url) as resp:
+                            resp.raise_for_status()
+                            return await resp.text()
+
                     try:
-
-                        async def fetch():
-                            async with session.get(url) as resp:
-                                resp.raise_for_status()
-                                return await resp.text()
-
                         yaml_text = await retry_with_backoff(
                             fetch,
                             retries=5,
                             base_delay=1,
                             console=spinner_progress.console,
                         )
-
-                        spinner_progress.update(
-                            fetch_task, description=f"[green]✔ Fetched {url}[/green]"
-                        )
-
-                    except RetryLimitExceeded as e:
-                        spinner_progress.update(
-                            fetch_task, description="[red]Failed[/red]"
-                        )
                         spinner_progress.console.print(
-                            f"[bold red]Failed to fetch {url} after {e.retries} attempts: {e.last_exception}[/bold red]"
+                            f"[green]✔ Fetched {url}[/green]"
                         )
+                    except RetryLimitExceeded as e:
+                        spinner_progress.console.print(
+                            f"[bold red]Failed to fetch {url} after {
+                                e.retries} attempts: {
+                                e.last_exception}[/bold red]"
+                        )
+                        spinner_progress.remove_task(spinner_id)
                         raise typer.Exit(code=1)
 
-                docs_applied = 0
-                for doc in yaml.load_all(yaml_text):
-                    if not doc:
-                        continue
+                    yaml_parser = YAML()
+                    try:
+                        docs = yaml_parser.load_all(yaml_text)
+                    except Exception as e:
+                        spinner_progress.console.print(
+                            f"[bold red]YAML parse error in {url}: {e}[/bold red]"
+                        )
+                        spinner_progress.remove_task(spinner_id)
+                        raise typer.Exit(code=1)
 
-                    with Progress(
-                        SpinnerColumn(),
-                        TextColumn("{task.description}"),
-                        transient=False,
-                    ) as doc_progress:
+                    docs_applied = 0
 
-                        doc_task = doc_progress.add_task(
-                            f"Applying {doc.get('kind', '<unknown>')} {doc.get('metadata', {}).get('name', '<unknown>')}...",
-                            total=None,
+                    for doc in docs:
+                        if not doc:
+                            continue
+
+                        kind = doc.get("kind", "<unknown>")
+                        name = doc.get("metadata", {}).get("name", "<unknown>")
+
+                        spinner_progress.update(
+                            spinner_id, description=f"Applying {kind} {name}..."
                         )
 
                         api = await dyn.resources.get(
@@ -486,41 +530,78 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
                                 api.server_side_apply,
                                 body=doc,
                                 field_manager="flux-client-side-apply",
-                                name=doc["metadata"]["name"],
+                                name=name,
                                 retries=5,
                                 base_delay=1,
-                                console=doc_progress.console,
+                                console=spinner_progress.console,
                             )
-                            doc_progress.update(
-                                doc_task,
-                                description=f"[cyan]✔ Applied {doc['kind']} {doc['metadata']['name']}[/cyan]",
+                            spinner_progress.console.print(
+                                f"[cyan]✔ Applied {kind} {name}[/cyan]"
                             )
                             docs_applied += 1
-
                         except RetryLimitExceeded as e:
-                            doc_progress.update(
-                                doc_task, description="[red]Failed[/red]"
+                            spinner_progress.console.print(
+                                f"[bold red]Failed to apply {kind} {name} after {
+                                    e.retries} attempts: {
+                                    e.last_exception}[/bold red]"
                             )
-                            doc_progress.console.print(
-                                f"[bold red]Failed to apply {doc['kind']} {doc['metadata']['name']} after {e.retries} attempts: {e.last_exception}[/bold red]"
-                            )
+                            spinner_progress.remove_task(spinner_id)
                             raise typer.Exit(code=1)
 
-                if docs_applied == 0:
-                    main_progress.console.print(
-                        f"[yellow]No documents applied from {url}[/yellow]"
-                    )
+                    if docs_applied == 0:
+                        main_progress.console.print(
+                            f"[yellow]No documents applied from {url}[/yellow]"
+                        )
 
-                main_progress.update(main_task, advance=1)
+                    spinner_progress.remove_task(spinner_id)
+                    main_progress.update(main_task, advance=1)
 
-        main_progress.update(main_task, description="[green]All URLs processed[/green]")
+                await asyncio.gather(*(worker(url) for url in urls))
+
+
+def validate_kube_rfc1123_label(value: str | list[str]) -> str | list[str]:
+    def validate_item(item: str) -> str:
+        normalized = item.lower()
+
+        if len(normalized) > 63:
+            raise typer.BadParameter(
+                f"Name '{normalized}' cannot be longer than 63 characters. "
+                f"Found {len(normalized)}."
+            )
+
+        if not re.fullmatch(r"[a-z0-9-]+", normalized):
+            raise typer.BadParameter(
+                f"Name '{normalized}' must contain only lowercase alphanumeric "
+                f"characters or hyphen ('-')."
+            )
+
+        if not normalized[0].isalpha():
+            raise typer.BadParameter(
+                f"Name '{normalized}' must start with an alphabetic character (a-z)."
+            )
+
+        if not normalized[-1].isalnum():
+            raise typer.BadParameter(
+                f"Name '{normalized}' must end with an alphanumeric character "
+                f"(a-z or 0-9)."
+            )
+
+        return normalized
+
+    if isinstance(value, str):
+        return validate_item(value)
+
+    return [validate_item(v) for v in value]
 
 
 @app.command()
 @async_command
 async def ensure_namespace_exists(
-    name: Annotated[str, typer.Option(help="Namespace to create/check")],
-):
+    name:
+    Annotated
+    [str, typer.Argument(
+        help="Namespace to create/check",
+        callback=validate_kube_rfc1123_label),],):
     async with k8s_client() as dyn:
         await ensure_namespace(dyn, name)
 
@@ -539,7 +620,12 @@ async def apply_manifest(
             resolve_path=True,
         ),
     ],
-    namespace: Annotated[str, typer.Option(help="Namespace to apply in")],
+    namespace: Annotated[
+        str,
+        typer.Option(
+            help="Namespace to apply in", callback=validate_kube_rfc1123_label
+        ),
+    ],
 ):
     docs = load_manifest(file, decrypt=False)
     async with k8s_client() as dyn:
@@ -550,31 +636,21 @@ async def apply_manifest(
 @async_command
 async def apply_sops_encrypted_manifest(
     ctx: typer.Context,
-    file: Annotated[
-        Path,
-        typer.Argument(
-            help="SOPS encrypted YAML file",
-            exists=True,
-            file_okay=True,
-            dir_okay=False,
-            readable=True,
-            resolve_path=True,
-        ),
-    ],
-    namespace: Annotated[str, typer.Option(help="Namespace to apply in")],
-    sops_age_key: Annotated[
-        Path,
-        typer.Option(
-            help="Path to SOPS age key file (reads from SOPS_AGE_KEY_FILE env var)",
-            exists=True,
-            file_okay=True,
-            dir_okay=False,
-            readable=True,
-            resolve_path=True,
-            envvar="SOPS_AGE_KEY_FILE",
-        ),
-    ],
-):
+    file:
+    Annotated
+    [Path, typer.Argument(
+        help="SOPS encrypted YAML file", exists=True, file_okay=True,
+        dir_okay=False, readable=True, resolve_path=True,),],
+    namespace:
+    Annotated
+    [str, typer.Option(
+        help="Namespace to apply in", callback=validate_kube_rfc1123_label),],
+    sops_age_key:
+    Annotated
+    [Path, typer.Option(
+        help="Path to SOPS age key file (reads from SOPS_AGE_KEY_FILE env var)",
+        exists=True, file_okay=True, dir_okay=False, readable=True,
+        resolve_path=True, envvar="SOPS_AGE_KEY_FILE",),],):
     source = ctx.get_parameter_source("sops_age_key")
     assert source is not None
     if source.name == "COMMANDLINE":
@@ -600,7 +676,7 @@ async def apply_crds(
             dir_okay=False,
             readable=True,
             resolve_path=True,
-        )
+        ),
     ],
 ):
     async with k8s_client() as dyn:
@@ -610,7 +686,10 @@ async def apply_crds(
 @app.command()
 @async_command
 async def wait_crds(
-    names: Annotated[list[str], typer.Argument(help="CRD names")],
+    names: Annotated[
+        list[str],
+        typer.Argument(help="CRD names", callback=validate_kube_rfc1123_label),
+    ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 120,
 ):
     async with k8s_client() as dyn:
@@ -628,8 +707,16 @@ async def wait_crds(
 @app.command()
 @async_command
 async def wait_deployments(
-    names: Annotated[list[str], typer.Argument(help="Deployment names")],
-    namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
+    names: Annotated[
+        list[str],
+        typer.Argument(help="Deployment names",
+                       callback=validate_kube_rfc1123_label),
+    ],
+    namespace: Annotated[
+        str,
+        typer.Option(help="Kubernetes namespace",
+                     callback=validate_kube_rfc1123_label),
+    ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:
@@ -639,7 +726,8 @@ async def wait_deployments(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (
+                getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )
 
@@ -647,8 +735,16 @@ async def wait_deployments(
 @app.command()
 @async_command
 async def wait_daemonsets(
-    names: Annotated[list[str], typer.Argument(help="DaemonSet names")],
-    namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
+    names: Annotated[
+        list[str],
+        typer.Argument(help="DaemonSet names",
+                       callback=validate_kube_rfc1123_label),
+    ],
+    namespace: Annotated[
+        str,
+        typer.Option(help="Kubernetes namespace",
+                     callback=validate_kube_rfc1123_label),
+    ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:
@@ -658,7 +754,9 @@ async def wait_daemonsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) >= (getattr(obj.status, "desiredNumberScheduled", 0) or 0),  # type: ignore
+            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) >= (
+                # type: ignore
+                getattr(obj.status, "desiredNumberScheduled", 0) or 0),
             timeout=timeout,
         )
 
@@ -666,8 +764,16 @@ async def wait_daemonsets(
 @app.command()
 @async_command
 async def wait_statefulsets(
-    names: Annotated[list[str], typer.Argument(help="StatefulSet names")],
-    namespace: Annotated[str, typer.Option(help="Kubernetes namespace")],
+    names: Annotated[
+        list[str],
+        typer.Argument(help="StatefulSet names",
+                       callback=validate_kube_rfc1123_label),
+    ],
+    namespace: Annotated[
+        str,
+        typer.Option(help="Kubernetes namespace",
+                     callback=validate_kube_rfc1123_label),
+    ],
     timeout: Annotated[int, typer.Option(help="Timeout in seconds")] = 240,
 ):
     async with k8s_client() as dyn:
@@ -677,7 +783,8 @@ async def wait_statefulsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) >= (
+                getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )
 
@@ -693,7 +800,9 @@ async def init_vault(
     await vault_init_unseal_restore(addr, config)
 
 
-@app.command(help="Creates new talosconfig with key pair using the root Talos API CA from the control plane machine configuration.")
+@app.command(
+    help="Creates new talosconfig with key pair using the root Talos API CA from the control plane machine configuration."
+)
 def regen_talosconfig(
     controlplane: Annotated[
         Path,
@@ -708,19 +817,21 @@ def regen_talosconfig(
     ],
     endpoints: Annotated[
         list[str] | None,
-        typer.Option("--endpoints", "-e", help="control plane endpoints")] = None,
+        typer.Option("--endpoints", "-e", help="control plane endpoints"),
+    ] = None,
     nodes: Annotated[
-        list[str] | None,
-        typer.Option("--nodes", "-n", help="nodes endpoints")] = None,
+        list[str] | None, typer.Option("--nodes", "-n", help="nodes endpoints")
+    ] = None,
     context: Annotated[
-        str,
-        typer.Option(help="context name to use for the new talosconfig")] = "default",
-    debug: Annotated[
-        bool,
-        typer.Option(help="enable debugging", is_flag=True)] = False,
+        str, typer.Option(help="context name to use for the new talosconfig")
+    ] = "default",
+    debug: Annotated[bool, typer.Option(
+        help="enable debugging", is_flag=True)] = False,
     decrypt: Annotated[
         bool,
-        typer.Option(help="decrypt the machine configuration with SOPS", is_flag=True)] = True,
+        typer.Option(
+            help="decrypt the machine configuration with SOPS", is_flag=True),
+    ] = True,
     output: Annotated[
         Path,
         typer.Option(
@@ -757,7 +868,10 @@ def regen_talosconfig(
                 break
 
         if not ca_crt_b64 or not ca_key_b64:
-            typer.echo("Could not find machine.ca.crt or machine.ca.key in controlplane machine configuration", err=True)
+            typer.echo(
+                "Could not find machine.ca.crt or machine.ca.key in controlplane machine configuration",
+                err=True,
+            )
             raise typer.Exit(code=1)
 
         ca_crt_path = work_dir / "ca.crt"
@@ -766,15 +880,31 @@ def regen_talosconfig(
         ca_key_path.write_bytes(base64.b64decode(ca_key_b64))
         typer.echo("✅ Extracted CA certificate and key")
 
-        subprocess.run(["talosctl", "gen", "key", "--name", "admin"], cwd=work_dir, check=True)
-        subprocess.run(["talosctl", "gen", "csr", "--key", "admin.key", "--ip", "127.0.0.1"], cwd=work_dir, check=True)
-        subprocess.run([
-            "talosctl", "gen", "crt",
-            "--ca", "ca",
-            "--csr", "admin.csr",
-            "--name", "admin",
-            "--hours", "8760"
-        ], cwd=work_dir, check=True)
+        subprocess.run(
+            ["talosctl", "gen", "key", "--name", "admin"],
+            cwd=work_dir, check=True)
+        subprocess.run(
+            ["talosctl", "gen", "csr", "--key", "admin.key", "--ip", "127.0.0.1"],
+            cwd=work_dir,
+            check=True,
+        )
+        subprocess.run(
+            [
+                "talosctl",
+                "gen",
+                "crt",
+                "--ca",
+                "ca",
+                "--csr",
+                "admin.csr",
+                "--name",
+                "admin",
+                "--hours",
+                "8760",
+            ],
+            cwd=work_dir,
+            check=True,
+        )
         typer.echo("✅ Generated admin key, CSR, and certificate")
 
         admin_crt_path = work_dir / "admin.crt"
@@ -787,10 +917,14 @@ def regen_talosconfig(
                     "endpoints": endpoints or [],
                     "nodes": nodes or [],
                     "ca": base64.b64encode(ca_crt_path.read_bytes()).decode("utf-8"),
-                    "crt": base64.b64encode(admin_crt_path.read_bytes()).decode("utf-8"),
-                    "key": base64.b64encode(admin_key_path.read_bytes()).decode("utf-8"),
+                    "crt": base64.b64encode(admin_crt_path.read_bytes()).decode(
+                        "utf-8"
+                    ),
+                    "key": base64.b64encode(admin_key_path.read_bytes()).decode(
+                        "utf-8"
+                    ),
                 }
-            }
+            },
         }
 
         output.parent.mkdir(parents=True, exist_ok=True)
@@ -806,7 +940,9 @@ def regen_talosconfig(
             typer.echo(f"📁 Temporary files kept in: {work_dir}")
 
 
-HVACResp = dict[str, Any] | Response |None
+HVACResp = dict[str, Any] | Response | None
+
+
 def to_dict(resp: HVACResp) -> dict[str, Any]:
     if isinstance(resp, Response):
         return resp.json()
@@ -814,12 +950,14 @@ def to_dict(resp: HVACResp) -> dict[str, Any]:
         return {}
     return resp
 
+
 @app.command()
 def rotate_issuing_ca(
     vault_addr: Annotated[
         str | None,
         typer.Option(
-            "--vault-addr", "-a",
+            "--vault-addr",
+            "-a",
             envvar="VAULT_ADDR",
             help="Vault URL (e.g., https://vault.example.com:8200)",
             prompt=True,
@@ -828,12 +966,13 @@ def rotate_issuing_ca(
     token: Annotated[
         str | None,
         typer.Option(
-            "--token", "-t",
+            "--token",
+            "-t",
             envvar="VAULT_TOKEN",
             help="Vault token. If omitted, username/password login will be used.",
             prompt=True,
             prompt_required=False,
-        )
+        ),
     ] = None,
 ):
     ISS_MOUNT = "pki_iss"
@@ -850,7 +989,9 @@ def rotate_issuing_ca(
         username = typer.prompt("Vault username")
         password = typer.prompt("Vault password", hide_input=True)
         try:
-            login_resp = client.auth.userpass.login(username=username, password=password)
+            login_resp = client.auth.userpass.login(
+                username=username, password=password
+            )
             client.token = login_resp["auth"]["client_token"]
             typer.echo("Logged in successfully.")
         except InvalidRequest as e:
@@ -865,16 +1006,18 @@ def rotate_issuing_ca(
 
     try:
         typer.echo("Generating CSR using existing key material...")
-        generate_resp = to_dict(client.write(
-            f"{ISS_MOUNT}/issuers/generate/intermediate/existing",
-            common_name=COMMON_NAME,
-            country="Bulgaria",
-            locality="Sofia",
-            organization="DarkfellaNET",
-            ttl=TTL,
-            format="pem_bundle",
-            wrap_ttl=None,
-        ))
+        generate_resp = to_dict(
+            client.write(
+                f"{ISS_MOUNT}/issuers/generate/intermediate/existing",
+                common_name=COMMON_NAME,
+                country="Bulgaria",
+                locality="Sofia",
+                organization="DarkfellaNET",
+                ttl=TTL,
+                format="pem_bundle",
+                wrap_ttl=None,
+            )
+        )
         csr = generate_resp["data"]["csr"]
     except (VaultError, InvalidRequest) as e:
         typer.echo(f"Failed to generate CSR: {e}")
@@ -882,17 +1025,19 @@ def rotate_issuing_ca(
 
     try:
         typer.echo("Signing CSR with intermediate CA...")
-        sign_resp = to_dict(client.write(
-            f"{INT_MOUNT}/root/sign-intermediate",
-            csr=csr,
-            country="Bulgaria",
-            locality="Sofia",
-            organization="DarkfellaNET",
-            format="pem_bundle",
-            ttl=TTL,
-            common_name=COMMON_NAME,
-            wrap_ttl=None,
-        ))
+        sign_resp = to_dict(
+            client.write(
+                f"{INT_MOUNT}/root/sign-intermediate",
+                csr=csr,
+                country="Bulgaria",
+                locality="Sofia",
+                organization="DarkfellaNET",
+                format="pem_bundle",
+                ttl=TTL,
+                common_name=COMMON_NAME,
+                wrap_ttl=None,
+            )
+        )
         signed_cert = sign_resp["data"]["certificate"]
     except (VaultError, InvalidRequest) as e:
         typer.echo(f"Failed to sign CSR: {e}")
@@ -900,23 +1045,29 @@ def rotate_issuing_ca(
 
     try:
         typer.echo(f"Importing signed certificate back into {ISS_MOUNT}...")
-        import_resp = to_dict(client.write(
-            f"{ISS_MOUNT}/intermediate/set-signed",
-            certificate=signed_cert,
-            wrap_ttl=None
-        ))
-        imported_issuers = import_resp.get("data", {}).get("imported_issuers", [])
+        import_resp = to_dict(
+            client.write(
+                f"{ISS_MOUNT}/intermediate/set-signed",
+                certificate=signed_cert,
+                wrap_ttl=None,
+            )
+        )
+        imported_issuers = import_resp.get(
+            "data", {}).get("imported_issuers", [])
         if not imported_issuers:
             raise RuntimeError("Vault did not return an imported issuer ID!")
         new_issuer_id = imported_issuers[0]
 
-        client.write(f"{ISS_MOUNT}/config/issuers", default=new_issuer_id, wrap_ttl=None)
+        client.write(
+            f"{ISS_MOUNT}/config/issuers", default=new_issuer_id, wrap_ttl=None
+        )
         typer.echo(f"New issuer {new_issuer_id} set as default")
     except (VaultError, InvalidRequest, InvalidPath) as e:
         typer.echo(f"Failed to import signed certificate: {e}")
         raise typer.Exit(1)
 
-    cert = x509.load_pem_x509_certificate(signed_cert.encode(), default_backend())
+    cert = x509.load_pem_x509_certificate(
+        signed_cert.encode(), default_backend())
     typer.echo("\nNew Issuing CA info:")
     typer.echo(f"  Subject: {cert.subject.rfc4514_string()}")
     typer.echo(f"  Serial: {cert.serial_number}")
@@ -928,34 +1079,110 @@ def rotate_issuing_ca(
 @app.command(help="Fetch AWS IP ranges and optionally update a network policy YAML")
 @async_command
 async def fetch_aws_ips(
-    region: Annotated[str, typer.Option(help="AWS region to filter")] = "us-east-1",
-    service: Annotated[str, typer.Option(help="AWS service to filter")] = "AMAZON",
-    output_file: Annotated[Path, typer.Option(help="File to write filtered CIDRs")] = Path("aws-ip-ranges.txt"),
-    policy_file: Annotated[Path | None, typer.Option(help="Path to cilium network policy YAML to update", exists=True, file_okay=True, dir_okay=False, readable=True, writable=True, resolve_path=True)] = None
+    region: Annotated[str, typer.Option(
+        help="AWS region to filter")] = "us-east-1",
+    service: Annotated[str, typer.Option(
+        help="AWS service to filter")] = "AMAZON",
+    output_file: Annotated[
+        Path, typer.Option(help="File to write filtered CIDRs")
+    ] = Path("aws-ip-ranges.txt"),
+    policy_file: Annotated[
+        Path | None,
+        typer.Option(
+            help="Path to cilium network policy YAML to update",
+            exists=True,
+            file_okay=True,
+            dir_okay=False,
+            readable=True,
+            writable=True,
+            resolve_path=True,
+        ),
+    ] = None,
 ) -> None:
 
+    typer.echo(
+        f"Fetching IP ranges for region='{region}' and service='{service}'...")
+
     async with aiohttp.ClientSession() as session:
-        async with session.get("https://ip-ranges.amazonaws.com/ip-ranges.json") as resp:
+        async with session.get(
+            "https://ip-ranges.amazonaws.com/ip-ranges.json"
+        ) as resp:
             resp.raise_for_status()
             data = await resp.json()
 
-    cidrs = sorted({prefix["ip_prefix"] for prefix in data["prefixes"]
-                    if prefix["region"] == region and prefix["service"] == service})
+    cidrs = sorted(
+        {
+            prefix["ip_prefix"]
+            for prefix in data["prefixes"]
+            if prefix["region"] == region and prefix["service"] == service
+        }
+    )
+
+    if not cidrs:
+        typer.echo("No CIDRs found for the specified region and service.")
+        raise typer.Exit()
+
+    typer.echo(f"Found {len(cidrs)} unique CIDR blocks.")
 
     if policy_file:
-        with open(policy_file, "r") as f:
-            policy = yaml.load(f)
+        try:
+            with open(policy_file, "r") as f:
+                policy = yaml.load(f)
 
-        egress_cidrs = policy["spec"]["egress"][3]["toCIDRSet"]
-        existing_cidrs = {entry["cidr"] for entry in egress_cidrs}
+            target_port = "443"
+            rule_to_update = None
+            egress_rules = policy.get("spec", {}).get("egress")
 
-        all_cidrs = sorted(existing_cidrs | set(cidrs))
-        policy["spec"]["egress"][3]["toCIDRSet"] = [{"cidr": c} for c in all_cidrs]
+            if isinstance(egress_rules, list):
+                for rule in egress_rules:
+                    if isinstance(rule.get("toPorts"), list):
+                        for port_config in rule["toPorts"]:
+                            if isinstance(port_config.get("ports"), list):
+                                for port_entry in port_config["ports"]:
+                                    if (
+                                        isinstance(port_entry.get("port"), str)
+                                        and port_entry["port"] == target_port
+                                    ):
+                                        rule_to_update = rule
+                                        break
+                                if rule_to_update:
+                                    break
+                        if rule_to_update:
+                            break
 
-        with open(policy_file, "w") as f:
-            yaml.dump(policy, f)
+            if rule_to_update is None:
+                typer.echo(
+                    f"[bold red]Error: Could not find an egress rule in {policy_file} targeting port '{target_port}'. Aborting policy update.[/bold red]",
+                    err=True,
+                )
+                raise typer.Exit(code=1)
 
-        typer.echo(f"Updated {policy_file} with {len(all_cidrs)} unique CIDRs.")
+            egress_cidrs_list = rule_to_update.get("toCIDRSet", [])
+            existing_cidrs = {
+                entry["cidr"]
+                for entry in egress_cidrs_list
+                if isinstance(entry, dict) and "cidr" in entry
+            }
+
+            all_cidrs = sorted(existing_cidrs | set(cidrs))
+
+            rule_to_update["toCIDRSet"] = [{"cidr": c} for c in all_cidrs]
+
+            with open(policy_file, "w") as f:
+                yaml.dump(policy, f)
+
+            typer.echo(
+                f"Updated {policy_file} with {
+                    len(all_cidrs)} unique CIDRs in the egress rule targeting port {target_port}."
+            )
+
+        except Exception as e:
+            typer.echo(
+                f"[bold red]An error occurred during policy file processing: {e}[/bold red]",
+                err=True,
+            )
+            raise typer.Exit(code=1)
+
     else:
         with open(output_file, "w") as f:
             for c in cidrs:
@@ -963,15 +1190,16 @@ async def fetch_aws_ips(
 
         typer.echo(f"Wrote {len(cidrs)} CIDRs to {output_file}.")
 
+
 @overload
 async def make_request_and_handle_ratelimit(
     session: aiohttp.ClientSession,
     method: Literal["GET"],
     url: str,
     console: Console,
-    **kwargs: Any
-) -> dict[str, Any]:
-    ...
+    **kwargs: Any,
+) -> dict[str, Any]: ...
+
 
 @overload
 async def make_request_and_handle_ratelimit(
@@ -979,16 +1207,16 @@ async def make_request_and_handle_ratelimit(
     method: Literal["DELETE", "POST", "PATCH", "PUT", "HEAD", "OPTIONS"],
     url: str,
     console: Console,
-    **kwargs: Any
-) -> int:
-    ...
+    **kwargs: Any,
+) -> int: ...
+
 
 async def make_request_and_handle_ratelimit(
     session: aiohttp.ClientSession,
     method: str,
     url: str,
     console: Console,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> dict[str, Any] | int:
     sem = asyncio.Semaphore(20)
     max_retries = 3
@@ -1007,7 +1235,9 @@ async def make_request_and_handle_ratelimit(
                     if sleep_time < 5 and resp.status == 429:
                         sleep_time = int(resp.headers.get("Retry-After", 120))
 
-                    msg = f"[yellow]Rate limit hit ({resp.status}). Waiting {sleep_time:.0f}s until reset...[/yellow]"
+                    msg = f"[yellow]Rate limit hit ({
+                        resp.status}). Waiting {
+                        sleep_time:.0f}s until reset...[/yellow]"
                     console.print(msg)
                     await asyncio.sleep(sleep_time)
                     continue
@@ -1015,10 +1245,16 @@ async def make_request_and_handle_ratelimit(
                 if resp.status >= 400:
 
                     if attempt >= max_retries:
-                        console.print(f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {resp.status}.[/bold red]")
+                        console.print(
+                            f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {
+                                resp.status}.[/bold red]"
+                        )
                         resp.raise_for_status()
 
-                    console.print(f"[red]Error {resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]")
+                    console.print(
+                        f"[red]Error {
+                            resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]"
+                    )
                     await asyncio.sleep(5)
                     continue
 
@@ -1028,33 +1264,79 @@ async def make_request_and_handle_ratelimit(
                 else:
                     return resp.status
 
+
+def validate_repo_format(value: str) -> str:
+    error_msg = f"Invalid repository format: '{value}'. Must be in 'owner/repo' format (e.g., 'google/typer')."
+
+    if value.count("/") != 1:
+        raise typer.BadParameter(error_msg)
+
+    owner, repo_name = value.split("/", 1)
+    if not owner or not repo_name:
+        raise typer.BadParameter(error_msg)
+
+    if not re.match(r"^[\w-]+/[\w.-]+$", value):
+        raise typer.BadParameter(error_msg)
+
+    return value
+
+
+def validate_github_token(value: str) -> str:
+    min_len = 5
+    max_len = 255
+    if not (min_len <= len(value) <= max_len):
+        raise typer.BadParameter(
+            f"Token length must be between {min_len} and {max_len} characters. Found {
+                len(value)} characters."
+        )
+
+    token_pattern = re.compile(
+        r"^(ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_]+$")
+    if not token_pattern.match(value):
+        error_msg = (
+            "Invalid token format. It must start with one of the required prefixes "
+            "(ghp_, github_pat_, gho_, ghu_, ghs_, or ghr_) "
+            "and contain only alphanumeric characters or underscores ([A-Za-z0-9_]) for the remainder of the token."
+        )
+        raise typer.BadParameter(error_msg)
+
+    return value
+
+
 @app.command(help="Delete GitHub Actions workflow runs")
 @async_command
 async def dwr(
     token: Annotated[
         str,
-        typer.Option(..., help="GitHub personal access token")
+        typer.Option(
+            help="GitHub personal access token", callback=validate_github_token
+        ),
     ],
     repo: Annotated[
         str,
-        typer.Argument(..., help="GitHub repo in owner/repo format")
+        typer.Argument(
+            help="GitHub repo in owner/repo format", callback=validate_repo_format
+        ),
     ],
     status: Annotated[
         WorkflowStatus | None,
-        typer.Option(help="Filter runs by status (e.g., 'success', 'failure')")
+        typer.Option(
+            help="Filter runs by status (e.g., 'success', 'failure')"),
     ] = None,
     limit: Annotated[
-        int,
-        typer.Option(help="Max number of workflow runs to fetch")
+        int, typer.Option(
+            help="Max number of workflow runs to fetch", min=1, max=1000)
     ] = 100,
     delete_all: Annotated[
         bool,
-        typer.Option(help="Delete all workflow runs fetched (up to the --limit specified)")
+        typer.Option(
+            help="Delete all workflow runs fetched (up to the --limit specified)"
+        ),
     ] = False,
 ):
     headers = {
         "Authorization": f"token {token}",
-        "Accept": "application/vnd.github.v3+json"
+        "Accept": "application/vnd.github.v3+json",
     }
     api_base_url = f"https://api.github.com/repos/{repo}/actions/runs"
     per_page = 100
@@ -1073,8 +1355,8 @@ async def dwr(
             session, "GET", api_base_url, console=console, params=initial_params
         )
 
-        actual_total_available = initial_data.get("total_count", 0)
-        runs_to_fetch = min(actual_total_available, limit)
+        total_count = initial_data.get("total_count", 0)
+        runs_to_fetch = min(total_count, limit)
 
         if runs_to_fetch == 0:
             typer.echo("No workflow runs found.")
@@ -1087,19 +1369,26 @@ async def dwr(
             BarColumn(),
             TextColumn("{task.completed}/{task.total}"),
             TimeElapsedColumn(),
-            transient=False
+            transient=False,
         ) as progress:
 
-            fetch_task_id = progress.add_task(f"Fetching workflow runs for {repo}", total=runs_to_fetch)
+            fetch_task_id = progress.add_task(
+                f"Fetching workflow runs for {repo}", total=runs_to_fetch
+            )
 
             for page in range(1, pages_needed + 1):
-                params: dict[str, str | int] = {"per_page": per_page, "page": page}
+                params: dict[str, str | int] = {
+                    "per_page": per_page, "page": page}
                 if status:
                     params["status"] = status.value
 
                 fetch_tasks.append(
                     make_request_and_handle_ratelimit(
-                        session, "GET", api_base_url, console=progress.console, params=params
+                        session,
+                        "GET",
+                        api_base_url,
+                        console=progress.console,
+                        params=params,
                     )
                 )
 
@@ -1117,15 +1406,12 @@ async def dwr(
                     if len(all_runs) >= limit:
                         break
                 except Exception as e:
-                    progress.console.print(f"[red]Error fetching page: {e}[/red]")
+                    progress.console.print(
+                        f"[red]Error fetching page: {e}[/red]")
 
             progress.update(fetch_task_id, completed=len(all_runs))
 
-    if not all_runs:
-        typer.echo("No workflow runs found.")
-        raise typer.Exit()
-
-    all_runs.sort(key=lambda x: x['id'], reverse=True)
+    all_runs.sort(key=lambda x: x["id"], reverse=True)
 
     CONCLUSION_MAP = {
         WorkflowStatus.SUCCESS.value: "GOOD",
@@ -1137,19 +1423,23 @@ async def dwr(
         WorkflowStatus.ACTION_REQUIRED.value: "ACT_REQ",
     }
 
-    selected_ids: list[int] = []
+    ids_to_delete: list[int] = []
 
     if not delete_all:
 
         choices_list: list[tuple[str, int]] = []
 
         for run in all_runs:
-            s_date = datetime.fromisoformat(run['created_at'].replace('Z', '+00:00')).strftime("%b %d %Y %H:%M")
+            s_date = datetime.fromisoformat(
+                run["created_at"].replace("Z", "+00:00")
+            ).strftime("%b %d %Y %H:%M")
 
-            if run['status'] in ("queued", "in_progress"):
-                conclusion = run['status'].upper()
+            if run["status"] in ("queued", "in_progress"):
+                conclusion = run["status"].upper()
             else:
-                conclusion = CONCLUSION_MAP.get(run['conclusion'], str(run['conclusion']).upper())
+                conclusion = CONCLUSION_MAP.get(
+                    run["conclusion"], str(run["conclusion"]).upper()
+                )
 
             display_str = (
                 f"{conclusion:<8}"
@@ -1159,21 +1449,23 @@ async def dwr(
                 f"{run['name']}"
             )
 
-            choices_list.append((display_str, run['id']))
+            choices_list.append((display_str, run["id"]))
 
         def autocomplete_runs(text: str, state: Any) -> list[tuple[str, int]]:
             if not text:
                 return choices_list
 
             return [
-                choice_tuple for choice_tuple in choices_list
+                choice_tuple
+                for choice_tuple in choices_list
                 if text.lower() in choice_tuple[0].lower()
             ]
 
         questions = [
             inquirer.Checkbox(
-                'selected_runs',
-                message=f"Select workflows to delete (Total: {len(choices_list)})",
+                "selected_runs",
+                message=f"Select workflows to delete (Total: {
+                    len(choices_list)})",
                 choices=choices_list,
                 carousel=True,
                 autocomplete=autocomplete_runs,
@@ -1181,14 +1473,13 @@ async def dwr(
         ]
         answers = inquirer.prompt(questions, theme=RedSolace())
 
-        if not answers or not answers['selected_runs']:
-            typer.echo("No runs selected, exiting.")
-            raise typer.Abort()
+        if not answers:
+            raise typer.Exit()
 
-        selected_ids = answers['selected_runs']
+        ids_to_delete = answers["selected_runs"]
 
     else:
-        selected_ids = [run['id'] for run in all_runs]
+        ids_to_delete = [run["id"] for run in all_runs]
 
     async with aiohttp.ClientSession(headers=headers) as session:
         with Progress(
@@ -1196,9 +1487,11 @@ async def dwr(
             BarColumn(),
             TextColumn("{task.completed}/{task.total}"),
             TimeElapsedColumn(),
-            transient=False
+            transient=False,
         ) as progress:
-            delete_task_id = progress.add_task("Deleting workflow runs", total=len(selected_ids))
+            delete_task_id = progress.add_task(
+                "Deleting workflow runs", total=len(ids_to_delete)
+            )
 
             async def delete_run_task(run_id: int):
                 del_url = f"{api_base_url}/{run_id}"
@@ -1213,11 +1506,15 @@ async def dwr(
                         progress.console.print(f"Deleted: {line_str}")
                         progress.update(delete_task_id, advance=1)
                     else:
-                        progress.console.print(f"[red]Failed ({status_code}): {line_str}[/red]")
+                        progress.console.print(
+                            f"[red]Failed ({status_code}): {line_str}[/red]"
+                        )
                 except Exception as e:
-                    progress.console.print(f"[red]Error deleting {run_id}: {e}[/red]")
+                    progress.console.print(
+                        f"[red]Error deleting {run_id}: {e}[/red]")
 
-            await asyncio.gather(*(delete_run_task(run_id) for run_id in selected_ids))
+            await asyncio.gather(*(delete_run_task(run_id) for run_id in ids_to_delete))
+
 
 if __name__ == "__main__":
     app()

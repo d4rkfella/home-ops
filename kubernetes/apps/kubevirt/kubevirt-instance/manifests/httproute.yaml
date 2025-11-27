@@ -4,7 +4,7 @@ kind: HTTPRoute
 metadata:
   name: virt-exportproxy-route
 spec:
-  hostnames: ["virt-exportproxy.example.com"]
+  hostnames: ["virt-exportproxy.darkfellanetwork.com.com"]
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system

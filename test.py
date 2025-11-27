@@ -5,7 +5,6 @@ import random
 import requests
 
 from kubernetes import client as k8s_client, config as k8s_config
-from kubernetes.client import V1DeleteOptions
 from kubevirt import ApiClient, DefaultApi
 from kubevirt.configuration import Configuration
 from kubevirt.models import (

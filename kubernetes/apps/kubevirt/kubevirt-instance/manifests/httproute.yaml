@@ -34,7 +34,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: vmexport
-  namespace: virtualization
 spec:
   rules:
   - host: virt-exportproxy.darkfellanetwork.com

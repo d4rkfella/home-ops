@@ -26,6 +26,6 @@ spec:
   validation:
     hostname: virt-exportproxy.kubevirt.pod.cluster.local
     caCertificateRefs:
-      - kind: ConfigMap
-        name: kubevirt-export-ca
+      - kind: Secret
+        name: kubevirt-ca
         group: ""

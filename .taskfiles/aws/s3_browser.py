@@ -6,7 +6,6 @@ import os
 from botocore.exceptions import NoCredentialsError, ProfileNotFound
 
 from textual.app import App, ComposeResult
-from textual.events import Paste
 from textual.containers import Horizontal, Vertical, Container
 from mypy_boto3_s3.client import S3Client
 from mypy_boto3_s3.type_defs import DeleteTypeDef

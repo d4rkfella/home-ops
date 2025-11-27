@@ -24,7 +24,7 @@ spec:
       kind: Service
       name: virt-exportproxy
   validation:
-    hostname: virt-exportproxy.kubevirt.svc.cluster.local
+    hostname: export.kubevirt.io
     caCertificateRefs:
       - kind: ConfigMap
         name: kubevirt-export-ca

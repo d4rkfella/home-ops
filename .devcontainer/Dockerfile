@@ -36,6 +36,7 @@ RUN apt-get update && \
         libguestfs-dev \
         # Utilities
         git \
+        cosign \
         curl \
         ca-certificates \
         coreutils \

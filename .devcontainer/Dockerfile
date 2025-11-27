@@ -40,10 +40,7 @@ RUN apk add --no-cache \
         pkgconfig \
         unzip && \
     # Clone and patch KubeVirt client to fix version string
-    git clone https://github.com/kubevirt/client-python.git /tmp/kubevirt && \
-    cd /tmp/kubevirt && \
-    sed -i -E "s/(VERSION\s*=\s*\"v[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+).*/\1\"/" /tmp/kubevirt/setup.py && \
-    python3 -m pip wheel --wheel-dir /tmp/wheels /tmp/kubevirt -r /tmp/requirements.txt && \
+    python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \

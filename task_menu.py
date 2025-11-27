@@ -73,7 +73,6 @@ class TaskItem(ListItem):
 
 
 class VarInputScreen(ModalScreen[dict[str, str] | None]):
-
     CSS = """
     VarInputScreen {
         align: center middle;

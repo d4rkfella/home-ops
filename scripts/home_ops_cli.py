@@ -184,7 +184,6 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
         TimeElapsedColumn(),
         transient=False,
     ) as main_progress:
-
         overall_task = main_progress.add_task(
             "Processing manifests...", total=total_docs
         )
@@ -203,15 +202,9 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
                 transient=False,
             ) as doc_progress:
                 doc_task = doc_progress.add_task(
-                    f"Applying {
-                        doc.get(
-                            'kind',
-                            '<unknown>')} {
-                        doc.get(
-                            'metadata',
-                            {}).get(
-                            'name',
-                            '<unknown>')}...",
+                    f"Applying {doc.get('kind', '<unknown>')} {
+                        doc.get('metadata', {}).get('name', '<unknown>')
+                    }...",
                     total=None,
                 )
 
@@ -232,16 +225,14 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
                     name = doc["metadata"]["name"]
                     doc_progress.update(
                         doc_task,
-                        description=f"[green]✔ Applied {
-                            doc['kind']} {name}[/green]",
+                        description=f"[green]✔ Applied {doc['kind']} {name}[/green]",
                     )
 
                 except ApiException as e:
                     doc_progress.console.print(
                         f"[bold red]❌ Failed to apply {
-                            doc.get(
-                                'kind', 'Resource')}: API Error {
-                            e.status}[/bold red]"
+                            doc.get('kind', 'Resource')
+                        }: API Error {e.status}[/bold red]"
                     )
                     doc_progress.console.print(f"  [red]Reason:[/red] {e.reason}")
 
@@ -253,13 +244,10 @@ async def apply_manifests(dyn: DynamicClient, docs: list[dict], namespace: str) 
 
                 except ResourceNotFoundError as e:
                     doc_progress.console.print(
-                        f"[bold red]❌ Failed to apply {
-                            doc.get(
-                                'kind',
-                                'Resource')} "
-                        f"{doc.get('metadata',
-                                   {}).get('name',
-                                           '<unknown>')}: Reason: {e}[/bold red]"
+                        f"[bold red]❌ Failed to apply {doc.get('kind', 'Resource')} "
+                        f"{doc.get('metadata', {}).get('name', '<unknown>')}: Reason: {
+                            e
+                        }[/bold red]"
                     )
                     raise typer.Exit(code=1)
 
@@ -293,18 +281,20 @@ async def wait_for_resources(
     remaining = set(names)
     watcher = watch.Watch()
 
-    with Progress(
-        TextColumn("[bold blue]{task.description}"),
-        BarColumn(),
-        TaskProgressColumn(),
-        TimeElapsedColumn(),
-        transient=False,
-    ) as main_progress, Progress(
-        SpinnerColumn(),
-        TextColumn("{task.description}"),
-        transient=False,
-    ) as resource_progress:
-
+    with (
+        Progress(
+            TextColumn("[bold blue]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeElapsedColumn(),
+            transient=False,
+        ) as main_progress,
+        Progress(
+            SpinnerColumn(),
+            TextColumn("{task.description}"),
+            transient=False,
+        ) as resource_progress,
+    ):
         overall_task = main_progress.add_task(
             f"Waiting for {kind}s...", total=len(names)
         )
@@ -335,14 +325,14 @@ async def wait_for_resources(
                     if remaining:
                         main_progress.update(
                             overall_task,
-                            description=f"Waiting for {kind}s: {
-                                ', '.join(remaining)}",
+                            description=f"Waiting for {kind}s: {', '.join(remaining)}",
                         )
                     else:
                         main_progress.update(
                             overall_task,
                             description=f"[bold green]All {
-                                kind.lower()}s ready[/bold green]",
+                                kind.lower()
+                            }s ready[/bold green]",
                         )
                         break
                 else:
@@ -355,9 +345,9 @@ async def wait_for_resources(
             await asyncio.wait_for(_watch_loop(), timeout=timeout)
         except asyncio.TimeoutError:
             main_progress.console.print(
-                f"[bold red]Timeout waiting for {
-                    kind.lower()}s: {
-                    ', '.join(remaining)}[/bold red]"
+                f"[bold red]Timeout waiting for {kind.lower()}s: {
+                    ', '.join(remaining)
+                }[/bold red]"
             )
             raise typer.Exit(code=1)
         except asyncio.CancelledError:
@@ -451,7 +441,6 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
         TextColumn("{task.description}"),
         transient=True,
     ) as spinner_progress:
-
         with Progress(
             TextColumn("[bold blue]{task.description}"),
             BarColumn(),
@@ -459,7 +448,6 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
             TimeElapsedColumn(),
             transient=True,
         ) as main_progress:
-
             main_task = main_progress.add_task("Processing URLs...", total=len(urls))
 
             async with aiohttp.ClientSession() as session:
@@ -487,8 +475,8 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
                     except RetryLimitExceeded as e:
                         spinner_progress.console.print(
                             f"[bold red]Failed to fetch {url} after {
-                                e.retries} attempts: {
-                                e.last_exception}[/bold red]"
+                                e.retries
+                            } attempts: {e.last_exception}[/bold red]"
                         )
                         spinner_progress.remove_task(spinner_id)
                         raise typer.Exit(code=1)
@@ -537,8 +525,8 @@ async def fetch_and_apply_crds(dyn, crd_yaml_path: str):
                         except RetryLimitExceeded as e:
                             spinner_progress.console.print(
                                 f"[bold red]Failed to apply {kind} {name} after {
-                                    e.retries} attempts: {
-                                    e.last_exception}[/bold red]"
+                                    e.retries
+                                } attempts: {e.last_exception}[/bold red]"
                             )
                             spinner_progress.remove_task(spinner_id)
                             raise typer.Exit(code=1)
@@ -765,8 +753,7 @@ async def wait_daemonsets(
             readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0)
             >= (
                 # type: ignore
-                getattr(obj.status, "desiredNumberScheduled", 0)
-                or 0
+                getattr(obj.status, "desiredNumberScheduled", 0) or 0
             ),
             timeout=timeout,
         )
@@ -1102,7 +1089,6 @@ async def fetch_aws_ips(
         ),
     ] = None,
 ) -> None:
-
     typer.echo(f"Fetching IP ranges for region='{region}' and service='{service}'...")
 
     async with aiohttp.ClientSession() as session:
@@ -1175,7 +1161,8 @@ async def fetch_aws_ips(
 
             typer.echo(
                 f"Updated {policy_file} with {
-                    len(all_cidrs)} unique CIDRs in the egress rule targeting port {target_port}."
+                    len(all_cidrs)
+                } unique CIDRs in the egress rule targeting port {target_port}."
             )
 
         except Exception as e:
@@ -1228,7 +1215,6 @@ async def make_request_and_handle_ratelimit(
 
         async with sem:
             async with session.request(method, url, **kwargs) as resp:
-
                 if resp.status in (403, 429):
                     reset_time = int(resp.headers.get("x-ratelimit-reset", 0))
                     current_time = int(time.time())
@@ -1237,25 +1223,25 @@ async def make_request_and_handle_ratelimit(
                     if sleep_time < 5 and resp.status == 429:
                         sleep_time = int(resp.headers.get("Retry-After", 120))
 
-                    msg = f"[yellow]Rate limit hit ({
-                        resp.status}). Waiting {
+                    msg = f"[yellow]Rate limit hit ({resp.status}). Waiting {
                         sleep_time:.0f}s until reset...[/yellow]"
                     console.print(msg)
                     await asyncio.sleep(sleep_time)
                     continue
 
                 if resp.status >= 400:
-
                     if attempt >= max_retries:
                         console.print(
-                            f"[bold red]Permanent failure after {max_retries} attempts. Raising error for {
-                                resp.status}.[/bold red]"
+                            f"[bold red]Permanent failure after {
+                                max_retries
+                            } attempts. Raising error for {resp.status}.[/bold red]"
                         )
                         resp.raise_for_status()
 
                     console.print(
-                        f"[red]Error {
-                            resp.status} encountered (Attempt {attempt}/{max_retries}). Retrying in 5s.[/red]"
+                        f"[red]Error {resp.status} encountered (Attempt {attempt}/{
+                            max_retries
+                        }). Retrying in 5s.[/red]"
                     )
                     await asyncio.sleep(5)
                     continue
@@ -1289,7 +1275,8 @@ def validate_github_token(value: str) -> str:
     if not (min_len <= len(value) <= max_len):
         raise typer.BadParameter(
             f"Token length must be between {min_len} and {max_len} characters. Found {
-                len(value)} characters."
+                len(value)
+            } characters."
         )
 
     token_pattern = re.compile(r"^(ghp_|gho_|ghu_|ghs_|ghr_|github_pat_)[A-Za-z0-9_]+$")
@@ -1370,7 +1357,6 @@ async def dwr(
             TimeElapsedColumn(),
             transient=False,
         ) as progress:
-
             fetch_task_id = progress.add_task(
                 f"Fetching workflow runs for {repo}", total=runs_to_fetch
             )
@@ -1423,7 +1409,6 @@ async def dwr(
     ids_to_delete: list[int] = []
 
     if not delete_all:
-
         choices_list: list[tuple[str, int]] = []
 
         for run in all_runs:
@@ -1461,8 +1446,7 @@ async def dwr(
         questions = [
             inquirer.Checkbox(
                 "selected_runs",
-                message=f"Select workflows to delete (Total: {
-                    len(choices_list)})",
+                message=f"Select workflows to delete (Total: {len(choices_list)})",
                 choices=choices_list,
                 carousel=True,
                 autocomplete=autocomplete_runs,

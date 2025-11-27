@@ -380,9 +380,9 @@ class ObjectBrowserTreeScreen(Screen):
         for item in items:
             key = item["key"]
             if item["type"] == "prefix":
-                node.add(f"📁 {key[len(prefix):].rstrip('/')}", data=item)
+                node.add(f"📁 {key[len(prefix) :].rstrip('/')}", data=item)
             else:
-                node.add_leaf(f"📄 {key[len(prefix):]}", data=item)
+                node.add_leaf(f"📄 {key[len(prefix) :]}", data=item)
 
     def on_tree_node_expanded(self, event: Tree.NodeExpanded):
         node = event.node
@@ -410,9 +410,11 @@ class ObjectBrowserTreeScreen(Screen):
         def format_value(v: Any) -> str:
             if isinstance(v, int):
                 return (
-                    f"{v/(1024**2):.2f} MB"
+                    f"{v / (1024**2):.2f} MB"
                     if v >= 1024**2
-                    else f"{v/1024:.2f} KB" if v >= 1024 else f"{v} B"
+                    else f"{v / 1024:.2f} KB"
+                    if v >= 1024
+                    else f"{v} B"
                 )
             if isinstance(v, datetime.datetime):
                 return v.isoformat()
@@ -571,7 +573,8 @@ class ObjectBrowserTreeScreen(Screen):
                         }
                         s3.delete_objects(Bucket=self.bucket, Delete=delete_dict)
                     msg = f"✅ Deleted folder: {key}  ({
-                        len(objects_to_delete)}  objects) "
+                        len(objects_to_delete)
+                    }  objects) "
             else:
                 s3.delete_object(Bucket=self.bucket, Key=key)
                 msg = f"✅ Deleted object: {key}"

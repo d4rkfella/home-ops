@@ -1,4 +1,6 @@
-FROM alpine:3.22.2 AS build
+# Use Debian Trixie for the build stage. This provides a more robust
+# and compatible environment for libguestfs and Python build dependencies.
+FROM debian:trixie AS build
 
 # renovate: datasource=github-releases depName=go-task/task
 ARG TASK_VERSION=v3.45.5
@@ -16,39 +18,42 @@ ARG SOPS_VERSION=v3.11.0
 ARG FLUX_VERSION=v2.7.5
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.0.2
+
 WORKDIR /tmp
 
 COPY requirements.txt /tmp/requirements.txt
 
-RUN apk add --no-cache \
-        build-base \
+# --- Install Debian Dependencies for Build Stage ---
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        # Core Build Tools (replaces Alpine's build-base)
+        build-essential \
+        # Python/Pip Dependencies
+        python3 \
+        python3-pip \
+        python3-dev \
+        # libguestfs dependencies (critical change)
+        libguestfs-dev \
+        libguestfs-tools-c \
+        # Utilities
         git \
         curl \
         ca-certificates \
         coreutils \
-        cosign \
         gnupg \
-        python3 \
-        py3-pip \
-        python3-dev \
-        libguestfs-dev \
-        gcc \
-        g++ \
-        make \
-        musl-dev \
-        linux-headers \
-        pkgconfig \
-        unzip && \
+        unzip \
+        # Cleanup
+        && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     # Clone and patch KubeVirt client to fix version string
     python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
-    cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
+    /usr/bin/cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
     mv cosign /usr/local/bin/cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
-    cosign verify-blob kubectl \
+    /usr/local/bin/cosign verify-blob kubectl \
       --certificate kubectl.cert \
       --signature kubectl.sig \
       --certificate-identity krel-staging@k8s-releng-prod.iam.gserviceaccount.com \
@@ -56,7 +61,7 @@ RUN apk add --no-cache \
     mv kubectl /usr/local/bin/kubectl && \
     #Download and verify flux-cli binary
     curl -fsSLO "https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION#v}_{linux_amd64.tar.gz,checksums.txt,checksums.txt.pem,checksums.txt.sig}" && \
-    cosign verify-blob flux_${FLUX_VERSION#v}_checksums.txt \
+    /usr/local/bin/cosign verify-blob flux_${FLUX_VERSION#v}_checksums.txt \
       --certificate flux_${FLUX_VERSION#v}_checksums.txt.pem \
       --signature flux_${FLUX_VERSION#v}_checksums.txt.sig \
       --certificate-identity-regexp=https://github.com/fluxcd \
@@ -66,7 +71,7 @@ RUN apk add --no-cache \
     mv flux /usr/local/bin/flux && \
     #Download and verify sops binary
     curl -fsSLO "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}{.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig}" && \
-    cosign verify-blob sops-${SOPS_VERSION}.checksums.txt \
+    /usr/local/bin/cosign verify-blob sops-${SOPS_VERSION}.checksums.txt \
       --certificate sops-${SOPS_VERSION}.checksums.pem \
       --signature sops-${SOPS_VERSION}.checksums.sig \
       --certificate-identity-regexp=https://github.com/getsops \
@@ -105,7 +110,7 @@ RUN vault-backup --version
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.1 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
-FROM alpine:3.22.2
+FROM debian:trixie-slim
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
@@ -119,7 +124,8 @@ ARG USER_GID=$USER_UID
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /tmp/wheels /tmp/wheels
 
-RUN apk add --no-cache \
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
         curl \
         jq \
         nano \
@@ -127,31 +133,32 @@ RUN apk add --no-cache \
         bash-completion \
         ca-certificates \
         git \
-        github-cli \
-        libstdc++ \
+        gnupg \
+        libguestfs-tools-c \
+        python3 \
+        python3-pip \
         direnv \
         yq \
-        gnupg \
-        docker-cli \
-        docker-cli-buildx \
-        tigervnc-client \
+        cosign \
+        docker.io \
+        tigervnc-viewer \
         fontconfig \
-        ttf-dejavu \
-        python3 \
-        py3-pip \
-        cosign && \
-    addgroup -g $USER_GID $USERNAME && \
-    adduser -u $USER_UID -G $USERNAME -s /bin/sh -D $USERNAME && \
-    addgroup -g 1003 docker && adduser $USERNAME docker && \
+        fonts-dejavu \
+        libstdc++6 \
+        && groupadd --gid $USER_GID $USERNAME || true && \
+    useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
+    groupadd -g 1003 docker || true && \
+    usermod -aG docker $USERNAME && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
-    python3 -m venv .venv && \
-    source .venv/bin/activate && \
+    python3 -m venv /home/$USERNAME/.venv && \
+    . /home/$USERNAME/.venv/bin/activate && \
     pip install --upgrade pip --no-index --find-links=/tmp/wheels --no-cache-dir /tmp/wheels/*.whl && \
-    rm -rf /tmp/wheels
+    rm -rf /tmp/wheels && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /project
 USER $USERNAME

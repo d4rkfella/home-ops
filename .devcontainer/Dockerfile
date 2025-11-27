@@ -51,7 +51,7 @@ RUN apt-get update && \
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
     /usr/bin/cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
-    mv cosign /usr/local/bin/cosign && \
+    mv cosign /usr/local/bin/cosign && chmod +x /usr/local/bin/cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     /usr/local/bin/cosign verify-blob kubectl \

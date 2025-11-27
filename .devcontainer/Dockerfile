@@ -26,6 +26,8 @@ COPY requirements.txt /tmp/requirements.txt
 
 SHELL ["/bin/bash", "-c"]
 
+ENV DEBIAN_FRONTEND="noninteractive"
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         build-essential \
@@ -116,6 +118,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ARG USERNAME=vscode
 ARG USER_UID=2100
 ARG USER_GID=$USER_UID
+
+ENV DEBIAN_FRONTEND="noninteractive"
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /tmp/wheels /tmp/wheels

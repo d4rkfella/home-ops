@@ -45,7 +45,6 @@ RUN apt-get update && \
         unzip \
         # Cleanup
         && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    # Clone and patch KubeVirt client to fix version string
     python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
@@ -135,7 +134,7 @@ RUN apt-get update && \
         ca-certificates \
         git \
         gnupg \
-        libguestfs-tools-c \
+        libguestfs-tools \
         python3 \
         python3-pip \
         direnv \
@@ -145,7 +144,6 @@ RUN apt-get update && \
         tigervnc-viewer \
         fontconfig \
         fonts-dejavu \
-        libstdc++6 \
         && groupadd --gid $USER_GID $USERNAME || true && \
     useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
     groupadd -g 1003 docker || true && \

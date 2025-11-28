@@ -149,7 +149,7 @@ RUN apt-get update && \
     groupadd -g 1003 docker || true && \
     usermod -aG docker $USERNAME && \
     mkdir -p ~/guestfs && \
-    pushd ~/guestfs && \
+    cd ~/guestfs && \
     curl -fsSL -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz \
                -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz.sig \
                -O https://download.libguestfs.org/libguestfs.keyring && \

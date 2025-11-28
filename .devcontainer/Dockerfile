@@ -36,7 +36,6 @@ RUN apt-get update && \
         python3-pip \
         python3-dev \
         git \
-        libvirt-dev \
         cosign \
         curl \
         ca-certificates \
@@ -135,7 +134,7 @@ RUN apt-get update && \
         ca-certificates \
         git \
         gnupg \
-        libvirt0 \
+        libguestfs-tools \
         python3 \
         python3-pip \
         python3.13-venv \

@@ -148,6 +148,13 @@ RUN apt-get update && \
     useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
     groupadd -g 1003 docker || true && \
     usermod -aG docker $USERNAME && \
+    mkdir -p ~/guestfs && \
+    pushd ~/guestfs
+    curl -fsSL -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz \
+               -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz.sig \
+               -O https://download.libguestfs.org/libguestfs.keyring && \
+    gpg --no-default-keyring --keyring ./libguestfs.keyring --verify appliance-1.56.0.tar.xz.sig appliance-1.56.0.tar.xz && \
+    tar -xJf appliance-1.56.0.tar.xz && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

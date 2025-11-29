@@ -20,7 +20,7 @@
       ],
       groupName: 'Devcontainer',
       matchFileNames: [
-        '.devcontainer/**',
+        '.devcontainer/Dockerfile',
         '**/requirements.txt',
       ],
       group: {

@@ -9,13 +9,15 @@ import shutil
 import subprocess
 import tempfile
 import time
+import aiofiles
+import aiogzip
 from collections.abc import Awaitable, Callable
 from contextlib import asynccontextmanager
 from datetime import datetime
 from enum import Enum
 from functools import wraps
 from pathlib import Path
-from typing import Any, Literal, overload
+from typing import Any, Literal, overload, cast
 
 import aiohttp
 import hvac
@@ -29,6 +31,17 @@ from kubernetes_asyncio import client, config, dynamic, watch  # type: ignore
 from kubernetes_asyncio.client.exceptions import ApiException  # type: ignore
 from kubernetes_asyncio.dynamic import DynamicClient  # type: ignore
 from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type: ignore
+from kubernetes_asyncio.config import ConfigException
+from kubevirt import ApiClient, DefaultApi  # type: ignore
+from kubevirt.models import K8sIoApimachineryPkgApisMetaV1DeleteOptions
+from kubevirt.rest import ApiException as KubeVirtApiException
+from kubevirt.configuration import Configuration  # type: ignore
+from kubevirt.models import (
+    V1beta1VirtualMachineExport,
+    V1beta1VirtualMachineExportSpec,
+    K8sIoApimachineryPkgApisMetaV1ObjectMeta,
+    K8sIoApiCoreV1TypedLocalObjectReference,
+)
 from requests import Response
 from rich.console import Console
 from rich.progress import (
@@ -38,6 +51,10 @@ from rich.progress import (
     TaskProgressColumn,
     TextColumn,
     TimeElapsedColumn,
+    DownloadColumn,
+    TransferSpeedColumn,
+    TimeRemainingColumn,
+    ProgressColumn,
 )
 from ruamel.yaml import YAML, YAMLError
 from typing_extensions import Annotated
@@ -64,12 +81,31 @@ class WorkflowStatus(str, Enum):
     QUEUED = "queued"
 
 
+class VMImageFormat(str, Enum):
+    raw = "raw"
+    gzip = "gzip"
+    qcow2 = "qcow2"
+
+
+class ManifestOutputFormat(str, Enum):
+    yaml = "yaml"
+    json = "json"
+
+
 @asynccontextmanager
 async def k8s_client():
-    await config.load_kube_config()
+    try:
+        await config.load_kube_config()
+        print("Configuration loaded from kubeconfig.")
+    except ConfigException:
+        try:
+            await config.load_incluster_config()
+            print("Configuration loaded from in-cluster service account.")
+        except ConfigException as e:
+            raise RuntimeError(f"Could not load Kubernetes configuration: {e}")
     async with client.ApiClient() as api_client:
-        dyn = await DynamicClient(api_client)
-        yield dyn
+        dyn_client = await DynamicClient(api_client)
+        yield dyn_client
 
 
 def with_debug(func):

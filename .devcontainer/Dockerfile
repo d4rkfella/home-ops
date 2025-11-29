@@ -5,7 +5,7 @@ FROM debian:trixie AS build
 # renovate: datasource=github-releases depName=go-task/task
 ARG TASK_VERSION=v3.45.5
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.6.3
+ARG VIRTCTL_VERSION=v1.7.0
 # renovate: datasource=github-releases depName=hashicorp/vault
 ARG VAULT_VERSION=v1.21.1
 # renovate: datasource=github-releases depName=helm/helm
@@ -105,7 +105,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/d4rkfella/vault-backup:1.11.3@sha256:06bcfadf2e857bd676b74758c8c2acf00dfda42b7cf0472bbe10090b9376d944 /usr/bin/vault-backup /usr/local/bin/vault-backup
 RUN vault-backup --version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.2.1 /usr/local/bin/helmfile /usr/local/bin/helmfile
+COPY --from=ghcr.io/helmfile/helmfile:v1.2.2 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
 FROM debian:trixie-slim

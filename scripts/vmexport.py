@@ -6,7 +6,6 @@ import asyncio
 import base64
 import re
 import shutil
-import signal
 import subprocess
 import time
 from contextlib import asynccontextmanager
@@ -24,7 +23,8 @@ from kubernetes_asyncio import client, config  # type: ignore
 from kubernetes_asyncio.client.exceptions import ApiException  # type: ignore
 from kubernetes_asyncio.config import ConfigException  # type: ignore
 from kubernetes_asyncio.dynamic import DynamicClient  # type: ignore
-from kubernetes_asyncio.dynamic.exceptions import ResourceNotFoundError  # type: ignore
+from kr8s.objects import object_from_spec
+from kr8s.portforward import PortForward
 from kubevirt import ApiClient, Configuration, DefaultApi
 from kubevirt.models import (
     K8sIoApiCoreV1TypedLocalObjectReference,
@@ -61,7 +61,7 @@ class VMExportInfo:
     sparsify: bool
     manifest_output_format: str
     output_file: Path | None
-    local_port: int | None
+    local_port: int
     service_url: str | None
     should_create: bool
     ttl: str | None
@@ -92,7 +92,7 @@ async def k8s_client():
         print("configuration loaded from kubeconfig.")
     except ConfigException:
         try:
-            await config.load_incluster_config()
+            config.load_incluster_config()
             print("configuration loaded from in-cluster service account.")
         except ConfigException as e:
             raise RuntimeError(f"Could not load Kubernetes configuration: {e}")
@@ -210,82 +210,26 @@ async def translate_service_port_to_target_port(
     return int(service_port_obj.port)
 
 
-class KubectlPortForward:
-    def __init__(
-        self, namespace: str, pod_name: str, local_port: int, remote_port: int
-    ):
-        self.namespace = namespace
-        self.pod_name = pod_name
-        self.local_port = local_port
-        self.remote_port = remote_port
-        self.process: asyncio.subprocess.Process | None = None
-
-    async def start(self):
-        port_spec = (
-            f"{self.local_port}:{self.remote_port}"
-            if self.local_port != 0
-            else f"0:{self.remote_port}"
-        )
-
-        cmd = [
-            "kubectl",
-            "port-forward",
-            f"pod/{self.pod_name}",
-            port_spec,
-            "-n",
-            self.namespace,
-        ]
-        print(f"Starting kubectl port-forward: {' '.join(cmd)}")
-
-        self.process = await asyncio.create_subprocess_exec(
-            *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
-        )
-
-        assert self.process.stdout is not None
-        while True:
-            line = await self.process.stdout.readline()
-            if not line:
-                raise RuntimeError("kubectl port-forward exited unexpectedly")
-            line_str = line.decode().strip()
-            print(line_str)
-
-            match = re.search(r"Forwarding from 127\.0\.0\.1:(\d+) ->", line_str)
-            if match:
-                self.local_port = int(match.group(1))
-                print(f"Port-forward ready on 127.0.0.1:{self.local_port}")
-                break
-
-    async def stop(self):
-        if self.process and self.process.returncode is None:
-            print("Stopping port-forward...")
-            self.process.send_signal(signal.SIGINT)
-            try:
-                await asyncio.wait_for(self.process.wait(), timeout=5)
-            except asyncio.TimeoutError:
-                self.process.kill()
-                await self.process.wait()
-            print("Port-forward stopped")
-
-
-async def setup_port_forward(dyn, vme_info) -> KubectlPortForward:
+async def setup_port_forward(dyn, vme_info: VMExportInfo) -> PortForward:
     service_name = f"virt-export-{vme_info.name}"
     service = await wait_for_service(dyn, vme_info.namespace, service_name)
 
     pod = await get_pod_for_service(dyn, vme_info.namespace, service)
+    pod_dict = pod.to_dict()
 
     target_port = await translate_service_port_to_target_port(
-        service, pod, remote_port=443, local_port=int(vme_info.local_port)
+        service, pod, remote_port=443, local_port=vme_info.local_port
     )
 
-    pf = KubectlPortForward(
-        namespace=vme_info.namespace,
-        pod_name=pod.metadata.name,
-        local_port=vme_info.local_port,
-        remote_port=target_port,
-    )
-    await pf.start()
+    pod = object_from_spec(pod_dict)
+
+    pf = PortForward(pod, remote_port=target_port, local_port=vme_info.local_port)
+    pf.start()
+
 
     if vme_info.local_port == 0:
+        while pf.local_port == 0:
+            await asyncio.sleep(0.05)
         vme_info.service_url = f"127.0.0.1:{pf.local_port}"
     else:
         vme_info.service_url = f"127.0.0.1:{vme_info.local_port}"
@@ -537,8 +481,9 @@ async def print_request_body(
     token = await get_token_from_secret(client, vmexport)
     headers = headers.copy()
     headers[EXPORT_TOKEN_HEADER] = token
+    connector = aiohttp.TCPConnector(ssl=not vme_info.insecure)
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(connector=connector) as session:
             async with session.get(manifest_url, headers=headers) as resp:
                 if resp.status != 200:
                     raise RuntimeError(f"Failed to fetch manifest: HTTP {resp.status}")

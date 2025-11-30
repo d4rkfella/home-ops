@@ -158,7 +158,6 @@ RUN apt-get update && \
     useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
     groupadd -g 1003 docker || true && \
     usermod -aG docker $USERNAME && \
-    mkdir -p ~/guestfs && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

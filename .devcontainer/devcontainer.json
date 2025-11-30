@@ -3,14 +3,12 @@
     "name": "Kubernetes Management",
 
     "image": "ghcr.io/d4rkfella/devcontainer@sha256:b877cfa4e609d1fedc1e432c5656ffb2f57a0baa572abcaa5cabee0f25480bea",
-    "containerUser": "vscode",
-    "remoteUser": "vscode",
     "workspaceFolder": "/project",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind,consistency=consistent",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
     "mounts": [
-      "source=/var/lib/pgadmin,target=/var/lib/pgadmin,type=bind,consistency=consistent",
-      "source=/var/log/pgadmin,target=/var/log/pgadmin,type=bind,consistency=consistent",
+      "source=/var/lib/pgadmin,target=/var/lib/pgadmin,type=bind",
+      "source=/var/log/pgadmin,target=/var/log/pgadmin,type=bind",
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
     "customizations": {
@@ -24,11 +22,10 @@
             "ms-azuretools.vscode-containers",
             "GitHub.vscode-pull-request-github",
             "donjayamanne.githistory",
-            "ms-python.vscode-python-envs",
-            "ms-python.mypy-type-checker",
             "ms-python.python",
             "ms-python.vscode-pylance",
-            "ms-python.debugpy"
+            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "charliermarsh.ruff"
         ],
         "settings": {
             "python.terminal.activateEnvInCurrentTerminal": true,

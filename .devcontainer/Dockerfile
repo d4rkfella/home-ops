@@ -96,6 +96,14 @@ RUN apt-get update && \
     mv helm /usr/local/bin/helm && \
     #Download kubectl node-shell plugin
     curl -fsSL -o /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
+    #Download and verify libguestfs appliance
+    curl -fsSL -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz \
+               -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz.sig \
+               -O https://download.libguestfs.org/libguestfs.keyring && \
+    gpg --no-default-keyring --keyring ./libguestfs.keyring --verify appliance-1.56.0.tar.xz.sig appliance-1.56.0.tar.xz && \
+    tar -xJf appliance-1.56.0.tar.xz && \
+    mkdir -p /usr/local/lib/guestfs && \
+    mv appliance /usr/local/lib/guestfs/ && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
@@ -123,6 +131,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /tmp/wheels /tmp/wheels
+COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -140,7 +149,8 @@ RUN apt-get update && \
         python3.13-venv \
         direnv \
         yq \
-        docker.io \
+        docker-cli \
+        docker-buildx \
         tigervnc-viewer \
         fontconfig \
         fonts-dejavu \
@@ -149,12 +159,6 @@ RUN apt-get update && \
     groupadd -g 1003 docker || true && \
     usermod -aG docker $USERNAME && \
     mkdir -p ~/guestfs && \
-    cd ~/guestfs && \
-    curl -fsSL -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz \
-               -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz.sig \
-               -O https://download.libguestfs.org/libguestfs.keyring && \
-    gpg --no-default-keyring --keyring ./libguestfs.keyring --verify appliance-1.56.0.tar.xz.sig appliance-1.56.0.tar.xz && \
-    tar -xJf appliance-1.56.0.tar.xz && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

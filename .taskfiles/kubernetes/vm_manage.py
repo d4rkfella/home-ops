@@ -2,8 +2,8 @@
 import asyncio
 from typing import cast
 
-from kubernetes_asyncio import client, config, watch  # type: ignore
-from kubernetes_asyncio.client.api_client import ApiClient  # type: ignore
+from kubernetes_asyncio import client, config, watch
+from kubernetes_asyncio.client.api_client import ApiClient
 from textual.app import App, ComposeResult
 from textual.binding import Binding
 from textual.widgets import Footer, Header, Label, ListItem, ListView, Static
@@ -55,7 +55,6 @@ class VMManagerApp(App):
 
     def __init__(self) -> None:
         super().__init__()
-        # (namespace, name) -> status
         self.vms: dict[tuple[str, str], str] = {}
         self.list_view: ListView | None = None
         self.actions_display: Static | None = None
@@ -99,6 +98,9 @@ class VMManagerApp(App):
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
         """Check if an action may run based on the selected VM's status."""
+        if action == "cleanup_and_quit":
+            return True
+
         vm_info = self.get_selected_vm()
         if not vm_info:
             return None
@@ -132,17 +134,21 @@ class VMManagerApp(App):
                     group="kubevirt.io",
                     version="v1",
                     plural="virtualmachines",
+                    allow_watch_bookmarks=True,
                     timeout_seconds=0,
                 ) as stream:
                     async for event in stream:
-                        obj: dict = event["raw_object"]  # type: ignore
+                        obj: dict = event["raw_object"]
+
+                        if event["type"] == "BOOKMARK":
+                            continue
                         ns = obj["metadata"]["namespace"]
                         name = obj["metadata"]["name"]
                         status = obj.get("status", {}).get("printableStatus", "Unknown")
 
                         key = (ns, name)
 
-                        if event["type"] in ["ADDED", "MODIFIED"]:  # type: ignore
+                        if event["type"] in ["ADDED", "MODIFIED"]:
                             if key not in self.vms:
                                 self.vms[key] = status
                                 await self.list_view.append(
@@ -166,7 +172,7 @@ class VMManagerApp(App):
                                         self.refresh_bindings()
                                         break
 
-                        elif event["type"] == "DELETED" and key in self.vms:  # type: ignore
+                        elif event["type"] == "DELETED" and key in self.vms:
                             del self.vms[key]
                             for i, item in enumerate(self.list_view.children):
                                 vm_item = cast(VMListItem, item)
@@ -175,12 +181,9 @@ class VMManagerApp(App):
                                     break
 
         except Exception as e:
-            import traceback
-
             self.notify(
                 f"💥 Watcher crashed: {type(e).__name__}: {e} ", severity="error"
             )
-            self.notify(f"Traceback: {traceback.format_exc()}", severity="error")
 
     async def on_list_view_highlighted(self) -> None:
         self.refresh_bindings()

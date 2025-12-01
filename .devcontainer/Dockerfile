@@ -152,7 +152,7 @@ RUN apt-get update && \
         docker-cli \
         docker-buildx \
         tigervnc-viewer \
-        libusb \
+        libusb-1.0-0 \
         usbredirect \
         fontconfig \
         fonts-dejavu \

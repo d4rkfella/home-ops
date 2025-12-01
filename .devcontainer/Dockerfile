@@ -152,6 +152,8 @@ RUN apt-get update && \
         docker-cli \
         docker-buildx \
         tigervnc-viewer \
+        libusb \
+        usbredirect \
         fontconfig \
         fonts-dejavu \
         && groupadd --gid $USER_GID $USERNAME || true && \

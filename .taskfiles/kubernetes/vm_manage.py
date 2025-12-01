@@ -1,42 +1,129 @@
 #!/usr/bin/env python3
 import asyncio
-from typing import cast
+from typing import cast, Any
 from pathlib import Path
-from collections.abc import Iterable
-import pyudev
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
+from dataclasses import dataclass, field
 from kubernetes_asyncio import client, config, watch
 from kubernetes_asyncio.client.api_client import ApiClient
 from kubernetes_asyncio.config import ConfigException
 from textual.app import App, ComposeResult
 from textual import work
 from textual.screen import ModalScreen
-from textual.containers import Vertical, Horizontal
+from textual.containers import Vertical, Horizontal, VerticalScroll
 from textual.binding import Binding
-from textual.widgets import Footer, Header, Label, ListItem, ListView, Static, Button, TextArea
+from textual.widgets import (
+    Footer,
+    Header,
+    Label,
+    ListItem,
+    ListView,
+    Static,
+    Button,
+    TextArea,
+    Markdown,
+    DataTable,
+)
+import usb.core
+import usb.util
 
-STATUS_EMOJI: dict[str, str] = {
-    "running": "🟢",
-    "stopped": "🔴",
-    "paused": "🟡",
-    "stopping": "🟠",
-    "starting": "🔵",
-    "unknown": "⚪",
-}
 
-
-class USBDeviceItem(ListItem):
-    """List item for a selectable USB device."""
+class USBDevice(ListItem):
     def __init__(self, device_id: str, description: str):
         super().__init__(Label(f"🔌 {description}"))
         self.device_id = device_id
         self.description = description
 
 
-class USBRedirScreen(ModalScreen[str]): # Screen returns the device_id string
-    """Modal screen to select an attached USB device for redirection."""
+@dataclass(frozen=True)
+class VMData:
+    namespace: str
+    name: str
+    status: str
+    uid: str
+    ready: bool | None
 
+    labels: dict[str, str]
+    annotations: dict[str, str]
+    creation_timestamp: str
+    resource_version: str
+    run_strategy: str
+    cpu_info: str
+    memory_info: str
+    disks: list[str]
+    interfaces: list[str]
+    conditions: list[dict[str, Any]]
+
+    @classmethod
+    def from_raw_object(cls, obj: dict[str, Any]) -> "VMData":
+        metadata = obj.get("metadata", {})
+        spec = obj.get("spec", {})
+        status_dict = obj.get("status", {})
+
+        ns = metadata.get("namespace", "Unknown")
+        name = metadata.get("name", "Unknown")
+        uid = metadata.get("uid", "Unknown")
+        status = status_dict.get("printableStatus", "Unknown")
+        ready = next(
+            (
+                c.get("status") == "True"
+                for c in status_dict.get("conditions", [])
+                if c.get("type") == "Ready"
+            ),
+            None,
+        )
+
+        labels = metadata.get("labels", {})
+        annotations = metadata.get("annotations", {})
+        creation_ts = metadata.get("creationTimestamp", "")
+        resource_version = metadata.get("resourceVersion", "")
+        run_strategy = spec.get("runStrategy", "")
+
+        template_spec = spec.get("template", {}).get("spec", {})
+        domain = template_spec.get("domain", {})
+        domain_cpu = domain.get("cpu", {})
+        resources = domain.get("resources", {})
+        limits = resources.get("limits", {})
+        requests = resources.get("requests", {})
+
+        if domain_cpu:
+            cpu_info = f"{requests.get('cpu', 'Unknown')} CPUs (dedicated: {domain_cpu.get('dedicatedCpuPlacement', False)}, isolateEmulatorThread: {domain_cpu.get('isolateEmulatorThread', False)})"
+        else:
+            cpu_info = f"{requests.get('cpu', 'Unknown')} CPUs"
+
+        memory_info = limits.get("memory", requests.get("memory", "Unknown"))
+
+        disks = [
+            d.get("name", "Unknown") for d in domain.get("devices", {}).get("disks", [])
+        ]
+        interfaces = [
+            i.get("name", "Unknown")
+            for i in domain.get("devices", {}).get("interfaces", [])
+        ]
+
+        conditions = status_dict.get("conditions", [])
+
+        return cls(
+            namespace=ns,
+            name=name,
+            status=status,
+            uid=uid,
+            ready=ready,
+            labels=labels,
+            annotations=annotations,
+            creation_timestamp=creation_ts,
+            resource_version=resource_version,
+            run_strategy=run_strategy,
+            cpu_info=cpu_info,
+            memory_info=memory_info,
+            disks=disks,
+            interfaces=interfaces,
+            conditions=conditions,
+        )
+
+
+class USBRedirectSelection(ModalScreen[str]):
     BINDINGS = [
         Binding("escape", "dismiss_screen", "Cancel", priority=True),
     ]
@@ -63,8 +150,8 @@ class USBRedirScreen(ModalScreen[str]): # Screen returns the device_id string
         height: 1fr;
     }
     """
+
     def action_dismiss_screen(self) -> None:
-        """Dismisses the screen, returning None to the parent app."""
         self.dismiss(None)
 
     def compose(self) -> ComposeResult:
@@ -75,53 +162,55 @@ class USBRedirScreen(ModalScreen[str]): # Screen returns the device_id string
     async def on_mount(self) -> None:
         await self.load_usb_devices()
 
-    def get_udev_devices(self) -> Iterable[pyudev.Device]:
-        """Synchronous function to query pyudev for USB devices."""
-        context = pyudev.Context()
-        for device in context.list_devices(subsystem='usb'):
-            if device.device_type == 'usb_device':
-                yield device
-
     async def load_usb_devices(self) -> None:
-        """Loads USB devices using pyudev and populates the list view."""
         list_view = self.query_one("#usb-list", ListView)
 
-        try:
-            # Accessing self.app for notification, as it is automatically available
-            usb_devices = await asyncio.to_thread(self.get_udev_devices)
+        def find_usb_devices() -> list["USBDevice"]:
+            try:
+                usb_devices = usb.core.find(find_all=True)
+            except Exception:
+                raise
 
-            items = []
+            items: list["USBDevice"] = []
 
             for device in usb_devices:
-                vendor_id = device.get('ID_VENDOR_ID')
-                product_id = device.get('ID_MODEL_ID')
-                description = device.get('ID_MODEL', 'Unknown Device')
+                vendor_id_hex = f"{device.idVendor:04x}"
+                product_id_hex = f"{device.idProduct:04x}"
+                device_id = f"{vendor_id_hex}:{product_id_hex}"
 
-                if vendor_id and product_id:
-                    device_id = f"{vendor_id}:{product_id}"
-                    item = USBDeviceItem(device_id, f"{description} ({device_id})")
+                try:
+                    description = usb.util.get_string(device, device.iProduct)
+                except Exception:
+                    description = (
+                        f"unknown device (VID:{vendor_id_hex} PID:{product_id_hex})"
+                    )
+
+                # 1d6b is Linux Foundation root hub (filter this out)
+                if vendor_id_hex not in ("1d6b", "0000"):
+                    item = USBDevice(device_id, f"{description} ({device_id})")
                     items.append(item)
 
-            if not items:
-                self.app.notify("No USB devices found.", severity="warning")
+            return items
 
-            await list_view.extend(items)
+        try:
+            if not (list_items := await asyncio.to_thread(find_usb_devices)):
+                self.app.notify("no usb devices found.", timeout=6)
+                return
 
-        except ImportError:
-            self.app.notify("pyudev not found. Run 'pip install pyudev'.", severity="error")
-            self.dismiss(None)
+            await list_view.extend(list_items)
+
         except Exception as e:
-            self.app.notify(f"Error loading USB devices: {type(e).__name__} {e}", severity="error")
+            self.app.notify(
+                f"error loading usb devices: {type(e).__name__} {e}", severity="error"
+            )
             self.dismiss(None)
 
     async def on_list_view_selected(self, event: ListView.Selected) -> None:
-        """Handles selection of a USB device and dismisses, returning the ID."""
-        selected_item = cast(USBDeviceItem, event.item)
+        selected_item = cast(USBDevice, event.item)
         self.dismiss(selected_item.device_id)
 
-class SSHKeyDisplay(ModalScreen):
-    """A modal screen to display the generated SSH public key."""
 
+class SSHKeyDisplay(ModalScreen):
     CSS = """
     SSHKeyDisplay {
         align: center middle;
@@ -168,11 +257,9 @@ class SSHKeyDisplay(ModalScreen):
         with Vertical(id="dialog"):
             yield Label(f"🔑 SSH Key for {self.vm_name}", id="key-title")
             yield Label(f"Private key saved to: {self.key_path}", id="key-path")
-
-            text_area = TextArea(self.pub_key, id="pub-key-area", read_only=True)
-            text_area.show_line_numbers = False
-            yield text_area
-
+            yield TextArea(
+                self.pub_key, id="pub-key-area", read_only=True, compact=True
+            )
             with Horizontal():
                 yield Button("Close", variant="primary", id="close")
 
@@ -181,20 +268,98 @@ class SSHKeyDisplay(ModalScreen):
             self.dismiss()
 
 
-class VMListItem(ListItem):
-    def __init__(self, namespace: str, name: str, status: str):
-        emoji = STATUS_EMOJI.get(status.lower(), "⚪")
-        super().__init__(Label(f"{emoji} {name:25} {namespace:20} {status}"))
-        self.namespace = namespace
-        self.rname = name
-        self.status = status.lower()
+class VMInfoDock(VerticalScroll):
+    """A static widget to display detailed information about the selected VM."""
+
+    DEFAULT_CSS = """
+    VMInfoDock {
+        width: 30%;
+        min-width: 30;
+        height: 100%;
+        background: $panel;
+        border-left: wide $primary;
+        padding: 1;
+    }
+    .info-header {
+        text-style: bold italic;
+        color: $accent;
+        margin-bottom: 1;
+    }
+    .info-field {
+        color: $text;
+        margin-bottom: 0;
+    }
+    .running {
+        color: #4CAF50; /* Green */
+    }
+    .stopped {
+        color: #F44336; /* Red */
+    }
+    """
+
+    def compose(self) -> ComposeResult:
+        yield Label("VM Details", classes="info-header")
+        yield Markdown("Select a VM to view details...", id="info-content")
+
+    async def update_vm_info(self, vm: VMData) -> None:
+        name = vm.name
+        namespace = vm.namespace
+        uid = vm.uid
+        resource_version = vm.resource_version
+        creation_ts = vm.creation_timestamp
+        labels = vm.labels
+        annotations = vm.annotations
+
+        printable_status = vm.status
+        ready = vm.ready
+        conditions = vm.conditions
+
+        run_strategy = vm.run_strategy
+        cpu_info = vm.cpu_info
+        memory_info = vm.memory_info
+        disk_names = ", ".join(vm.disks)
+        iface_names = ", ".join(vm.interfaces)
+
+        markdown = (
+            f"**VM:** {name}  \n"
+            + f"**Namespace:** {namespace}  \n"
+            + f"**UID:** {uid}  \n"
+            + f"**Resource Version:** {resource_version}  \n"
+            + f"**Created At:** {creation_ts}  \n"
+            + f"**Labels:** {labels}  \n"
+            + f"**Annotations:** {annotations}  \n"
+            + f"**Status:** {printable_status}  \n"
+            + f"**Ready:** {ready}  \n"
+            + f"**Run Strategy:** {run_strategy}  \n"
+            + f"**CPU:** {cpu_info}  \n"
+            + f"**Memory:** {memory_info}  \n"
+            + f"**Disks:** {disk_names}  \n"
+            + f"**Interfaces:** {iface_names}  \n"
+            + "\n"
+            + "---  \n"
+            + "**Conditions:**  \n"
+        )
+
+        for cond in conditions:
+            cond_type = cond.get("type", "Unknown")
+            cond_status = cond.get("status", "Unknown")
+            cond_msg = cond.get("message", "")
+            cond_reason = cond.get("reason", "")
+            markdown += (
+                f"- **{cond_type}**: {cond_status}"
+                + (f" ({cond_reason})" if cond_reason else "")
+                + (f" - {cond_msg}" if cond_msg else "")
+                + "  \n"
+            )
+
+        await self.query_one("#info-content", Markdown).update(markdown)
 
 
-class VMManagerApp(App):
+class KubevirtManager(App):
     TITLE = "KubeVirt VM Manager"
     CSS = """
     ListView {
-        width: 100%;
+        width: 1fr;
         height: 1fr;
     }
 
@@ -213,7 +378,7 @@ class VMManagerApp(App):
         Binding("u", "unpause_vm", "Unpause", priority=True),
         Binding("r", "restart_vm", "Restart", priority=True),
         Binding("v", "vnc_connect", "VNC", priority=True),
-        Binding("k", "generate_keys", "Gen SSH Key", priority=True),
+        Binding("k", "generate_keys", "Gen SSH key pair", priority=True),
         Binding("o", "usb_redirect", "Redirect USB", priority=True),
         Binding("q", "cleanup_and_quit", "Quit", priority=True),
     ]
@@ -229,24 +394,47 @@ class VMManagerApp(App):
         "usb_redirect": {"running"},
     }
 
+    COLUMN_MAP = {
+        "name": {
+            "label": "Name",
+            "display": lambda vm: vm.name,
+        },
+        "namespace": {
+            "label": "Namespace",
+            "display": lambda vm: vm.namespace,
+        },
+        "status": {
+            "label": "Status",
+            "display": lambda vm: vm.status,
+        },
+        "ready": {
+            "label": "Ready",
+            "display": lambda vm: vm.ready,
+        },
+    }
+
     def __init__(self) -> None:
         super().__init__()
-        self.vms: dict[tuple[str, str], str] = {}
-        self.list_view: ListView | None = None
-        self.active_vnc: dict[VMListItem, asyncio.Task] = {}
+        self.vms: dict[str, VMData] = {}
+        self.data_table: DataTable | None = None
+        self.active_vnc: dict[VMData, asyncio.Task] = {}
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield Static(f" {'Name':25} {'Namespace':20} Status", classes="header-row")
-        yield ListView(id="vm-list")
+        with Horizontal(id="main-container"):
+            with Vertical(id="vm-list-container"):
+                yield DataTable(cursor_type="row", id="vm-list")
+            yield VMInfoDock(id="info-dock")
         yield Footer()
 
     async def on_mount(self) -> None:
-        self.list_view = self.query_one("#vm-list", ListView)
+        self.data_table = self.query_one("#vm-list", DataTable)
+
+        for col_key, spec in self.COLUMN_MAP.items():
+            self.data_table.add_column(spec["label"], key=col_key)
 
         try:
             await config.load_kube_config()
-            print("configuration loaded from kubeconfig.")
         except ConfigException:
             try:
                 config.load_incluster_config()
@@ -263,17 +451,22 @@ class VMManagerApp(App):
         if not (selected_vm := self.get_selected_vm()):
             return None
 
-        if action == "vnc_connect" and selected_vm in self.active_vnc:
+        if action == "vnc_connect" and selected_vm.uid in self.active_vnc:
             return None
 
         return True if selected_vm.status.lower() in valid_statuses else None
 
     async def watch_vms(self) -> None:
-        assert self.list_view is not None
+        assert self.data_table is not None
+
+        def compute_row(vm: VMData):
+            return [spec["display"](vm) for spec in self.COLUMN_MAP.values()]
+
         try:
             async with ApiClient() as api:
                 v1_custom = client.CustomObjectsApi(api)
                 w = watch.Watch()
+
                 async with w.stream(
                     v1_custom.list_cluster_custom_object,
                     group="kubevirt.io",
@@ -283,64 +476,68 @@ class VMManagerApp(App):
                     timeout_seconds=0,
                 ) as stream:
                     async for event in stream:
-                        obj: dict = event["raw_object"]
-
-                        if event["type"] == "BOOKMARK":
+                        etype = event["type"]
+                        if etype == "BOOKMARK":
                             continue
-                        ns = obj["metadata"]["namespace"]
-                        name = obj["metadata"]["name"]
-                        status = obj.get("status", {}).get("printableStatus", "Unknown")
 
-                        key = (ns, name)
+                        raw = cast(dict[str, Any], event["raw_object"])
+                        uid = raw["metadata"]["uid"]
 
-                        if event["type"] in ["ADDED", "MODIFIED"]:
-                            if key not in self.vms:
-                                self.vms[key] = status
-                                await self.list_view.append(
-                                    VMListItem(ns, name, status)
-                                )
-                            elif self.vms[key] != status:
-                                self.vms[key] = status
+                        if etype == "DELETED":
+                            if uid in self.vms:
+                                del self.vms[uid]
+                                self.data_table.remove_row(uid)
+                            continue
 
-                                for item in self.list_view.children:
-                                    vm_item = cast(VMListItem, item)
-                                    if (
-                                        vm_item.namespace == ns
-                                        and vm_item.rname == name
-                                    ):
-                                        emoji = STATUS_EMOJI.get(status.lower(), "⚪")
-                                        label = cast(Label, vm_item.children[0])
-                                        label.update(
-                                            f"{emoji} {name:25} {ns:20} {status}"
-                                        )
-                                        vm_item.status = status.lower()
-                                        self.refresh_bindings()
-                                        break
+                        new_vm = VMData.from_raw_object(raw)
+                        existing_vm = self.vms.get(uid)
+                        self.vms[uid] = new_vm
 
-                        elif event["type"] == "DELETED" and key in self.vms:
-                            del self.vms[key]
-                            for i, item in enumerate(self.list_view.children):
-                                vm_item = cast(VMListItem, item)
-                                if vm_item.namespace == ns and vm_item.rname == name:
-                                    await self.list_view.pop(i)
-                                    break
+                        if existing_vm is None:
+                            self.data_table.add_row(*compute_row(new_vm), key=uid)
+                            continue
+
+                        if existing_vm != new_vm:
+                            for col_key, spec in self.COLUMN_MAP.items():
+                                if getattr(existing_vm, col_key) != getattr(
+                                    new_vm, col_key
+                                ):
+                                    self.data_table.update_cell(
+                                        uid, col_key, spec["display"](new_vm)
+                                    )
+                            await self.query_one(
+                                "#info-dock", VMInfoDock
+                            ).update_vm_info(new_vm)
+
+                        self.refresh_bindings()
 
         except Exception as e:
             self.notify(
-                f"💥 Watcher crashed: {type(e).__name__}: {e} ",
+                f"Error: Kubernetes watcher failed: {type(e).__name__}: {e}",
                 severity="error",
                 timeout=10,
             )
 
-    def on_list_view_highlighted(self) -> None:
+    async def on_data_table_row_highlighted(
+        self, event: DataTable.RowHighlighted
+    ) -> None:
         self.refresh_bindings()
 
-    def get_selected_vm(self) -> VMListItem | None:
-        if not self.list_view or not (
-            item := cast(VMListItem, self.list_view.highlighted_child)
-        ):
+        info_dock = self.query_one("#info-dock", VMInfoDock)
+
+        if not (selected_vm := self.vms.get(event.row_key.value)):
+            return
+
+        await info_dock.update_vm_info(selected_vm)
+
+    def get_selected_vm(self) -> VMData | None:
+        if not self.data_table:
             return None
-        return item
+
+        row_key, _ = self.data_table.coordinate_to_cell_key(
+            self.data_table.cursor_coordinate
+        )
+        return self.vms[row_key.value]
 
     async def spawn_virtctl(self, *args) -> asyncio.subprocess.Process | None:
         try:
@@ -351,10 +548,16 @@ class VMManagerApp(App):
                 stderr=asyncio.subprocess.PIPE,
             )
         except FileNotFoundError:
-            self.notify("virtctl not found in PATH.", severity="error")
+            self.notify(
+                "Error: The **virtctl** binary is not found in your system's PATH. Make sure it's installed and accessible.",
+                severity="error",
+            )
             return None
         except Exception as e:
-            self.notify(f"error running virtctl: {e}", severity="error")
+            self.notify(
+                f"Error: Failed to execute **virtctl** command due to an unexpected system error: {type(e).__name__} {e}",
+                severity="error",
+            )
             return None
 
     async def execute_virtctl(self, *args) -> None:
@@ -368,55 +571,64 @@ class VMManagerApp(App):
                 or stdout.decode().strip()
                 or f"Return code {proc.returncode}"
             )
-            self.notify(f"command failed: {msg}", severity="error")
-        else:
-            self.notify("command sent successfully")
+            self.notify(
+                f"Error: **virtctl** command failed (non-zero status): {msg}",
+                severity="error",
+            )
 
     async def action_start_vm(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
-        await self.execute_virtctl("start", selected_vm.rname, "-n", selected_vm.namespace)
+        await self.execute_virtctl(
+            "start", selected_vm.name, "-n", selected_vm.namespace
+        )
 
     async def action_stop_vm(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
-        await self.execute_virtctl("stop", selected_vm.rname, "-n", selected_vm.namespace)
+        await self.execute_virtctl(
+            "stop", selected_vm.name, "-n", selected_vm.namespace
+        )
 
     async def action_pause_vm(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
         await self.execute_virtctl(
-            "pause", "vm", selected_vm.rname, "-n", selected_vm.namespace
+            "pause", "vm", selected_vm.name, "-n", selected_vm.namespace
         )
 
     async def action_unpause_vm(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
         await self.execute_virtctl(
-            "unpause", "vm", selected_vm.rname, "-n", selected_vm.namespace
+            "unpause", "vm", selected_vm.name, "-n", selected_vm.namespace
         )
 
     async def action_restart_vm(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
-        await self.execute_virtctl("restart", selected_vm.rname, "-n", selected_vm.namespace)
+        await self.execute_virtctl(
+            "restart", selected_vm.name, "-n", selected_vm.namespace
+        )
 
     async def action_vnc_connect(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
 
-        self.notify(f"🔌 Connecting to VNC for {selected_vm.rname}...")
+        self.notify(f"🔌 Opening a new VNC connection to VM '{selected_vm.name}'...")
 
         async def run_vnc():
             proc = None
             try:
-                if not (proc := await self.spawn_virtctl(
-                    "vnc", selected_vm.rname, "-n", selected_vm.namespace
-                )):
+                if not (
+                    proc := await self.spawn_virtctl(
+                        "vnc", selected_vm.name, "-n", selected_vm.namespace
+                    )
+                ):
                     return
 
                 await proc.wait()
-                self.notify(f"✅ VNC session for {selected_vm.rname} closed")
+                self.notify(f"➜] VNC connection to '{selected_vm.name}' was closed")
             except asyncio.CancelledError:
                 if proc and proc.returncode is None:
                     proc.terminate()
@@ -441,26 +653,24 @@ class VMManagerApp(App):
         ssh_dir = home_dir / ".ssh"
         ssh_dir.mkdir(parents=True, exist_ok=True)
 
-        key_name = f"kubevirt_{selected_vm.namespace}_{selected_vm.rname}"
+        key_name = f"kubevirt_{selected_vm.namespace}_{selected_vm.name}"
         key_path = ssh_dir / key_name
         pub_key_path = ssh_dir / f"{key_name}.pub"
 
         if not key_path.exists():
-            self.notify(f"Generating SSH key for {selected_vm.rname}...")
-
             try:
                 private_key = ed25519.Ed25519PrivateKey.generate()
 
                 private_bytes = private_key.private_bytes(
                     encoding=serialization.Encoding.PEM,
                     format=serialization.PrivateFormat.OpenSSH,
-                    encryption_algorithm=serialization.NoEncryption()
+                    encryption_algorithm=serialization.NoEncryption(),
                 )
 
                 public_key = private_key.public_key()
                 public_bytes = public_key.public_bytes(
                     encoding=serialization.Encoding.OpenSSH,
-                    format=serialization.PublicFormat.OpenSSH
+                    format=serialization.PublicFormat.OpenSSH,
                 )
 
                 key_path.write_bytes(private_bytes)
@@ -469,35 +679,44 @@ class VMManagerApp(App):
                 pub_key_path.write_bytes(public_bytes)
 
             except Exception as e:
-                self.notify(f"Crypto Error: {e}", severity="error")
+                self.notify(
+                    f"Error: Failed to generate key pair: {e}", severity="error"
+                )
                 return
         else:
-            self.notify(f"SSH key already exists for {selected_vm.rname}")
+            self.notify(
+                f"Private key **{key_name}** already exists for VM '{selected_vm.name}'. Attempting to find associated public key and display it"
+            )
 
         try:
             if pub_key_path.exists():
                 pub_key_content = pub_key_path.read_text().strip()
-                self.push_screen(SSHKeyDisplay(selected_vm.rname, pub_key_content, str(key_path)))
+                self.push_screen(
+                    SSHKeyDisplay(selected_vm.name, pub_key_content, str(key_path))
+                )
             else:
-                self.notify("Public key file not found!", severity="error")
+                self.notify("Warning: Public key file not found!", severity="warning")
         except Exception as e:
-            self.notify(f"Error reading public key: {e}", severity="error")
+            self.notify(f"Error: Failed reading public key: {e}", severity="error")
 
     @work
     async def action_usb_redirect(self) -> None:
         if not (selected_vm := self.get_selected_vm()):
             return
 
-        if not (device_id := await self.push_screen_wait(USBRedirScreen())):
-            self.notify("USB redirection cancelled.")
+        if not (device_id := await self.push_screen_wait(USBRedirectSelection())):
+            self.notify("✘ USB redirection cancelled.")
             return
 
-        self.notify(f"Redirecting device {device_id} to {selected_vm.rname}...")
+        self.notify(
+            f"↪ Redirecting USB device '{device_id}' to VM '{selected_vm.name}'..."
+        )
         await self.execute_virtctl(
             "usbredir",
             device_id,
-            f"vm/{selected_vm.rname}",
-            "-n", selected_vm.namespace
+            f"vm/{selected_vm.name}",
+            "-n",
+            selected_vm.namespace,
         )
 
     async def action_cleanup_and_quit(self) -> None:
@@ -509,5 +728,5 @@ class VMManagerApp(App):
 
 
 if __name__ == "__main__":
-    app = VMManagerApp()
+    app = KubevirtManager()
     app.run()

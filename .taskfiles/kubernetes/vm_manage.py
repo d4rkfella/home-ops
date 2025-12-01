@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
 from enum import Enum, auto
+import subprocess
+import os
 
 import usb.core
 import usb.util
@@ -392,6 +394,8 @@ class KubevirtManager(App):
         Binding("v", "vnc_connect", "VNC", priority=True),
         Binding("k", "generate_keys", "Gen SSH key pair", priority=True),
         Binding("o", "usb_redirect", "Redirect USB", priority=True),
+        Binding("c", "serial_console", "Open Console", priority=True),
+        Binding("l", "open_ssh", "SSH", priority=True),
         Binding("q", "cleanup_and_quit", "Quit", priority=True),
     ]
 
@@ -465,10 +469,7 @@ class KubevirtManager(App):
         if not (vm := self.get_selected_vm()):
             return None
 
-        if (
-            action_enum == VMAction.VNC_CONNECT
-            and vm.uid in self.active_vnc
-        ):
+        if action_enum == VMAction.VNC_CONNECT and vm.uid in self.active_vnc:
             return None
 
         if not (valid_statuses := self.ACTIONS.get(action_enum)):
@@ -738,6 +739,83 @@ class KubevirtManager(App):
             "-n",
             selected_vm.namespace,
         )
+
+    def action_serial_console(self) -> None:
+        if not (selected_vm := self.get_selected_vm()):
+            return
+
+        with self.suspend():
+            try:
+                cmd = [
+                    "virtctl",
+                    "console",
+                    selected_vm.name,
+                    "-n",
+                    selected_vm.namespace,
+                ]
+                subprocess.run(cmd)
+            except Exception as e:
+                print(f"Error launching serial console: {e}")
+                input("Press Enter to return to KubevirtManager...")
+
+    def action_open_ssh(self) -> None:
+        if not (selected_vm := self.get_selected_vm()):
+            return
+
+        home_dir = Path.home()
+        key_name = f"kubevirt_{selected_vm.namespace}_{selected_vm.name}"
+        key_path = home_dir / ".ssh" / key_name
+
+        ssh_user = os.environ.get("KUBEVIRT_SSH_USER", "vscode")
+
+        cmd = [
+            "virtctl",
+            "ssh",
+            "-n",
+            selected_vm.namespace,
+            f"{ssh_user}@vm/{selected_vm.name}",
+        ]
+
+        if key_path.exists():
+            cmd.extend(["-i", str(key_path)])
+
+        self.notify(
+            f"🔌 Connecting via SSH to {selected_vm.name} as user '{ssh_user}'..."
+        )
+
+        with self.suspend():
+            try:
+                result = subprocess.run(
+                    cmd, capture_output=True, text=True, check=False
+                )
+
+                if result.returncode == 0:
+                    print(
+                        f"✓ SSH session with {selected_vm.name} terminated successfully."
+                    )
+
+                elif result.returncode == 255:
+                    print("❌ SSH Connection Refused or Failed (Exit 255)")
+                    print("--- Error Details ---")
+                    print(result.stderr)
+
+                elif result.returncode != 0:
+                    print(f"❌ SSH Command Failed (Exit {result.returncode})")
+                    print("--- Error Details ---")
+                    print(result.stderr)
+
+                input("\nPress Enter to return to Manager...")
+
+            except FileNotFoundError:
+                print(
+                    "\n❌ Error: 'virtctl' binary not found. Press Enter to continue..."
+                )
+                input()
+            except Exception as e:
+                print(f"\n❌ Unexpected System Error: {e}. Press Enter to continue...")
+                input()
+
+        self.notify(f"✓ SSH session with {selected_vm.name} terminated.")
 
     async def action_cleanup_and_quit(self) -> None:
         for task in self.active_vnc.values():

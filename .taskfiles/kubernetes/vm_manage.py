@@ -1,32 +1,33 @@
 #!/usr/bin/env python3
 import asyncio
-from typing import cast, Any
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Any, cast
+
+import usb.core
+import usb.util
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
-from dataclasses import dataclass, field
 from kubernetes_asyncio import client, config, watch
 from kubernetes_asyncio.client.api_client import ApiClient
 from kubernetes_asyncio.config import ConfigException
-from textual.app import App, ComposeResult
 from textual import work
-from textual.screen import ModalScreen
-from textual.containers import Vertical, Horizontal, VerticalScroll
+from textual.app import App, ComposeResult
 from textual.binding import Binding
+from textual.containers import Horizontal, Vertical, VerticalScroll
+from textual.screen import ModalScreen
 from textual.widgets import (
+    Button,
+    DataTable,
     Footer,
     Header,
     Label,
     ListItem,
     ListView,
-    Static,
-    Button,
-    TextArea,
     Markdown,
-    DataTable,
+    Static,
+    TextArea,
 )
-import usb.core
-import usb.util
 
 
 class USBDevice(ListItem):

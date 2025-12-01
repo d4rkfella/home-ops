@@ -467,7 +467,7 @@ class KubevirtManager(App):
 
         if (
             action_enum == VMAction.VNC_CONNECT
-            and (vm.namespace, vm.name) in self.active_vnc
+            and vm.uid in self.active_vnc
         ):
             return None
 

@@ -3,6 +3,7 @@ import asyncio
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, cast
+from enum import Enum, auto
 
 import usb.core
 import usb.util
@@ -30,6 +31,38 @@ from textual.widgets import (
 )
 
 
+class VMStatus(Enum):
+    RUNNING = auto()
+    PAUSED = auto()
+    STOPPED = auto()
+    UNKNOWN = auto()
+
+    @staticmethod
+    def from_string(value: str) -> "VMStatus":
+        if not value:
+            return VMStatus.UNKNOWN
+        value = str(value).lower()
+        for status in VMStatus:
+            if status.name.lower() == value:
+                return status
+        return VMStatus.UNKNOWN
+
+    @property
+    def display(self) -> str:
+        return self.name.capitalize()
+
+
+class VMAction(Enum):
+    START_VM = auto()
+    STOP_VM = auto()
+    PAUSE_VM = auto()
+    UNPAUSE_VM = auto()
+    RESTART_VM = auto()
+    VNC_CONNECT = auto()
+    GENERATE_KEYS = auto()
+    USB_REDIRECT = auto()
+
+
 class USBDevice(ListItem):
     def __init__(self, device_id: str, description: str):
         super().__init__(Label(f"🔌 {description}"))
@@ -41,12 +74,10 @@ class USBDevice(ListItem):
 class VMData:
     namespace: str
     name: str
-    status: str
+    status: VMStatus
     uid: str
     ready: bool | None
 
-    labels: dict[str, str]
-    annotations: dict[str, str]
     creation_timestamp: str
     resource_version: str
     run_strategy: str
@@ -65,7 +96,7 @@ class VMData:
         ns = metadata.get("namespace", "Unknown")
         name = metadata.get("name", "Unknown")
         uid = metadata.get("uid", "Unknown")
-        status = status_dict.get("printableStatus", "Unknown")
+        status = VMStatus.from_string(status_dict.get("printableStatus", "Unknown"))
         ready = next(
             (
                 c.get("status") == "True"
@@ -75,8 +106,6 @@ class VMData:
             None,
         )
 
-        labels = metadata.get("labels", {})
-        annotations = metadata.get("annotations", {})
         creation_ts = metadata.get("creationTimestamp", "")
         resource_version = metadata.get("resourceVersion", "")
         run_strategy = spec.get("runStrategy", "")
@@ -111,8 +140,6 @@ class VMData:
             status=status,
             uid=uid,
             ready=ready,
-            labels=labels,
-            annotations=annotations,
             creation_timestamp=creation_ts,
             resource_version=resource_version,
             run_strategy=run_strategy,
@@ -166,11 +193,9 @@ class USBRedirectSelection(ModalScreen[str]):
     async def load_usb_devices(self) -> None:
         list_view = self.query_one("#usb-list", ListView)
 
-        def find_usb_devices() -> list["USBDevice"]:
-            try:
-                usb_devices = usb.core.find(find_all=True)
-            except Exception:
-                raise
+        def find_usb_devices() -> list["USBDevice"] | None:
+            if not (usb_devices := usb.core.find(find_all=True)):
+                return
 
             items: list["USBDevice"] = []
 
@@ -274,7 +299,7 @@ class VMInfoDock(VerticalScroll):
 
     DEFAULT_CSS = """
     VMInfoDock {
-        width: 30%;
+        width: 45%;
         min-width: 30;
         height: 100%;
         background: $panel;
@@ -285,16 +310,6 @@ class VMInfoDock(VerticalScroll):
         text-style: bold italic;
         color: $accent;
         margin-bottom: 1;
-    }
-    .info-field {
-        color: $text;
-        margin-bottom: 0;
-    }
-    .running {
-        color: #4CAF50; /* Green */
-    }
-    .stopped {
-        color: #F44336; /* Red */
     }
     """
 
@@ -308,10 +323,8 @@ class VMInfoDock(VerticalScroll):
         uid = vm.uid
         resource_version = vm.resource_version
         creation_ts = vm.creation_timestamp
-        labels = vm.labels
-        annotations = vm.annotations
 
-        printable_status = vm.status
+        printable_status = vm.status.display
         ready = vm.ready
         conditions = vm.conditions
 
@@ -327,8 +340,6 @@ class VMInfoDock(VerticalScroll):
             + f"**UID:** {uid}  \n"
             + f"**Resource Version:** {resource_version}  \n"
             + f"**Created At:** {creation_ts}  \n"
-            + f"**Labels:** {labels}  \n"
-            + f"**Annotations:** {annotations}  \n"
             + f"**Status:** {printable_status}  \n"
             + f"**Ready:** {ready}  \n"
             + f"**Run Strategy:** {run_strategy}  \n"
@@ -385,14 +396,14 @@ class KubevirtManager(App):
     ]
 
     ACTIONS = {
-        "start_vm": {"stopped", "unknown"},
-        "stop_vm": {"running", "paused"},
-        "pause_vm": {"running"},
-        "unpause_vm": {"paused"},
-        "restart_vm": {"running"},
-        "vnc_connect": {"running"},
-        "generate_keys": None,
-        "usb_redirect": {"running"},
+        VMAction.START_VM: {VMStatus.STOPPED, VMStatus.UNKNOWN},
+        VMAction.STOP_VM: {VMStatus.RUNNING, VMStatus.PAUSED},
+        VMAction.PAUSE_VM: {VMStatus.RUNNING},
+        VMAction.UNPAUSE_VM: {VMStatus.PAUSED},
+        VMAction.RESTART_VM: {VMStatus.RUNNING},
+        VMAction.VNC_CONNECT: {VMStatus.RUNNING},
+        VMAction.GENERATE_KEYS: None,
+        VMAction.USB_REDIRECT: {VMStatus.RUNNING},
     }
 
     COLUMN_MAP = {
@@ -406,7 +417,7 @@ class KubevirtManager(App):
         },
         "status": {
             "label": "Status",
-            "display": lambda vm: vm.status,
+            "display": lambda vm: vm.status.display,
         },
         "ready": {
             "label": "Ready",
@@ -446,16 +457,24 @@ class KubevirtManager(App):
         asyncio.create_task(self.watch_vms())
 
     def check_action(self, action: str, parameters: tuple[object, ...]) -> bool | None:
-        if not (valid_statuses := self.ACTIONS.get(action)):
+        try:
+            action_enum = VMAction[action.upper()]
+        except KeyError:
             return True
 
-        if not (selected_vm := self.get_selected_vm()):
+        if not (vm := self.get_selected_vm()):
             return None
 
-        if action == "vnc_connect" and selected_vm.uid in self.active_vnc:
+        if (
+            action_enum == VMAction.VNC_CONNECT
+            and (vm.namespace, vm.name) in self.active_vnc
+        ):
             return None
 
-        return True if selected_vm.status.lower() in valid_statuses else None
+        if not (valid_statuses := self.ACTIONS.get(action_enum)):
+            return True
+
+        return True if vm.status in valid_statuses else None
 
     async def watch_vms(self) -> None:
         assert self.data_table is not None

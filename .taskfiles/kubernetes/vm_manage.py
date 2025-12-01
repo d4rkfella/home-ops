@@ -418,7 +418,7 @@ class KubevirtManager(App):
         super().__init__()
         self.vms: dict[str, VMData] = {}
         self.data_table: DataTable | None = None
-        self.active_vnc: dict[VMData, asyncio.Task] = {}
+        self.active_vnc: dict[str, asyncio.Task] = {}
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -639,11 +639,11 @@ class KubevirtManager(App):
                         proc.kill()
                 raise
             finally:
-                self.active_vnc.pop(selected_vm, None)
+                self.active_vnc.pop(selected_vm.uid, None)
                 self.refresh_bindings()
 
         task = asyncio.create_task(run_vnc())
-        self.active_vnc[selected_vm] = task
+        self.active_vnc[selected_vm.uid] = task
         self.refresh_bindings()
 
     async def action_generate_keys(self) -> None:

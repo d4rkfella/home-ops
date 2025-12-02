@@ -2,12 +2,13 @@
 import json
 import os
 import subprocess
-import sys
 from typing import cast
 
 import yaml
+import asyncio
 from textual import work
 from textual.app import App, ComposeResult
+from textual.worker import WorkerFailed
 from textual.binding import Binding
 from textual.containers import Container
 from textual.screen import ModalScreen
@@ -42,40 +43,6 @@ class TaskItem(ListItem):
         self.interactive = interactive
         self.taskfile = taskfile
         self.required_vars = required_vars
-
-
-def run_cmd(cmd) -> str:
-    try:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        print(f"❌ Command failed: {' '.join(cmd)}")
-        sys.exit(1)
-
-
-def load_tasks() -> list[TaskItem]:
-    raw = run_cmd(["task", "--list", "--json"])
-    data = json.loads(raw)
-
-    tasks = []
-    for t in data.get("tasks", []):
-        name = t["name"]
-        desc = t["desc"]
-        taskfile_path = t.get("location", {}).get("taskfile", "")
-        interactive = False
-        required_vars: list[str] | None = None
-
-        if taskfile_path and os.path.exists(taskfile_path):
-            with open(taskfile_path) as f:
-                taskfile_data = yaml.safe_load(f)
-                task_key = t["task"].split(":")[-1]
-                task_def = taskfile_data.get("tasks", {}).get(task_key, {})
-                interactive = bool(task_def.get("interactive", False))
-                required_vars = task_def.get("requires", {}).get("vars", []) or None
-
-        tasks.append(TaskItem(name, desc, interactive, taskfile_path, required_vars))
-
-    return tasks
 
 
 class VarInputScreen(ModalScreen[dict[str, str] | None]):
@@ -202,9 +169,43 @@ class TaskSelection(App):
     async def on_mount(self):
         list_view = self.query_one("#task-list", ListView)
 
-        if tasks := load_tasks():
+        if tasks := self.load_tasks():
             for item in tasks:
                 list_view.append(item)
+
+    def load_tasks(self) -> list[TaskItem] | None:
+        try:
+            raw = self.run_cmd(["task", "--list", "--json"])
+        except subprocess.CalledProcessError:
+            self.notify("Listing tasks failed!", severity="error")
+            return
+        data = json.loads(raw)
+
+        tasks = []
+        for t in data.get("tasks", []):
+            name = t["name"]
+            desc = t["desc"]
+            taskfile_path = t.get("location", {}).get("taskfile", "")
+            interactive = False
+            required_vars: list[str] | None = None
+
+            if taskfile_path and os.path.exists(taskfile_path):
+                with open(taskfile_path) as f:
+                    taskfile_data = yaml.safe_load(f)
+                    task_key = t["task"].split(":")[-1]
+                    task_def = taskfile_data.get("tasks", {}).get(task_key, {})
+                    interactive = bool(task_def.get("interactive", False))
+                    required_vars = task_def.get("requires", {}).get("vars", []) or None
+
+            tasks.append(
+                TaskItem(name, desc, interactive, taskfile_path, required_vars)
+            )
+
+        return tasks
+
+    def run_cmd(self, cmd) -> str:
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        return result.stdout.strip()
 
     @work
     async def on_list_view_selected(self, event: ListView.Selected):
@@ -222,9 +223,53 @@ class TaskSelection(App):
             for k, v in var_values.items():
                 cmd.append(f"{k}={v}")
 
-        with self.suspend():
-            print(f"Running: {' '.join(cmd)}")
-            subprocess.run(cmd)
+        if item.interactive:
+            with self.suspend():
+                try:
+                    output = self.run_cmd(cmd)
+                    self.notify(output)
+                except subprocess.CalledProcessError as e:
+                    self.notify(
+                        e.stderr,
+                        severity="error",
+                    )
+        else:
+            worker = self.run_worker(
+                self.do_command(cmd), exclusive=True, exit_on_error=False
+            )
+            try:
+                await worker.wait()
+                if output := worker.result:
+                    self.notify(output)
+            except WorkerFailed as e:
+                if isinstance(e.error, subprocess.CalledProcessError):
+                    self.notify(
+                        e.error.stderr,
+                        severity="error",
+                    )
+                else:
+                    self.notify(f"Task failed: {e.error}", severity="error")
+
+    async def do_command(self, cmd: list[str]) -> str:
+        proc = await asyncio.create_subprocess_exec(
+            *cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout_bytes, stderr_bytes = await proc.communicate()
+        stdout = stdout_bytes.decode("utf-8").strip()
+        stderr = stderr_bytes.decode("utf-8").strip()
+
+        if proc.returncode != 0:
+            raise subprocess.CalledProcessError(
+                returncode=cast(int, proc.returncode),
+                cmd=cmd,
+                output=stdout,
+                stderr=stderr,
+            )
+
+        return stdout
 
 
 def main():

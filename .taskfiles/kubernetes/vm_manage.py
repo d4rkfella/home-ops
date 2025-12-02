@@ -61,6 +61,7 @@ class VMStatus(Enum):
                 return status
         return VMStatus.UNKNOWN
 
+
 class VMAction(Enum):
     START_VM = auto()
     STOP_VM = auto()
@@ -407,14 +408,44 @@ class KubevirtManager(App):
     ]
 
     ACTIONS = {
-        VMAction.START_VM: {VMStatus.STOPPED, VMStatus.UNKNOWN},
-        VMAction.STOP_VM: {VMStatus.RUNNING, VMStatus.PAUSED},
-        VMAction.PAUSE_VM: {VMStatus.RUNNING},
-        VMAction.UNPAUSE_VM: {VMStatus.PAUSED},
-        VMAction.RESTART_VM: {VMStatus.RUNNING},
-        VMAction.VNC_CONNECT: {VMStatus.RUNNING},
+        VMAction.START_VM: {
+            VMStatus.STOPPED,
+            VMStatus.UNKNOWN,
+            VMStatus.CRASHLOOPBACKOFF,
+            VMStatus.ERRIMAGEPULL,
+            VMStatus.IMAGEPULLBACKOFF,
+            VMStatus.PVCNOTFOUND,
+            VMStatus.DATAVOLUMEERROR,
+            VMStatus.UNSCHEDULABLE,
+        },
+        VMAction.STOP_VM: {
+            VMStatus.RUNNING,
+            VMStatus.STARTING,
+            VMStatus.MIGRATING,
+            VMStatus.PAUSED,
+            VMStatus.CRASHLOOPBACKOFF,
+            VMStatus.ERRIMAGEPULL,
+            VMStatus.IMAGEPULLBACKOFF,
+        },
+        VMAction.PAUSE_VM: {
+            VMStatus.RUNNING,
+        },
+        VMAction.UNPAUSE_VM: {
+            VMStatus.PAUSED,
+        },
+        VMAction.RESTART_VM: {
+            VMStatus.RUNNING,
+            VMStatus.PAUSED,
+            VMStatus.CRASHLOOPBACKOFF,
+        },
+        VMAction.VNC_CONNECT: {
+            VMStatus.RUNNING,
+            VMStatus.PAUSED,
+        },
         VMAction.GENERATE_KEYS: None,
-        VMAction.USB_REDIRECT: {VMStatus.RUNNING},
+        VMAction.USB_REDIRECT: {
+            VMStatus.RUNNING,
+        },
     }
 
     COLUMN_MAP = {

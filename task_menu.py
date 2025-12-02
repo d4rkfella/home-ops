@@ -23,6 +23,27 @@ from textual.widgets import (
 )
 
 
+class TaskItem(ListItem):
+    def __init__(
+        self,
+        name: str,
+        desc: str,
+        interactive: bool = False,
+        taskfile: str = "",
+        required_vars: list[str] | None = None,
+    ) -> None:
+        display_text = f"{name:40} {desc}"
+        if interactive:
+            display_text += " ⚡"
+        super().__init__(Label(display_text))
+
+        self.task_name = name
+        self.description = desc
+        self.interactive = interactive
+        self.taskfile = taskfile
+        self.required_vars = required_vars
+
+
 def run_cmd(cmd) -> str:
     try:
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
@@ -32,44 +53,29 @@ def run_cmd(cmd) -> str:
         sys.exit(1)
 
 
-def load_tasks() -> list[tuple[str, str]]:
+def load_tasks() -> list[TaskItem]:
     raw = run_cmd(["task", "--list", "--json"])
     data = json.loads(raw)
-    return [(t["name"], t["desc"]) for t in data.get("tasks", [])]
 
+    tasks = []
+    for t in data.get("tasks", []):
+        name = t["name"]
+        desc = t["desc"]
+        taskfile_path = t.get("location", {}).get("taskfile", "")
+        interactive = False
+        required_vars: list[str] | None = None
 
-def get_required_vars(task_name) -> list[str] | None:
-    parts = task_name.split(":")
+        if taskfile_path and os.path.exists(taskfile_path):
+            with open(taskfile_path) as f:
+                taskfile_data = yaml.safe_load(f)
+                task_key = t["task"].split(":")[-1]
+                task_def = taskfile_data.get("tasks", {}).get(task_key, {})
+                interactive = bool(task_def.get("interactive", False))
+                required_vars = task_def.get("requires", {}).get("vars", []) or None
 
-    if len(parts) == 1:
-        included_file = "Taskfile.yaml"
-        key = parts[0]
-    else:
-        namespace, key = parts
-        with open("Taskfile.yaml") as f:
-            root = yaml.safe_load(f)
-        included_dir = root["includes"].get(namespace)
-        included_file = os.path.join(included_dir, "Taskfile.yaml")
+        tasks.append(TaskItem(name, desc, interactive, taskfile_path, required_vars))
 
-    with open(included_file) as f:
-        included_taskfile = yaml.safe_load(f)
-
-    required_vars = (
-        included_taskfile.get("tasks", {})
-        .get(key, {})
-        .get("requires", {})
-        .get("vars", [])
-        or None
-    )
-
-    return required_vars
-
-
-class TaskItem(ListItem):
-    def __init__(self, name: str, desc: str) -> None:
-        super().__init__(Label(f"{name:30} {desc}"))
-        self.task_name = name
-        self.description = desc
+    return tasks
 
 
 class VarInputScreen(ModalScreen[dict[str, str] | None]):
@@ -171,7 +177,7 @@ class VarInputScreen(ModalScreen[dict[str, str] | None]):
             self.query_one("#ok-button", Button).press()
 
 
-class TaskSelectionApp(App[tuple[str, dict[str, str] | None] | None]):
+class TaskSelection(App):
     TITLE = "Task Selection Menu"
 
     CSS = """
@@ -184,49 +190,46 @@ class TaskSelectionApp(App[tuple[str, dict[str, str] | None] | None]):
         Binding("q", "quit", "Quit", priority=True),
     ]
 
-    def __init__(self, tasks):
+    def __init__(self):
         super().__init__()
-        self.tasks = tasks
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield ListView(
-            *[TaskItem(name, desc) for name, desc in self.tasks],
-            id="task-list",
-        )
+        yield ListView(id="task-list")
         yield Footer()
+
+    @work
+    async def on_mount(self):
+        list_view = self.query_one("#task-list", ListView)
+
+        if tasks := load_tasks():
+            for item in tasks:
+                list_view.append(item)
 
     @work
     async def on_list_view_selected(self, event: ListView.Selected):
         item = cast(TaskItem, event.item)
+        cmd = ["task", item.task_name]
 
-        if required_vars := get_required_vars(item.task_name):
-            if result := await self.push_screen_wait(VarInputScreen(required_vars)):
-                self.exit((item.task_name, result))
-        else:
-            self.exit((item.task_name, None))
+        var_values = None
+        if item.required_vars:
+            if not (
+                var_values := await self.push_screen_wait(
+                    VarInputScreen(item.required_vars)
+                )
+            ):
+                return
+            for k, v in var_values.items():
+                cmd.append(f"{k}={v}")
+
+        with self.suspend():
+            print(f"Running: {' '.join(cmd)}")
+            subprocess.run(cmd)
 
 
 def main():
-    tasks = load_tasks()
-    if not tasks:
-        print("❌ No tasks found.")
-        sys.exit(0)
-
-    app = TaskSelectionApp(tasks)
-    result = app.run()
-    if result is None:
-        sys.exit(0)
-
-    task_name, var_values = result
-
-    cmd = ["task", task_name]
-    if var_values:
-        for k, v in var_values.items():
-            cmd.append(f"{k}={v}")
-
-    print(f"Running {' '.join(cmd)}")
-    subprocess.run(cmd)
+    app = TaskSelection()
+    app.run()
 
 
 if __name__ == "__main__":

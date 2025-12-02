@@ -34,25 +34,32 @@ from textual.widgets import (
 
 
 class VMStatus(Enum):
-    RUNNING = auto()
-    PAUSED = auto()
-    STOPPED = auto()
-    UNKNOWN = auto()
+    PROVISIONING = "Provisioning"
+    STARTING = "Starting"
+    WAITINGFORVOLUMEBINDING = "WaitingForVolumeBinding"
+    RUNNING = "Running"
+    MIGRATING = "Migrating"
+    STOPPED = "Stopped"
+    PAUSED = "Paused"
+    STOPPING = "Stopping"
+    TERMINATING = "Terminating"
+    CRASHLOOPBACKOFF = "CrashLoopBackOff"
+    UNKNOWN = "Unknown"
+    UNSCHEDULABLE = "Unschedulable"
+    ERRIMAGEPULL = "ErrImagePull"
+    IMAGEPULLBACKOFF = "ImagePullBackOff"
+    PVCNOTFOUND = "PvcNotFound"
+    DATAVOLUMEERROR = "DataVolumeError"
 
     @staticmethod
     def from_string(value: str) -> "VMStatus":
         if not value:
             return VMStatus.UNKNOWN
-        value = str(value).lower()
+        value_str = str(value).lower()
         for status in VMStatus:
-            if status.name.lower() == value:
+            if status.value.lower() == value_str:
                 return status
         return VMStatus.UNKNOWN
-
-    @property
-    def display(self) -> str:
-        return self.name.capitalize()
-
 
 class VMAction(Enum):
     START_VM = auto()
@@ -326,7 +333,7 @@ class VMInfoDock(VerticalScroll):
         resource_version = vm.resource_version
         creation_ts = vm.creation_timestamp
 
-        printable_status = vm.status.display
+        printable_status = vm.status.value
         ready = vm.ready
         conditions = vm.conditions
 
@@ -421,7 +428,7 @@ class KubevirtManager(App):
         },
         "status": {
             "label": "Status",
-            "display": lambda vm: vm.status.display,
+            "display": lambda vm: vm.status.value,
         },
         "ready": {
             "label": "Ready",

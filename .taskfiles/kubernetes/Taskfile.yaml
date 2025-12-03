@@ -48,6 +48,7 @@ tasks:
 
   kubevirt-vm-manager:
     desc: "Manage KubeVirt VMs"
+    interactive: true
     silent: true
     cmds:
       - ./.taskfiles/kubernetes/vm_manage.py

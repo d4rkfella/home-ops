@@ -472,6 +472,7 @@ class KubevirtManager(App):
         self.vms: dict[str, VMData] = {}
         self.data_table: DataTable | None = None
         self.active_vnc: dict[str, asyncio.Task] = {}
+        self.last_resource_version = None
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -521,61 +522,130 @@ class KubevirtManager(App):
         def compute_row(vm: VMData):
             return [spec["display"](vm) for spec in self.COLUMN_MAP.values()]
 
-        try:
-            async with ApiClient() as api:
-                v1_custom = client.CustomObjectsApi(api)
-                w = watch.Watch()
+        async with ApiClient() as api:
+            v1_custom = client.CustomObjectsApi(api)
+            while True:
+                start_rv = self.last_resource_version
+                self.notify("this is running")
 
-                async with w.stream(
-                    v1_custom.list_cluster_custom_object,
-                    group="kubevirt.io",
-                    version="v1",
-                    plural="virtualmachines",
-                    allow_watch_bookmarks=True,
-                    timeout_seconds=0,
-                ) as stream:
-                    async for event in stream:
-                        etype = event["type"]
-                        if etype == "BOOKMARK":
-                            continue
+                try:
+                    self.notify(
+                        f"K8s watch starting from RV: {start_rv or 'Initial/Full List'}",
+                        timeout=3,
+                    )
 
-                        raw = cast(dict[str, Any], event["raw_object"])
-                        uid = raw["metadata"]["uid"]
+                    async with watch.Watch().stream(
+                        v1_custom.list_cluster_custom_object,
+                        group="kubevirt.io",
+                        version="v1",
+                        plural="virtualmachines",
+                        allow_watch_bookmarks=True,
+                        timeout_seconds=3600,
+                        resource_version=start_rv,
+                    ) as stream:
+                        try:
+                            async for event in stream:
+                                raw = cast(dict[str, Any], event["raw_object"])
+                                etype = event["type"]
 
-                        if etype == "DELETED":
-                            if uid in self.vms:
-                                del self.vms[uid]
-                                self.data_table.remove_row(uid)
-                            continue
-
-                        new_vm = VMData.from_raw_object(raw)
-                        existing_vm = self.vms.get(uid)
-                        self.vms[uid] = new_vm
-
-                        if existing_vm is None:
-                            self.data_table.add_row(*compute_row(new_vm), key=uid)
-                            continue
-
-                        if existing_vm != new_vm:
-                            for col_key, spec in self.COLUMN_MAP.items():
-                                if getattr(existing_vm, col_key) != getattr(
-                                    new_vm, col_key
+                                if (metadata := raw.get("metadata")) and (
+                                    rv := metadata.get("resourceVersion")
                                 ):
-                                    self.data_table.update_cell(
-                                        uid, col_key, spec["display"](new_vm)
+                                    self.last_resource_version = rv
+
+                                if etype == "BOOKMARK":
+                                    self.notify("Received BOOKMARK event")
+                                    continue
+
+                                if etype == "ERROR":
+                                    status = raw.get("status", "Unknown")
+                                    code = raw.get("code", "Unknown")
+                                    message = raw.get(
+                                        "message",
+                                        "An unexpected stream error occurred.",
                                     )
-                            await self.query_one(
-                                "#info-dock", VMInfoDock
-                            ).update_vm_info(new_vm)
 
-                        self.refresh_bindings()
+                                    self.notify(
+                                        f"Watch stream ERROR ({code} - {status}): {message}",
+                                        severity="error",
+                                    )
+                                    break
 
-        except Exception as e:
-            self.notify(
-                f"Error: Kubernetes watcher failed: {type(e).__name__}: {e}",
-                severity="error",
-                timeout=10,
-            )
+                                uid = raw["metadata"]["uid"]
+
+                                if etype == "DELETED":
+                                    if uid in self.vms:
+                                        del self.vms[uid]
+                                        self.data_table.remove_row(uid)
+                                    continue
+
+                                new_vm = VMData.from_raw_object(raw)
+                                existing_vm = self.vms.get(uid)
+                                self.vms[uid] = new_vm
+
+                                if existing_vm is None:
+                                    self.data_table.add_row(
+                                        *compute_row(new_vm), key=uid
+                                    )
+                                    continue
+
+                                if existing_vm != new_vm:
+                                    for col_key, spec in self.COLUMN_MAP.items():
+                                        if getattr(existing_vm, col_key) != getattr(
+                                            new_vm, col_key
+                                        ):
+                                            self.data_table.update_cell(
+                                                uid, col_key, spec["display"](new_vm)
+                                            )
+                                    await self.query_one(
+                                        "#info-dock", VMInfoDock
+                                    ).update_vm_info(new_vm)
+
+                                self.refresh_bindings()
+
+                            self.notify(
+                                "Kubernetes watch connection closed, restarting immediately...",
+                                timeout=3,
+                            )
+                        except asyncio.TimeoutError:
+                            continue
+
+                except client.ApiException as e:
+                    if e.status == 410:
+                        self.last_resource_version = None
+                        self.vms = {}
+                        self.notify(
+                            "Resource version too old (410 Gone), clearing RV and restarting watch...",
+                            severity="warning",
+                        )
+                        continue
+
+                    elif e.status == 403:
+                        self.notify(
+                            "Fatal: Watch Forbidden (403). Exiting watch loop.",
+                            severity="error",
+                        )
+                        break
+                    else:
+                        self.notify(
+                            f"API Error ({e.status}), restarting watch in 5s...",
+                            severity="warning",
+                        )
+                        await asyncio.sleep(5)
+
+                except asyncio.CancelledError:
+                    self.notify("Cancelling K8s VirtualMachines watch")
+                    break
+
+                except asyncio.TimeoutError:
+                    self.notify("Watch timed out... Restarting connection", timeout=600)
+                    continue
+                except Exception as e:
+                    self.notify(
+                        f"Unexpected error: {e}, restarting watch in 10s...",
+                        severity="error",
+                    )
+                    await asyncio.sleep(10)
 
     async def on_data_table_row_highlighted(
         self, event: DataTable.RowHighlighted

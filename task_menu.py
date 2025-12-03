@@ -175,11 +175,13 @@ class TaskSelection(App):
 
     def load_tasks(self) -> list[TaskItem] | None:
         try:
-            raw = self.run_cmd(["task", "--list", "--json"])
+            raw = subprocess.run(
+                ["task", "--list", "--json"], check=True, capture_output=True, text=True
+            )
         except subprocess.CalledProcessError:
             self.notify("Listing tasks failed!", severity="error")
             return
-        data = json.loads(raw)
+        data = json.loads(raw.stdout)
 
         tasks = []
         for t in data.get("tasks", []):
@@ -203,14 +205,10 @@ class TaskSelection(App):
 
         return tasks
 
-    def run_cmd(self, cmd) -> str:
-        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        return result.stdout.strip()
-
-    @work
+    @work(exclusive=True)
     async def on_list_view_selected(self, event: ListView.Selected):
         item = cast(TaskItem, event.item)
-        cmd = ["task", item.task_name]
+        cmd = ["task", item.task_name, "--yes"]
 
         var_values = None
         if item.required_vars:
@@ -225,32 +223,19 @@ class TaskSelection(App):
 
         if item.interactive:
             with self.suspend():
-                try:
-                    output = self.run_cmd(cmd)
-                    self.notify(output)
-                except subprocess.CalledProcessError as e:
-                    self.notify(
-                        e.stderr,
-                        severity="error",
-                    )
+                subprocess.run(cmd)
+                input("Press Enter to continue...")
         else:
-            worker = self.run_worker(
-                self.do_command(cmd), exclusive=True, exit_on_error=False
-            )
             try:
-                await worker.wait()
-                if output := worker.result:
-                    self.notify(output)
-            except WorkerFailed as e:
-                if isinstance(e.error, subprocess.CalledProcessError):
-                    self.notify(
-                        e.error.stderr,
-                        severity="error",
-                    )
-                else:
-                    self.notify(f"Task failed: {e.error}", severity="error")
+                output = await self.run_cmd_with_output(cmd)
+                self.notify(output)
+            except subprocess.CalledProcessError as e:
+                self.notify(
+                    e.stderr,
+                    severity="error",
+                )
 
-    async def do_command(self, cmd: list[str]) -> str:
+    async def run_cmd_with_output(self, cmd: list[str]) -> str:
         proc = await asyncio.create_subprocess_exec(
             *cmd,
             stdout=asyncio.subprocess.PIPE,

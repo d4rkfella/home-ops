@@ -526,12 +526,10 @@ class KubevirtManager(App):
             v1_custom = client.CustomObjectsApi(api)
             while True:
                 start_rv = self.last_resource_version
-                self.notify("this is running")
 
                 try:
                     self.notify(
-                        f"K8s watch starting from RV: {start_rv or 'Initial/Full List'}",
-                        timeout=3,
+                        f"K8s watch starting from RV: {start_rv or 'Initial/Full List'}"
                     )
 
                     async with watch.Watch().stream(
@@ -543,77 +541,77 @@ class KubevirtManager(App):
                         timeout_seconds=3600,
                         resource_version=start_rv,
                     ) as stream:
-                        try:
-                            async for event in stream:
-                                raw = cast(dict[str, Any], event["raw_object"])
-                                etype = event["type"]
+                        async for event in stream:
+                            raw = cast(dict[str, Any], event["raw_object"])
+                            etype = event["type"]
 
-                                if (metadata := raw.get("metadata")) and (
-                                    rv := metadata.get("resourceVersion")
-                                ):
-                                    self.last_resource_version = rv
+                            if (metadata := raw.get("metadata")) and (
+                                rv := metadata.get("resourceVersion")
+                            ):
+                                self.last_resource_version = rv
 
-                                if etype == "BOOKMARK":
-                                    self.notify("Received BOOKMARK event")
-                                    continue
+                            if etype == "BOOKMARK":
+                                continue
 
-                                if etype == "ERROR":
-                                    status = raw.get("status", "Unknown")
-                                    code = raw.get("code", "Unknown")
-                                    message = raw.get(
-                                        "message",
-                                        "An unexpected stream error occurred.",
-                                    )
+                            if etype == "ERROR":
+                                status = raw.get("status", "Unknown")
+                                code = raw.get("code", "Unknown")
+                                message = raw.get(
+                                    "message",
+                                    "An unexpected stream error occurred.",
+                                )
+                                self.last_resource_version = None
+                                self.vms = {}
+                                self.data_table.clear()
 
-                                    self.notify(
-                                        f"Watch stream ERROR ({code} - {status}): {message}",
-                                        severity="error",
-                                    )
-                                    break
+                                self.notify(
+                                    f"Watch stream ERROR ({code} - {status}): {message}",
+                                    severity="error",
+                                )
+                                break
 
-                                uid = raw["metadata"]["uid"]
+                            uid = raw["metadata"]["uid"]
 
-                                if etype == "DELETED":
-                                    if uid in self.vms:
-                                        del self.vms[uid]
-                                        self.data_table.remove_row(uid)
-                                    continue
+                            if etype == "DELETED":
+                                if uid in self.vms:
+                                    del self.vms[uid]
+                                    self.data_table.remove_row(uid)
+                                continue
 
-                                new_vm = VMData.from_raw_object(raw)
-                                existing_vm = self.vms.get(uid)
-                                self.vms[uid] = new_vm
+                            new_vm = VMData.from_raw_object(raw)
+                            existing_vm = self.vms.get(uid)
+                            self.vms[uid] = new_vm
 
-                                if existing_vm is None:
-                                    self.data_table.add_row(
-                                        *compute_row(new_vm), key=uid
-                                    )
-                                    continue
+                            if existing_vm is None:
+                                self.data_table.add_row(*compute_row(new_vm), key=uid)
+                                continue
 
-                                if existing_vm != new_vm:
-                                    for col_key, spec in self.COLUMN_MAP.items():
-                                        if getattr(existing_vm, col_key) != getattr(
-                                            new_vm, col_key
-                                        ):
-                                            self.data_table.update_cell(
-                                                uid, col_key, spec["display"](new_vm)
-                                            )
-                                    await self.query_one(
-                                        "#info-dock", VMInfoDock
-                                    ).update_vm_info(new_vm)
+                            if existing_vm != new_vm:
+                                for col_key, spec in self.COLUMN_MAP.items():
+                                    if getattr(existing_vm, col_key) != getattr(
+                                        new_vm, col_key
+                                    ):
+                                        self.data_table.update_cell(
+                                            uid, col_key, spec["display"](new_vm)
+                                        )
+                                await self.query_one(
+                                    "#info-dock", VMInfoDock
+                                ).update_vm_info(new_vm)
 
-                                self.refresh_bindings()
+                            self.refresh_bindings()
 
-                            self.notify(
-                                "Kubernetes watch connection closed, restarting immediately...",
-                                timeout=3,
-                            )
-                        except asyncio.TimeoutError:
-                            continue
+                        self.notify(
+                            f"Stream {v1_custom.list_cluster_custom_object.__name__} End"
+                        )
+                    self.notify(
+                        f"Watch {v1_custom.list_cluster_custom_object.__name__} closed"
+                    )
 
                 except client.ApiException as e:
                     if e.status == 410:
                         self.last_resource_version = None
                         self.vms = {}
+                        self.data_table.clear()
                         self.notify(
                             "Resource version too old (410 Gone), clearing RV and restarting watch...",
                             severity="warning",
@@ -638,7 +636,7 @@ class KubevirtManager(App):
                     break
 
                 except asyncio.TimeoutError:
-                    self.notify("Watch timed out... Restarting connection", timeout=600)
+                    self.notify("Watch timed out... Restarting connection")
                     continue
                 except Exception as e:
                     self.notify(
@@ -654,7 +652,7 @@ class KubevirtManager(App):
 
         info_dock = self.query_one("#info-dock", VMInfoDock)
 
-        if not (selected_vm := self.vms.get(event.row_key.value)):
+        if not (selected_vm := self.vms.get(cast(str, event.row_key.value))):
             return
 
         await info_dock.update_vm_info(selected_vm)
@@ -666,7 +664,7 @@ class KubevirtManager(App):
         row_key, _ = self.data_table.coordinate_to_cell_key(
             self.data_table.cursor_coordinate
         )
-        return self.vms[row_key.value]
+        return self.vms[cast(str, row_key.value)]
 
     async def spawn_virtctl(self, *args) -> asyncio.subprocess.Process | None:
         try:

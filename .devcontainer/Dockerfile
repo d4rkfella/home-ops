@@ -22,8 +22,6 @@ ARG COSIGN_VERSION=v3.0.2
 USER root
 WORKDIR /tmp
 
-COPY requirements.txt /tmp/requirements.txt
-
 SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND="noninteractive"
@@ -129,6 +127,8 @@ COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
 COPY uvx-tools.txt /tmp/uvx-tools.txt
 COPY pyproject.toml /tmp/pyproject.toml
 
+SHELL ["/bin/bash", "-c"]
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -160,6 +160,7 @@ RUN apt-get update && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
+    source $HOME/.local/bin/env bash && \
     uvx sync --project-file /tmp/pyproject.toml && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 

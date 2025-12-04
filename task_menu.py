@@ -168,7 +168,7 @@ class TaskSelection(App):
     async def on_mount(self):
         list_view = self.query_one("#task-list", ListView)
         if tasks := self.load_tasks():
-            list_view.extend(cast(list[ListItem], tasks))
+            list_view.extend(tasks)
 
     def load_tasks(self) -> list[TaskItem] | None:
         try:

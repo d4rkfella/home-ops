@@ -162,15 +162,15 @@ RUN apt-get update && \
 
 USER $USERNAME
 
-COPY uv-tools.txt $HOME/uv-tools.txt
-COPY pyproject.toml $HOME/pyproject.toml
+COPY uv-tools.txt /home/$USERNAME/uv-tools.txt
+COPY pyproject.toml /home/$USERNAME/pyproject.toml
 
 RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
     source $HOME/.local/bin/env bash && \
     while IFS= read -r tool; do \
         uv tool install "$tool"; \
-    done < $HOME/uv-tools.txt && \
-    uv sync --project $HOME/pyproject.toml
+    done < /home/$USERNAME/uv-tools.txt && \
+    uv sync --project /home/$USERNAME/pyproject.toml
 
 WORKDIR /project
 

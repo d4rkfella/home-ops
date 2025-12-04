@@ -36,6 +36,7 @@ RUN apt-get update && \
         ca-certificates \
         coreutils \
         gnupg \
+        xz-utils \
         unzip \
         && apt-get clean && rm -rf /var/lib/apt/lists/* && \
     # Download latest cosign (v4+) release

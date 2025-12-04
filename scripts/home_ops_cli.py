@@ -738,7 +738,7 @@ async def wait_deployments(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0)
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) # type: ignore
             >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )
@@ -764,10 +764,9 @@ async def wait_daemonsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0)
+            readiness_checker=lambda obj: (getattr(obj.status, "numberReady", 0) or 0) # type: ignore
             >= (
-                # type: ignore
-                getattr(obj.status, "desiredNumberScheduled", 0) or 0
+                getattr(obj.status, "desiredNumberScheduled", 0) or 0 # type: ignore
             ),
             timeout=timeout,
         )
@@ -793,7 +792,7 @@ async def wait_statefulsets(
             names=names,
             api_version="apps/v1",
             namespace=namespace,
-            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0)
+            readiness_checker=lambda obj: (getattr(obj.status, "readyReplicas", 0) or 0) # type: ignore
             >= (getattr(obj.spec, "replicas", 0) or 0),  # type: ignore
             timeout=timeout,
         )

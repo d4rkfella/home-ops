@@ -167,10 +167,8 @@ class TaskSelection(App):
     @work
     async def on_mount(self):
         list_view = self.query_one("#task-list", ListView)
-
         if tasks := self.load_tasks():
-            for item in tasks:
-                list_view.append(item)
+            list_view.extend(cast(list[ListItem], tasks))
 
     def load_tasks(self) -> list[TaskItem] | None:
         try:

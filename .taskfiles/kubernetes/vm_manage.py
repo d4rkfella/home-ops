@@ -9,6 +9,7 @@ import os
 
 import usb.core
 import usb.util
+from usb.core import Device
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from kubernetes_asyncio import client, config, watch
@@ -210,12 +211,12 @@ class USBRedirectSelection(ModalScreen[str]):
             items: list["USBDevice"] = []
 
             for device in usb_devices:
-                vendor_id_hex = f"{device.idVendor:04x}"
-                product_id_hex = f"{device.idProduct:04x}"
+                vendor_id_hex = f"{cast(Device, device).idVendor:04x}"  # type: ignore[attr-defined]
+                product_id_hex = f"{device.idProduct:04x}"  # type: ignore[attr-defined]
                 device_id = f"{vendor_id_hex}:{product_id_hex}"
 
                 try:
-                    description = usb.util.get_string(device, device.iProduct)
+                    description = usb.util.get_string(device, device.iProduct)  # type: ignore[attr-defined]
                 except Exception:
                     description = (
                         f"unknown device (VID:{vendor_id_hex} PID:{product_id_hex})"
@@ -542,8 +543,8 @@ class KubevirtManager(App):
                         resource_version=start_rv,
                     ) as stream:
                         async for event in stream:
-                            raw = cast(dict[str, Any], event["raw_object"])
-                            etype = event["type"]
+                            raw = cast(dict[str, Any], event["raw_object"])  # type: ignore[attr-defined]
+                            etype = event["type"]  # type: ignore[attr-defined]
 
                             if (metadata := raw.get("metadata")) and (
                                 rv := metadata.get("resourceVersion")

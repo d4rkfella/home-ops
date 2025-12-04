@@ -536,7 +536,7 @@ async def download_volume(
     while attempt <= vme_info.download_retries:
         try:
             headers = {EXPORT_TOKEN_HEADER: token}
-            timeout = aiohttp.ClientTimeout(total=3600)
+            timeout = aiohttp.ClientTimeout(total=60)
 
             connector = aiohttp.TCPConnector(ssl=not vme_info.insecure)
             async with aiohttp.ClientSession(
@@ -578,22 +578,19 @@ async def download_volume(
                         )
 
                         if vme_info.decompress:
-                            try:
-                                async with aiofiles.open(final_dest, "wb") as f_out:
-                                    async with aiogzip.AsyncGzipFile(
-                                        filename=None, mode="rb", fileobj=resp.content
-                                    ) as gz:
-                                        while True:
-                                            chunk = await gz.read(chunk_size)
-                                            if not chunk:
-                                                break
-                                            chunk_bytes = cast(bytes, chunk)
-                                            await f_out.write(chunk_bytes)
-                                            dl_progress.update(
-                                                task_id, advance=len(chunk_bytes)
-                                            )
-                            except Exception as e:
-                                raise
+                            async with aiofiles.open(final_dest, "wb") as f_out:
+                                async with aiogzip.AsyncGzipFile(
+                                    filename=None, mode="rb", fileobj=resp.content
+                                ) as gz:
+                                    while True:
+                                        chunk = await gz.read(chunk_size)
+                                        if not chunk:
+                                            break
+                                        chunk_bytes = cast(bytes, chunk)
+                                        await f_out.write(chunk_bytes)
+                                        dl_progress.update(
+                                            task_id, advance=len(chunk_bytes)
+                                        )
                         else:
                             async with aiofiles.open(final_dest, "wb") as f_out:
                                 async for chunk in resp.content.iter_chunked(
@@ -888,7 +885,7 @@ async def download(
         k8s_conf = client.Configuration.get_default_copy()
 
         kv_conf = Configuration()
-        kv_conf.host = k8s_conf.host  # type: ignore[attr-defined]
+        kv_conf.host = k8s_conf.host
         kv_conf.verify_ssl = getattr(k8s_conf, "verify_ssl", True)
         kv_conf.ssl_ca_cert = getattr(k8s_conf, "ssl_ca_cert", None)
         kv_conf.cert_file = getattr(k8s_conf, "cert_file", None)

@@ -124,8 +124,6 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
-COPY uv-tools.txt /tmp/uv-tools.txt
-COPY pyproject.toml /tmp/pyproject.toml
 
 SHELL ["/bin/bash", "-c"]
 
@@ -140,7 +138,6 @@ RUN apt-get update && \
         git \
         gnupg \
         libguestfs-tools \
-        python3 \
         direnv \
         yq \
         docker-cli \
@@ -164,11 +161,17 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
+
+COPY uv-tools.txt $HOME/uv-tools.txt
+COPY pyproject.toml $HOME/pyproject.toml
+
 RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
     source $HOME/.local/bin/env bash && \
     while IFS= read -r tool; do \
         uv tool install "$tool"; \
-    done < /tmp/uv-tools.txt && \
-    uv sync --project /tmp/pyproject.toml
+    done < $HOME/uv-tools.txt && \
+    uv sync --project $HOME/pyproject.toml
+
 WORKDIR /project
+
 ENTRYPOINT ["/bin/bash"]

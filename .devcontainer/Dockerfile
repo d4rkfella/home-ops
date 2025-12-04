@@ -124,7 +124,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
-COPY uvx-tools.txt /tmp/uvx-tools.txt
+COPY uv-tools.txt /tmp/uv-tools.txt
 COPY pyproject.toml /tmp/pyproject.toml
 
 SHELL ["/bin/bash", "-c"]

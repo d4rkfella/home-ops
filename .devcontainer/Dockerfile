@@ -161,13 +161,11 @@ RUN apt-get update && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
     curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
     source $HOME/.local/bin/env bash && \
-    uvx sync --project-file /tmp/pyproject.toml && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+USER $USERNAME
 RUN while IFS= read -r tool; do \
       uvx tool install "$tool"; \
-    done < /tmp/uvx-tools.txt
-
+    done < /tmp/uvx-tools.txt && uvx sync --project-file /tmp/pyproject.toml
 WORKDIR /project
-USER $USERNAME
 ENTRYPOINT ["/bin/bash"]

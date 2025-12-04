@@ -23,3 +23,6 @@ dependencies = [
 
     "kubevirt-py @ git+https://github.com/d4rkfella/kubevirt-py.git",
 ]
+
+[tool.uv.extra-build-dependencies]
+sync = ["imp"]

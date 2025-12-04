@@ -164,8 +164,11 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
-RUN while IFS= read -r tool; do \
-      uvx tool install "$tool"; \
-    done < /tmp/uvx-tools.txt && uvx sync --project-file /tmp/pyproject.toml
+RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
+    source $HOME/.local/bin/env bash && \
+    while IFS= read -r tool; do \
+        uvx tool install "$tool"; \
+    done < /tmp/uvx-tools.txt && \
+    uvx sync --project-file /tmp/pyproject.toml
 WORKDIR /project
 ENTRYPOINT ["/bin/bash"]

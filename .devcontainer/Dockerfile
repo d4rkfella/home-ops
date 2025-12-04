@@ -169,6 +169,6 @@ RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releas
     while IFS= read -r tool; do \
         uv tool install "$tool"; \
     done < /tmp/uv-tools.txt && \
-    uvx sync --project-file /tmp/pyproject.toml
+    uv sync --project-file /tmp/pyproject.toml
 WORKDIR /project
 ENTRYPOINT ["/bin/bash"]

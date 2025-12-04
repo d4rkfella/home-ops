@@ -30,11 +30,6 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential \
-        pkg-config \
-        python3 \
-        python3-pip \
-        python3-dev \
         git \
         cosign \
         curl \
@@ -43,7 +38,6 @@ RUN apt-get update && \
         gnupg \
         unzip \
         && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    python3 -m pip wheel --wheel-dir /tmp/wheels -r /tmp/requirements.txt && \
     # Download latest cosign (v4+) release
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
@@ -130,8 +124,9 @@ ARG USER_GID=$USER_UID
 ENV DEBIAN_FRONTEND="noninteractive"
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
-COPY --from=build /tmp/wheels /tmp/wheels
 COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
+COPY uvx-tools.txt /tmp/uvx-tools.txt
+COPY pyproject.toml /tmp/pyproject.toml
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -145,8 +140,6 @@ RUN apt-get update && \
         gnupg \
         libguestfs-tools \
         python3 \
-        python3-pip \
-        python3.13-venv \
         direnv \
         yq \
         docker-cli \
@@ -165,11 +158,13 @@ RUN apt-get update && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
-    python3 -m venv /home/$USERNAME/.venv && \
-    . /home/$USERNAME/.venv/bin/activate && \
-    pip install --upgrade pip --no-index --find-links=/tmp/wheels --no-cache-dir /tmp/wheels/*.whl && \
-    rm -rf /tmp/wheels && \
+    curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
+    uvx sync --project-file /tmp/pyproject.toml && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN while IFS= read -r tool; do \
+      uvx tool install "$tool"; \
+    done < /tmp/uvx-tools.txt
 
 WORKDIR /project
 USER $USERNAME

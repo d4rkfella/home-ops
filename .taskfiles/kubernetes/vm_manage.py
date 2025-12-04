@@ -331,8 +331,6 @@ class VMInfoDock(VerticalScroll):
     async def update_vm_info(self, vm: VMData) -> None:
         name = vm.name
         namespace = vm.namespace
-        uid = vm.uid
-        resource_version = vm.resource_version
         creation_ts = vm.creation_timestamp
 
         printable_status = vm.status.value
@@ -346,10 +344,8 @@ class VMInfoDock(VerticalScroll):
         iface_names = ", ".join(vm.interfaces)
 
         markdown = (
-            f"**VM:** {name}  \n"
+            f"**Name:** {name}  \n"
             + f"**Namespace:** {namespace}  \n"
-            + f"**UID:** {uid}  \n"
-            + f"**Resource Version:** {resource_version}  \n"
             + f"**Created At:** {creation_ts}  \n"
             + f"**Status:** {printable_status}  \n"
             + f"**Ready:** {ready}  \n"

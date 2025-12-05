@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - '.devcontainer/Dockerfile'
-      - 'requirements.txt'
+      - 'pyproject.toml'
 
 permissions:
   contents: read

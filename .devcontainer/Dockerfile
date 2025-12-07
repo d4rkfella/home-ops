@@ -1,5 +1,3 @@
-# Use Debian Trixie for the build stage. This provides a more robust
-# and compatible environment for libguestfs and Python build dependencies.
 FROM debian:trixie AS build
 
 # renovate: datasource=github-releases depName=go-task/task
@@ -103,9 +101,6 @@ RUN apt-get update && \
 COPY --from=ghcr.io/siderolabs/talosctl:v1.11.5 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
-COPY --from=ghcr.io/d4rkfella/vault-backup:1.11.4@sha256:d4e81a9dc5d941f9ead316b2fc14e77da8bfbc547034284db1fe3d777f85224c /usr/bin/vault-backup /usr/local/bin/vault-backup
-RUN vault-backup --version
-
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.2 /usr/local/bin/helmfile /usr/local/bin/helmfile
 RUN helmfile --version
 
@@ -156,22 +151,18 @@ RUN apt-get update && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
-    curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
-    source $HOME/.local/bin/env bash && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
 
 COPY uv-tools.txt /home/$USERNAME/uv-tools.txt
-COPY pyproject.toml /home/$USERNAME/pyproject.toml
 
 RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
     source $HOME/.local/bin/env bash && \
     while IFS= read -r tool; do \
         uv tool install "$tool"; \
-    done < /home/$USERNAME/uv-tools.txt && \
-    uv sync --project /home/$USERNAME/pyproject.toml
+    done < /home/$USERNAME/uv-tools.txt
 
-WORKDIR /project
+    WORKDIR /project
 
 ENTRYPOINT ["/bin/bash"]

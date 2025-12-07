@@ -73,7 +73,6 @@ spec:
           - vault.darkfellanetwork.com
     extraObjects:
       - |
-        ---
         apiVersion: v1
         kind: ServiceAccount
         metadata:

@@ -46,7 +46,7 @@ tasks:
     preconditions:
       - which flux helm
 
-  kubevirt-vm-manager:
+  kubevirt-manager:
     desc: "Manage KubeVirt VMs"
     interactive: true
     silent: true

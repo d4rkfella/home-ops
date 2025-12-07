@@ -1,64 +1,42 @@
 
 ---
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: '3'
 
 tasks:
+
   talos:
-    desc: Bootstrap a Talos Kubernetes cluster backed by flux and sops
-    prompt: Bootstrap a Talos Kubernetes cluster ... continue?
-    requires:
-      vars: ['IP']
+    desc: Bootstrap Talos
+    prompt: Bootstrap Talos ...?
     cmds:
-      - { task: apply-config }
-      - { task: etcd }
-      - { task: conf }
-      - { task: apps }
+      - until talosctl --nodes {{.RANDOM_CONTROLLER}} bootstrap; do sleep 5; done
+      - talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force {{.KUBERNETES_DIR}}
+    vars:
+      RANDOM_CONTROLLER:
+        sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
     preconditions:
-      - which talosctl
-      - talosctl config info &>/dev/null
-      - test -f {{.ROOT_DIR}}/talosconfig
-  apply-config:
-    internal: true
-    cmd: |
-      sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \
-          talosctl apply-config --insecure --nodes {{.IP}} --file /dev/stdin
-    preconditions:
-      - which sops
-      - which talosctl
-      - test -f {{.ROOT_DIR}}/talosconfig
-      - test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml
-
-  etcd:
-    internal: true
-    cmd: until talosctl --nodes {{.IP}} bootstrap; do sleep 10; done
-    preconditions:
-      - which talosctl
-      - test -f {{.ROOT_DIR}}/talosconfig
-      - talosctl config info &>/dev/null
-
-  conf:
-    internal: true
-    cmd: talosctl kubeconfig --nodes {{.IP}} --force --force-context-name main {{.ROOT_DIR}}
-    preconditions:
-      - which talosctl
-      - test -f {{.ROOT_DIR}}/talosconfig
-      - talosctl config info &>/dev/null
+      - talosctl config info
+      - talosctl --nodes {{.RANDOM_CONTROLLER}} get machineconfig
+      - which jq talosctl
 
   apps:
-    internal: true
+    desc: Bootstrap Kubernetes Apps
+    prompt: Bootstrap Kubernetes Apps ...?
     cmds:
-      - until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
-      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.yaml apply --hide-notes --skip-diff-on-install --suppress-diff --suppress-secrets
-      - until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
+      - kubectl config set-cluster {{.CONTEXT}} --server https://{{.RANDOM_CONTROLLER}}:35533
+      - defer: talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force {{.KUBERNETES_DIR}}
+      - until kubectl wait nodes --for=condition=Ready=True --all --timeout=10m; do sleep 5; done
+      - kubectl apply --server-side --filename {{.BOOTSTRAP_DIR}}/resources.yaml
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml template --quiet | kubectl apply --server-side --filename -
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml sync --hide-notes
+    vars:
+      CONTEXT:
+        sh: talosctl config info --output json | jq --raw-output '.context'
+      RANDOM_CONTROLLER:
+        sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
     preconditions:
-      - which bash
-      - which sops
-      - which talosctl
-      - which yq
-      - which vault
-      - which kubectl
-      - which helmfile
-      - test -f {{.ROOT_DIR}}/kubeconfig
-      - test -f {{.BOOTSTRAP_DIR}}/helmfile.yaml
-      - talosctl config info &>/dev/null
+      - talosctl config info
+      - talosctl --nodes {{.RANDOM_CONTROLLER}} get machineconfig
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml
+      - test -f {{.BOOTSTRAP_DIR}}/resources.yaml
+      - which helmfile helm jq yq kubectl talosctl

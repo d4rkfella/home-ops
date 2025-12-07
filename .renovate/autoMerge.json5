@@ -1,6 +1,5 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
-  "branchConcurrentLimit": 20,
   packageRules: [
     {
       description: [
@@ -10,7 +9,7 @@
         'docker',
       ],
       automerge: true,
-      automergeType: 'branch',
+      automergeType: 'pr',
       matchUpdateTypes: [
         'digest',
       ],
@@ -18,7 +17,7 @@
         '/home-operations/',
         '/d4rkfella/',
       ],
-      ignoreTests: true,
+      ignoreTests: false,
     },
     {
       description: 'Auto-merge Helm Releases',

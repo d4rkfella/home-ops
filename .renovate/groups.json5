@@ -21,7 +21,7 @@
       groupName: 'Devcontainer',
       matchFileNames: [
         '.devcontainer/Dockerfile',
-        '**/requirements.txt',
+        '**/pyproject.toml',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',

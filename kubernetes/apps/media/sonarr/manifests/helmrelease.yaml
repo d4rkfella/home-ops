@@ -45,7 +45,7 @@ spec:
           oauth2-proxy:
             image:
               repository: ghcr.io/d4rkfella/oauth2-proxy
-              tag: 7.13.0@sha256:ec2c8099e79ca27ebf3447435afc9695c2b38bf282d806ffeccef845de6e3cce
+              tag: 7.13.0@sha256:b9edd53645f5732fb108932a4d96f070a438e25301729720fb465aa1ee571270
             args:
               - --config=/etc/oauth2-proxy.cfg
             env:

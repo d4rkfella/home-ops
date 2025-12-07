@@ -9,71 +9,20 @@ spec:
     kind: OCIRepository
     name: app-template
   values:
-    controllers:
-      multus:
-        serviceAccount:
-          identifier: multus
-        type: daemonset
-        initContainers:
-          install-multus-binary:
-            image:
-              repository: ghcr.io/d4rkfella/multus-cni
-              tag: 4.2.3@sha256:b8a8858932b6fdf96f270674b3ff906fde69bc81e360f21db0cbe0bfd4a7b426
-            command: ["/install_multus"]
-            args:
-              - --type
-              - thin
-            securityContext:
-              privileged: true
-            terminationMessagePolicy: FallbackToLogsOnError
-          cni-plugins:
-            image:
-              repository: ghcr.io/d4rkfella/cni-plugins
-              tag: 1.8.0@sha256:4b80e7c0f31dcc799b4c0ec769be31ae65f6254a180c9a844e58937eb26a6b15
-        containers:
-          multus:
-            image:
-              repository: ghcr.io/d4rkfella/multus-cni
-              tag: 4.2.3@sha256:b8a8858932b6fdf96f270674b3ff906fde69bc81e360f21db0cbe0bfd4a7b426
-            args:
-              - --multus-conf-file=auto
-              - --multus-autoconfig-dir=/host/etc/cni/net.d
-              - --cni-conf-dir=/host/etc/cni/net.d
-              - --cleanup-config-on-exit=true
-            resources:
-              requests:
-                cpu: 100m
-              limits:
-                memory: 50Mi
-            securityContext:
-              privileged: true
-            terminationMessagePolicy: FallbackToLogsOnError
-
-    defaultPodOptions:
-      hostNetwork: true
-      terminationGracePeriodSeconds: 15
-      dnsPolicy: "Default"
-
-    persistence:
-      cni:
-        type: hostPath
-        hostPath: /etc/cni/net.d
-        advancedMounts:
-          multus:
-            multus:
-              - path: /host/etc/cni/net.d
-      cnibin:
-        type: hostPath
-        hostPath: /opt/cni/bin
-        advancedMounts:
-          multus:
-            install-multus-binary:
-              - path: /host/opt/cni/bin
-                mountPropagation: Bidirectional
-            multus:
-              - path: /host/opt/cni/bin
-            cni-plugins:
-              - path: /host/opt/cni/bin
-
-    serviceAccount:
-      multus: {}
+    cni-plugins:
+      image:
+        repository: ghcr.io/d4rkfella/cni-plugins
+        tag: 1.8.0@sha256:4b80e7c0f31dcc799b4c0ec769be31ae65f6254a180c9a844e58937eb26a6b15
+      resources: {}
+    multus:
+      image:
+        repository: ghcr.io/d4rkfella/multus-cni
+        tag: 4.2.3@sha256:b8a8858932b6fdf96f270674b3ff906fde69bc81e360f21db0cbe0bfd4a7b426
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi
+    cni:
+      netPath: /etc/cni/net.d
+      binPath: /opt/cni/bin

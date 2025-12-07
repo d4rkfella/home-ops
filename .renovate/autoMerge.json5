@@ -3,7 +3,7 @@
   packageRules: [
     {
       description: [
-        'Auto-merge container digests updates for trusted containers',
+        'Auto-merge patch and minor updates for trusted containers',
       ],
       matchDatasources: [
         'docker',
@@ -11,6 +11,8 @@
       automerge: true,
       automergeType: 'pr',
       matchUpdateTypes: [
+        'patch',
+        'minor',
         'digest',
       ],
       matchPackageNames: [

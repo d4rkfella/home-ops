@@ -59,7 +59,7 @@ spec:
       image:
         registry: ghcr.io
         repository: d4rkfella/artifactory-pro
-        tag: 7.125.8@sha256:6e112e9fa7f7e5ff8de52adcf2c8a6c2333f1dc03447ae3321a3bd65eb458a74
+        tag: 7.125.8@sha256:306639d30f022c67654b2a477ea1f22b1853e9f02ca90fbf0ef5d490c8e9ac5d
         pullPolicy: IfNotPresent
       persistence:
         size: 200Gi

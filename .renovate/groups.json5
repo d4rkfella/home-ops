@@ -15,10 +15,9 @@
       minimumGroupSize: 2,
     },
     {
-      description: [
-        'Devcontainer Dependencies Group',
-      ],
-      groupName: 'Devcontainer',
+      "prTitle": "chore(deps): update devcontainer dependencies",
+      "commitMessageTopic": "devcontainer dependencies",
+      groupName: 'devcontainer',
       matchFileNames: [
         '.devcontainer/Dockerfile',
         '**/pyproject.toml',
@@ -26,7 +25,6 @@
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
-      minimumGroupSize: 1,
     },
     {
       description: [

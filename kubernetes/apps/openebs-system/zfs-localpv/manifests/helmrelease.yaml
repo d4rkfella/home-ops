@@ -8,6 +8,19 @@ spec:
   chartRef:
     kind: OCIRepository
     name: zfs-localpv
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: ClusterRole
+              name: openebs-zfs-provisioner-role
+            patch: |
+              - op: add
+                path: /rules/0/resources/-
+                value: volumeattributesclasses
+              - op: add
+                path: /rules/0/verbs/-
+                value: list
   values:
     crds:
       csi:

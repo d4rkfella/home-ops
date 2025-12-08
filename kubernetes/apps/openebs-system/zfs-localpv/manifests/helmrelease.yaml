@@ -10,17 +10,17 @@ spec:
     name: zfs-localpv
   postRenderers:
   - kustomize:
-      patches:
+      patchesJson6902:
         - target:
+            group: rbac.authorization.k8s.io
+            version: v1
             kind: ClusterRole
             name: openebs-zfs-provisioner-role
           patch: |
-            apiVersion: rbac.authorization.k8s.io/v1
-            kind: ClusterRole
-            metadata:
-              name: openebs-zfs-provisioner-role
-            rules:
-              - apiGroups:
+            - op: add
+              path: /rules/-
+              value:
+                apiGroups:
                   - "storage.k8s.io"
                 resources:
                   - "volumeattributesclasses"

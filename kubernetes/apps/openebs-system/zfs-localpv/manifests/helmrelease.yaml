@@ -16,10 +16,10 @@ spec:
               name: openebs-zfs-provisioner-role
             patch: |
               - op: add
-                path: /rules/0/resources/-
+                path: /rules/-/resources/-
                 value: volumeattributesclasses
               - op: add
-                path: /rules/0/verbs/-
+                path: /rules/-/verbs/-
                 value: list
   values:
     crds:

@@ -7,7 +7,7 @@ on:
       - main
     paths:
       - '.devcontainer/Dockerfile'
-      - 'pyproject.toml'
+      - 'uv-tools.txt'
 
 permissions:
   contents: read

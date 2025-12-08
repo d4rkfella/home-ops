@@ -8,24 +8,24 @@ spec:
   chartRef:
     kind: OCIRepository
     name: zfs-localpv
-  postRenderers:
-  - kustomize:
-      patchesJson6902:
-        - target:
-            group: rbac.authorization.k8s.io
-            version: v1
-            kind: ClusterRole
-            name: openebs-zfs-provisioner-role
-          patch: |
-            - op: add
-              path: /rules/-
-              value:
-                apiGroups:
-                  - "storage.k8s.io"
-                resources:
-                  - "volumeattributesclasses"
-                verbs:
-                  - "list"
+  #postRenderers:
+  #- kustomize:
+      #patchesJson6902:
+        #- target:
+            #group: rbac.authorization.k8s.io
+            #version: v1
+            #kind: ClusterRole
+            #name: openebs-zfs-provisioner-role
+          #patch: |
+            #- op: add
+              #path: /rules/-
+              #value:
+                #apiGroups:
+                  #- "storage.k8s.io"
+                #resources:
+                  #- "volumeattributesclasses"
+                #verbs:
+                  #- "list"
   values:
     crds:
       csi:

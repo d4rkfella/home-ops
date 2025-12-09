@@ -21,7 +21,7 @@ spec:
           - "ghcr.io/fluxcd/helm-controller*"
           - "ghcr.io/fluxcd/notification-controller*"
           failureAction: Enforce
-          type: SigstoreBundle
+          #type: SigstoreBundle
           attestors:
             - entries:
                 - keyless:
@@ -32,7 +32,7 @@ spec:
         - imageReferences:
           - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce
-          type: SigstoreBundle
+          #type: SigstoreBundle
           attestors:
             - entries:
                 - keyless:

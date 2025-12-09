@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbittorrent
-              tag: 5.1.4@sha256:e0e1b3595281672236bfa0afe1d010e660013bbd8e5bd6805806b4a5aa73e82d
+              tag: 5.1.4@sha256:4c779dd0927bd6b5d206509610bb1d77c5cee9b9ea7ec99a5a6ccc45e0e798c9
             env:
               UMASK: "022"
               TZ: Europe/Sofia

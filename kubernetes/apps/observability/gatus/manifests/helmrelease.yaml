@@ -13,36 +13,6 @@ spec:
       gatus:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/d4rkfella/postgres-init
-              tag: 0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c
-            env:
-              POSTGRES_HOST: &dbHost postgres-db-rw.database.svc.cluster.local
-              POSTGRES_PORT: &dbPort 5432
-              POSTGRES_SSLMODE: require
-              POSTGRES_DBNAME: &dbName gatus
-              POSTGRES_SUPER_USER: postgres
-              POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret gatus-secret
-                    key: POSTGRES_SUPER_PASS
-              POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: &pgUser POSTGRES_USERNAME
-              POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: &pgPass POSTGRES_PASSWORD
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
@@ -53,19 +23,19 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
               WEB_PORT: &port 80
-              POSTGRES_HOST: *dbHost
-              POSTGRES_PORT: *dbPort
-              POSTGRES_DBNAME: *dbName
+              POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
+              POSTGRES_PORT: 5432
+              POSTGRES_DBNAME: gatus
               POSTGRES_USERNAME:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
-                    key: *pgUser
+                    name: &secret gatus-secret
+                    key: POSTGRES_USERNAME
               POSTGRES_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgPass
+                    key: POSTGRES_PASSWORD
               PUSHOVER_TOKEN:
                 valueFrom:
                   secretKeyRef:
@@ -94,7 +64,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m

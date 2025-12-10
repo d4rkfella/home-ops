@@ -13,38 +13,6 @@ spec:
       autobrr:
         annotations:
           reloader.stakater.com/auto: "true"
-
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/d4rkfella/postgres-init
-              tag: 0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c
-            env:
-              POSTGRES_DBNAME: &dbName autobrr
-              POSTGRES_HOST: &dbHost postgres-db-rw.database.svc.cluster.local
-              POSTGRES_SSLMODE: verify-full
-              POSTGRES_SSL_ROOTCERT_PATH: /etc/ssl/certs/postgres-ca.crt
-              POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: &pgUser POSTGRES_USERNAME
-              POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: &pgPass POSTGRES_PASSWORD
-              POSTGRES_SUPER_USER: postgres
-              POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_SUPER_PASS
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
         containers:
           app:
             image:
@@ -62,26 +30,26 @@ spec:
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
-              AUTOBRR__POSTGRES_DATABASE: *dbName
-              AUTOBRR__POSTGRES_HOST: *dbHost
+              AUTOBRR__POSTGRES_DATABASE: autobrr
+              AUTOBRR__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_SSLMODE: verify-full
               AUTOBRR__POSTGRES_EXTRA_PARAMS: "sslrootcert=/etc/ssl/certs/postgres-ca.crt"
               AUTOBRR__SESSION_SECRET:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: SESSION_SECRET
               AUTOBRR__POSTGRES_USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgUser
+                    key: POSTGRES_USERNAME
               AUTOBRR__POSTGRES_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgPass
+                    key: POSTGRES_PASSWORD
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
@@ -114,7 +82,10 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -190,10 +161,6 @@ spec:
         advancedMounts:
           autobrr:
             app:
-              - path: /etc/ssl/certs/postgres-ca.crt
-                subPath: ca.crt
-                readOnly: true
-            init-db:
               - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt
                 readOnly: true

@@ -12,9 +12,89 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
+  name: radarr-db
+spec:
+  name: radarr
+  owner: be8f943d-e632-4a5b-9512-a86873cfeed6
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: sonarr-db
+spec:
+  name: sonarr
+  owner: 0d2ee64d-e3be-412c-8c21-1c65e4e82992
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: prowlarr-db
+spec:
+  name: prowlarr
+  owner: 437f7498-c28e-46b4-b70a-74dd1b5fe039
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
   name: bazarr-db
 spec:
   name: bazarr
   owner: 081490d5-64d5-4332-848d-2b3bdc47e67d
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: autobrr-db
+spec:
+  name: autobrr
+  owner: 0e9ff8b3-c418-434b-b41a-3a3c1fdb8cd0
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: jellyseerr-db
+spec:
+  name: jellyseerr
+  owner: eeee6dc0-d387-49a9-bdc5-41d3b729c095
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: vaultwarden-db
+spec:
+  name: vaultwarden
+  owner: 585ceb32-89f1-435f-a052-4c65b0545668
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: artifactory-db
+spec:
+  name: artifactory
+  owner: 9e509b5e-649a-4458-9b7c-7c5aa71a7c7e
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: gatus-db
+spec:
+  name: gatus
+  owner: 3abf2d7b-fe53-4cf3-8364-ecd74524ded9
   cluster:
     name: postgres-db

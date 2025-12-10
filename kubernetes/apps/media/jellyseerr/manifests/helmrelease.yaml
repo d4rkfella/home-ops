@@ -17,37 +17,6 @@ spec:
       jellyseerr:
         annotations:
           reloader.stakater.com/auto: "true"
-
-        initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/d4rkfella/postgres-init
-              tag: 0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c
-            env:
-              POSTGRES_DBNAME: &dbName jellyseerr
-              POSTGRES_HOST: &dbHost postgres-db-rw.database.svc.cluster.local
-              POSTGRES_SSLMODE: require
-              POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret jellyseerr-secret
-                    key: &pgUser POSTGRES_USERNAME
-              POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: &pgPass POSTGRES_PASSWORD
-              POSTGRES_SUPER_USER: postgres
-              POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_SUPER_PASS
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
         containers:
           app:
             image:
@@ -58,18 +27,18 @@ spec:
               LOG_LEVEL: "info"
               PORT: &port 80
               DB_TYPE: postgres
-              DB_HOST: *dbHost
-              DB_NAME: *dbName
+              DB_HOST: postgres-db-rw.database.svc.cluster.local
+              DB_NAME: jellyseerr
               DB_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
-                    key: *pgUser
+                    name: &secret jellyseerr-secret
+                    key: POSTGRES_USERNAME
               DB_PASS:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgPass
+                    key: POSTGRES_PASSWORD
               DB_USE_SSL: "true"
               DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
               DB_LOG_QUERIES: "false"
@@ -92,7 +61,10 @@ spec:
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -162,13 +134,6 @@ spec:
           jellyseerr:
             app:
               - path: /usr/lib/jellyseerr/config/logs
-
-      next-cache:
-        type: emptyDir
-        advancedMounts:
-          jellyseerr:
-            app:
-              - path: /usr/lib/jellyseerr/.next/cache
 
       postgres-ca:
         type: secret

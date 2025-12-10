@@ -15,35 +15,6 @@ spec:
           reloader.stakater.com/auto: "true"
 
         initContainers:
-          init-db:
-            image:
-              repository: ghcr.io/d4rkfella/postgres-init
-              tag: 0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c
-            env:
-              POSTGRES_DBNAME: &dbName prowlarr
-              POSTGRES_HOST: &dbHost postgres-db-rw.database.svc.cluster.local
-              POSTGRES_SSLMODE: require
-              POSTGRES_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: &pgUser POSTGRES_USERNAME
-              POSTGRES_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: &pgPass POSTGRES_PASSWORD
-              POSTGRES_SUPER_USER: postgres
-              POSTGRES_SUPER_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_SUPER_PASS
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-
           oauth2-proxy:
             image:
               repository: ghcr.io/d4rkfella/oauth2-proxy
@@ -54,7 +25,7 @@ spec:
               OAUTH2_PROXY_REDIS_PASSWORD:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: DRAGONFLY_PASSWORD
             probes:
               liveness:
@@ -79,7 +50,10 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-            securityContext: *securityContext
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             restartPolicy: Always
 
         containers:
@@ -102,18 +76,18 @@ spec:
                   secretKeyRef:
                     name: *secret
                     key: PROWLARR_API_KEY
-              PROWLARR__POSTGRES__HOST: *dbHost
-              PROWLARR__POSTGRES__MAINDB: *dbName
+              PROWLARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
+              PROWLARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
               PROWLARR__POSTGRES__USER:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgUser
+                    key: POSTGRES_USERNAME
               PROWLARR__POSTGRES__PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: *secret
-                    key: *pgPass
+                    key: POSTGRES_PASSWORD
             probes:
               liveness: &probes
                 enabled: true

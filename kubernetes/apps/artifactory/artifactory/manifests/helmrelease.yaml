@@ -68,46 +68,11 @@ spec:
           tomcat:
             httpsConnector:
                 enabled: true
-      masterKeySecretName: artifactory-secret
-      joinKeySecretName: artifactory-secret
+      masterKeySecretName: &secret artifactory-secret
+      joinKeySecretName: *secret
       admin:
         secret: artifactory-secret
         dataKey: bootstrap.creds
-      customInitContainers: |
-        - name: "init-db"
-          image: ghcr.io/d4rkfella/postgres-init:0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c
-          imagePullPolicy: IfNotPresent
-          securityContext:
-            runAsUser: 65532
-            runAsGroup: 65532
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            capabilities: { drop: ["ALL"] }
-            seccompProfile: { type: RuntimeDefault }
-          env:
-            - name: POSTGRES_HOST
-              value: postgres-db-rw.database.svc.cluster.local
-            - name: POSTGRES_DBNAME
-              value: artifactory
-            - name: POSTGRES_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: artifactory-secret
-                  key: db-password
-            - name: POSTGRES_SSLMODE
-              value: require
-            - name: POSTGRES_SUPER_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: artifactory-secret
-                  key: POSTGRES_SUPER_PASS
-            - name: POSTGRES_SUPER_USER
-              value: postgres
-            - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: artifactory-secret
-                  key: db-user
     postgresql:
       enabled: false
     database:
@@ -115,7 +80,7 @@ spec:
       driver: org.postgresql.Driver
       secrets:
         user:
-          name: &secret artifactory-secret
+          name: *secret
           key: "db-user"
         password:
           name: *secret

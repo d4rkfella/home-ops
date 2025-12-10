@@ -29,42 +29,10 @@ spec:
                 mountPath: /opt/keycloak/data
               - name: tmpfs
                 mountPath: /tmp
-            securityContext: &securityContext
+            securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
-
-        initContainers:
-          - name: init-db
-            image: "ghcr.io/d4rkfella/postgres-init:0.1.1@sha256:ee61d261ba4f5e024f1130d10eb1e06e9ab6db1ec652b6a2d5178f5029f3e92c"
-            imagePullPolicy: IfNotPresent
-            env:
-              - name: POSTGRES_HOST
-                value: &dbHost postgres-db-rw.database.svc.cluster.local
-              - name: POSTGRES_PORT
-                value: '5432'
-              - name: POSTGRES_SSLMODE
-                value: require
-              - name: POSTGRES_DBNAME
-                value: &dbName keycloak
-              - name: POSTGRES_SUPER_USER
-                value: postgres
-              - name: POSTGRES_SUPER_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_SUPER_PASS
-              - name: POSTGRES_USER
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_USERNAME
-              - name: POSTGRES_PASS
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASSWORD
-            securityContext: *securityContext
 
         securityContext:
           runAsUser: 65532
@@ -82,8 +50,8 @@ spec:
     passwordSecret:
       name: *secret
       key: POSTGRES_PASSWORD
-    host: *dbHost
-    database: *dbName
+    host: postgres-db-rw.database.svc.cluster.local
+    database: keycloak
     port: 5432
     schema: public
 

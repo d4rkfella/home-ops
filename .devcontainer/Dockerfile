@@ -15,7 +15,7 @@ ARG SOPS_VERSION=v3.11.0
 # renovate: datasource=github-releases depName=fluxcd/flux2
 ARG FLUX_VERSION=v2.7.5
 # renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.0.2
+ARG COSIGN_VERSION=v3.0.3
 
 USER root
 WORKDIR /tmp

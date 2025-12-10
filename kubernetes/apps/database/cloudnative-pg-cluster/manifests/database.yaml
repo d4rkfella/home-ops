@@ -12,9 +12,9 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: bazarr-test-db
+  name: bazarr-db
 spec:
-  name: bazarr-test
+  name: bazarr
   owner: 081490d5-64d5-4332-848d-2b3bdc47e67d
   cluster:
     name: postgres-db

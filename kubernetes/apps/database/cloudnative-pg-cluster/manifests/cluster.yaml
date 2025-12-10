@@ -68,3 +68,12 @@ spec:
         parameters:
           barmanObjectName: cloudflare
           serverName: postgres-db
+
+  managed:
+    roles:
+      - name: keycloak
+        login: true
+        superuser: false
+        passwordSecret:
+          name: keycloak-db-password
+          namespace: secrets-vault

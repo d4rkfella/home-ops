@@ -76,3 +76,8 @@ spec:
         superuser: false
         passwordSecret:
           name: keycloak-db-password
+      - name: 081490d5-64d5-4332-848d-2b3bdc47e67d
+        login: true
+        superuser: false
+        passwordSecret:
+          name: bazarr-test-db-password

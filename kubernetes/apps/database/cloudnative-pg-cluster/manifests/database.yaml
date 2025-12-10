@@ -1,3 +1,4 @@
+---
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
@@ -5,5 +6,15 @@ metadata:
 spec:
   name: keycloak
   owner: 620f08ae-4f99-4b9d-8930-edc842b888f9
+  cluster:
+    name: postgres-db
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: bazarr-test-db
+spec:
+  name: bazarr-test
+  owner: 081490d5-64d5-4332-848d-2b3bdc47e67d
   cluster:
     name: postgres-db

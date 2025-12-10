@@ -3,7 +3,7 @@ kind: Database
 metadata:
   name: keycloak-db
 spec:
-  name: test
+  name: keycloak
   owner: 620f08ae-4f99-4b9d-8930-edc842b888f9
   cluster:
     name: postgres-db

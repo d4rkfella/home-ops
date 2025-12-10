@@ -71,12 +71,6 @@ spec:
 
   managed:
     roles:
-      - name: test-admin
-        login: true
-        superuser: true
-        passwordSecret:
-          name: postgres-admin-test
-
       - name: 620f08ae-4f99-4b9d-8930-edc842b888f9
         login: true
         superuser: false

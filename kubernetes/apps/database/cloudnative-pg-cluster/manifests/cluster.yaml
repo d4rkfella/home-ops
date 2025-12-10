@@ -71,6 +71,11 @@ spec:
 
   managed:
     roles:
+      - name: postgres
+        login: true
+        superuser: true
+        passwordSecret:
+          name: postgres-admin-secret
       - name: 620f08ae-4f99-4b9d-8930-edc842b888f9
         login: true
         superuser: false

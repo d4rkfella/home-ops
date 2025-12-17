@@ -61,7 +61,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/radarr
-              tag: 6.1.0@sha256:cc1850904ebc335e9d94057a619f0d43d937ef365b8f492118e950264f7ca09d
+              tag: 6.1.0@sha256:47394492b30b54749825701a58315f23adcc7e892653b3fa0eba1551200a4f63
             env:
               TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr

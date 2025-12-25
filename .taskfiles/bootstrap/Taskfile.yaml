@@ -9,7 +9,7 @@ tasks:
     prompt: Bootstrap Talos ...?
     cmds:
       - until talosctl --nodes {{.RANDOM_CONTROLLER}} bootstrap; do sleep 5; done
-      - talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force {{.KUBERNETES_DIR}}
+      - talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force /project
     vars:
       RANDOM_CONTROLLER:
         sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
@@ -22,11 +22,11 @@ tasks:
     desc: Bootstrap Kubernetes Apps
     prompt: Bootstrap Kubernetes Apps ...?
     cmds:
-      - kubectl config set-cluster {{.CONTEXT}} --server https://{{.RANDOM_CONTROLLER}}:35533
-      - defer: talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force {{.KUBERNETES_DIR}}
+      - kubectl config set-cluster {{.CONTEXT}} --server https://{{.RANDOM_CONTROLLER}}:6443
+      - defer: talosctl kubeconfig --nodes {{.RANDOM_CONTROLLER}} --force /project
       - until kubectl wait nodes --for=condition=Ready=True --all --timeout=10m; do sleep 5; done
       - kubectl apply --server-side --filename {{.BOOTSTRAP_DIR}}/resources.yaml
-      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml template --quiet | kubectl apply --server-side --filename -
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml template --quiet | yq ea 'select(.kind == "CustomResourceDefinition")' | kubectl apply --server-side -f -
       - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml sync --hide-notes
     vars:
       CONTEXT:

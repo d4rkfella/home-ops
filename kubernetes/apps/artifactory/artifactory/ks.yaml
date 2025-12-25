@@ -4,6 +4,11 @@ kind: Kustomization
 metadata:
   name: &app artifactory
 spec:
+  dependsOn:
+    - name: cloudnative-pg-cluster
+      namespace: database
+    - name: keycloak-instance
+      namespace: keycloak
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

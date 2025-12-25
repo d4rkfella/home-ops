@@ -13,7 +13,6 @@ spec:
       keySecretRef:
         name: &secret zerossl-credentials
         key: EAB_HMAC_KEY
-      keyAlgorithm: HS256
     solvers:
       - dns01:
           cloudflare:

@@ -4,8 +4,6 @@
 
 helmDefaults:
   args: ['--include-crds', '--no-hooks'] # Prevent helmfile apply or sync
-  postRenderer: bash
-  postRendererArgs: [-c, "yq ea --exit-status 'select(.kind == \"CustomResourceDefinition\")'"]
 
 releases:
   - name: envoy-gateway
@@ -17,8 +15,3 @@ releases:
     namespace: observability
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
     version: 80.6.0
-
-  - name: snapshot-controller
-    namespace: openebs-system
-    chart: oci://ghcr.io/piraeusdatastore/helm-charts/snapshot-controller
-    version: 4.2.0

@@ -62,9 +62,9 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: jellyseerr-db
+  name: seerr-db
 spec:
-  name: jellyseerr
+  name: seerr
   owner: eeee6dc0-d387-49a9-bdc5-41d3b729c095
   cluster:
     name: postgres-db

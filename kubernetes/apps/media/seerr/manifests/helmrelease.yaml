@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyseerr
+  name: &app seerr
 spec:
   interval: 1h
   chartRef:
@@ -14,25 +14,25 @@ spec:
 
   values:
     controllers:
-      jellyseerr:
+      seerr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/jellyseerr
-              tag: 2.7.3@sha256:6ab2e48068412397046f7a7e04c1503fcd6ff4ec4dcf6ecade6256045a905d9e
+              repository: ghcr.io/d4rkfella/seerr
+              tag: 2.7.3@sha256:48b6b96384bf8b69f4fe7703bb7734e8bbddc1262890e2a273af9b21a2b3e4c5
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: "info"
               PORT: &port 80
               DB_TYPE: postgres
               DB_HOST: postgres-db-rw.database.svc.cluster.local
-              DB_NAME: jellyseerr
+              DB_NAME: seerr
               DB_USER:
                 valueFrom:
                   secretKeyRef:
-                    name: &secret jellyseerr-secret
+                    name: &secret seerr-secret
                     key: POSTGRES_USERNAME
               DB_PASS:
                 valueFrom:
@@ -79,9 +79,6 @@ spec:
           hostnames:
             - "radarr.darkfellanetwork.com"
             - "sonarr.darkfellanetwork.com"
-        - ip: "192.168.91.75"
-          hostnames:
-            - "jellyfin.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -99,7 +96,10 @@ spec:
 
     route:
       app:
-        hostnames: ["requests.darkfellanetwork.com"]
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
+        hostnames: ["requests.darkfellanetwork.com", "{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: external
             namespace: envoy-gateway-system
@@ -113,10 +113,9 @@ spec:
       config:
         existingClaim: *app
         advancedMounts:
-          jellyseerr:
+          seerr:
             app:
-              - path: /usr/lib/jellyseerr/config
-
+              - path: /usr/lib/seerr/config
       cache:
         suffix: cache
         type: persistentVolumeClaim
@@ -124,22 +123,20 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         advancedMounts:
-          jellyseerr:
+          seerr:
             app:
-              - path: /usr/lib/jellyseerr/config/cache
-
+              - path: /usr/lib/seerr/config/cache
       logs:
         type: emptyDir
         advancedMounts:
-          jellyseerr:
+          seerr:
             app:
-              - path: /usr/lib/jellyseerr/config/logs
-
+              - path: /usr/lib/seerr/config/logs
       postgres-ca:
         type: secret
         name: *secret
         advancedMounts:
-          jellyseerr:
+          seerr:
             app:
               - path: /etc/ssl/certs/postgres-ca.crt
                 subPath: ca.crt

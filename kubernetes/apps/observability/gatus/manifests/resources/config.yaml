@@ -91,18 +91,6 @@ endpoints:
     headers:
       Accept: "application/json"
 
-  - name: "Jellyseerr"
-    group: external
-    url: "https://requests.darkfellanetwork.com:443/api/v1/status"
-    interval: 1m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions: ["[STATUS] == 200", "has([BODY].version) == true"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
   - name: "Prowlarr"
     group: internal
     url: "https://prowlarr.darkfellanetwork.com:443/ping"

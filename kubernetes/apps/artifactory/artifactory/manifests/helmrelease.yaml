@@ -21,7 +21,7 @@ spec:
             - op: add
               path: /spec/template/spec/imagePullSecrets
               value:
-                - name: ghcr-pull-secret
+                - name: artifactory-secret
   values:
     mc:
       enabled: true

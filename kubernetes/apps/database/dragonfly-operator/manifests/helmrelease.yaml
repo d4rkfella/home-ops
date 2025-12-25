@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: dragonfly-operator
+  name: &app dragonfly-operator
 spec:
   interval: 1h
   chartRef:
@@ -94,7 +94,19 @@ spec:
 
     service:
       app:
-        controller: dragonfly-operator
+        controller: *app
         ports:
           https:
             port: 8443
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: https
+            scheme: https
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
+            tlsConfig:
+              insecureSkipVerify: true

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ./certificate.yaml
   - ./externalsecret.yaml
+  - ./ocirepository.yaml
   - ./helmrelease.yaml
   - ./backend.yaml
   - ./httproute.yaml

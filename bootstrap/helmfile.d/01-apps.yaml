@@ -149,7 +149,7 @@ releases:
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 1.2.0
     values: ['./templates/values.yaml.gotmpl']
-    needs: ['vault/vault']
+    #needs: ['vault/vault']
     hooks:
       - events: ["postsync"]
         command: kubectl

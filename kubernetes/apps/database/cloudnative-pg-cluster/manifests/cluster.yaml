@@ -105,11 +105,11 @@ spec:
         passwordSecret:
           name: autobrr-db-password
 
-      - name: eeee6dc0-d387-49a9-bdc5-41d3b729c095   # jellyseerr
+      - name: eeee6dc0-d387-49a9-bdc5-41d3b729c095   # seerr
         login: true
         superuser: false
         passwordSecret:
-          name: jellyseerr-db-password
+          name: seerr-db-password
 
       - name: 585ceb32-89f1-435f-a052-4c65b0545668   # vaultwarden
         login: true

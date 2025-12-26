@@ -63,6 +63,8 @@ spec:
           enabled: true
       replicas: 1
       rollOutPods: true
+    dashboards:
+      enabled: true
     prometheus:
       enabled: true
       serviceMonitor:

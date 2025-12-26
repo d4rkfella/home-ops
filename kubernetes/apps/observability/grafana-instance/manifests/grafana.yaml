@@ -78,7 +78,7 @@ spec:
           volumes:
             - name: grafana-data
               persistentVolumeClaim:
-                claimName: grafana-data
+                claimName: grafana-pvc
             - name: tmpfs
               emptyDir: {}
   httpRoute:

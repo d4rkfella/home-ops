@@ -7,8 +7,11 @@ metadata:
     cnpg.io/reload: ""
     cnpg.io/skipEmptyWalArchiveCheck: "enabled"
 spec:
+  monitoring:
+    tls:
+      enabled: true
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-system-trixie@sha256:5c4bcb16240bdfdc3455ef7e655da4ae78518899426b83f22e2731820f518785
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-system-trixie@sha256:af5ef3115a12b0cf1885efd0e8b7e6e4cedde1cd30e444bf875b75e6b60a15a
   primaryUpdateStrategy: unsupervised
   storage:
     pvcTemplate:

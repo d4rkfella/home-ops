@@ -17,11 +17,16 @@ storage:
 
 metrics: true
 
-debug: false
-
 ui:
   title: Status | Gatus
   header: Status
+  logo: https://avatars.githubusercontent.com/u/77702912
+  link: https://github.com/d4rkfella
+  buttons:
+    - name: Github
+      link: https://github.com/d4rkfella
+    - name: Homelab
+      link: https://github.com/d4rkfella/home-ops
 
 alerting:
   pushover:
@@ -39,126 +44,3 @@ connectivity:
   checker:
     target: 1.1.1.1:53
     interval: 1m
-
-endpoints:
-  - name: Gatus
-    group: external
-    url: https://status.darkfellanetwork.com/health
-    interval: 1m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions:
-      - "[STATUS] == 200"
-      - "[BODY].status == UP"
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: postgres17
-    group: infrastructure
-    url: tcp://postgres-db-rw.database.svc.cluster.local:5432
-    interval: 1m
-    ui:
-      hide-url: true
-      hide-hostname: true
-    conditions:
-      - "[CONNECTED] == true"
-    alerts:
-      - type: pushover
-
-  - name: "Autobrr"
-    group: internal
-    url: "https://autobrr.darkfellanetwork.com:443/api/healthz/readiness"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 200", "[BODY] == OK"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "Bazarr"
-    group: internal
-    url: "https://bazarr.darkfellanetwork.com:443/api/system/ping"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "Prowlarr"
-    group: internal
-    url: "https://prowlarr.darkfellanetwork.com:443/ping"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "qBittorrent"
-    group: internal
-    url: "https://qbittorrent.darkfellanetwork.com:443/api/v2/app/version"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 403"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "Radarr"
-    group: internal
-    url: "https://radarr.darkfellanetwork.com:443/ping"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "Sonarr"
-    group: internal
-    url: "https://sonarr.darkfellanetwork.com:443/ping"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[STATUS] == 200", "[BODY].status == OK"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "HashiCorp Vault"
-    group: internal
-    url: "https://vault.darkfellanetwork.com:8200/v1/sys/health"
-    interval: 1m
-    client:
-      dns-resolver: tcp://172.17.0.10:53
-    conditions: ["[BODY].initialized == true", "[BODY].sealed == false"]
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"
-
-  - name: "Vaultwarden"
-    group: external
-    url: "https://vaultwarden.darkfellanetwork.com:443/alive"
-    interval: 1m
-    client:
-      dns-resolver: tcp://1.1.1.1:53
-    conditions: ['[STATUS] == 200']
-    alerts:
-      - type: pushover
-    headers:
-      Accept: "application/json"

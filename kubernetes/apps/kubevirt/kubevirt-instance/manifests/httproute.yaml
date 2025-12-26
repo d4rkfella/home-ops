@@ -2,8 +2,11 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: virt-exportproxy-route
+  name: virt-exportproxy
 spec:
+  annotations:
+    gatus.home-operations.com/endpoint: |-
+      url: https://virt-exportproxy.darkfellanetwork.com/healthz
   hostnames: ["virt-exportproxy.darkfellanetwork.com"]
   parentRefs:
     - name: internal
@@ -19,7 +22,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: BackendTLSPolicy
 metadata:
-  name: virt-exportproxy-backend-tls
+  name: virt-exportproxy
 spec:
   targetRefs:
     - group: ""

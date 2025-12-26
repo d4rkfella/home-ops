@@ -16,7 +16,7 @@ spec:
             patch: |
               - op: replace
                 path: /spec/template/metadata/labels/app.kubernetes.io~1version
-                value: 0.11.0
+                value: 0.13.1
               - op: add
                 path: /spec/template/spec/hostUsers
                 value: false

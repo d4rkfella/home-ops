@@ -20,10 +20,11 @@ spec:
       client_id: "46f5398b-91b2-4706-bfc3-5f2f4ad624fc"
       client_secret: $__env{OIDC_CLIENT_SECRET}
       enabled: "true"
+      use_refresh_token: "true"
       name: Keycloak-OAuth
       role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
       role_attribute_strict: "true"
-      scopes: openid profile email groups
+      scopes: openid email profile offline_access roles
       auth_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
       token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
       api_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/userinfo"

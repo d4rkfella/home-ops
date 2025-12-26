@@ -1,0 +1,103 @@
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  labels:
+    grafana.internal/instance: grafana
+spec:
+  config:
+    analytics:
+      check_for_updates: "false"
+      check_for_plugin_updates: "false"
+      feedback_links_enabled: "false"
+      reporting_enabled: "false"
+    auth:
+      disable_login_form: "true"
+    auth.generic_oauth:
+      allow_assign_grafana_admin: "false"
+      auto_login: "true"
+      client_id: "46f5398b-91b2-4706-bfc3-5f2f4ad624fc"
+      client_secret: $__env{OIDC_CLIENT_SECRET}
+      enabled: "true"
+      name: Keycloak-OAuth
+      role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
+      role_attribute_strict: true
+      scopes: openid profile email groups
+      auth_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth"
+      token_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token"
+      api_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/userinfo"
+      signout_redirect_url: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.darkfellanetwork.com%2Flogin"
+      use_pkce: "true"
+    date_formats:
+      full_date: "YYYY-MM-DD HH:mm:ss"
+      interval_second: "HH:mm:ss"
+      interval_minute: "HH:mm"
+      interval_hour: "MMM DD HH:mm"
+      interval_day: "MMM DD"
+      interval_month: "YYYY-MM"
+      interval_year: "YYYY"
+    log:
+      mode: console
+    metrics:
+      enabled: "true"
+    news:
+      news_feed_enabled: "false"
+    plugins:
+      plugin_admin_enabled: "false"
+    security:
+      angular_support_enabled: "true"
+    server:
+      enable_gzip: "true"
+      root_url: https://grafana.darkfellanetwork.com
+    users:
+      allow_sign_up: "false"
+      auto_assign_org: "true"
+      auto_assign_org_role: Viewer
+  deployment:
+    spec:
+      strategy:
+        type: Recreate
+      template:
+        spec:
+          containers:
+            - name: grafana
+              envFrom:
+                - secretRef:
+                    name: grafana-secret
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: ["ALL"]}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+          volumes:
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana-data
+            - name: tmpfs
+              emptyDir: {}
+  httpRoute:
+    spec:
+      hostnames:
+        - grafana.darkfellanetwork.com
+      parentRefs:
+        - name: internal
+          namespace: envoy-gateway-system
+      rules:
+        - backendRefs:
+            - name: grafana-service
+              port: 3000
+  persistentVolumeClaim:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: openebs-zfs-128k
+  disableDefaultSecurityContext: All

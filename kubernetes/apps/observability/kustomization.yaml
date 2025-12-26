@@ -4,7 +4,8 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./grafana-operator/ks.yaml
-  - ./grafana/ks.yaml
+  - ./grafana-instance/ks.yaml
+  #- ./grafana/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./alloy/ks.yaml
   - ./gatus/ks.yaml

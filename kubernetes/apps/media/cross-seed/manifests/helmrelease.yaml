@@ -74,6 +74,9 @@ spec:
 
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 404"]
         hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: internal
@@ -88,7 +91,6 @@ spec:
       config:
         type: emptyDir
         medium: Memory
-
       config-file:
         type: secret
         name: "{{ .Release.Name }}-secret"
@@ -97,14 +99,12 @@ spec:
           - path: /config/config.js
             subPath: config.js
             readOnly: true
-
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data/downloads/torrents
         globalMounts:
           - path: /data/downloads/torrents
-
       game-library:
         type: nfs
         server: 192.168.91.40

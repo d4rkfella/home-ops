@@ -21,14 +21,14 @@ spec:
       preallocateMaps: true
       tproxy: true
       datapathMode: netkit
-    l7Proxy: true
+    l7Proxy: false
     cgroup:
       automount:
         enabled: false
       hostRoot: /sys/fs/cgroup
     devices: 'eth0'
     envoy:
-      enabled: true
+      enabled: false
     hubble:
       enabled: false
     cluster:
@@ -52,6 +52,7 @@ spec:
       mode: dsr
     socketLB:
       enabled: true
+      hostNamespaceOnly: true
       terminatePodConnections: true
     localRedirectPolicy: true
     operator:

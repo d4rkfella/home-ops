@@ -5,6 +5,7 @@ resources:
   - ./externalsecret.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
+  - ./grafanadashboard.yaml
   - ./httproute.yaml
   - ./prometheusrule.yaml
   - ./receiver.yaml

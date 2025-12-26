@@ -19,7 +19,7 @@ spec:
     bpf:
       masquerade: true
       preallocateMaps: true
-      tproxy: true
+      tproxy: false
       datapathMode: netkit
     l7Proxy: false
     cgroup:
@@ -48,12 +48,10 @@ spec:
     l2announcements:
       enabled: true
     loadBalancer:
-      algorithm: maglev
-      mode: dsr
+      algorithm: random
+      mode: snat
     socketLB:
-      enabled: true
-      hostNamespaceOnly: true
-      terminatePodConnections: true
+      enabled: false
     localRedirectPolicy: true
     operator:
       dashboards:

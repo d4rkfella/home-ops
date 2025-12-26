@@ -98,7 +98,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 200"]
+            url: https://{{ .Release.Name }}.darkfellanetwork.com/api/v1/status
         hostnames: ["requests.darkfellanetwork.com", "{{ .Release.Name }}.darkfellanetwork.com"]
         parentRefs:
           - name: external

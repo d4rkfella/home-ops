@@ -133,15 +133,15 @@ spec:
                 port: *port
 
     persistence:
+      config:
+        type: emptyDir
       config-file:
         type: configMap
         name: gatus-configmap
-        advancedMounts:
-          gatus:
-            app:
-              - path: /config/config.yaml
-                subPath: config.yaml
-                readOnly: true
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
       postgres-ca:
         type: secret
         name: *secret

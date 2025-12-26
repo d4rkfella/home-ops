@@ -8,13 +8,4 @@ resources:
   - ./externalsecret.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
-configMapGenerator:
-  - name: prometheus-values
-    files:
-      - values.yaml=./helm/values.yaml
-    options:
-      labels:
-        app.kubernetes.io/part-of: flux
-        app.kubernetes.io/component: monitoring
-configurations:
-  - ./helm/kustomizeconfig.yaml
+  - ./grafanadashboard.yaml

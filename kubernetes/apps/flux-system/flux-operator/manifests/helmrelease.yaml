@@ -18,6 +18,18 @@ spec:
           - op: add
             path: /spec/template/spec/hostUsers
             value: false
+          - op: add
+            path: /spec/template/spec/volumes
+            value:
+              - name: ca-bundle
+                configMap:
+                  name: flux-ca-bundle
+          - op: add
+            path: /spec/template/spec/containers/0/volumeMounts
+            value:
+              - name: ca-bundle
+                mountPath: /etc/ssl/certs/ca-certificates.crt
+                subPath: ca-certificates.crt
   values:
     serviceMonitor:
       create: true

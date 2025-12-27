@@ -30,6 +30,11 @@ spec:
               name: ca-bundle
               mountPath: /etc/ssl/certs/ca-certificates.crt
               subPath: ca-certificates.crt
+          - op: add
+            path: /spec/template/spec/containers/0/env/-
+            value:
+              name: SSL_CERT_FILE
+              value: /etc/ssl/certs/ca-certificates.crt
   values:
     serviceMonitor:
       create: true

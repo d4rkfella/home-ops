@@ -1,7 +1,7 @@
 FROM debian:trixie AS build
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.46.3
+ARG TASK_VERSION=v3.46.4
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.7.0
 # renovate: datasource=github-releases depName=hashicorp/vault

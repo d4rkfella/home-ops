@@ -200,7 +200,7 @@ spec:
     alpnProtocols:
       - h2
       - http/1.1
-    ecdhCurves: ["X25519"]
+    ecdhCurves: ["P-256", "P-384", "X25519"]
     session:
       resumption:
         stateless: {}

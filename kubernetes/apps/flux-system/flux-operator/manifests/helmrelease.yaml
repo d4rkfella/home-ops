@@ -21,3 +21,20 @@ spec:
   values:
     serviceMonitor:
       create: true
+    web:
+      config:
+        baseURL: "https://flux.darkfellanetwork.com"
+        authentication:
+          type: OAuth2
+          oauth2:
+            provider: OIDC
+            issuerURL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+  valuesFrom:
+    - kind: Secret
+      name: flux-web-client
+      valuesKey: CLIENT_ID
+      targetPath: web.config.authentication.oauth2.clientID
+    - kind: Secret
+      name: flux-web-client
+      valuesKey: CLIENT_SECRET
+      targetPath: web.config.authentication.oauth2.clientSecret

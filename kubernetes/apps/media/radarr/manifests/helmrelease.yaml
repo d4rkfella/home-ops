@@ -111,6 +111,8 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
+      annotations:
+        security.darkfellanetwork.com/mount-internal-ca: "true"
       hostAliases:
         - ip: "192.168.91.52"
           hostnames:

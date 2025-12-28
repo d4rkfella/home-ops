@@ -3,43 +3,27 @@ kind: ClusterPolicy
 metadata:
   name: mount-internal-ca
 spec:
-  mutateExistingOnPolicyUpdate: true
   rules:
     - name: mount-internal-ca
       match:
         any:
           - resources:
               kinds:
-                - Deployment
-                - StatefulSet
-                - DaemonSet
-                - Job
+                - Pod
               annotations:
                 security.darkfellanetwork.com/mount-internal-ca: "true"
 
       mutate:
-        targets:
-          - apiVersion: apps/v1
-            kind: Deployment
-          - apiVersion: apps/v1
-            kind: StatefulSet
-          - apiVersion: apps/v1
-            kind: DaemonSet
-          - apiVersion: batch/v1
-            kind: Job
-
         patchStrategicMerge:
           spec:
-            template:
-              spec:
-                volumes:
+            volumes:
+              - name: internal-ca
+                secret:
+                  secretName: internal-ca-secret
+            containers:
+              - (name): "*"
+                volumeMounts:
                   - name: internal-ca
-                    secret:
-                      secretName: internal-ca-secret
-                containers:
-                  - (name): "*"
-                    volumeMounts:
-                      - name: internal-ca
-                        mountPath: /etc/ssl/certs/internal-ca.crt
-                        subPath: ca.crt
-                        readOnly: true
+                    mountPath: /etc/ssl/certs/internal-ca.crt
+                    subPath: ca.crt
+                    readOnly: true

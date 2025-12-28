@@ -1,0 +1,70 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-prometheus
+      release: kube-prometheus-stack
+
+  endpoints:
+    - port: http-web
+      path: /metrics
+      scheme: http
+
+      oauth2:
+        tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+        scopes: ["openid", "profile", "email"]
+        clientId:
+          secret:
+            name: prometheus-secret
+            key: client_id
+        clientSecret:
+          name: prometheus-secret
+          key: client_secret
+        endpointParams:
+          grant_type: client_credentials
+        tlsConfig:
+          serverName: prometheus.darkfellanetwork.com
+          insecureSkipVerify: false
+
+    - port: reloader-web
+      path: /metrics
+      scheme: http
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: alertmanager
+spec:
+  selector:
+    matchLabels:
+      app: kube-prometheus-stack-alertmanager
+      release: kube-prometheus-stack
+
+  endpoints:
+    - port: http-web
+      path: /metrics
+      scheme: http
+
+      oauth2:
+        tokenUrl: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
+        scopes: ["openid", "profile", "email"]
+        clientId:
+          secret:
+            name: prometheus-secret
+            key: client_id
+        clientSecret:
+          name: prometheus-secret
+          key: client_secret
+        endpointParams:
+          grant_type: client_credentials
+        tlsConfig:
+          serverName: alertmanager.darkfellanetwork.com
+          insecureSkipVerify: false
+
+    - port: reloader-web
+      path: /metrics
+      scheme: http

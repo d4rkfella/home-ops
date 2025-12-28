@@ -29,31 +29,68 @@ spec:
       rbac:
         clusterRole:
           extraResources:
-            - apiGroups:
-                - ""
+            - apiGroups: [""]
+              resources: ["pods"]
+              verbs: ["create", "update", "patch", "delete"]
+
+            - apiGroups: ["apps"]
               resources:
-                - pods
+                - deployments
+                - statefulsets
+                - daemonsets
               verbs:
-                - create
+                - get
+                - list
+                - watch
+                - patch
                 - update
-                - delete
+
+            - apiGroups: ["batch"]
+              resources:
+                - jobs
+              verbs:
+                - get
+                - list
+                - watch
+                - patch
+                - update
       serviceMonitor:
         enabled: true
     backgroundController:
       rbac:
         clusterRole:
           extraResources:
-            - apiGroups:
-                - ""
-              resources:
-                - pods
+            - apiGroups: [""]
+              resources: ["pods"]
               verbs:
-                - create
-                - update
-                - patch
-                - delete
                 - get
                 - list
+                - watch
+                - patch
+                - update
+                - delete
+
+            - apiGroups: ["apps"]
+              resources:
+                - deployments
+                - statefulsets
+                - daemonsets
+              verbs:
+                - get
+                - list
+                - watch
+                - patch
+                - update
+
+            - apiGroups: ["batch"]
+              resources:
+                - jobs
+              verbs:
+                - get
+                - list
+                - watch
+                - patch
+                - update
       resources:
         requests:
           cpu: 100m

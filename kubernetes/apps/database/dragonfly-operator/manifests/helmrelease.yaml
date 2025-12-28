@@ -114,6 +114,8 @@ spec:
             bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
             tlsConfig:
               caFile: /etc/ssl/certs/internal-ca.crt
+              serverName: dragonfly-operator.database.svc.cluster.local
+              insecureSkipVerify: false
 
     persistence:
       certificate:

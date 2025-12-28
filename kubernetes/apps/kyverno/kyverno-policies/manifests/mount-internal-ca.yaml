@@ -14,15 +14,8 @@ spec:
                 - StatefulSet
                 - DaemonSet
                 - Job
-
-      preconditions:
-        all:
-          - key: '{{ request.object.metadata.annotations."security.darkfellanetwork.com/mount-internal-ca" }}'
-            operator: NotEquals
-            value: null
-          - key: '{{ request.object.metadata.annotations."security.darkfellanetwork.com/mount-internal-ca" }}'
-            operator: Equals
-            value: "true"
+              annotations:
+                security.darkfellanetwork.com/mount-internal-ca: "true"
 
       mutate:
         targets:

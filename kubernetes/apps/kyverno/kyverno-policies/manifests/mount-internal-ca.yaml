@@ -20,7 +20,7 @@ spec:
               - name: internal-ca
                 secret:
                   secretName: internal-ca-secret
-            init-containers:
+            initContainers:
               - (name): "*"
                 volumeMounts:
                   - name: internal-ca

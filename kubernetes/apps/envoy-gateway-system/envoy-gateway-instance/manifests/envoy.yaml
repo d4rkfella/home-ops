@@ -266,6 +266,7 @@ metadata:
   name: https-redirect
   annotations:
     external-dns.alpha.kubernetes.io/controller: none
+    gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:
     - name: internal

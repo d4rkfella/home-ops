@@ -17,7 +17,7 @@ spec:
 
       preconditions:
         all:
-          - key: "{{ request.object.metadata.annotations['security.darkfellanetwork.com/mount-internal-ca'] }}"
+          - key: "{{ request.object.metadata.annotations.security_darkfellanetwork_com_mount_internal_ca }}"
             operator: Equals
             value: "true"
 

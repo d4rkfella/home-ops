@@ -52,6 +52,9 @@ spec:
       alertmanagerSpec:
         listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
+        podMetadata:
+          annotations:
+            security.darkfellanetwork.com/mount-internal-ca: "true"
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -118,8 +121,6 @@ spec:
           seccompProfile:
             type: RuntimeDefault
     prometheus:
-      annotations:
-        security.darkfellanetwork.com/mount-internal-ca: "true"
       service:
         targetPort: 8082
       serviceMonitor:
@@ -138,6 +139,7 @@ spec:
         externalUrl: "https://prometheus.darkfellanetwork.com"
         podMetadata:
           annotations:
+            security.darkfellanetwork.com/mount-internal-ca: "true"
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"

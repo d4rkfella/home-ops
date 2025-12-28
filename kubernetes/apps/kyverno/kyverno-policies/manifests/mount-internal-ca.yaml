@@ -12,23 +12,10 @@ spec:
           - resources:
               kinds:
                 - Pod
-                - Deployment
-                - StatefulSet
-                - DaemonSet
-                - Job
-
       mutate:
         targets:
           - apiVersion: v1
             kind: Pod
-          - apiVersion: apps/v1
-            kind: Deployment
-          - apiVersion: apps/v1
-            kind: StatefulSet
-          - apiVersion: apps/v1
-            kind: DaemonSet
-          - apiVersion: batch/v1
-            kind: Job
 
         patchStrategicMerge:
           spec:

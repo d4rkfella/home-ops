@@ -13,69 +13,27 @@ spec:
       vaultwarden:
         annotations:
           reloader.stakater.com/auto: "true"
-
-        initContainers:
-          oauth2-proxy:
-            image:
-              repository: ghcr.io/d4rkfella/oauth2-proxy
-              tag: 7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: DRAGONFLY_PASSWORD
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ping
-                    port: &port 4180
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ready
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-
         containers:
           app:
             image:
               repository: ghcr.io/d4rkfella/vaultwarden
               tag: 1.35.0@sha256:1c736cbe3ccb8a8db9661fa5f336968afaebad47ad640da0f6b7940d71cd80bf
             env:
-              EMAIL_2FA_ENFORCE_ON_VERIFIED_INVITE: true
-              EMAIL_2FA_AUTO_FALLBACK: true
-              AUTHENTICATOR_DISABLE_TIME_DRIFT: true
-              REQUIRE_DEVICE_EMAIL: true
+              SSO_ENABLED: "true"
+              SSO_ONLY: "true"
+              SSO_AUTHORITY: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+              SSO_CLIENT_ID: f7126e9c-bcc7-4182-8510-8ab70a6eb6a8
+              SSO_CLIENT_SECRET:
+                valueFrom:
+                  secretKeyRef:
+                    name: &secret "{{ .Release.Name }}-secret"
+                    key: SSO_CLIENT_SECRET
+              SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
               DOMAIN: https://vaultwarden.darkfellanetwork.com
               TZ: "Europe/Sofia"
-              EMAIL_CHANGE_ALLOWED: false
-              SIGNUPS_ALLOWED: false
-              SIGNUPS_VERIFY: true
-              SIGNUPS_DOMAINS_WHITELIST: darkfellanetwork.com
-              ROCKET_ADDRESS: 127.0.0.1
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com
               SMTP_FROM: noreply@darkfellanetwork.com
@@ -117,13 +75,16 @@ spec:
                 spec:
                   httpGet:
                     path: /alive
-                    port: *port
+                    port: &port 80
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m

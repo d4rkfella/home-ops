@@ -20,6 +20,13 @@ spec:
               - name: internal-ca
                 secret:
                   secretName: internal-ca-secret
+            init-containers:
+              - (name): "*"
+                volumeMounts:
+                  - name: internal-ca
+                    mountPath: /etc/ssl/certs/internal-ca.crt
+                    subPath: ca.crt
+                    readOnly: true
             containers:
               - (name): "*"
                 volumeMounts:

@@ -113,7 +113,7 @@ spec:
             scrapeTimeout: 10s
             bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
             tlsConfig:
-              caFile: /etc/prometheus/certs/internal-ca.crt
+              caFile: /etc/ssl/certs/internal-ca.crt
 
     persistence:
       certificate:

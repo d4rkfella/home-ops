@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -23,6 +24,8 @@ spec:
             args:
               - "--secure-listen-address=0.0.0.0:8443"
               - "--upstream=http://127.0.0.1:8080/"
+              - "--tls-cert-file=/certs/dragonfly-operator-tls/tls.crt"
+              - "--tls-private-key-file=/certs/dragonfly-operator-tls/tls.key"
               - "--tls-min-version=VersionTLS13"
               - "--v=0"
             securityContext:
@@ -111,3 +114,11 @@ spec:
             bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
             tlsConfig:
               insecureSkipVerify: true
+
+    persistence:
+      certificate:
+          type: secret
+          name: "{{ .Release.Name }}-tls"
+          globalMounts:
+            - path: /certs/dragonfly-operator-tls
+              readOnly: true

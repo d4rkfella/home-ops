@@ -27,7 +27,7 @@ spec:
               - "--tls-cert-file=/certs/dragonfly-operator-tls/tls.crt"
               - "--tls-private-key-file=/certs/dragonfly-operator-tls/tls.key"
               - "--tls-min-version=VersionTLS13"
-              - "--v=0"
+              - "--v=10"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

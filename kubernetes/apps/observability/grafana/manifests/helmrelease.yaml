@@ -23,15 +23,9 @@ spec:
       reloader.stakater.com/auto: "true"
     extraSecretMounts:
       - name: oauth-client-secret
-        secretName: &secret grafana-secret
+        secretName: grafana-secret
         defaultMode: 0440
         mountPath: /etc/secrets/oauth
-        readOnly: true
-      - name: internal-ca
-        secretName: *secret
-        defaultMode: 0440
-        mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-        subPath: ca.crt
         readOnly: true
     deploymentStrategy:
       type: Recreate

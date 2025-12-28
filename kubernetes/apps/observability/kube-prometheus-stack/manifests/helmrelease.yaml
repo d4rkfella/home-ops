@@ -35,6 +35,8 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
+      annotations:
+        security.darkfellanetwork.com/mount-internal-ca: "true"
       service:
         targetPort: 8082
       serviceMonitor:
@@ -107,10 +109,6 @@ spec:
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - name: *secret
-                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
-                readOnly: true
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true
@@ -120,6 +118,8 @@ spec:
           seccompProfile:
             type: RuntimeDefault
     prometheus:
+      annotations:
+        security.darkfellanetwork.com/mount-internal-ca: "true"
       service:
         targetPort: 8082
       serviceMonitor:
@@ -254,10 +254,6 @@ spec:
               - name: *secret
                 mountPath: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
-                readOnly: true
-              - name: *secret
-                mountPath: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
                 readOnly: true
         securityContext:
           runAsGroup: 65532
@@ -688,6 +684,8 @@ spec:
       forceDeployDashboards: true
 
     prometheusOperator:
+      annotations:
+        security.darkfellanetwork.com/mount-internal-ca: "true"
       fullnameOverride: prometheus-operator
       serviceAccount:
         name: prometheus-operator

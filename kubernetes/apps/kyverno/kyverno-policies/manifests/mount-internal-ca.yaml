@@ -1,0 +1,36 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mount-internal-ca
+spec:
+  mutateExistingOnPolicyUpdate: true
+  rules:
+    - name: add-internal-ca-volume
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+                - Job
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.annotations.\"security.darkfellanetwork.com/mount-internal-ca\" || '' }}"
+            operator: Equals
+            value: "true"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            volumes:
+              - name: internal-ca
+                secret:
+                  secretName: internal-ca
+            containers:
+              - (name): "*"
+                volumeMounts:
+                  - name: internal-ca
+                    mountPath: /etc/ssl/certs/internal-ca.crt
+                    subPath: ca.crt
+                    readOnly: true

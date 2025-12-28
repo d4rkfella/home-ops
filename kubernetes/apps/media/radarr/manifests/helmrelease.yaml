@@ -185,6 +185,3 @@ spec:
               - path: /etc/oauth2-proxy.cfg
                 subPath: oauth2-proxy.cfg
                 readOnly: true
-              - path: /etc/ssl/certs/Internal-Root-CA.crt
-                subPath: ca.crt
-                readOnly: true

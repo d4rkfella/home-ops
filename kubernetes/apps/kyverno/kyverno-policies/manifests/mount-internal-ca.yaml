@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -5,7 +6,7 @@ metadata:
 spec:
   mutateExistingOnPolicyUpdate: true
   rules:
-    - name: add-internal-ca-volume
+    - name: mount-internal-ca-into-containers
       match:
         any:
           - resources:
@@ -15,12 +16,20 @@ spec:
                 - StatefulSet
                 - DaemonSet
                 - Job
-      preconditions:
-        all:
-          - key: "{{ request.object.metadata.annotations.\"security.darkfellanetwork.com/mount-internal-ca\" || '' }}"
-            operator: Equals
-            value: "true"
+
       mutate:
+        targets:
+          - apiVersion: v1
+            kind: Pod
+          - apiVersion: apps/v1
+            kind: Deployment
+          - apiVersion: apps/v1
+            kind: StatefulSet
+          - apiVersion: apps/v1
+            kind: DaemonSet
+          - apiVersion: batch/v1
+            kind: Job
+
         patchStrategicMerge:
           spec:
             volumes:

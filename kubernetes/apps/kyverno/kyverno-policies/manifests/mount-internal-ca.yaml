@@ -15,6 +15,12 @@ spec:
                 - DaemonSet
                 - Job
 
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.annotations['security.darkfellanetwork.com/mount-internal-ca'] }}"
+            operator: Equals
+            value: "true"
+
       mutate:
         targets:
           - apiVersion: apps/v1

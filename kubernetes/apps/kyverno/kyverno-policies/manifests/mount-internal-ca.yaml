@@ -17,7 +17,10 @@ spec:
 
       preconditions:
         all:
-          - key: "{{ request.object.metadata.annotations.security_darkfellanetwork_com_mount_internal_ca }}"
+          - key: '{{ request.object.metadata.annotations."security.darkfellanetwork.com/mount-internal-ca" }}'
+            operator: NotEquals
+            value: null
+          - key: '{{ request.object.metadata.annotations."security.darkfellanetwork.com/mount-internal-ca" }}'
             operator: Equals
             value: "true"
 

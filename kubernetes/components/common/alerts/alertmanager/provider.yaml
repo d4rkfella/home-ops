@@ -5,6 +5,4 @@ metadata:
   name: alertmanager
 spec:
   type: alertmanager
-  address: https://alertmanager.darkfellanetwork.com/api/v2/alerts/
-  secretRef:
-    name: oidc-token-secret
+  address: http://alertmanager-operated.observability.svc.cluster.local:9093

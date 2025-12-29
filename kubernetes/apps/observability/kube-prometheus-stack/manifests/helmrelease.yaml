@@ -58,7 +58,7 @@ spec:
               name: alertmanager-tls
               key: tls.key
             clientAuthType: RequireAndVerifyClientCert
-            clientCA:
+            client_ca:
               secret:
                 name: internal-ca
                 key: ca.crt
@@ -100,34 +100,6 @@ spec:
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
         externalUrl: "https://prometheus.darkfellanetwork.com"
-        containers:
-          - name: prometheus
-            livenessProbe:
-              exec:
-                command:
-                  - sh
-                  - -c
-                  - >
-                    curl -s --fail
-                    --cert /etc/prometheus/web_config/secret/prometheus-tls-cert/tls.crt
-                    --key /etc/prometheus/web_config/secret/prometheus-tls-key/tls.key
-                    --cacert /etc/ssl/certs/internal-ca.crt
-                    https://127.0.0.1:9090/-/healthy
-              initialDelaySeconds: 10
-              periodSeconds: 15
-            readinessProbe:
-              exec:
-                command:
-                  - sh
-                  - -c
-                  - >
-                    curl -s --fail
-                    --cert /etc/prometheus/web_config/secret/prometheus-tls-cert/tls.crt
-                    --key /etc/prometheus/web_config/secret/prometheus-tls-key/tls.key
-                    --cacert /etc/ssl/certs/internal-ca.crt
-                    https://127.0.0.1:9090/-/ready
-              initialDelaySeconds: 10
-              periodSeconds: 15
         web:
           tlsConfig:
             minVersion: TLS13
@@ -139,7 +111,7 @@ spec:
               name: prometheus-tls
               key: tls.key
             clientAuthType: RequireAndVerifyClientCert
-            clientCA:
+            client_ca:
               secret:
                 name: internal-ca
                 key: ca.crt

@@ -33,7 +33,7 @@ spec:
         jwt:
           provider: keycloak
           claims:
-          #- name: groups
-            #values: [Admins]
+          - name: groups
+            values: [media-admin]
           - name: email
-            values: [georgii.panov@darkfellanetwork.com]
+            values: [georgi.panov@darkfellanetwork.com]

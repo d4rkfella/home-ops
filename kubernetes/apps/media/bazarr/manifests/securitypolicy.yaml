@@ -14,5 +14,5 @@ spec:
     clientID: "5a89be8c-9525-4990-bebf-78d7875a9e01"
     clientSecret:
       name: "bazarr-secret"
-    redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
+    redirectURL: "https://bazarr.darkfellanetwork.com/login/callback"
     logoutPath: "/logout"

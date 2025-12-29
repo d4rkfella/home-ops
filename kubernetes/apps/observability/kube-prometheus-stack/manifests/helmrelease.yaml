@@ -60,7 +60,7 @@ spec:
             clientAuthType: RequireAndVerifyClientCert
             client_ca:
               secret:
-                name: internal-ca
+                name: internal-ca-secret
                 key: ca.crt
         alertmanagerConfiguration:
           name: alertmanager
@@ -113,7 +113,7 @@ spec:
             clientAuthType: RequireAndVerifyClientCert
             client_ca:
               secret:
-                name: internal-ca
+                name: internal-ca-secret
                 key: ca.crt
         podMetadata:
           annotations:

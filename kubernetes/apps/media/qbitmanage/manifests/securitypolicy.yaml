@@ -1,0 +1,45 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: qbitmanage-route-oidc
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: qbitmanage
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+    clientID: "e55f109d-abb7-46a1-bd5a-7169913fd7d1"
+    clientSecret:
+      name: "qbitmanage-secret"
+    redirectURL: "https://qbitmanage.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"
+  jwt:
+    providers:
+    - name: keycloak
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+      remoteJWKS:
+        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+      extractFrom:
+        cookies: [AccessToken-16e2627e]
+  authorization:
+    defaultAction: Deny
+    rules:
+    - action: Allow
+      name: allow-by-group
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: groups
+            values: [media-admin]
+    - action: Allow
+      name: allow-by-email
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: email
+            values: [georgi.panov@darkfellanetwork.com]

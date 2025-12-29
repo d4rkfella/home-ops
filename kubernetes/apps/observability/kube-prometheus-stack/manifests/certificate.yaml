@@ -25,6 +25,11 @@ spec:
     name: vault-issuer
     kind: ClusterIssuer
     group: cert-manager.io
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -52,3 +57,8 @@ spec:
     name: vault-issuer
     kind: ClusterIssuer
     group: cert-manager.io
+  usages:
+  - digital signature
+  - key encipherment
+  - server auth
+  - client auth

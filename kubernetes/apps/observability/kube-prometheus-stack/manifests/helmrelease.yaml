@@ -117,6 +117,7 @@ spec:
                 key: ca.crt
         podMetadata:
           annotations:
+            security.darkfellanetwork.com/mount-internal-ca: "true"
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"

@@ -16,6 +16,7 @@ spec:
       tlsAuth: true
       tlsAuthWithCACert: true
     secureJsonData:
+      serverName: alertmanager-operated.observability.svc.cluster.local
       tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
       tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
       tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}
@@ -41,6 +42,7 @@ spec:
       tlsAuth: true
       tlsAuthWithCACert: true
     secureJsonData:
+      serverName: prometheus-operated.observability.svc.cluster.local
       tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
       tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
       tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}

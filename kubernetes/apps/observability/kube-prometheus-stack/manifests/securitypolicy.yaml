@@ -1,0 +1,36 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prometheus-route-oidc
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: kube-prometheus-stack-prometheus
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+    clientID: "b257908e-34ad-4933-98a0-ca00ff6fcfdd"
+    clientSecret:
+      name: "prometheus-secret"
+    redirectURL: "https://prometheus.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: alertmanager-route-oidc
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: kube-prometheus-stack-alertmanager
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+    clientID: "62e859f7-c3c2-463d-87de-4d05ecc27776"
+    clientSecret:
+      name: "alertmanager-secret"
+    redirectURL: "https://alertmanager.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"

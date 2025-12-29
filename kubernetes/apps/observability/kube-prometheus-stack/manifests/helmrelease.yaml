@@ -35,10 +35,6 @@ spec:
       enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      annotations:
-        security.darkfellanetwork.com/mount-internal-ca: "true"
-      service:
-        targetPort: 8082
       serviceMonitor:
         selfMonitor: false
       route:
@@ -50,11 +46,22 @@ spec:
               namespace: envoy-gateway-system
               sectionName: https
       alertmanagerSpec:
-        listenLocal: true
         externalUrl: "https://alertmanager.darkfellanetwork.com"
-        podMetadata:
-          annotations:
-            security.darkfellanetwork.com/mount-internal-ca: "true"
+        web:
+          tlsConfig:
+            minVersion: TLS13
+            cert:
+              secret:
+                name: alertmanager-tls
+                key: tls.crt
+            keySecret:
+              name: alertmanager-tls
+              key: tls.key
+            clientAuthType: RequireAndVerifyClientCert
+            clientCA:
+              secret:
+                name: internal-ca
+                key: ca.crt
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -71,47 +78,6 @@ spec:
             secret:
               secretName: *secret
               defaultMode: 256
-        initContainers:
-          - name: oauth-proxy
-            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-            - --config=/etc/oauth2-proxy.cfg
-            env:
-              - name: OAUTH2_PROXY_REDIS_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: DRAGONFLY_PASSWORD
-            livenessProbe:
-              httpGet:
-                path: /oauth2/ping
-                port: &port 8082
-                scheme: HTTP
-              initialDelaySeconds: 5
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            readinessProbe:
-              httpGet:
-                path: /oauth2/ready
-                port: *port
-                scheme: HTTP
-              initialDelaySeconds: 5
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-            volumeMounts:
-              - name: *secret
-                mountPath: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true
@@ -121,8 +87,6 @@ spec:
           seccompProfile:
             type: RuntimeDefault
     prometheus:
-      service:
-        targetPort: 8082
       serviceMonitor:
         selfMonitor: false
       route:
@@ -135,11 +99,24 @@ spec:
               sectionName: https
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
-        listenLocal: true
         externalUrl: "https://prometheus.darkfellanetwork.com"
+        web:
+          tlsConfig:
+            minVersion: TLS13
+            cert:
+              secret:
+                name: prometheus-tls
+                key: tls.crt
+            keySecret:
+              name: prometheus-tls
+              key: tls.key
+            clientAuthType: RequireAndVerifyClientCert
+            clientCA:
+              secret:
+                name: internal-ca
+                key: ca.crt
         podMetadata:
           annotations:
-            security.darkfellanetwork.com/mount-internal-ca: "true"
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"
@@ -216,47 +193,6 @@ spec:
           - ip: "192.168.91.51"
             hostnames:
               - "accounts.darkfellanetwork.com"
-        initContainers:
-          - name: oauth-proxy
-            image: ghcr.io/d4rkfella/oauth2-proxy:7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-            - --config=/etc/oauth2-proxy.cfg
-            env:
-              - name: OAUTH2_PROXY_REDIS_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: DRAGONFLY_PASSWORD
-            livenessProbe:
-              httpGet:
-                path: /oauth2/ping
-                port: &port 8082
-                scheme: HTTP
-              initialDelaySeconds: 5
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            readinessProbe:
-              httpGet:
-                path: /oauth2/ready
-                port: *port
-                scheme: HTTP
-              initialDelaySeconds: 5
-              timeoutSeconds: 1
-              periodSeconds: 10
-              successThreshold: 1
-              failureThreshold: 3
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-            volumeMounts:
-              - name: *secret
-                mountPath: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true

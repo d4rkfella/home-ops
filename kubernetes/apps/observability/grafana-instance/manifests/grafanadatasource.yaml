@@ -12,9 +12,14 @@ spec:
     name: alertmanager
     access: proxy
     jsonData:
-      oauthPassThru: true
       implementation: prometheus
-    url: https://alertmanager.darkfellanetwork.com
+      tlsAuth: true
+      tlsAuthWithCACert: true
+    secureJsonData:
+      tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
+      tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
+      tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}
+    url: https://alertmanager-operated.observability.svc.cluster.local:9093
   uid: alertmanager
 ---
 apiVersion: grafana.integreatly.org/v1beta1
@@ -33,8 +38,13 @@ spec:
     jsonData:
       prometheusType: Prometheus
       timeInterval: 60s
-      oauthPassThru: true
-    url: https://prometheus.darkfellanetwork.com
+      tlsAuth: true
+      tlsAuthWithCACert: true
+    secureJsonData:
+      tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
+      tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
+      tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}
+    url: https://prometheus-operated.observability.svc.cluster.local:9090
   uid: prometheus
 ---
 apiVersion: grafana.integreatly.org/v1beta1

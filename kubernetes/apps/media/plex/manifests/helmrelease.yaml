@@ -18,12 +18,11 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/plex
-              tag: 1.43.0.10389@sha256:dfa24e0d9003073470dcdff77ef5864e1e709bb08f29ef0d3901e6e5ac33f00d
+              tag: 1.43.0.10389@sha256:893e2c61043cf05cc9d305dac97d28874ce870e7507e351a064ec0d23ee00d73
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:32400
               NVIDIA_VISIBLE_DEVICES: all
-              LD_LIBRARY_PATH: "/usr/local/glibc/usr/lib:$LD_LIBRARY_PATH"
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true

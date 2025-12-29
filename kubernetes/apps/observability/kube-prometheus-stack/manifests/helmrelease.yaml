@@ -133,17 +133,13 @@ spec:
             timeout: 30s
             api_version: v2
             tls_config:
+              cert_file: /etc/prometheus/web_config/secret/prometheus-tls-cert/tls.crt
+              key_file: /etc/prometheus/web_config/secret/prometheus-tls-key/tls.key
+              ca_file: /etc/prometheus/web_config/secret/internal-ca-secret-ca/ca.crt
               insecure_skip_verify: false
             static_configs:
               - targets:
-                - "alertmanager.darkfellanetwork.com"
-            oauth2:
-              client_id: b257908e-34ad-4933-98a0-ca00ff6fcfdd
-              client_secret_file: /vault/secrets/client_secret
-              token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
-              scopes: ["openid", "profile", "email"]
-              endpoint_params:
-                grant_type: client_credentials
+                - "alertmanager.operated.svc.cluster.local:9093"
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

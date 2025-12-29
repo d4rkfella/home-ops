@@ -5,8 +5,13 @@ metadata:
   name: grafana-mtls
 spec:
   secretName: grafana-mtls
-  duration: 90d
-  renewBefore: 30d
+  duration: 2160h
+  renewBefore: 720h
+  privateKey:
+    algorithm: ECDSA
+    encoding: PKCS8
+    rotationPolicy: Always
+    size: 384
   commonName: grafana-instance
   usages:
     - client auth

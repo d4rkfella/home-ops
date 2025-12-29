@@ -7,8 +7,6 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: dragonfly-cluster
-      namespace: database
     - name: keycloak-instance
       namespace: keycloak
   commonMetadata:

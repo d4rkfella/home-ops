@@ -1,0 +1,18 @@
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: prowlarr-route-oidc
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: prowlarr
+  oidc:
+    provider:
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+    clientID: "24403095-d528-408a-9252-34d1d3a2e74c"
+    clientSecret:
+      name: "prowlarr-secret"
+    redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
+    logoutPath: "/logout"

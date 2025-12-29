@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/plex
-              tag: 1.42.2.10156@sha256:0cfd26b32ea1b2d1b24c2102d34cef03d18f17882ceab20ef19b2404ba4edc97
+              tag: 1.43.0.10389@sha256:dfa24e0d9003073470dcdff77ef5864e1e709bb08f29ef0d3901e6e5ac33f00d
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:32400

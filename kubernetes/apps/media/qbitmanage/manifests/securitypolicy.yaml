@@ -23,7 +23,7 @@ spec:
       remoteJWKS:
         uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
       extractFrom:
-        cookies: [AccessToken-16e2627e]
+        cookies: [AccessToken-255e4db1]
   authorization:
     defaultAction: Deny
     rules:

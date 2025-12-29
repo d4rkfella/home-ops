@@ -139,7 +139,7 @@ spec:
               insecure_skip_verify: false
             static_configs:
               - targets:
-                - "alertmanager.operated.svc.cluster.local:9093"
+                - "alertmanager-operated.observability.svc.cluster.local:9093"
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

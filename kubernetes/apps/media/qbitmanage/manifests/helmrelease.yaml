@@ -35,11 +35,6 @@ spec:
               capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "qbittorrent.darkfellanetwork.com"
-
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

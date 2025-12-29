@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -11,12 +12,12 @@ spec:
   dependsOn:
     - name: volsync
       namespace: volsync-system
-
   values:
     controllers:
       seerr:
         annotations:
           reloader.stakater.com/auto: "true"
+
         containers:
           app:
             image:
@@ -74,11 +75,6 @@ spec:
 
     defaultPodOptions:
       hostUsers: false
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "radarr.darkfellanetwork.com"
-            - "sonarr.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -112,32 +108,24 @@ spec:
     persistence:
       config:
         existingClaim: *app
-        advancedMounts:
-          seerr:
-            app:
-              - path: /usr/lib/seerr/config
+        globalMounts:
+          - path: /usr/lib/seerr/config
       cache:
         suffix: cache
         type: persistentVolumeClaim
         size: 20Gi
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
-        advancedMounts:
-          seerr:
-            app:
-              - path: /usr/lib/seerr/config/cache
+        globalMounts:
+          - path: /usr/lib/seerr/config/cache
       logs:
         type: emptyDir
-        advancedMounts:
-          seerr:
-            app:
-              - path: /usr/lib/seerr/config/logs
+        globalMounts:
+          - path: /usr/lib/seerr/config/logs
       postgres-ca:
         type: secret
         name: *secret
-        advancedMounts:
-          seerr:
-            app:
-              - path: /etc/ssl/certs/postgres-ca.crt
-                subPath: ca.crt
-                readOnly: true
+        globalMounts:
+          - path: /etc/ssl/certs/postgres-ca.crt
+            subPath: ca.crt
+            readOnly: true

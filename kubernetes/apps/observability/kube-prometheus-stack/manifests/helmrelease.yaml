@@ -12,13 +12,6 @@ spec:
   - kustomize:
       patches:
       - target:
-          group: monitoring.coreos.com
-          kind: Prometheus
-          name: kube-prometheus-stack
-        patch: |
-          - op: remove
-            path: /spec/alerting
-      - target:
           kind: StatefulSet
         patch: |-
           - op: add

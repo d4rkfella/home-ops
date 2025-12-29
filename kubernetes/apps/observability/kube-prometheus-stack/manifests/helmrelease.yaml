@@ -36,7 +36,7 @@ spec:
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       serviceMonitor:
-        selfMonitor: false
+        selfMonitor: true
       route:
         main:
           enabled: true
@@ -47,21 +47,6 @@ spec:
               sectionName: https
       alertmanagerSpec:
         externalUrl: "https://alertmanager.darkfellanetwork.com"
-        web:
-          tlsConfig:
-            minVersion: TLS13
-            cert:
-              secret:
-                name: alertmanager-tls
-                key: tls.crt
-            keySecret:
-              name: alertmanager-tls
-              key: tls.key
-            clientAuthType: RequireAndVerifyClientCert
-            client_ca:
-              secret:
-                name: internal-ca-secret
-                key: ca.crt
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -73,11 +58,6 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
-        volumes:
-          - name: &secret alertmanager-secret
-            secret:
-              secretName: *secret
-              defaultMode: 256
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true
@@ -88,7 +68,7 @@ spec:
             type: RuntimeDefault
     prometheus:
       serviceMonitor:
-        selfMonitor: false
+        selfMonitor: true
       route:
         main:
           enabled: true
@@ -100,24 +80,8 @@ spec:
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
         externalUrl: "https://prometheus.darkfellanetwork.com"
-        web:
-          tlsConfig:
-            minVersion: TLS13
-            cert:
-              secret:
-                name: prometheus-tls
-                key: tls.crt
-            keySecret:
-              name: prometheus-tls
-              key: tls.key
-            clientAuthType: RequireAndVerifyClientCert
-            client_ca:
-              secret:
-                name: internal-ca-secret
-                key: ca.crt
         podMetadata:
           annotations:
-            security.darkfellanetwork.com/mount-internal-ca: "true"
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"
@@ -125,21 +89,6 @@ spec:
             vault.hashicorp.com/agent-inject-containers: "prometheus"
             vault.hashicorp.com/agent-run-as-group: "65532"
             vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com"
-        additionalAlertManagerConfigs:
-          - scheme: https
-            follow_redirects: true
-            enable_http2: true
-            path_prefix: /
-            timeout: 30s
-            api_version: v2
-            tls_config:
-              cert_file: /etc/prometheus/web_config/secret/prometheus-tls-cert/tls.crt
-              key_file: /etc/prometheus/web_config/secret/prometheus-tls-key/tls.key
-              ca_file: /etc/prometheus/web_config/secret/internal-ca-secret-ca/ca.crt
-              insecure_skip_verify: false
-            static_configs:
-              - targets:
-                - "alertmanager-operated.observability.svc.cluster.local:9093"
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
@@ -176,20 +125,6 @@ spec:
             static_configs:
               - targets:
                 - "vault.darkfellanetwork.com:8200"
-        volumes:
-          - name: &secret prometheus-secret
-            secret:
-              secretName: *secret
-              defaultMode: 256
-        volumeMounts:
-          - name: *secret
-            mountPath: /vault/secrets/client_secret
-            subPath: client_secret
-            readOnly: true
-        hostAliases:
-          - ip: "192.168.91.51"
-            hostnames:
-              - "accounts.darkfellanetwork.com"
         securityContext:
           runAsGroup: 65532
           runAsNonRoot: true

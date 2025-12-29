@@ -14,49 +14,6 @@ spec:
       bazarr:
         annotations:
           reloader.stakater.com/auto: "true"
-
-        initContainers:
-          oauth2-proxy:
-            image:
-              repository: ghcr.io/d4rkfella/oauth2-proxy
-              tag: 7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: DRAGONFLY_PASSWORD
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ping
-                    port: &port 4180
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ready
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-
         containers:
           app:
             image:
@@ -67,11 +24,11 @@ spec:
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               POSTGRES_PORT: 5432
-              POSTGRES_DATABASE: bazarr
+              POSTGRES_DATABASE: "{{ .Release.Name }}"
               POSTGRES_USERNAME:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: POSTGRES_USERNAME
               POSTGRES_PASSWORD:
                 valueFrom:
@@ -85,7 +42,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/system/ping
-                    port: *port
+                    port: &port 6767
                   periodSeconds: 10
                   failureThreshold: 30
               liveness: &probes
@@ -100,7 +57,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -108,19 +68,6 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
-      annotations:
-        security.darkfellanetwork.com/mount-internal-ca: "true"
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "radarr.darkfellanetwork.com"
-            - "sonarr.darkfellanetwork.com"
-        - ip: "192.168.91.54"
-          hostnames:
-            - "plex.darkfellanetwork.com"
-        - ip: "192.168.91.51"
-          hostnames:
-            - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -153,47 +100,21 @@ spec:
     persistence:
       config:
         existingClaim: *app
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /config
-
+        globalMounts:
+          - path: /config
       log:
         type: emptyDir
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /config/log
-
+        globalMounts:
+          - path: /config/log
       cache:
         type: emptyDir
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /config/cache
-
+        globalMounts:
+          - path: /config/cache
       tmp:
         type: emptyDir
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /tmp
-
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data/media
-        advancedMounts:
-          bazarr:
-            app:
-              - path: /data/media
-
-      secrets:
-        type: secret
-        name: *secret
-        advancedMounts:
-          bazarr:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
+        globalMounts:
+          - path: /data/media

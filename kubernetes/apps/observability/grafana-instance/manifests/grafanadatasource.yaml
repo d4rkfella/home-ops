@@ -13,13 +13,6 @@ spec:
     access: proxy
     jsonData:
       implementation: prometheus
-      tlsAuth: true
-      tlsAuthWithCACert: true
-    secureJsonData:
-      serverName: alertmanager-operated.observability.svc.cluster.local
-      tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
-      tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
-      tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}
     url: https://alertmanager-operated.observability.svc.cluster.local:9093
   uid: alertmanager
 ---
@@ -39,13 +32,6 @@ spec:
     jsonData:
       prometheusType: Prometheus
       timeInterval: 60s
-      tlsAuth: true
-      tlsAuthWithCACert: true
-      serverName: prometheus-operated.observability.svc.cluster.local
-    secureJsonData:
-      tlsClientCert: $__file{/etc/grafana/secrets/grafana-mtls/tls.crt}
-      tlsClientKey: $__file{/etc/grafana/secrets/grafana-mtls/tls.key}
-      tlsCACert: $__file{/etc/grafana/secrets/grafana-mtls/ca.crt}
     url: https://prometheus-operated.observability.svc.cluster.local:9090
   uid: prometheus
 ---

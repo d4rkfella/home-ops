@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -15,48 +16,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
-        initContainers:
-          oauth2-proxy:
-            image:
-              repository: ghcr.io/d4rkfella/oauth2-proxy
-              tag: 7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: DRAGONFLY_PASSWORD
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ping
-                    port: &port 4180
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ready
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-
         containers:
           app:
             image:
@@ -70,12 +29,12 @@ spec:
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
-              RADARR__SERVER__PORT: 80
-              RADARR__SERVER__BINDADDRESS: 127.0.0.1
+              RADARR__SERVER__PORT: &port 80
+              RADARR__SERVER__BINDADDRESS: 0.0.0.0
               RADARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: RADARR_API_KEY
               RADARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               RADARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
@@ -102,7 +61,10 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 100m
@@ -111,17 +73,6 @@ spec:
                 memory: 4Gi
 
     defaultPodOptions:
-      annotations:
-        security.darkfellanetwork.com/mount-internal-ca: "true"
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "prowlarr.darkfellanetwork.com"
-            - "qbittorrent.darkfellanetwork.com"
-            - "autobrr.darkfellanetwork.com"
-        - ip: "192.168.91.51"
-          hostnames:
-            - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -156,34 +107,15 @@ spec:
         size: 15Gi
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
-        advancedMounts:
-          radarr:
-            app:
-              - path: /config
+        globalMounts:
+          - path: /config
 
       tmp:
         type: emptyDir
-        advancedMounts:
-          radarr:
-            app:
-              - path: /tmp
 
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data
-        advancedMounts:
-          radarr:
-            app:
-              - path: /data
-
-      secrets:
-        type: secret
-        name: *secret
-        defaultMode: 0440
-        advancedMounts:
-          radarr:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true
+        globalMounts:
+          - path: /data

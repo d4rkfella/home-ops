@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -14,48 +15,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
 
-        initContainers:
-          oauth2-proxy:
-            image:
-              repository: ghcr.io/d4rkfella/oauth2-proxy
-              tag: 7.13.0@sha256:ac863024cbd2f1cfd8e539dc8de5eaa0d59d5ee7f5b7d6f14790ac08d339200f
-            args:
-              - --config=/etc/oauth2-proxy.cfg
-            env:
-              OAUTH2_PROXY_REDIS_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: DRAGONFLY_PASSWORD
-            probes:
-              liveness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ping
-                    port: &port 4180
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /oauth2/ready
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-            securityContext: &securityContext
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            restartPolicy: Always
-
         containers:
           app:
             image:
@@ -69,12 +28,12 @@ spec:
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
               PROWLARR__LOG__DBENABLED: "False"
               PROWLARR__LOG__LEVEL: info
-              PROWLARR__SERVER__BINDADDRESS: 127.0.0.1
-              PROWLARR__SERVER__PORT: 80
+              PROWLARR__SERVER__BINDADDRESS: 0.0.0.0
+              PROWLARR__SERVER__PORT: &port 80
               PROWLARR__AUTH__APIKEY:
                 valueFrom:
                   secretKeyRef:
-                    name: *secret
+                    name: &secret "{{ .Release.Name }}-secret"
                     key: PROWLARR_API_KEY
               PROWLARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               PROWLARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
@@ -95,7 +54,7 @@ spec:
                 spec:
                   httpGet:
                     path: /ping
-                    port: 4180
+                    port: *port
                   initialDelaySeconds: 2
                   periodSeconds: 10
                   timeoutSeconds: 1
@@ -106,20 +65,12 @@ spec:
                 cpu: 100m
               limits:
                 memory: 1Gi
-            securityContext: *securityContext
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
 
     defaultPodOptions:
-      annotations:
-        security.darkfellanetwork.com/mount-internal-ca: "true"
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "radarr.darkfellanetwork.com"
-            - "sonarr.darkfellanetwork.com"
-            - "qbittorrent.darkfellanetwork.com"
-        - ip: "192.168.91.51"
-          hostnames:
-            - "accounts.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -133,7 +84,7 @@ spec:
         controller: *app
         ports:
           http:
-            port: &port 4180
+            port: *port
 
     route:
       app:
@@ -150,25 +101,8 @@ spec:
     persistence:
       config:
         type: emptyDir
-        advancedMounts:
-          prowlarr:
-            app:
-              - path: /config
+        globalMounts:
+          - path: /config
 
       tmp:
         type: emptyDir
-        advancedMounts:
-          prowlarr:
-            app:
-              - path: /tmp
-
-      secrets:
-        type: secret
-        name: *secret
-        defaultMode: 0440
-        advancedMounts:
-          prowlarr:
-            oauth2-proxy:
-              - path: /etc/oauth2-proxy.cfg
-                subPath: oauth2-proxy.cfg
-                readOnly: true

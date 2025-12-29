@@ -16,3 +16,24 @@ spec:
       name: "bazarr-secret"
     redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback"
     logoutPath: "/logout"
+  jwt:
+    providers:
+    - name: keycloak
+      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+      remoteJWKS:
+        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+      extractFrom:
+        cookies: [AccessToken-e825b4]
+  authorization:
+    defaultAction: Deny
+    rules:
+    - action: Allow
+      name: allow
+      principal:
+        jwt:
+          provider: keycloak
+          claims:
+          - name: groups
+            values: [Admins]
+          #- name: email
+            #values: [georgi.panov@darkfellanetwork.com]

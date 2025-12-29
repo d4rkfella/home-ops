@@ -5,9 +5,7 @@ resources:
   - ./namespace.yaml
   - ./cloudnative-pg-operator/ks.yaml
   - ./barman-cloud/ks.yaml
-  - ./dragonfly-operator/ks.yaml
   - ./cloudnative-pg-cluster/ks.yaml
-  - ./dragonfly-cluster/ks.yaml
 components:
   - ../../components/common
   - ../../components/repos/app-template

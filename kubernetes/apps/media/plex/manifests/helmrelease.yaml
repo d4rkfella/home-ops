@@ -37,11 +37,7 @@ spec:
 
         pod:
           annotations:
-            k8s.v1.cni.cncf.io/networks: |
-              [
-                { "name": "cilium" },
-                { "name": "media/plex" }
-              ]
+            k8s.v1.cni.cncf.io/networks: media/plex
           runtimeClassName: nvidia
           dnsPolicy: None
           dnsConfig:

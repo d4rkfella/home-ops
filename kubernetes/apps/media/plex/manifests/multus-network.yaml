@@ -12,6 +12,7 @@ spec:
         {
           "type": "bridge",
           "bridge": "br0",
+          "macspoofchk": true,
           "hairpinMode": true,
           "ipam": {
             "type": "static",
@@ -22,7 +23,7 @@ spec:
             ],
             "routes": [
               {
-                "dst": "0.0.0.0",
+                "dst": "0.0.0.0/0",
                 "gw": "192.168.91.1"
               }
             ],

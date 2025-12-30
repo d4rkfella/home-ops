@@ -76,7 +76,8 @@ RUN apt-get update && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv task /usr/local/bin/task && \
     #Download and verify yq binary
-    curl -fsSLO https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/{yq_linux_amd64,checksums} && \
+    curl -fsSLO https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64 && \
+    curl -fsSLO https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/checksums && \
     sha256sum -c --strict checksums --ignore-missing && \
     mv yq_linux_amd64 /usr/local/bin/yq && \
     #Download and verify vault binary

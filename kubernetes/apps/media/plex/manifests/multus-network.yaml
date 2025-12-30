@@ -12,7 +12,6 @@ spec:
         {
           "type": "bridge",
           "bridge": "br0",
-          "hairpinMode": true,
           "ipam": {
             "type": "static",
             "addresses": [

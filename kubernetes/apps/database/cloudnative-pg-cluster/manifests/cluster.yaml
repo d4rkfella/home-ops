@@ -11,7 +11,7 @@ spec:
     tls:
       enabled: true
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-minimal-trixie@sha256:92876b4e8ef35a13b9e012757953f8b5f6683b7281b8aab208fedb30535f4fff
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1-minimal-trixie@sha256:40a4361466859a53e8b378f502655a5972d94d48913d20318e25bc9534b6431f
   primaryUpdateStrategy: unsupervised
   storage:
     pvcTemplate:

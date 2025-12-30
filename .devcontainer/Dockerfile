@@ -1,7 +1,7 @@
 FROM debian:trixie AS build
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.46.3
+ARG TASK_VERSION=v3.46.4
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.7.0
 # renovate: datasource=github-releases depName=hashicorp/vault
@@ -16,6 +16,8 @@ ARG SOPS_VERSION=v3.11.0
 ARG FLUX_VERSION=v2.7.5
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.0.3
+# renovate: datasource=github-releases depName=mikefarah/yq
+ARG YQ_VERSION=v4.50.1
 
 USER root
 WORKDIR /tmp
@@ -73,6 +75,10 @@ RUN apt-get update && \
     curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv task /usr/local/bin/task && \
+    #Download and verify yq binary
+    curl -fsSLO https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/{yq_linux_amd64,checksums} && \
+    sha256sum -c --strict checksums --ignore-missing && \
+    mv yq_linux_amd64 /usr/local/bin/yq && \
     #Download and verify vault binary
     curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
     curl -fsSLO "https://releases.hashicorp.com/vault/${VAULT_VERSION#v}/vault_${VAULT_VERSION#v}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig}" && \
@@ -134,7 +140,6 @@ RUN apt-get update && \
         gnupg \
         libguestfs-tools \
         direnv \
-        yq \
         docker-cli \
         docker-buildx \
         tigervnc-viewer \

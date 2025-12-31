@@ -11,42 +11,36 @@ spec:
       template:
         spec:
           serviceAccountName: vault
-          volumes:
-           - name: tmp
-             emptyDir: {}
           containers:
-          - name: vaultbackup
-            image: ghcr.io/d4rkfella/vault-backup:1.11.4@sha256:a739b09279401a335e215254348c6c9333baec6a751ba160bad1ac9759551531
-            imagePullPolicy: IfNotPresent
-            args: ["backup"]
-            env:
-              - name: VAULT_ADDRESS
-                value: https://vault.darkfellanetwork.com:8200
-              - name: VAULT_K8S_AUTH_ENABLED
-                value: "true"
-              - name: VAULT_K8S_ROLE
-                value: vault
-              - name: S3_ENDPOINT
-                value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-              - name: S3_BUCKET
-                value: hashicorp-vault-backup
-            envFrom:
-              - secretRef:
-                  name: vault-backup-secret
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            resources:
-              limits:
-                cpu: "1"
-                memory: "1.5Gi"
-              requests:
-                cpu: "500m"
-                memory: "1Gi"
-            volumeMounts:
-              - name: tmp
-                mountPath: /tmp
+            - name: vaultbackup
+              image: ghcr.io/d4rkfella/home-ops-cli:0.3.5@sha256:c9bbe45d3fb06af4cea23e980c30524bbed1842d55c5e1018f56510bdbf2242d
+              imagePullPolicy: IfNotPresent
+              args:
+                - vault
+                - backup-raft-snapshot
+              env:
+                - name: VAULT_ADDR
+                  value: https://vault.darkfellanetwork.com:8200
+                - name: VAULT_K8S_ROLE
+                  value: vault
+                - name: AWS_ENDPOINT_URL
+                  value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+                - name: S3_BUCKET_NAME
+                  value: hashicorp-vault-backup
+              envFrom:
+                - secretRef:
+                    name: vault-backup-secret
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: { drop: ["ALL"] }
+              resources:
+                limits:
+                  cpu: "1"
+                  memory: "1.5Gi"
+                requests:
+                  cpu: "500m"
+                  memory: "1Gi"
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true

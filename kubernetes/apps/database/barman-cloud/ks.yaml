@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/apps/database/barman-cloud/manifests
   postBuild:
     substitute:
-      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/plugin-barman-cloud-sidecar
+      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/plugin-barman-cloud
       SIDECAR_IMAGE_VERSION: v0.9.0
   prune: true
   sourceRef:

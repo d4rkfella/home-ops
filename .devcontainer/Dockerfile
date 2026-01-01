@@ -16,10 +16,6 @@ ARG COSIGN_VERSION=v3.0.3
 ARG YQ_VERSION=v4.50.1
 # renovate: datasource=github-releases depName=astral-sh/uv
 ARG UV_VERSION=0.9.21
-# renovate: datasource=pypi depName=home-ops-cli
-ARG HOME-OPS-CLI_VERSION=0.4.2
-# renovate: datasource=pypi depName=pgadmin4
-ARG PGADMIN4_VERSION=9.11
 
 USER root
 WORKDIR /tmp
@@ -73,18 +69,16 @@ RUN apt-get update && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
     mv helm /usr/local/bin/helm && \
     #Download kubectl node-shell plugin
-    curl -fsSL -o /usr/local/bin/kubectl-node_shell https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell && \
+    curl -fsSL -o /usr/local/bin/kubectl-node_shell "https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell" && \
     #Download and verify libguestfs appliance
-    curl -fsSL -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz \
-               -O https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz.sig \
-               -O https://download.libguestfs.org/libguestfs.keyring && \
+    curl -fsSL -O "https://download.libguestfs.org/binaries/appliance/appliance-1.56.0.tar.xz{,.sig}" \
+               -O "https://download.libguestfs.org/libguestfs.keyring" && \
     gpg --no-default-keyring --keyring ./libguestfs.keyring --verify appliance-1.56.0.tar.xz.sig appliance-1.56.0.tar.xz && \
     tar -xJf appliance-1.56.0.tar.xz && \
     mkdir -p /usr/local/lib/guestfs && \
     mv appliance /usr/local/lib/guestfs/ && \
     #Download and verify uv and uvx binaries
-    curl -fsSL -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz \
-               -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
+    curl -fsSLO "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz{,.sha256}" && \
     sha256sum -c --strict --ignore-missing uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
     tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz --strip-components=1 && \
     mv uv uvx /usr/local/bin/ && \
@@ -103,6 +97,11 @@ ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+
+# renovate: datasource=pypi depName=home-ops-cli
+ARG HOME-OPS-CLI_VERSION=0.4.2
+# renovate: datasource=pypi depName=pgadmin4
+ARG PGADMIN4_VERSION=9.11
 
 ARG USERNAME=vscode
 ARG USER_UID=2100

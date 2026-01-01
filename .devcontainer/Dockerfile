@@ -146,8 +146,7 @@ RUN apt-get update && \
 
 USER $USERNAME
 
-RUN source $HOME/.local/bin/env bash && \
-    uv tool install pgadmin4==${PGADMIN4_VERSION} && \
+RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \
     uv tool install home-ops-cli==${HOME-OPS-CLI_VERSION} && \
     uv cache clean
 

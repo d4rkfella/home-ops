@@ -13,6 +13,3 @@ spec:
     tag: 1.19.0
   verify:
     provider: cosign
-    matchOIDCIdentity:
-      - issuer: "^https://token.actions.githubusercontent.com$"
-        subject: "^https://github.com/d4rkfella/charts-mirror.*$"

@@ -34,6 +34,7 @@ RUN apt-get update && \
         curl \
         ca-certificates \
         gnupg \
+        xz-utils \
         unzip && \
     #Download and verify cosign binary
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \

@@ -142,12 +142,14 @@ RUN apt-get update && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
-    uv tool install pgadmin4==${PGADMIN4_VERSION} && \
-    uv tool install home-ops-cli==${HOME-OPS-CLI_VERSION} && \
-    uv cache clean && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
+
+RUN source $HOME/.local/bin/env bash && \
+    uv tool install pgadmin4==${PGADMIN4_VERSION} && \
+    uv tool install home-ops-cli==${HOME-OPS-CLI_VERSION} && \
+    uv cache clean
 
 WORKDIR /project
 

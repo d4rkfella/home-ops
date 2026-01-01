@@ -83,7 +83,8 @@ RUN apt-get update && \
     mkdir -p /usr/local/lib/guestfs && \
     mv appliance /usr/local/lib/guestfs/ && \
     #Download and verify uv and uvx binaries
-    curl -fsSLO https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz{,.sha256} && \
+    curl -fsSL -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz \
+               -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
     sha256sum -c --strict --ignore-missing uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
     tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz && \
     mv uv uvx /usr/local/bin/ && \

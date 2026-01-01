@@ -22,16 +22,8 @@ spec:
       enabled: true
       zones:
         - router.darkfellanetwork.com
-    zoneFiles:
-      - filename: darkfellanetwork.db
-        domains: darkfellanetwork.com
-        contents: |
-          darkfellanetwork.com.   IN SOA k8s-gateway.darkfellanetwork.com. admin.darkfellanetwork.com. 2026010101 7200 3600 1209600 300
-          darkfellanetwork.com.   IN NS  k8s-gateway.darkfellanetwork.com.
-          k8s-gateway.darkfellanetwork.com. IN A 192.168.91.80
-          plex.darkfellanetwork.com. IN A 192.168.91.43
-          nas.darkfellanetwork.com.  IN A 192.168.91.39
-          nas.darkfellanetwork.com.  IN A 192.168.91.40
+        - plex.darkfellanetwork.com
+        - nas.darkfellanetwork.com
     extraZonePlugins:
       - name: log
       - name: errors

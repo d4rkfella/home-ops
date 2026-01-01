@@ -18,6 +18,10 @@ spec:
         lbipam.cilium.io/ips: 192.168.91.80
       externalTrafficPolicy: Local
     watchedResources: ["HTTPRoute", "Service"]
+    fallthrough:
+      enabled: true
+      zones:
+        - darkfellanetwork.com
     extraZonePlugins:
       - name: log
       - name: errors

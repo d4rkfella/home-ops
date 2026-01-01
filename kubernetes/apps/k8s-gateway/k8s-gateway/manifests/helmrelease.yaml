@@ -22,6 +22,14 @@ spec:
       enabled: true
       zones:
         - router.darkfellanetwork.com
+    zoneFiles:
+      - filename: darkfellanetwork.db
+        domains: darkfellanetwork.com
+        reload: 1m
+        contents: |
+          plex.darkfellanetwork.com. IN A 192.168.91.43
+          nas.darkfellanetwork.com. IN A 192.168.91.39
+          nas.darkfellanetwork.com. IN A 192.168.91.40
     extraZonePlugins:
       - name: log
       - name: errors

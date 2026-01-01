@@ -86,7 +86,7 @@ RUN apt-get update && \
     curl -fsSL -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz \
                -O https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
     sha256sum -c --strict --ignore-missing uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
-    tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz && \
+    tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz --strip-components=1 && \
     mv uv uvx /usr/local/bin/ && \
     #Set permissions
     chmod +x /usr/local/bin/*

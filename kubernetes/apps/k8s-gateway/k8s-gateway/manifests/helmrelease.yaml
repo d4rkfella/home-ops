@@ -21,7 +21,7 @@ spec:
     fallthrough:
       enabled: true
       zones:
-        - darkfellanetwork.com
+        - router.darkfellanetwork.com
     extraZonePlugins:
       - name: log
       - name: errors

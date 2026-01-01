@@ -99,7 +99,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # renovate: datasource=pypi depName=home-ops-cli
-ARG HOME-OPS-CLI_VERSION=0.4.2
+ARG HOME_OPS_CLI_VERSION=0.4.2
 # renovate: datasource=pypi depName=pgadmin4
 ARG PGADMIN4_VERSION=9.11
 
@@ -147,7 +147,7 @@ RUN apt-get update && \
 USER $USERNAME
 
 RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \
-    uv tool install home-ops-cli==${HOME-OPS-CLI_VERSION} && \
+    uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
     uv cache clean
 
 WORKDIR /project

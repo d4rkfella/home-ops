@@ -51,7 +51,7 @@ spec:
           - name: autopath
             parameters: "@kubernetes"
           - name: forward
-            parameters: darkfellanetwork.com 192.168.91.41
+            parameters: darkfellanetwork.com 192.168.91.80
           - name: forward
             parameters: . 192.168.91.1
           - name: cache
@@ -61,19 +61,6 @@ spec:
           - name: loop
           - name: reload
           - name: loadbalance
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: node-role.kubernetes.io/control-plane
-                  operator: Exists
-    tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
     deployment:
       annotations:
         reloader.stakater.com/auto: "true"

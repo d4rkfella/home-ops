@@ -4,20 +4,22 @@ FROM debian:trixie AS build
 ARG TASK_VERSION=v3.46.4
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.7.0
-# renovate: datasource=github-releases depName=hashicorp/vault
-ARG VAULT_VERSION=v1.21.1
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v4.0.4
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 ARG KUBECTL_VERSION=v1.35.0
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.11.0
-# renovate: datasource=github-releases depName=fluxcd/flux2
-ARG FLUX_VERSION=v2.7.5
 # renovate: datasource=github-releases depName=sigstore/cosign
 ARG COSIGN_VERSION=v3.0.3
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.50.1
+# renovate: datasource=github-releases depName=astral-sh/uv
+ARG UV_VERSION=0.9.21
+# renovate: datasource=pypi depName=home-ops-cli
+ARG HOME-OPS-CLI_VERSION=0.4.2
+# renovate: datasource=pypi depName=pgadmin4
+ARG PGADMIN4_VERSION=9.11
 
 USER root
 WORKDIR /tmp
@@ -28,16 +30,12 @@ ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        git \
         cosign \
         curl \
         ca-certificates \
-        coreutils \
         gnupg \
-        xz-utils \
-        unzip \
-        && apt-get clean && rm -rf /var/lib/apt/lists/* && \
-    # Download latest cosign (v4+) release
+        unzip && \
+    #Download and verify cosign binary
     curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
     curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
     /usr/bin/cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
@@ -50,16 +48,6 @@ RUN apt-get update && \
       --certificate-identity krel-staging@k8s-releng-prod.iam.gserviceaccount.com \
       --certificate-oidc-issuer https://accounts.google.com && \
     mv kubectl /usr/local/bin/kubectl && \
-    #Download and verify flux-cli binary
-    curl -fsSLO "https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/flux_${FLUX_VERSION#v}_{linux_amd64.tar.gz,checksums.txt,checksums.txt.pem,checksums.txt.sig}" && \
-    /usr/local/bin/cosign verify-blob flux_${FLUX_VERSION#v}_checksums.txt \
-      --certificate flux_${FLUX_VERSION#v}_checksums.txt.pem \
-      --signature flux_${FLUX_VERSION#v}_checksums.txt.sig \
-      --certificate-identity-regexp=https://github.com/fluxcd \
-      --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    sha256sum -c --strict flux_${FLUX_VERSION#v}_checksums.txt --ignore-missing && \
-    tar -xzf flux_${FLUX_VERSION#v}_linux_amd64.tar.gz && \
-    mv flux /usr/local/bin/flux && \
     #Download and verify sops binary
     curl -fsSLO "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}{.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig}" && \
     /usr/local/bin/cosign verify-blob sops-${SOPS_VERSION}.checksums.txt \
@@ -78,13 +66,6 @@ RUN apt-get update && \
     #Download yq binary
     curl -fsSL -o yq https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64 && \
     mv yq /usr/local/bin/yq && \
-    #Download and verify vault binary
-    curl -fsSL https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
-    curl -fsSLO "https://releases.hashicorp.com/vault/${VAULT_VERSION#v}/vault_${VAULT_VERSION#v}_{linux_amd64.zip,SHA256SUMS,SHA256SUMS.72D7468F.sig}" && \
-    gpg --verify vault_${VAULT_VERSION#v}_SHA256SUMS.72D7468F.sig vault_${VAULT_VERSION#v}_SHA256SUMS && \
-    sha256sum -c --strict vault_${VAULT_VERSION#v}_SHA256SUMS --ignore-missing && \
-    unzip vault_${VAULT_VERSION#v}_linux_amd64.zip && \
-    mv vault /usr/local/bin/vault && \
     #Download and verify helm binary
     curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
@@ -100,6 +81,11 @@ RUN apt-get update && \
     tar -xJf appliance-1.56.0.tar.xz && \
     mkdir -p /usr/local/lib/guestfs && \
     mv appliance /usr/local/lib/guestfs/ && \
+    #Download and verify uv and uvx binaries
+    curl -fsSLO https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz{,.sha256} && \
+    sha256sum -c --strict --ignore-missing uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
+    tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz && \
+    mv uv uvx /usr/local/bin/ && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
@@ -155,18 +141,13 @@ RUN apt-get update && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff && \
+    uv tool install pgadmin4==${PGADMIN4_VERSION} && \
+    uv tool install home-ops-cli==${HOME-OPS-CLI_VERSION} && \
+    uv cache clean && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $USERNAME
 
-COPY uv-tools.txt /home/$USERNAME/uv-tools.txt
-
-RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/astral-sh/uv/releases/download/0.9.15/uv-installer.sh | sh && \
-    source $HOME/.local/bin/env bash && \
-    while IFS= read -r tool; do \
-        uv tool install "$tool"; \
-    done < /home/$USERNAME/uv-tools.txt
-
-    WORKDIR /project
+WORKDIR /project
 
 ENTRYPOINT ["/bin/bash"]

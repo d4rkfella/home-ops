@@ -62,10 +62,10 @@ spec:
         resources:
           requests:
             cpu: 4
-            memory: 49152Mi
+            memory: 53248Mi
           limits:
             cpu: 4
-            memory: 49152Mi
+            memory: 53248Mi
         memory:
           hugepages:
             pageSize: "2Mi"

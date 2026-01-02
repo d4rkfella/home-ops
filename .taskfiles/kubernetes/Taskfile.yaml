@@ -51,7 +51,7 @@ tasks:
     interactive: true
     silent: true
     cmds:
-      - ./.taskfiles/kubernetes/vm_manage.py
+      - home-ops-cli kubevirt manager
     preconditions:
       - which kubectl
 

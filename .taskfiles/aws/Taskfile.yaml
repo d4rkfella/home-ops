@@ -7,5 +7,6 @@ tasks:
     desc: Interactive S3 object storage browser
     silent: true
     interactive: true
-    cmds:
-      - home-ops-cli aws manager
+    cmd: home-ops-cli aws manager
+    preconditions:
+      - which home-ops-cli

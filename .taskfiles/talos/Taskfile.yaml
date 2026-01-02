@@ -20,11 +20,9 @@ tasks:
     desc: Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.
     interactive: true
     prompt: Regenerate talosconfig ... continue?
-    cmd: |
-      python3 {{.ROOT_DIR}}/scripts/home_ops_cli.py regen-talosconfig {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}
+    cmd: home-ops-cli talos regen-talosconfig {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}
     requires:
       vars: ['MACHINE_CONFIG_FILEPATH', 'CONTEXT_NAME', 'ENDPOINTS', 'NODES']
     preconditions:
-      - which talosctl
+      - which home-ops-cli
       - which sops
-      - which python

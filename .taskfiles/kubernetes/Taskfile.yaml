@@ -54,6 +54,8 @@ tasks:
       - home-ops-cli kubevirt manager
     preconditions:
       - which kubectl
+      - which virtctl
+      - which home-ops-cli
 
   start-pgadmin:
     desc: Start pgAdmin server
@@ -67,4 +69,4 @@ tasks:
         pgadmin4
 
     preconditions:
-      - which kubectl pgadmin4 python
+      - which kubectl pgadmin4

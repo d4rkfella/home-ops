@@ -99,7 +99,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # renovate: datasource=pypi depName=home-ops-cli
-ARG HOME_OPS_CLI_VERSION=0.4.3
+ARG HOME_OPS_CLI_VERSION=0.4.4
 # renovate: datasource=pypi depName=pgadmin4
 ARG PGADMIN4_VERSION=9.11
 

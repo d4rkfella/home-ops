@@ -65,7 +65,7 @@ spec:
 
   image: ghcr.io/d4rkfella/keycloak:26.4.7@sha256:c9bf913b7fd5344d13e4cd8b57450bb4bf2e05a75364e6e18275de03e277dd24
 
-  startOptimized: true
+  startOptimized: false
 
   #bootstrapAdmin:
     #user:

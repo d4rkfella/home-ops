@@ -15,9 +15,9 @@ spec:
             emptyDir: {}
           - name: data
             emptyDir: {}
-          - name: keycloak-providers
-            configMap:
-              name: keycloak-providers
+          #- name: keycloak-providers
+            #configMap:
+              #name: keycloak-providers
         containers:
           - name: keycloak
             env:
@@ -32,9 +32,9 @@ spec:
                 mountPath: /opt/keycloak/data
               - name: tmpfs
                 mountPath: /tmp
-              - name: keycloak-providers
-                mountPath: /opt/keycloak/providers
-                readOnly: true
+              #- name: keycloak-providers
+                #mountPath: /opt/keycloak/providers
+                #readOnly: true
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -65,7 +65,7 @@ spec:
 
   image: ghcr.io/d4rkfella/keycloak:26.4.7@sha256:c9bf913b7fd5344d13e4cd8b57450bb4bf2e05a75364e6e18275de03e277dd24
 
-  startOptimized: false
+  startOptimized: true
 
   #bootstrapAdmin:
     #user:

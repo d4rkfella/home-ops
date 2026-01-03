@@ -1,12 +1,11 @@
 # Talos Linux – Extra Kernel Arguments
 
-This document describes the kernel arguments used for this Talos cluster and their purpose. It is intended to live alongside the Talos configuration files (for example in `talos/config/README.md`) so the rationale for these settings is preserved.
+This document describes the kernel arguments used for this Talos cluster and their purpose. It is intended to live alongside the Talos configuration files so the rationale for these settings is preserved.
 
 ---
 
 ## Configuration Snippet
 
-Include the following under the appropriate Talos config section (for example `machine.install.extraKernelArgs` or `machine.kernel.extraArgs`, depending on your Talos version):
 
 ```yaml
 extraKernelArgs:
@@ -77,6 +76,6 @@ Caps the ZFS ARC size to **32 GiB** (34,359,738,368 bytes) to prevent ZFS from c
 
 ## Notes
 
-* **Secure Boot**: This cluster uses Secure Boot with *pre-signed kernel components*. Kernel arguments are applied as part of the Talos boot assets and do **not** rely on modifying unsigned kernel command lines at runtime.
+* **Secure Boot**: This cluster uses Secure Boot with *pre-signed kernel components*. Kernel arguments are applied as part of the Talos boot assets and do **not** rely on modifying kernel command lines in the machineconfig.
 * These settings are tuned for AMD-based systems running ZFS and may not be appropriate for all hardware.
 * Review and adjust values (especially ZFS ARC limits) based on available system RAM and workload requirements.

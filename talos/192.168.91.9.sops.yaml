@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: WatchdogTimerConfig
 device: /dev/watchdog0
@@ -13,12 +14,34 @@ sops:
             SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
             xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-27T08:39:41Z"
-    mac: ENC[AES256_GCM,data:r+K3eeys4AHXqEQf4bFQqIvUAQ+gpI3dEK49kG7NWe/G0FOmzo1mWN2iOPgThNS+L4LUQg32wUku8x/N/1wwKy5cfaR1DsyT4qG1LGmX6lHn99YtYPboJF8Eo9WVTI1m7o3PFWLjv4FuX8IKYSRUkWx50yfRx03YE58eTICb1bk=,iv:ym7I7nrIu3FE0MHSZFiJVGOoA7qWTe9A30nw4uYIX6s=,tag:YpD7pdizCh4TrcpqGEq0WQ==,type:str]
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.11.0
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: OOMConfig
+triggerExpression: "false"
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4MlVvcFZKUXFGSjZjNFdq
+            blVOek5RNUxjU1duZUR1T1BBYkIxdW5GREJFCkRKOXhkZ3BuYTR6VXhJZm1yejhS
+            RlVsSURrcHZxZkduYzdwdmh0T0pncVEKLS0tIHpDVk10NVY3cjFvaDNTbXYwcXFX
+            SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
+            xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.11.0
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: PCIDriverRebindConfig
 name: "0000:05:00.0"
@@ -34,12 +57,13 @@ sops:
             SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
             xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-27T08:39:41Z"
-    mac: ENC[AES256_GCM,data:r+K3eeys4AHXqEQf4bFQqIvUAQ+gpI3dEK49kG7NWe/G0FOmzo1mWN2iOPgThNS+L4LUQg32wUku8x/N/1wwKy5cfaR1DsyT4qG1LGmX6lHn99YtYPboJF8Eo9WVTI1m7o3PFWLjv4FuX8IKYSRUkWx50yfRx03YE58eTICb1bk=,iv:ym7I7nrIu3FE0MHSZFiJVGOoA7qWTe9A30nw4uYIX6s=,tag:YpD7pdizCh4TrcpqGEq0WQ==,type:str]
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.11.0
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
 apiVersion: v1alpha1
 kind: PCIDriverRebindConfig
 name: 0000:0a:00.0
@@ -55,13 +79,103 @@ sops:
             SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
             xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-27T08:39:41Z"
-    mac: ENC[AES256_GCM,data:r+K3eeys4AHXqEQf4bFQqIvUAQ+gpI3dEK49kG7NWe/G0FOmzo1mWN2iOPgThNS+L4LUQg32wUku8x/N/1wwKy5cfaR1DsyT4qG1LGmX6lHn99YtYPboJF8Eo9WVTI1m7o3PFWLjv4FuX8IKYSRUkWx50yfRx03YE58eTICb1bk=,iv:ym7I7nrIu3FE0MHSZFiJVGOoA7qWTe9A30nw4uYIX6s=,tag:YpD7pdizCh4TrcpqGEq0WQ==,type:str]
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.11.0
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.10/website/content/v1.10/schemas/config.schema.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: k8s-0
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4MlVvcFZKUXFGSjZjNFdq
+            blVOek5RNUxjU1duZUR1T1BBYkIxdW5GREJFCkRKOXhkZ3BuYTR6VXhJZm1yejhS
+            RlVsSURrcHZxZkduYzdwdmh0T0pncVEKLS0tIHpDVk10NVY3cjFvaDNTbXYwcXFX
+            SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
+            xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.11.0
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: eth0
+clientIdentifier: mac
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4MlVvcFZKUXFGSjZjNFdq
+            blVOek5RNUxjU1duZUR1T1BBYkIxdW5GREJFCkRKOXhkZ3BuYTR6VXhJZm1yejhS
+            RlVsSURrcHZxZkduYzdwdmh0T0pncVEKLS0tIHpDVk10NVY3cjFvaDNTbXYwcXFX
+            SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
+            xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.11.0
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: BridgeConfig
+name: br0
+stp:
+    enabled: false
+links:
+    - eth1
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4MlVvcFZKUXFGSjZjNFdq
+            blVOek5RNUxjU1duZUR1T1BBYkIxdW5GREJFCkRKOXhkZ3BuYTR6VXhJZm1yejhS
+            RlVsSURrcHZxZkduYzdwdmh0T0pncVEKLS0tIHpDVk10NVY3cjFvaDNTbXYwcXFX
+            SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
+            xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.11.0
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.91.10
+link: eth0
+sops:
+    age:
+        - recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA4MlVvcFZKUXFGSjZjNFdq
+            blVOek5RNUxjU1duZUR1T1BBYkIxdW5GREJFCkRKOXhkZ3BuYTR6VXhJZm1yejhS
+            RlVsSURrcHZxZkduYzdwdmh0T0pncVEKLS0tIHpDVk10NVY3cjFvaDNTbXYwcXFX
+            SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
+            xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
+    encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
+    mac_only_encrypted: true
+    version: 3.11.0
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.12/website/content/v1.12/schemas/config.schema.json
 version: v1alpha1
 debug: false
 machine:
@@ -90,38 +204,9 @@ machine:
                 full-pcpus-only: "true"
         defaultRuntimeSeccompProfileEnabled: true
         disableManifestsDirectory: true
-    network:
-        hostname: k8s-0
-        disableSearchDomain: true
-        interfaces:
-            - interface: eth0
-              dhcp: true
-              vip:
-                ip: 192.168.91.10
-            - interface: eth1
-              ignore: true
-            - interface: br0
-              dhcp: false
-              bridge:
-                stp:
-                    enabled: false
-                interfaces:
-                    - eth1
     install:
         diskSelector:
             model: CT1000P3PSSD8
-        extraKernelArgs:
-            - -selinux
-            - net.ifnames=0
-            - amd_iommu=on
-            - iommu=pt
-            - amd_pstate=active
-            - amd_pstate.shared_mem=1
-            - lsm=landlock,lockdown,yama,apparmor,bpf
-            - lsm.debug
-            - spec_rstack_overflow=microcode
-            - zfs.zfs_arc_shrinker_limit=0
-            - zfs.zfs_arc_max=34359738368
         image: factory.talos.dev/installer-secureboot/bbfe20732d89cdb6e26a79e27c04a77a68afc3bd1c94334045b508ecf751e293:v1.12.0
         wipe: false
     files:
@@ -140,10 +225,6 @@ machine:
           content: |
             [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.runc]
               cgroup_writable = true
-    time:
-        disabled: false
-        servers:
-            - time.cloudflare.com
     sysctls:
         fs.inotify.max_queued_events: "65536"
         fs.inotify.max_user_watches: "1048576"
@@ -163,7 +244,6 @@ machine:
         rules:
             - SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="none"
     features:
-        stableHostname: true
         kubernetesTalosAPIAccess:
             enabled: true
             allowedRoles:
@@ -259,8 +339,8 @@ sops:
             SzZJVzdhcG9rbkczb1BVUHNZa3p3NEEK5ZBN92ulE4mLNQly73Ym7bclRUuAu3A+
             xpIGZ86KwGmU39633hvHsrFeJpu0KGf8oA4HlJzjK0biqa1VmsWRFg==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-12-27T08:39:41Z"
-    mac: ENC[AES256_GCM,data:r+K3eeys4AHXqEQf4bFQqIvUAQ+gpI3dEK49kG7NWe/G0FOmzo1mWN2iOPgThNS+L4LUQg32wUku8x/N/1wwKy5cfaR1DsyT4qG1LGmX6lHn99YtYPboJF8Eo9WVTI1m7o3PFWLjv4FuX8IKYSRUkWx50yfRx03YE58eTICb1bk=,iv:ym7I7nrIu3FE0MHSZFiJVGOoA7qWTe9A30nw4uYIX6s=,tag:YpD7pdizCh4TrcpqGEq0WQ==,type:str]
+    lastmodified: "2026-01-03T21:41:15Z"
+    mac: ENC[AES256_GCM,data:5PKkPyoytJzFs3h/GzbF+QcIQWSS0MSpFnUiQVLQZLA0Z6KlrmsAbsmwh8GTRgXaiE8FgKYU0e1rAxv8U1Sl5S/FrgKYGBq5aj8sTBvL2n7dseNXqVfkUWNM9JX4e7bMaGwwwg2XwWJ12AGUqoi+xP2ZUkkY+asEhmALNMqLejo=,iv:nXYHpwzgsQooRfe5uoPH3hvpPaz8COnT4sg+sbtr8Ik=,tag:RanfGcymzFFEE/KrXm/f1Q==,type:str]
     encrypted_regex: ^(token|crt|key|id|secret|secretboxEncryptionSecret|ca)$
     mac_only_encrypted: true
     version: 3.11.0

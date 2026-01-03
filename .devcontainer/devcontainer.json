@@ -4,13 +4,7 @@
 
     "image": "ghcr.io/d4rkfella/devcontainer@sha256:b070a9d99993e40a1b92088a7e48132011c04fadf0fab3ca6a6f142303746c4f",
     "workspaceFolder": "/project",
-    "containerUser": "root",
-    "remoteUser": "root",
-    "runArgs": [
-      "--device=/dev/kvm"
-    ],
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
-    "postCreateCommand": "if [ -e /dev/kvm ]; then groupadd -f kvm && groupmod -g $(stat -c '%g' /dev/kvm) kvm && usermod -aG kvm vscode; fi",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
     "mounts": [
       "source=/var/lib/pgadmin,target=/var/lib/pgadmin,type=bind",

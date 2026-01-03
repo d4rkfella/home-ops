@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./networkpolicy.yaml
+  - ./configmap.yaml
   - ./keycloak.yaml
   - ./httproute.yaml
   - ./servicemonitor.yaml

@@ -27,7 +27,7 @@ spec:
         hostUsers: false
         securityContext:
           runAsNonRoot: true
-          seccompProfile: { type: Unconfined }
+          seccompProfile: { type: RuntimeDefault }
           runAsUser: 1001
           fsGroup: 123
         containers:
@@ -46,7 +46,6 @@ spec:
                 name: buildkit-tls
                 readOnly: true
             securityContext:
-              #capabilities: { drop: ["ALL"] }
               allowPrivilegeEscalation: true
               readOnlyRootFilesystem: false
             resources:

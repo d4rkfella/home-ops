@@ -27,7 +27,7 @@ spec:
         hostUsers: false
         securityContext:
           runAsNonRoot: true
-          seccompProfile: { type: RuntimeDefault }
+          seccompProfile: { type: Unconfined }
           runAsUser: 1001
           fsGroup: 123
         containers:

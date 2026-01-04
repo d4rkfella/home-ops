@@ -43,7 +43,7 @@ spec:
           dnsPolicy: None
           dnsConfig:
             nameservers:
-              - 192.168.91.41
+              - 192.168.91.80
 
     defaultPodOptions:
       securityContext:

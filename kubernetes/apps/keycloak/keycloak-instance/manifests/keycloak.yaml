@@ -41,9 +41,9 @@ spec:
               capabilities: { drop: ["ALL"] }
 
         securityContext:
-          runAsUser: 65532
-          runAsGroup: 65532
-          runAsNonRoot: true
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
           seccompProfile: { type: RuntimeDefault }
 
         hostUsers: false

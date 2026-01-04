@@ -28,10 +28,10 @@ spec:
                 mountPath: /etc/ssl/certs/cnpg-ca.crt
                 subPath: ca.crt
                 readOnly: true
-              - name: data
-                mountPath: /opt/keycloak/data
-              - name: tmpfs
-                mountPath: /tmp
+              #- name: data
+                #mountPath: /opt/keycloak/data
+              #- name: tmpfs
+                #mountPath: /tmp
               #- name: keycloak-providers
                 #mountPath: /opt/keycloak/providers
                 #readOnly: true

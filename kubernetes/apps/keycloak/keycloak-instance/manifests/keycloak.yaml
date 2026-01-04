@@ -11,10 +11,10 @@ spec:
           - name: postgres-ca
             secret:
               secretName: &secret keycloak-secret
-          - name: tmpfs
-            emptyDir: {}
-          - name: data
-            emptyDir: {}
+          #- name: tmpfs
+            #emptyDir: {}
+          #- name: data
+            #emptyDir: {}
           #- name: keycloak-providers
             #configMap:
               #name: keycloak-providers

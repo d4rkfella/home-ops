@@ -37,7 +37,7 @@ spec:
                 #readOnly: true
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
 
         securityContext:
@@ -65,7 +65,7 @@ spec:
 
   image: ghcr.io/d4rkfella/keycloak:26.4.7@sha256:e94054e5afe0f8036ad92c7d4bd966341b05eb68ac47008a3a8d27b16f67c85c
 
-  startOptimized: true
+  startOptimized: false
 
   #bootstrapAdmin:
     #user:

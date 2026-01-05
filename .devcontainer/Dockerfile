@@ -85,7 +85,7 @@ RUN apt-get update && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.12.0 /talosctl /usr/local/bin/talosctl
+COPY --from=ghcr.io/siderolabs/talosctl:v1.12.1 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.3 /usr/local/bin/helmfile /usr/local/bin/helmfile

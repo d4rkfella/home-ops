@@ -15,7 +15,7 @@ ARG COSIGN_VERSION=v3.0.3
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.50.1
 # renovate: datasource=github-releases depName=astral-sh/uv
-ARG UV_VERSION=0.9.21
+ARG UV_VERSION=0.9.22
 
 USER root
 WORKDIR /tmp
@@ -99,7 +99,7 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 # renovate: datasource=pypi depName=home-ops-cli
-ARG HOME_OPS_CLI_VERSION=0.4.4
+ARG HOME_OPS_CLI_VERSION=0.4.47
 # renovate: datasource=pypi depName=pgadmin4
 ARG PGADMIN4_VERSION=9.11
 

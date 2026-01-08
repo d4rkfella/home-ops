@@ -34,7 +34,7 @@ spec:
       enabled: true
       image:
         repository: "hashicorp/vault"
-        tag: "1.21.1"
+        tag: "1.21.2"
         pullPolicy: IfNotPresent
 
       updateStrategyType: "RollingUpdate"

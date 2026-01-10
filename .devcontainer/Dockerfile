@@ -11,11 +11,11 @@ ARG KUBECTL_VERSION=v1.35.0
 # renovate: datasource=github-releases depName=getsops/sops
 ARG SOPS_VERSION=v3.11.0
 # renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.0.3
+ARG COSIGN_VERSION=v3.0.4
 # renovate: datasource=github-releases depName=mikefarah/yq
 ARG YQ_VERSION=v4.50.1
 # renovate: datasource=github-releases depName=astral-sh/uv
-ARG UV_VERSION=0.9.22
+ARG UV_VERSION=0.9.24
 
 USER root
 WORKDIR /tmp

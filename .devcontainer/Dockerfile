@@ -90,6 +90,9 @@ ARG USER_UID=2100
 ARG USER_GID=$USER_UID
 
 ENV DEBIAN_FRONTEND="noninteractive"
+ENV DOCKER_BUILDKIT=1
+ENV LIBGUESTFS_BACKEND=direct
+ENV LIBGUESTFS_PATH=/usr/local/lib/guestfs/appliance
 
 COPY --from=build /usr/local/bin/ /usr/local/bin/
 COPY --from=build /usr/local/lib/guestfs /usr/local/lib/guestfs
@@ -130,6 +133,7 @@ USER $USERNAME
 
 RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \
     uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
+    uv python update-shell && \
     uv cache clean
 
 WORKDIR /project

@@ -26,8 +26,7 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.3@sha256:8856e65c39ef4afb2a6852b34b5e9f535a866927b7ffe95a5ea805de63353548 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.9.25-trixie /usr/local/bin/uv /usr/local/bin/
-COPY --from=ghcr.io/astral-sh/uv:0.9.25-trixie /usr/local/bin/uvx /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.9.25-trixie /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.11.0@sha256:6ce00ac946e1a52b2d1e5b7087441f7b6ef7bad907753104013f8bdb8f5fd891 /usr/local/bin/sops /usr/local/bin/

@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND="noninteractive"
 COPY --from=ghcr.io/siderolabs/talosctl:v1.12.1@sha256:789b359236fda38d6f53d769fbe7b3538983ae380695a531c5badb8c9049b92d /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.4@sha256:0b015a3557a64a751712da8a6395534160018eaaa2d969882a85a336de9adb70 /cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.4@sha256:0b015a3557a64a751712da8a6395534160018eaaa2d969882a85a336de9adb70 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.3@sha256:8856e65c39ef4afb2a6852b34b5e9f535a866927b7ffe95a5ea805de63353548 /usr/local/bin/helmfile /usr/local/bin/

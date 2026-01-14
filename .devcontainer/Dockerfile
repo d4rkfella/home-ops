@@ -8,14 +8,6 @@ ARG VIRTCTL_VERSION=v1.7.0
 ARG HELM_VERSION=v4.0.4
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
 ARG KUBECTL_VERSION=v1.35.0
-# renovate: datasource=github-releases depName=getsops/sops
-ARG SOPS_VERSION=v3.11.0
-# renovate: datasource=github-releases depName=sigstore/cosign
-ARG COSIGN_VERSION=v3.0.4
-# renovate: datasource=github-releases depName=mikefarah/yq
-ARG YQ_VERSION=v4.50.1
-# renovate: datasource=github-releases depName=astral-sh/uv
-ARG UV_VERSION=0.9.24
 
 USER root
 WORKDIR /tmp
@@ -24,45 +16,48 @@ SHELL ["/bin/bash", "-c"]
 
 ENV DEBIAN_FRONTEND="noninteractive"
 
+
+COPY --from=ghcr.io/siderolabs/talosctl:v1.12.1@sha256:789b359236fda38d6f53d769fbe7b3538983ae380695a531c5badb8c9049b92d /talosctl /usr/local/bin/talosctl
+RUN talosctl version --client
+
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.4@sha256:0b015a3557a64a751712da8a6395534160018eaaa2d969882a85a336de9adb70 /usr/local/bin/cosign /usr/local/bin/
+RUN cosign version
+
+COPY --from=ghcr.io/helmfile/helmfile:v1.2.3@sha256:8856e65c39ef4afb2a6852b34b5e9f535a866927b7ffe95a5ea805de63353548 /usr/local/bin/helmfile /usr/local/bin/
+RUN helmfile --version
+
+COPY --from=ghcr.io/astral-sh/uv:0.9.25-trixie@sha256:bc7d904aed42d515edcbb78753e7ebd0c923492a4313449831fe8b025b64bd8c /usr/local/bin/uv* /usr/local/bin/
+RUN uv self version && \
+    uvx --version
+
+COPY --from=ghcr.io/getsops/sops:v3.11.0@sha256:6ce00ac946e1a52b2d1e5b7087441f7b6ef7bad907753104013f8bdb8f5fd891 /usr/local/bin/sops /usr/local/bin/
+RUN sops --version
+
+COPY --from=mikefarah/yq:4.50.1@sha256:4facc66fdcc785ec961ef7f2185f53f862f462eefe1d50c2eb311c2bb26823e3 /usr/local/bin/yq /usr/local/bin/
+RUN yq --version
+
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        cosign \
         curl \
         ca-certificates \
         gnupg \
         xz-utils \
         unzip && \
-    #Download and verify cosign binary
-    curl -fsSL -o cosign https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64 && \
-    curl -fsSL -o sigstore.json https://github.com/sigstore/cosign/releases/download/${COSIGN_VERSION}/cosign-linux-amd64.sigstore.json  && \
-    /usr/bin/cosign verify-blob cosign  --certificate-identity keyless@projectsigstore.iam.gserviceaccount.com --certificate-oidc-issuer https://accounts.google.com --bundle sigstore.json && \
-    mv cosign /usr/local/bin/cosign && chmod +x /usr/local/bin/cosign && \
     #Download and verify kubectl binary
     curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
-    /usr/local/bin/cosign verify-blob kubectl \
+    cosign verify-blob kubectl \
       --certificate kubectl.cert \
       --signature kubectl.sig \
       --certificate-identity krel-staging@k8s-releng-prod.iam.gserviceaccount.com \
       --certificate-oidc-issuer https://accounts.google.com && \
     mv kubectl /usr/local/bin/kubectl && \
-    #Download and verify sops binary
-    curl -fsSLO "https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}{.linux.amd64,.checksums.txt,.checksums.pem,.checksums.sig}" && \
-    /usr/local/bin/cosign verify-blob sops-${SOPS_VERSION}.checksums.txt \
-      --certificate sops-${SOPS_VERSION}.checksums.pem \
-      --signature sops-${SOPS_VERSION}.checksums.sig \
-      --certificate-identity-regexp=https://github.com/getsops \
-      --certificate-oidc-issuer=https://token.actions.githubusercontent.com && \
-    sha256sum -c --strict sops-${SOPS_VERSION}.checksums.txt --ignore-missing && \
-    mv sops-${SOPS_VERSION}.linux.amd64 /usr/local/bin/sops && \
     #Download virtctl binary
     curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && \
     #Download and verify task binary
     curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && mv task /usr/local/bin/task && \
-    #Download yq binary
-    curl -fsSL -o yq https://github.com/mikefarah/yq/releases/download/$YQ_VERSION/yq_linux_amd64 && \
-    mv yq /usr/local/bin/yq && \
     #Download and verify helm binary
     curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
@@ -77,26 +72,14 @@ RUN apt-get update && \
     tar -xJf appliance-1.56.0.tar.xz && \
     mkdir -p /usr/local/lib/guestfs && \
     mv appliance /usr/local/lib/guestfs/ && \
-    #Download and verify uv and uvx binaries
-    curl -fsSLO "https://github.com/astral-sh/uv/releases/download/${UV_VERSION}/uv-x86_64-unknown-linux-gnu.tar.gz{,.sha256}" && \
-    sha256sum -c --strict --ignore-missing uv-x86_64-unknown-linux-gnu.tar.gz.sha256 && \
-    tar -xzf uv-x86_64-unknown-linux-gnu.tar.gz --strip-components=1 && \
-    mv uv uvx /usr/local/bin/ && \
     #Set permissions
     chmod +x /usr/local/bin/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.12.0 /talosctl /usr/local/bin/talosctl
-RUN talosctl version --client
-
-COPY --from=ghcr.io/helmfile/helmfile:v1.2.3 /usr/local/bin/helmfile /usr/local/bin/helmfile
-RUN helmfile --version
 
 FROM debian:trixie-slim
 
 ENV LANG="C.UTF-8"
 ENV EDITOR=/usr/bin/nano
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
 
 # renovate: datasource=pypi depName=home-ops-cli
 ARG HOME_OPS_CLI_VERSION=0.4.47

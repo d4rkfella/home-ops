@@ -62,10 +62,7 @@ tasks:
     silent: true
     cmds:
       - |
-        echo "🔌 Starting port-forward..."
         kubectl port-forward svc/postgres-db-rw 5432:5432 -n database >/dev/null 2>&1 &
-
-        echo "🚀 Starting pgAdmin..."
         pgadmin4
 
     preconditions:

@@ -1,6 +1,6 @@
 //devcontainer.json
 {
-    "name": "Kubernetes Management",
+    "name": "Dev",
 
     "image": "ghcr.io/d4rkfella/devcontainer@sha256:d2321434df590d5ef0e231bdc8b7a22b07ba73b67d5de9cc55b8c611ba2091d4",
     "workspaceFolder": "/project",
@@ -25,7 +25,6 @@
             "ms-python.python",
             "ms-python.vscode-pylance",
             "ms-kubernetes-tools.vscode-kubernetes-tools",
-            "charliermarsh.ruff"
         ],
         "settings": {
             "git.path": "/usr/bin/git",
@@ -51,40 +50,6 @@
                 "**/*.json5": "json5"
             },
             "files.trimTrailingWhitespace": true,
-            "workbench.iconTheme": "material-icon-theme",
-            "material-icon-theme.files.associations": {
-                "*.secret.sops.env": "lock",
-                "*.secret.sops.yaml": "lock",
-                "helmrelease.yaml": "helm",
-                "helm-values.yaml": "helm"
-            },
-            "material-icon-theme.folders.associations": {
-                ".github/workflows": "robot",
-                "arc-system": "github",
-                "arc-runners": "github",
-                "cert-manager": "guard",
-                "external-secrets": "secure",
-                "vaultwarden": "secure",
-                "secrets-management": "secure",
-                "flux-system": "pipe",
-                "flux": "pipe",
-                "kube-system": "kubernetes",
-                "network": "connection",
-                "observability": "event",
-                "storage": "dump",
-                "system-upgrade": "update",
-                "tools": "tools",
-                "volsync-system": "aws",
-                "cloudflared": "cloudflare",
-                "talos": "linux",
-                "vault": "secure",
-                "cdi": "upload",
-                "virtualization": "Vm",
-                "kubevirt": "Vm",
-                "kubevirt-manager": "Vm",
-                "openebs-system": "dump"
-            },
-            "material-icon-theme.hidesExplorerArrows": true,
             "sops.defaults.ageKeyFile": "./age.key",
             "sops.creationEnabled": true,
             "yaml.schemaStore.enable": true,

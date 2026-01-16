@@ -111,7 +111,7 @@ releases:
   - name: vault
     namespace: vault
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
-    version: 0.31.0
+    version: 0.32.0
     values: ['./templates/values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager']
     hooks:

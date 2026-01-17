@@ -2,7 +2,7 @@
 {
     "name": "Dev",
 
-    "image": "ghcr.io/d4rkfella/devcontainer@sha256:d2321434df590d5ef0e231bdc8b7a22b07ba73b67d5de9cc55b8c611ba2091d4",
+    "dockerFile": "Dockerfile",
     "workspaceFolder": "/project",
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",

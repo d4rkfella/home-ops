@@ -130,6 +130,7 @@ class TaskInfoPanel(VerticalScroll):
         color: $foreground;
         height: auto;
         width: 1fr;
+        text-wrap: wrap;
     }
     .info-empty {
         color: $foreground 50%;
@@ -475,14 +476,12 @@ class TaskSelection(App):
         self.task_running = False
         self.maximized_log = False
 
-        self.rich_log = RichLog(highlight=True, markup=True, auto_scroll=True)
-
     def compose(self) -> ComposeResult:
         with Horizontal(id="main-container"):
             with Vertical(id="left-panel"):
                 with Vertical(id="task-log-container"):
                     yield ListView(id="task-list")
-                    yield RichLog(id="log-viewer")
+                    yield RichLog(id="log-viewer", auto_scroll=False)
             yield TaskInfoPanel(id="info-panel")
         yield Footer()
 
@@ -651,7 +650,7 @@ class TaskSelection(App):
             f"{task_name} - Running... (Started: {start_time.strftime('%H:%M:%S')})"
         )
 
-        log_viewer.write(Text(f">>> Launching {task_name}", style="bold secondary"))
+        self.smart_log_write(Text(f">>> Launching {task_name}", style="bold secondary"))
 
         proc = None
         read_task = None
@@ -670,7 +669,7 @@ class TaskSelection(App):
                     if not line:
                         break
                     text = line.decode().strip()
-                    log_viewer.write(Text(text, style=color) if color else text)
+                    self.smart_log_write(Text(text, style=color) if color else text)
 
             read_task = asyncio.gather(
                 read_stream(proc.stdout), read_stream(proc.stderr, "red")
@@ -696,12 +695,18 @@ class TaskSelection(App):
             raise
 
         except Exception as e:
-            log_viewer.write(f"[bold red]Error executing task: {str(e)}[/]")
+            self.smart_log_write(f"[bold red]Error executing task: {str(e)}[/]")
             log_viewer.border_subtitle = f"{task_name} - ✘ Error"
 
         finally:
             self.task_running = False
 
+    def smart_log_write(self, content):
+        log = self.query_one("#log-viewer", RichLog)
+        was_at_bottom = log.scroll_y >= log.max_scroll_y
+        log.write(content)
+        if was_at_bottom:
+            log.scroll_end(animate=False)
 
 if __name__ == "__main__":
     TaskSelection().run()

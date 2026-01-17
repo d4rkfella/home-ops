@@ -18,7 +18,6 @@ from textual.theme import Theme
 from textual.widgets import (
     Button,
     Footer,
-    Header,
     Input,
     Label,
     ListItem,
@@ -462,12 +461,31 @@ class TaskSelection(App):
         width: 100%;
         layer: above;
     }
+    #search-container {
+        height: auto;
+        background: $surface;
+        border-top: solid $primary;
+        padding: 1;
+        display: none;
+    }
+
+    #search-container.visible {
+        display: block;
+    }
+
+    #search-input {
+        width: 100%;
+    }
     Footer {
         background: $secondary;
     }
     """
     BINDINGS = [
         Binding("m", "toggle_log_maximize", "Maximize Log Viewer"),
+        Binding("ctrl+f", "toggle_search", "Search Logs"),
+        Binding("n", "next_search", "Next Match", show=False),
+        Binding("shift+n", "prev_search", "Prev Match", show=False),
+        Binding("escape", "close_search", "Close Search", show=False),
         Binding("q", "quit", "Quit", priority=True),
     ]
 
@@ -475,6 +493,11 @@ class TaskSelection(App):
         super().__init__()
         self.task_running = False
         self.maximized_log = False
+        self.search_visible = False
+        self.search_matches = []
+        self.current_match_index = -1
+        self._log_content = []
+        self._current_search_term = ""
 
     def compose(self) -> ComposeResult:
         with Horizontal(id="main-container"):
@@ -482,6 +505,8 @@ class TaskSelection(App):
                 with Vertical(id="task-log-container"):
                     yield ListView(id="task-list")
                     yield RichLog(id="log-viewer", auto_scroll=False)
+                    with Container(id="search-container"):
+                        yield Input(placeholder="Search logs... (n/N to navigate)", id="search-input")
             yield TaskInfoPanel(id="info-panel")
         yield Footer()
 
@@ -704,9 +729,166 @@ class TaskSelection(App):
     def smart_log_write(self, content):
         log = self.query_one("#log-viewer", RichLog)
         was_at_bottom = log.scroll_y >= log.max_scroll_y
+
+        self._log_content.append(content)
+
+        if self.search_visible and self._current_search_term:
+            content = self._apply_search_highlighting(content, len(self._log_content) - 1)
+
         log.write(content)
         if was_at_bottom:
             log.scroll_end(animate=False)
+
+    def _apply_search_highlighting(self, content, line_index):
+        if not self._current_search_term:
+            return content
+
+        if isinstance(content, str):
+            text = Text(content)
+        elif isinstance(content, Text):
+            text = content.copy()
+        else:
+            text = Text(str(content))
+
+        search_lower = self._current_search_term.lower()
+        plain_lower = text.plain.lower()
+
+        if search_lower not in plain_lower:
+            return text
+
+        is_current = (self.search_matches and
+                     line_index in self.search_matches and
+                     self.search_matches[self.current_match_index] == line_index)
+
+        start = 0
+        while True:
+            pos = plain_lower.find(search_lower, start)
+            if pos == -1:
+                break
+
+            if is_current:
+                text.stylize("black on yellow bold", pos, pos + len(self._current_search_term))
+            else:
+                text.stylize("black on cyan", pos, pos + len(self._current_search_term))
+
+            start = pos + len(self._current_search_term)
+
+        return text
+
+    def _rewrite_log_with_search(self):
+        log = self.query_one("#log-viewer", RichLog)
+        current_scroll = log.scroll_y
+
+        log.clear()
+        for index, content in enumerate(self._log_content):
+            highlighted = self._apply_search_highlighting(content, index)
+            log.write(highlighted)
+
+        log.scroll_to(y=current_scroll, animate=False)
+
+    def action_toggle_search(self):
+        self.search_visible = not self.search_visible
+        container = self.query_one("#search-container", Container)
+
+        if self.search_visible:
+            container.add_class("visible")
+            self.query_one("#search-input", Input).focus()
+        else:
+            container.remove_class("visible")
+            self._current_search_term = ""
+            self._rewrite_log_with_search()
+            self.update_search_status()
+
+    def action_close_search(self):
+        if self.search_visible:
+            self.search_visible = False
+            self.query_one("#search-container", Container).remove_class("visible")
+            self.query_one("#search-input", Input).value = ""
+            self.search_matches = []
+            self.current_match_index = -1
+            self._current_search_term = ""
+            self._rewrite_log_with_search()
+            self.update_search_status()
+
+    def action_next_search(self):
+        if not self.search_visible or not self.search_matches:
+            return
+
+        self.current_match_index = (self.current_match_index + 1) % len(self.search_matches)
+        self._rewrite_log_with_search()
+        self.scroll_to_current_match()
+        self.update_search_status()
+
+    def action_prev_search(self):
+        if not self.search_visible or not self.search_matches:
+            return
+
+        self.current_match_index = (self.current_match_index - 1) % len(self.search_matches)
+        self._rewrite_log_with_search()
+        self.scroll_to_current_match()
+        self.update_search_status()
+
+    def on_input_changed(self, event: Input.Changed):
+        if event.input.id == "search-input":
+            self.perform_search(event.value)
+
+    def on_input_submitted(self, event: Input.Submitted):
+        if event.input.id == "search-input":
+            self.action_next_search()
+
+    def perform_search(self, query: str):
+        self.search_matches = []
+        self._current_search_term = query
+
+        if not query:
+            self.current_match_index = -1
+            self._rewrite_log_with_search()
+            self.update_search_status()
+            return
+
+        query_lower = query.lower()
+
+        for line_index, content in enumerate(self._log_content):
+            line_text = str(content).lower()
+            if query_lower in line_text:
+                self.search_matches.append(line_index)
+
+        self.current_match_index = 0 if self.search_matches else -1
+
+        self._rewrite_log_with_search()
+
+        if self.search_matches:
+            self.scroll_to_current_match()
+
+        self.update_search_status()
+
+    def scroll_to_current_match(self):
+        if not self.search_matches or self.current_match_index == -1:
+            return
+
+        log = self.query_one("#log-viewer", RichLog)
+        line_index = self.search_matches[self.current_match_index]
+
+        total_lines = len(self._log_content)
+        if total_lines > 0 and log.max_scroll_y > 0:
+            scroll_fraction = line_index / max(total_lines - 1, 1)
+            target_scroll = int(scroll_fraction * log.max_scroll_y)
+            log.scroll_to(y=target_scroll, animate=False)
+
+    def update_search_status(self):
+        log = self.query_one("#log-viewer", RichLog)
+
+        if not self.search_visible or not self.query_one("#search-input", Input).value:
+            if self.task_running:
+                pass
+            else:
+                log.border_subtitle = "No task executed yet"
+        elif self.search_matches:
+            match_count = len(self.search_matches)
+            current = self.current_match_index + 1
+            log.border_subtitle = f"Match {current}/{match_count}"
+        else:
+            log.border_subtitle = "No matches found"
 
 if __name__ == "__main__":
     TaskSelection().run()

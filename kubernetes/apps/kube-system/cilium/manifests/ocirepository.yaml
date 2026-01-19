@@ -8,7 +8,7 @@ spec:
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
-  url: oci://ghcr.io/d4rkfella/charts-mirror/cilium
+  url: oci://quay.io/cilium/charts
   ref:
     tag: 1.18.6
   #verify:

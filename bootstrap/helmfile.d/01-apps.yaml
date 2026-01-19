@@ -32,7 +32,7 @@ releases:
 
   - name: kubelet-csr-approver
     namespace: kube-system
-    chart: oci://ghcr.io/d4rkfella/charts-mirror/kubelet-csr-approver
+    chart: oci://ghcr.io/postfinance/charts/kubelet-csr-approver
     version: 1.2.12
     values: ['./templates/values.yaml.gotmpl']
     needs: ['kube-system/coredns']

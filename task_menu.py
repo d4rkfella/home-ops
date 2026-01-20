@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
+from asyncio import events
 import json
 import os
 import signal
@@ -474,7 +475,7 @@ class TaskSelection(App):
         margin-right: 1;
         border-top: $primary;
         &:focus {
-            background: black;
+            background-tint: black;
         }
     }
 
@@ -870,6 +871,10 @@ class TaskSelection(App):
             log.border_subtitle = f"Match {current}/{match_count}"
         else:
             log.border_subtitle = "No matches found"
+
+    async def on_unmount(self) -> None:
+        self.console.clear()
+        self.console.show_cursor()
 
 if __name__ == "__main__":
     TaskSelection().run()

@@ -871,7 +871,7 @@ class TaskSelection(App):
         else:
             log.border_subtitle = "No matches found"
 
-    async def on_unmount(self) -> None:
+    def on_unmount(self) -> None:
         self.console.clear()
         self.console.show_cursor()
 

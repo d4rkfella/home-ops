@@ -37,6 +37,20 @@ task_theme = Theme(
 
 # ===================== WIDGETS =====================
 
+class SearchInput(Input):
+    app: "TaskSelection"
+    BINDINGS = [
+        Binding("ctrl+n", "next_match", "Next", show=True),
+        Binding("ctrl+p", "prev_match", "Previous", show=True),
+    ]
+
+    def action_next_match(self) -> None:
+        self.app.action_next_search()
+
+    def action_prev_match(self) -> None:
+        self.app.action_prev_search()
+
+
 
 class TaskItem(ListItem):
     def __init__(
@@ -278,8 +292,6 @@ class PromptInputScreen(ModalScreen[bool | None]):
     """
 
     BINDINGS = [
-        Binding("y", "yes", "Yes"),
-        Binding("n", "no", "No"),
         Binding("escape", "close", "Close"),
     ]
 
@@ -300,12 +312,6 @@ class PromptInputScreen(ModalScreen[bool | None]):
             self.dismiss(True)
         elif event.button.id == "no-button":
             self.dismiss(False)
-
-    def action_yes(self) -> None:
-        self.dismiss(True)
-
-    def action_no(self) -> None:
-        self.dismiss(False)
 
     def action_close(self) -> None:
         self.dismiss(None)
@@ -448,41 +454,42 @@ class TaskSelection(App):
         border: $primary;
     }
 
-    #log-viewer {
-        height: 40%;
-        background: black;
-        border-top: solid $primary;
-        padding-left: 1;
+    #log-container {
+        height: 50%;
         border: $primary;
+        background: black;
+
     }
 
-    #log-viewer.maximized {
+    #log-container.maximized {
         height: 100%;
         width: 100%;
         layer: above;
     }
-    #search-container {
-        height: auto;
-        background: $surface;
-        border-top: solid $primary;
-        padding: 1;
-        display: none;
-    }
 
-    #search-container.visible {
-        display: block;
+    #log-viewer {
+        height: 1fr;
+        background: black;
+        margin-left: 1;
+        margin-right: 1;
+        border-top: $primary;
+        &:focus {
+            background: black;
+        }
     }
 
     #search-input {
-        width: 100%;
+        height: auto;
+        background: $surface;
+        width: 30%;
     }
+
     Footer {
         background: $secondary;
     }
     """
     BINDINGS = [
         Binding("m", "toggle_log_maximize", "Maximize Log Viewer"),
-        Binding("ctrl+f", "toggle_search", "Search Logs"),
         Binding("n", "next_search", "Next Match", show=False),
         Binding("shift+n", "prev_search", "Prev Match", show=False),
         Binding("escape", "close_search", "Close Search", show=False),
@@ -493,7 +500,6 @@ class TaskSelection(App):
         super().__init__()
         self.task_running = False
         self.maximized_log = False
-        self.search_visible = False
         self.search_matches = []
         self.current_match_index = -1
         self._log_content = []
@@ -502,11 +508,10 @@ class TaskSelection(App):
     def compose(self) -> ComposeResult:
         with Horizontal(id="main-container"):
             with Vertical(id="left-panel"):
-                with Vertical(id="task-log-container"):
-                    yield ListView(id="task-list")
+                yield ListView(id="task-list")
+                with Vertical(id="log-container"):
+                    yield SearchInput(placeholder="Search in logs", id="search-input")
                     yield RichLog(id="log-viewer", auto_scroll=False)
-                    with Container(id="search-container"):
-                        yield Input(placeholder="Search logs... (n/N to navigate)", id="search-input")
             yield TaskInfoPanel(id="info-panel")
         yield Footer()
 
@@ -516,10 +521,10 @@ class TaskSelection(App):
         self.query_one(
             "#main-container", Horizontal
         ).border_title = "Task Management Terminal"
-        self.query_one("#log-viewer", RichLog).border_title = "Logs"
-        self.query_one("#log-viewer", RichLog).border_subtitle = "No task executed yet"
-        self.query_one("#log-viewer", RichLog).styles.border_title_align = "center"
-        self.query_one("#log-viewer", RichLog).styles.border_subtitle_align = "center"
+        self.query_one("#log-container", Vertical).border_title = "Logs"
+        self.query_one("#log-container", Vertical).border_subtitle = "No task executed yet"
+        self.query_one("#log-container", Vertical).styles.border_title_align = "center"
+        self.query_one("#log-container", Vertical).styles.border_subtitle_align = "center"
         self.query_one("#task-list", ListView).border_title = "Available Tasks"
         self.query_one("#task-list", ListView).styles.border_title_align = "center"
         if tasks := self.load_tasks():
@@ -528,11 +533,11 @@ class TaskSelection(App):
 
     def action_toggle_log_maximize(self):
         self.maximized_log = not self.maximized_log
-        log = self.query_one("#log-viewer", RichLog)
+        log_container = self.query_one("#log-container", Vertical)
         if self.maximized_log:
-            log.add_class("maximized")
+            log_container.add_class("maximized")
         else:
-            log.remove_class("maximized")
+            log_container.remove_class("maximized")
 
     def on_list_view_highlighted(self, event: ListView.Highlighted) -> None:
         if event.item:
@@ -675,7 +680,7 @@ class TaskSelection(App):
             f"{task_name} - Running... (Started: {start_time.strftime('%H:%M:%S')})"
         )
 
-        self.smart_log_write(Text(f">>> Launching {task_name}", style="bold secondary"))
+        self.smart_log_write(Text(f">>> Executing task: {task_name}", style="bold secondary"))
 
         proc = None
         read_task = None
@@ -732,7 +737,7 @@ class TaskSelection(App):
 
         self._log_content.append(content)
 
-        if self.search_visible and self._current_search_term:
+        if self._current_search_term:
             content = self._apply_search_highlighting(content, len(self._log_content) - 1)
 
         log.write(content)
@@ -786,32 +791,8 @@ class TaskSelection(App):
 
         log.scroll_to(y=current_scroll, animate=False)
 
-    def action_toggle_search(self):
-        self.search_visible = not self.search_visible
-        container = self.query_one("#search-container", Container)
-
-        if self.search_visible:
-            container.add_class("visible")
-            self.query_one("#search-input", Input).focus()
-        else:
-            container.remove_class("visible")
-            self._current_search_term = ""
-            self._rewrite_log_with_search()
-            self.update_search_status()
-
-    def action_close_search(self):
-        if self.search_visible:
-            self.search_visible = False
-            self.query_one("#search-container", Container).remove_class("visible")
-            self.query_one("#search-input", Input).value = ""
-            self.search_matches = []
-            self.current_match_index = -1
-            self._current_search_term = ""
-            self._rewrite_log_with_search()
-            self.update_search_status()
-
     def action_next_search(self):
-        if not self.search_visible or not self.search_matches:
+        if not self.search_matches:
             return
 
         self.current_match_index = (self.current_match_index + 1) % len(self.search_matches)
@@ -820,7 +801,7 @@ class TaskSelection(App):
         self.update_search_status()
 
     def action_prev_search(self):
-        if not self.search_visible or not self.search_matches:
+        if not self.search_matches:
             return
 
         self.current_match_index = (self.current_match_index - 1) % len(self.search_matches)
@@ -873,12 +854,12 @@ class TaskSelection(App):
         if total_lines > 0 and log.max_scroll_y > 0:
             scroll_fraction = line_index / max(total_lines - 1, 1)
             target_scroll = int(scroll_fraction * log.max_scroll_y)
-            log.scroll_to(y=target_scroll, animate=False)
+            log.scroll_to(y=target_scroll, animate=True)
 
     def update_search_status(self):
         log = self.query_one("#log-viewer", RichLog)
 
-        if not self.search_visible or not self.query_one("#search-input", Input).value:
+        if not self.query_one("#search-input", SearchInput).value:
             if self.task_running:
                 pass
             else:

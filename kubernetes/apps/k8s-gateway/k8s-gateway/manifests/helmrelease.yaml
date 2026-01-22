@@ -19,7 +19,7 @@ spec:
       externalTrafficPolicy: Local
     watchedResources: ["HTTPRoute", "Service"]
     fallthrough:
-      enabled: true
+      enabled: false
       zones:
         - router.darkfellanetwork.com
         - plex.darkfellanetwork.com

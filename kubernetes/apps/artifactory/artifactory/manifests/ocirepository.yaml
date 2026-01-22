@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 107.125.11
+    tag: 107.133.3
   url: oci://ghcr.io/d4rkfella/charts-mirror/artifactory
   verify:
     provider: cosign

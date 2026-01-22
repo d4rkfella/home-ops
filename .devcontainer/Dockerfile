@@ -53,7 +53,7 @@ ARG VIRTCTL_VERSION=v1.7.0
 RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.0.5
+ARG HELM_VERSION=v4.1.0
 RUN curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \

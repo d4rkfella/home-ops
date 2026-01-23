@@ -51,13 +51,10 @@ spec:
           - name: autopath
             parameters: "@kubernetes"
           - name: forward
-            parameters: darkfellanetwork.com 192.168.91.80
-          - name: forward
             parameters: . 192.168.91.1
           - name: cache
             configBlock: |-
               prefetch 20
-              serve_stale
           - name: loop
           - name: reload
           - name: loadbalance

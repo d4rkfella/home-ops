@@ -13,7 +13,7 @@ spec:
           serviceAccountName: vault
           containers:
             - name: vaultbackup
-              image: ghcr.io/d4rkfella/home-ops-cli:0.4.47@sha256:d42964efce1a008be895ed4488aa71e7dacc4a143ee43161696960c9e28abb65
+              image: ghcr.io/d4rkfella/home-ops-cli:0.4.51@sha256:0daac52470077fdd2d543e4de073a6d9f5ee90f446d1a9342c28710c73e0a154
               imagePullPolicy: IfNotPresent
               args:
                 - vault

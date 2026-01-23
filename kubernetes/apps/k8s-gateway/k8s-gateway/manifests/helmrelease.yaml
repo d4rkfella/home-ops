@@ -20,10 +20,6 @@ spec:
     watchedResources: ["HTTPRoute", "Service"]
     fallthrough:
       enabled: false
-      zones:
-        - router.darkfellanetwork.com
-        - plex.darkfellanetwork.com
-        - nas.darkfellanetwork.com
     extraZonePlugins:
       - name: log
       - name: errors

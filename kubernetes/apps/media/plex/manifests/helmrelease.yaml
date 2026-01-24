@@ -38,7 +38,7 @@ spec:
 
         pod:
           annotations:
-            v1.multus-cni.io/default-network: media/plex
+            k8s.v1.cni.cncf.io/networks: media/plex
           runtimeClassName: nvidia
           dnsPolicy: None
           dnsConfig:

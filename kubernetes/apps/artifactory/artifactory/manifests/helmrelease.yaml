@@ -16,9 +16,6 @@ spec:
             name: "artifactory"
           patch: |-
             - op: add
-              path: /spec/template/spec/hostUsers
-              value: true
-            - op: add
               path: /spec/template/spec/imagePullSecrets
               value:
                 - name: artifactory-secret

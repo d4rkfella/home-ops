@@ -48,11 +48,24 @@ spec:
         pullPolicy: IfNotPresent
       persistence:
         size: 200Gi
+      customVolumes: |
+        - name: nfs-backup-volume
+          nfs:
+            server: 192.168.91.40
+            path: /mnt/exos20/data/media
+      customVolumeMounts: |
+        - name: nfs-backup-volume
+          mountPath: /var/opt/jfrog/artifactory/backup/nfs
+      haBackupDir:
+        enabled: true
+        path: /var/opt/jfrog/artifactory/backup/nfs
       extraSystemYaml:
         artifactory:
           tomcat:
             httpsConnector:
                 enabled: true
+          backup:
+            dir: /var/opt/jfrog/artifactory/backup/nfs
       masterKeySecretName: &secret artifactory-secret
       joinKeySecretName: *secret
       admin:

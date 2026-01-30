@@ -11,7 +11,7 @@ spec:
   values:
     image:
       repository: registry.k8s.io/metrics-server/metrics-server
-      tag: v0.8.0
+      tag: v0.8.1
     metrics:
       enabled: true
     serviceMonitor:

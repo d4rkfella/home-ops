@@ -123,8 +123,8 @@
     {
       description: "Barman Cloud Group",
       group: "Barman Cloud",
-      matchDatasources: ["docker", "github-releases"],
-      matchPackagePatterns: ["plugin-barman-cloud"],
+      matchDatasources: ["docker"],
+      matchPackagePatterns: ["/plugin-barman-cloud/", "plugin-barman-cloud-sidecar"],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },

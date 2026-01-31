@@ -2,9 +2,18 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app barman-cloud
+  name: barman-cloud
 spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
     name: plugin-barman-cloud
+  values:
+    image:
+      registry: ghcr.io
+      repository: cloudnative-pg/plugin-barman-cloud
+      tag: v0.11.0
+    sidecarImage:
+      registry: ghcr.io
+      repository: cloudnative-pg/plugin-barman-cloud-sidecar
+      tag: v0.11.0

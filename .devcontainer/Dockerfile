@@ -1,4 +1,4 @@
-FROM debian:trixie-slim@sha256:77ba0164de17b88dd0bf6cdc8f65569e6e5fa6cd256562998b62553134a00ef0
+FROM debian:trixie-slim@sha256:f6e2cfac5cf956ea044b4bd75e6397b4372ad88fe00908045e9a0d21712ae3ba
 
 ARG USERNAME=vscode
 ARG USER_UID=2100
@@ -31,13 +31,13 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.2.3@sha256:8856e65c39ef4afb2a6852b34b5e9f535a866927b7ffe95a5ea805de63353548 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.9.27-trixie@sha256:1cda6dd58ccf07c787e70251529d9a22799e640963b3d9ebd4ad7d62e8aff53a /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.10.0-trixie@sha256:8375c025ea8dcd19e38b03a0b2d78d2581f2799e085a01a20ec2b8c70b05b59e /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.11.0@sha256:6ce00ac946e1a52b2d1e5b7087441f7b6ef7bad907753104013f8bdb8f5fd891 /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
-COPY --from=mikefarah/yq:4.50.1@sha256:4facc66fdcc785ec961ef7f2185f53f862f462eefe1d50c2eb311c2bb26823e3 /usr/bin/yq /usr/local/bin/
+COPY --from=mikefarah/yq:4.52.2@sha256:601e1d0faee899567ed5c8e50bead050efe51a2b90f07395e5cf5836ce3726a8 /usr/bin/yq /usr/local/bin/
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task
@@ -95,9 +95,9 @@ RUN groupadd --gid $USER_GID $USERNAME || true && \
 USER $USERNAME
 
 # renovate: datasource=pypi depName=pgadmin4
-ARG PGADMIN4_VERSION=9.11
+ARG PGADMIN4_VERSION=9.12
 # renovate: datasource=pypi depName=home-ops-cli
-ARG HOME_OPS_CLI_VERSION=0.4.51
+ARG HOME_OPS_CLI_VERSION=0.4.53
 RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \
     uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
     uv python update-shell && \

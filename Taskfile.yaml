@@ -21,6 +21,5 @@ includes:
 
 tasks:
   default:
-    cmd: ./task_menu.py
+    cmd: task --list
     silent: true
-    interactive: true

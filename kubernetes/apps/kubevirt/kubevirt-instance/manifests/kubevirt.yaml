@@ -27,6 +27,7 @@ spec:
         - AlignCPUs
         - EnableVirtioFsConfigVolumes
         - VMExport
+        - USB
     smbios:
       sku: "TalosCloud"
       version: "v0.1.0"

@@ -17,7 +17,7 @@ spec:
     multus:
       image:
         repository: ghcr.io/d4rkfella/multus-cni
-        tag: 4.2.3@sha256:cb4c11bd4af9ac99cc6d615e3b3dbebdd36c663d201f030343e4d5430ab9bdf7
+        tag: 4.2.3@sha256:668d4c1e119c90560bc7eff79d65cf669c08d83d229b0f504a9b02575e8ad527
       resources:
         requests:
           cpu: 10m

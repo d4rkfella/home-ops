@@ -37,7 +37,7 @@ RUN uv self version && uvx --version
 COPY --from=ghcr.io/getsops/sops:v3.11.0@sha256:6ce00ac946e1a52b2d1e5b7087441f7b6ef7bad907753104013f8bdb8f5fd891 /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
-COPY --from=mikefarah/yq:4.52.2@sha256:601e1d0faee899567ed5c8e50bead050efe51a2b90f07395e5cf5836ce3726a8 /usr/bin/yq /usr/local/bin/
+COPY --from=mikefarah/yq:4.52.4@sha256:a4c2cafdf4674b2dc3c6ac457fe1486d55d7d93edb3ed4459637afda3c286af6 /usr/bin/yq /usr/local/bin/
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task

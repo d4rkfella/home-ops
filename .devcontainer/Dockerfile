@@ -22,7 +22,7 @@ RUN apt-get update && \
         libusb-1.0-0 usbredirect fontconfig fonts-dejavu && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.12.3@sha256:98e49db6d5b181689cb51624788cccf2d2797045f0a1aa26267b128e089f9fa4 /talosctl /usr/local/bin/talosctl
+COPY --from=ghcr.io/siderolabs/talosctl:v1.12.4@sha256:4e933339b1ff4a6ceca14a5df7a2ba5e32e4371467b34006895a009316d43023 /talosctl /usr/local/bin/talosctl
 RUN talosctl version --client
 
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.4@sha256:0b015a3557a64a751712da8a6395534160018eaaa2d969882a85a336de9adb70 /ko-app/cosign /usr/local/bin/

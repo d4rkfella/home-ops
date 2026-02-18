@@ -207,7 +207,7 @@ machine:
     install:
         diskSelector:
             model: CT1000P3PSSD8
-        image: factory.talos.dev/installer-secureboot/bbfe20732d89cdb6e26a79e27c04a77a68afc3bd1c94334045b508ecf751e293:v1.12.3
+        image: factory.talos.dev/installer-secureboot/bbfe20732d89cdb6e26a79e27c04a77a68afc3bd1c94334045b508ecf751e293:v1.12.4
         wipe: false
     files:
         - op: overwrite

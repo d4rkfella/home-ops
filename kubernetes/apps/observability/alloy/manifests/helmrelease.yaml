@@ -9,15 +9,15 @@ spec:
     kind: OCIRepository
     name: alloy
   postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: StatefulSet
-          name: alloy
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: alloy
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   values:
     fullnameOverride: alloy
     serviceMonitor:
@@ -43,7 +43,8 @@ spec:
         - metadata:
             name: alloy
           spec:
-            accessModes: [ReadWriteOnce]
+            accessModes:
+              - ReadWriteOnce
             storageClassName: openebs-zfs-128k
             resources:
               requests:

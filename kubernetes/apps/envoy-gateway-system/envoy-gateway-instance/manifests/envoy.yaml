@@ -89,9 +89,9 @@ spec:
     - type: IPAddress
       value: 192.168.91.52
   infrastructure:
-      annotations:
-        external-dns.alpha.kubernetes.io/hostname: *hostname
-        lbipam.cilium.io/ips: 192.168.91.52
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: *hostname
+      lbipam.cilium.io/ips: 192.168.91.52
   listeners:
     - name: http
       protocol: HTTP
@@ -123,8 +123,8 @@ spec:
     - type: IPAddress
       value: 192.168.91.50
   infrastructure:
-      annotations:
-        lbipam.cilium.io/ips: 192.168.91.50
+    annotations:
+      lbipam.cilium.io/ips: 192.168.91.50
   listeners:
     - name: http
       protocol: HTTP
@@ -250,7 +250,8 @@ spec:
     alpnProtocols:
       - h2
       - http/1.1
-    ecdhCurves: ["X25519"]
+    ecdhCurves:
+      - "X25519"
     session:
       resumption:
         stateless: {}

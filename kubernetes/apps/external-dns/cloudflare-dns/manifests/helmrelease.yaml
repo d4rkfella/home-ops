@@ -9,15 +9,15 @@ spec:
     kind: OCIRepository
     name: external-dns
   postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: Deployment
-          name: cloudflare-dns
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: cloudflare-dns
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   values:
     fullnameOverride: *app
     provider:
@@ -42,10 +42,13 @@ spec:
       - --zone-id-filter=$(CF_ZONE_ID)
     triggerLoopOnEvent: true
     policy: sync
-    sources: ["crd", "gateway-httproute"]
+    sources:
+      - "crd"
+      - "gateway-httproute"
     txtOwnerId: default
     txtPrefix: k8s.
-    domainFilters: ["darkfellanetwork.com"]
+    domainFilters:
+      - "darkfellanetwork.com"
     serviceMonitor:
       enabled: true
     podAnnotations:

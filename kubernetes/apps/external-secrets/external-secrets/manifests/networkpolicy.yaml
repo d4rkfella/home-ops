@@ -20,8 +20,8 @@ spec:
         - kube-apiserver
       toPorts:
         - ports:
-          - port: "6443"
-            protocol: TCP
+            - port: "6443"
+              protocol: TCP
 
     - toEndpoints:
         - matchLabels:
@@ -54,8 +54,8 @@ spec:
         - kube-apiserver
       toPorts:
         - ports:
-          - port: "6443"
-            protocol: TCP
+            - port: "6443"
+              protocol: TCP
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
@@ -78,5 +78,5 @@ spec:
         - kube-apiserver
       toPorts:
         - ports:
-          - port: "6443"
-            protocol: TCP
+            - port: "6443"
+              protocol: TCP

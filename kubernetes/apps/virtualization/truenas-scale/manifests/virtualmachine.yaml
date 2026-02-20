@@ -71,9 +71,9 @@ spec:
           hugepages:
             pageSize: "2Mi"
       volumes:
-      - dataVolume:
-          name: truenas-os-disk
-        name: os-disk
+        - dataVolume:
+            name: truenas-os-disk
+          name: os-disk
   dataVolumeTemplates:
     - metadata:
         name: truenas-os-disk

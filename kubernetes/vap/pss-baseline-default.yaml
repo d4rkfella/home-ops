@@ -1,3 +1,4 @@
+---
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingAdmissionPolicy
 metadata:
@@ -6,10 +7,15 @@ spec:
   failurePolicy: Fail
   matchConstraints:
     resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        operations: ["CREATE", "UPDATE"]
-        resources: ["pods"]
+      - apiGroups:
+          - ""
+        apiVersions:
+          - "v1"
+        operations:
+          - "CREATE"
+          - "UPDATE"
+        resources:
+          - "pods"
   validations:
     # 1. Disallow hostNetwork
     - expression: |
@@ -120,18 +126,25 @@ metadata:
   name: baseline-pss-binding
 spec:
   policyName: baseline-pss-policy
-  validationActions: ["Deny"]
+  validationActions:
+    - "Deny"
   matchResources:
     resourceRules:
-      - apiGroups: [""]
-        apiVersions: ["v1"]
-        resources: ["pods"]
-        operations: ["CREATE", "UPDATE"]
+      - apiGroups:
+          - ""
+        apiVersions:
+          - "v1"
+        resources:
+          - "pods"
+        operations:
+          - "CREATE"
+          - "UPDATE"
     namespaceSelector:
       matchExpressions:
         - key: pod-security.kubernetes.io/enforce
           operator: NotIn
-          values: ["privileged"]
+          values:
+            - "privileged"
     objectSelector:
       matchExpressions:
         - key: app.kubernetes.io/name

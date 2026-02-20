@@ -4,7 +4,8 @@ kind: HTTPRoute
 metadata:
   name: cdi-upload-proxy-httproute
 spec:
-  hostnames: ["cdi-uploadproxy.darkfellanetwork.com"]
+  hostnames:
+    - "cdi-uploadproxy.darkfellanetwork.com"
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system

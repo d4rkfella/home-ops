@@ -8,11 +8,11 @@ spec:
     matchLabels:
       "cnpg.io/cluster": postgres-db
   podMetricsEndpoints:
-  - port: metrics
-    scheme: https
-    tlsConfig:
-      ca:
-        secret:
-          name: postgres-db-ca
-          key: ca.crt
-      serverName: postgres-db-rw
+    - port: metrics
+      scheme: https
+      tlsConfig:
+        ca:
+          secret:
+            name: postgres-db-ca
+            key: ca.crt
+        serverName: postgres-db-rw

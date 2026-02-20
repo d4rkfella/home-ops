@@ -63,7 +63,7 @@ spec:
     - {}
   egress:
     - toEntities:
-          - kube-apiserver
+        - kube-apiserver
       toPorts:
         - ports:
             - port: "6443"

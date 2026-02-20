@@ -82,7 +82,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
@@ -97,7 +97,7 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
@@ -118,7 +118,9 @@ spec:
 
     route:
       app:
-        hostnames: ["status.darkfellanetwork.com", "{{ .Release.Name }}.darkfellanetwork.com"]
+        hostnames:
+          - "status.darkfellanetwork.com"
+          - "{{ .Release.Name }}.darkfellanetwork.com"
         annotations:
           gatus.home-operations.com/enabled: "true"
           gatus.home-operations.com/endpoint: |-
@@ -157,18 +159,39 @@ spec:
         gatus:
           type: ClusterRole
           rules:
-            - apiGroups: [""]
-              resources: ["configmaps"]
-              verbs: ["get", "watch", "list"]
-            - apiGroups: [""]
-              resources: ["services"]
-              verbs: ["get", "list", "watch"]
-            - apiGroups: ["networking.k8s.io"]
-              resources: ["ingresses"]
-              verbs: ["get", "list", "watch"]
-            - apiGroups: ["gateway.networking.k8s.io"]
-              resources: ["httproutes", "gateways"]
-              verbs: ["get", "list", "watch"]
+            - apiGroups:
+                - ""
+              resources:
+                - "configmaps"
+              verbs:
+                - "get"
+                - "watch"
+                - "list"
+            - apiGroups:
+                - ""
+              resources:
+                - "services"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "networking.k8s.io"
+              resources:
+                - "ingresses"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
+            - apiGroups:
+                - "gateway.networking.k8s.io"
+              resources:
+                - "httproutes"
+                - "gateways"
+              verbs:
+                - "get"
+                - "list"
+                - "watch"
       bindings:
         gatus:
           type: ClusterRoleBinding

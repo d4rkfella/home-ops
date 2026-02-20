@@ -26,7 +26,7 @@ spec:
       automount:
         enabled: false
       hostRoot: /sys/fs/cgroup
-    devices: 'eth0'
+    devices: "eth0"
     envoy:
       enabled: false
     hubble:

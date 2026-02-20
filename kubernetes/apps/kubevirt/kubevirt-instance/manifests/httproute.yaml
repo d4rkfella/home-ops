@@ -7,7 +7,8 @@ metadata:
     gatus.home-operations.com/endpoint: |-
       url: https://virt-exportproxy.darkfellanetwork.com/healthz
 spec:
-  hostnames: ["virt-exportproxy.darkfellanetwork.com"]
+  hostnames:
+    - "virt-exportproxy.darkfellanetwork.com"
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system
@@ -41,13 +42,13 @@ metadata:
   name: vmexport
 spec:
   rules:
-  - host: virt-exportproxy.darkfellanetwork.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: virt-exportproxy
-            port:
-              number: 443
+    - host: virt-exportproxy.darkfellanetwork.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: virt-exportproxy
+                port:
+                  number: 443

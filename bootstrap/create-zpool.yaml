@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -149,43 +150,43 @@ spec:
         job-name: create-zpool
     spec:
       containers:
-      - name: create-zpool
-        image: alpine:3.23
-        command:
+        - name: create-zpool
+          image: alpine:3.23
+          command:
             - /bin/sh
             - -c
             - |
               apk add --no-cache bash curl crane cosign libuuid e2fsprogs
               /scripts/create_zpool.sh
-        securityContext:
-          privileged: true
-        env:
-        - name: DEVICES
-          value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd"
-        - name: ASHIFT
-          value: "12"
-        - name: POOL_NAME
-          value: "ssd_pool"
-        - name: TALOS_VERSION
-          value: "v1.12.0"
-        resources:
-          limits:
-            cpu: "1"
-            memory: "512Mi"
-          requests:
-            cpu: "500m"
-            memory: "256Mi"
-        volumeMounts:
-        - name: dev
-          mountPath: /dev
-        - name: scripts
-          mountPath: /scripts
+          securityContext:
+            privileged: true
+          env:
+            - name: DEVICES
+              value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd"
+            - name: ASHIFT
+              value: "12"
+            - name: POOL_NAME
+              value: "ssd_pool"
+            - name: TALOS_VERSION
+              value: "v1.12.0"
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
+              cpu: "500m"
+              memory: "256Mi"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: scripts
+              mountPath: /scripts
       volumes:
-      - name: dev
-        hostPath:
-          path: /dev
-      - name: scripts
-        configMap:
-          name: scripts
-          defaultMode: 0755
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: scripts
+          configMap:
+            name: scripts
+            defaultMode: 0755
       restartPolicy: Never

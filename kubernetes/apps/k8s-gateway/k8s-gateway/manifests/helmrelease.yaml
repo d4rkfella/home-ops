@@ -17,7 +17,9 @@ spec:
       annotations:
         lbipam.cilium.io/ips: 192.168.91.80
       externalTrafficPolicy: Local
-    watchedResources: ["HTTPRoute", "Service"]
+    watchedResources:
+      - "HTTPRoute"
+      - "Service"
     fallthrough:
       enabled: false
     extraZonePlugins:

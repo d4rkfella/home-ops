@@ -32,13 +32,13 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
         securityContext:
           runAsUser: 65532
           runAsGroup: 65532
           runAsNonRoot: true
-          seccompProfile: { type: RuntimeDefault }
+          seccompProfile: {type: RuntimeDefault}
 
         hostUsers: false
 
@@ -62,8 +62,8 @@ spec:
   startOptimized: true
 
   #bootstrapAdmin:
-    #user:
-      #secret: *secret
+  #user:
+  #secret: *secret
 
   proxy:
     headers: xforwarded

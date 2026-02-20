@@ -9,16 +9,16 @@ spec:
     kind: OCIRepository
     name: artifactory
   postRenderers:
-  - kustomize:
-      patches:
-        - target:
-            kind: "StatefulSet"
-            name: "artifactory"
-          patch: |-
-            - op: add
-              path: /spec/template/spec/imagePullSecrets
-              value:
-                - name: artifactory-secret
+    - kustomize:
+        patches:
+          - target:
+              kind: "StatefulSet"
+              name: "artifactory"
+            patch: |-
+              - op: add
+                path: /spec/template/spec/imagePullSecrets
+                value:
+                  - name: artifactory-secret
   values:
     mc:
       enabled: true
@@ -60,7 +60,7 @@ spec:
         artifactory:
           tomcat:
             httpsConnector:
-                enabled: true
+              enabled: true
           backup:
             dir: /var/opt/jfrog/artifactory/backup/nfs
       masterKeySecretName: &secret artifactory-secret

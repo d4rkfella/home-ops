@@ -4,7 +4,8 @@ kind: HTTPRoute
 metadata:
   name: keycloak
 spec:
-  hostnames: ["accounts.darkfellanetwork.com"]
+  hostnames:
+    - "accounts.darkfellanetwork.com"
   parentRefs:
     - name: external
       namespace: envoy-gateway-system

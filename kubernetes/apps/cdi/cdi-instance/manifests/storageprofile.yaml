@@ -6,7 +6,7 @@ metadata:
 spec:
   claimPropertySets:
     - accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
       volumeMode: Filesystem
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
@@ -16,7 +16,7 @@ metadata:
 spec:
   claimPropertySets:
     - accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
       volumeMode: Filesystem
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
@@ -26,7 +26,7 @@ metadata:
 spec:
   claimPropertySets:
     - accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
       volumeMode: Filesystem
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
@@ -36,7 +36,7 @@ metadata:
 spec:
   claimPropertySets:
     - accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
       volumeMode: Block
 ---
 apiVersion: cdi.kubevirt.io/v1beta1
@@ -46,5 +46,5 @@ metadata:
 spec:
   claimPropertySets:
     - accessModes:
-      - ReadWriteMany
+        - ReadWriteMany
       volumeMode: Block

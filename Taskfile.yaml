@@ -1,17 +1,19 @@
 ---
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: '3'
+version: "3"
 
-set: [pipefail]
-shopt: [globstar]
+set:
+  - pipefail
+shopt:
+  - globstar
 
 env:
-  BOOTSTRAP_DIR: '{{.ROOT_DIR}}/bootstrap'
-  KUBERNETES_DIR: '{{.ROOT_DIR}}/kubernetes'
-  TALOS_DIR: '{{.ROOT_DIR}}/talos'
-  KUBECONFIG: '{{.ROOT_DIR}}/kubeconfig'
-  TALOSCONFIG: '{{.ROOT_DIR}}/talosconfig'
-  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
+  BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap"
+  KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes"
+  TALOS_DIR: "{{.ROOT_DIR}}/talos"
+  KUBECONFIG: "{{.ROOT_DIR}}/kubeconfig"
+  TALOSCONFIG: "{{.ROOT_DIR}}/talosconfig"
+  SOPS_AGE_KEY_FILE: "{{.ROOT_DIR}}/age.key"
 
 includes:
   bootstrap: .taskfiles/bootstrap

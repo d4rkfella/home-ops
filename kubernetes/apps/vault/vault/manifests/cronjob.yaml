@@ -1,3 +1,4 @@
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -33,7 +34,7 @@ spec:
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
-                capabilities: { drop: ["ALL"] }
+                capabilities: {drop: ["ALL"]}
               resources:
                 limits:
                   cpu: "1"
@@ -46,6 +47,6 @@ spec:
             runAsNonRoot: true
             runAsUser: 65532
             runAsGroup: 65532
-            seccompProfile: { type: RuntimeDefault }
+            seccompProfile: {type: RuntimeDefault}
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

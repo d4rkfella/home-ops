@@ -19,7 +19,9 @@ spec:
             image:
               repository: ghcr.io/d4rkfella/cross-seed
               tag: 6.13.6@sha256:987453969473c6f0e91ba31db2f816de5d72a41cca155dfd97a806157df1ccb1
-            args: ["daemon", "-v"]
+            args:
+              - "daemon"
+              - "-v"
             env:
               TZ: Europe/Sofia
               CROSS_SEED_PORT: &port 2468
@@ -47,7 +49,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
     defaultPodOptions:
       securityContext:
@@ -56,7 +58,7 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:

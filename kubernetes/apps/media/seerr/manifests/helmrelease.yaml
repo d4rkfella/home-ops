@@ -65,7 +65,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
@@ -81,7 +81,7 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
@@ -95,7 +95,9 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             url: https://{{ .Release.Name }}.darkfellanetwork.com/api/v1/status
-        hostnames: ["requests.darkfellanetwork.com", "{{ .Release.Name }}.darkfellanetwork.com"]
+        hostnames:
+          - "requests.darkfellanetwork.com"
+          - "{{ .Release.Name }}.darkfellanetwork.com"
         parentRefs:
           - name: external
             namespace: envoy-gateway-system

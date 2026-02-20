@@ -4,16 +4,17 @@ kind: HTTPRoute
 metadata:
   name: artifactory
 spec:
-  hostnames: ["packages.darkfellanetwork.com"]
+  hostnames:
+    - "packages.darkfellanetwork.com"
   parentRefs:
     - name: artifactory
       namespace: envoy-gateway-system
       sectionName: https
   rules:
     - matches:
-      - path:
-          type: PathPrefix
-          value: /
+        - path:
+            type: PathPrefix
+            value: /
       backendRefs:
         - group: gateway.envoyproxy.io
           kind: Backend

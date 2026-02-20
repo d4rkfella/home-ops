@@ -18,28 +18,31 @@ spec:
     logoutPath: "/logout"
   jwt:
     providers:
-    - name: keycloak
-      issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-      remoteJWKS:
-        uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
-      extractFrom:
-        cookies: [AccessToken-e600eaa8]
+      - name: keycloak
+        issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
+        remoteJWKS:
+          uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+        extractFrom:
+          cookies:
+            - AccessToken-e600eaa8
   authorization:
     defaultAction: Deny
     rules:
-    - action: Allow
-      name: allow-by-group
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: groups
-            values: [media-admin]
-    - action: Allow
-      name: allow-by-email
-      principal:
-        jwt:
-          provider: keycloak
-          claims:
-          - name: email
-            values: [georgi.panov@darkfellanetwork.com]
+      - action: Allow
+        name: allow-by-group
+        principal:
+          jwt:
+            provider: keycloak
+            claims:
+              - name: groups
+                values:
+                  - media-admin
+      - action: Allow
+        name: allow-by-email
+        principal:
+          jwt:
+            provider: keycloak
+            claims:
+              - name: email
+                values:
+                  - georgi.panov@darkfellanetwork.com

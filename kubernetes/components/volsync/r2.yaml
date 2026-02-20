@@ -34,9 +34,11 @@ spec:
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
     cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
-    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    cacheAccessModes:
+      - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
-    accessModes: ["${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"]
+    accessModes:
+      - "${VOLSYNC_SNAP_ACCESSMODES:=ReadWriteOnce}"
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=65532}
       runAsGroup: ${VOLSYNC_PGID:=65532}
@@ -56,10 +58,12 @@ spec:
     copyMethod: Snapshot
     volumeSnapshotClassName: "${VOLSYNC_SNAPSHOTCLASS:=zfspv-snapclass}"
     cacheStorageClassName: "${VOLSYNC_CACHE_SNAPSHOTCLASS:=openebs-zfs-128k}"
-    cacheAccessModes: ["${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"]
+    cacheAccessModes:
+      - "${VOLSYNC_CACHE_ACCESSMODES:=ReadWriteOnce}"
     cacheCapacity: "${VOLSYNC_CACHE_CAPACITY:=2Gi}"
     storageClassName: "${VOLSYNC_STORAGECLASS:=openebs-zfs-128k}"
-    accessModes: ["${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"]
+    accessModes:
+      - "${VOLSYNC_ACCESSMODES:=ReadWriteOnce}"
     capacity: "${VOLSYNC_CAPACITY:=5Gi}"
     moverSecurityContext:
       runAsUser: ${VOLSYNC_PUID:=65532}

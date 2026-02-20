@@ -18,20 +18,20 @@ metadata:
       named `default-deny` which will deny all traffic anytime a new Namespace is created.
 spec:
   rules:
-  - name: default-deny
-    match:
-      any:
-      - resources:
-          kinds:
-          - Namespace
-    generate:
-      apiVersion: networking.k8s.io/v1
-      kind: NetworkPolicy
-      name: default-deny
-      namespace: "{{request.object.metadata.name}}"
-      synchronize: true
-      data:
-        spec:
-          podSelector: {}
-          policyTypes:
-          - Egress
+    - name: default-deny
+      match:
+        any:
+          - resources:
+              kinds:
+                - Namespace
+      generate:
+        apiVersion: networking.k8s.io/v1
+        kind: NetworkPolicy
+        name: default-deny
+        namespace: "{{request.object.metadata.name}}"
+        synchronize: true
+        data:
+          spec:
+            podSelector: {}
+            policyTypes:
+              - Egress

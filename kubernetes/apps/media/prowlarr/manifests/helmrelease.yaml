@@ -68,7 +68,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
 
     defaultPodOptions:
       securityContext:
@@ -77,7 +77,7 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: { type: RuntimeDefault }
+        seccompProfile: {type: RuntimeDefault}
 
     service:
       app:
@@ -88,7 +88,8 @@ spec:
 
     route:
       app:
-        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

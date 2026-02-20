@@ -62,12 +62,12 @@ metadata:
 provisioner: zfs.csi.openebs.io
 allowVolumeExpansion: true
 parameters:
-    poolname: "ssd_pool"
-    compression: "on"
-    volblocksize: "64k"
-    thinprovision: "yes"
-    dedup: "off"
-    shared: "yes"
+  poolname: "ssd_pool"
+  compression: "on"
+  volblocksize: "64k"
+  thinprovision: "yes"
+  dedup: "off"
+  shared: "yes"
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -78,9 +78,9 @@ metadata:
 provisioner: zfs.csi.openebs.io
 allowVolumeExpansion: true
 parameters:
-    poolname: "ssd_pool"
-    compression: "on"
-    volblocksize: "16k"
-    thinprovision: "yes"
-    dedup: "off"
-    shared: "yes"
+  poolname: "ssd_pool"
+  compression: "on"
+  volblocksize: "16k"
+  thinprovision: "yes"
+  dedup: "off"
+  shared: "yes"

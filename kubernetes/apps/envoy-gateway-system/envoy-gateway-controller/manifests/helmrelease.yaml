@@ -9,24 +9,24 @@ spec:
     kind: OCIRepository
     name: envoy-gateway
   postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: Deployment
-          name: envoy-gateway
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: envoy-gateway
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   values:
-      global:
-        imageRegistry: mirror.gcr.io
-      config:
-        envoyGateway:
-          provider:
-            type: Kubernetes
-            kubernetes:
-              deploy:
-                type: GatewayNamespace
-          extensionApis:
-            enableBackend: true
+    global:
+      imageRegistry: mirror.gcr.io
+    config:
+      envoyGateway:
+        provider:
+          type: Kubernetes
+          kubernetes:
+            deploy:
+              type: GatewayNamespace
+        extensionApis:
+          enableBackend: true

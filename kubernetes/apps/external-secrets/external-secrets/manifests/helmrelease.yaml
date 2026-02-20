@@ -9,15 +9,15 @@ spec:
     kind: OCIRepository
     name: external-secrets
   postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: Deployment
-          name: (external-secrets|external-secrets-webhook)
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: (external-secrets|external-secrets-webhook)
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   values:
     installCRDs: true
     image:

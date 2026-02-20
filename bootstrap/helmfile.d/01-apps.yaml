@@ -11,7 +11,8 @@ releases:
     version: 1.19.1
     values: ['./templates/values.yaml.gotmpl']
     hooks:
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -27,31 +28,39 @@ releases:
     namespace: kube-system
     chart: oci://ghcr.io/coredns/charts/coredns
     version: 1.45.2
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['kube-system/cilium']
+    values:
+      - "./templates/values.yaml.gotmpl"
+    needs:
+      - "kube-system/cilium"
 
   - name: kubelet-csr-approver
     namespace: kube-system
     chart: oci://ghcr.io/postfinance/charts/kubelet-csr-approver
     version: 1.2.13
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['kube-system/coredns']
+    values:
+      - "./templates/values.yaml.gotmpl"
+    needs:
+      - "kube-system/coredns"
 
   - name: cert-manager
     namespace: cert-manager
     chart: oci://quay.io/jetstack/charts/cert-manager
     version: v1.19.3
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['kube-system/kubelet-csr-approver']
+    values:
+      - "./templates/values.yaml.gotmpl"
+    needs:
+      - "kube-system/kubelet-csr-approver"
     hooks:
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: sh
         args:
           - -c
           - |
             sops -d ../../kubernetes/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --namespace=cert-manager --field-manager=kustomize-controller -f -
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -70,7 +79,8 @@ releases:
     values: ['./templates/values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager']
     hooks:
-      - events: ["presync"]
+      - events:
+          - "presync"
         command: kubectl
         args:
           - apply
@@ -81,7 +91,8 @@ releases:
           - -f
           - ../create-zpool.yaml
         showlogs: true
-      - events: ["presync"]
+      - events:
+          - "presync"
         command: kubectl
         args:
           - apply
@@ -95,7 +106,8 @@ releases:
           - -f
           - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
         showlogs: true
-      - events: ["postsync"]
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -112,17 +124,21 @@ releases:
     namespace: vault
     chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
     version: 0.32.0
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['cert-manager/cert-manager']
+    values:
+      - "./templates/values.yaml.gotmpl"
+    needs:
+      - "cert-manager/cert-manager"
     hooks:
-      - events: ['presync']
+      - events:
+          - "presync"
         command: sh
         args:
           - -c
           - |
             sops -d ../../kubernetes/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --namespace=vault --field-manager=kustomize-controller -f -
         showlogs: true
-      - events: ["presync"]
+      - events:
+          - "presync"
         command: kubectl
         args:
           - apply
@@ -133,7 +149,8 @@ releases:
           - -f
           - ../../kubernetes/apps/vault/vault/manifests/certificate.yaml
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: home-ops-cli
         args:
           - vault
@@ -148,10 +165,12 @@ releases:
     namespace: external-secrets
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 2.0.0
-    values: ['./templates/values.yaml.gotmpl']
+    values:
+      - "./templates/values.yaml.gotmpl"
     #needs: ['vault/vault']
     hooks:
-      - events: ["postsync"]
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -166,10 +185,13 @@ releases:
     namespace: kube-system
     chart: oci://ghcr.io/bjw-s-labs/helm/multus
     version: 1.1.3
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['cert-manager/cert-manager']
+    values:
+      - "./templates/values.yaml.gotmpl"
+    needs:
+      - "cert-manager/cert-manager"
     hooks:
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -180,7 +202,8 @@ releases:
           - --kustomize
           - ../../kubernetes/apps/kubevirt/kubevirt-operator/manifests
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -191,7 +214,8 @@ releases:
           - --kustomize
           - ../../kubernetes/apps/kubevirt/kubevirt-instance/manifests
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -202,7 +226,8 @@ releases:
           - --kustomize
           - ../../kubernetes/apps/cdi/cdi-operator/manifests
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply
@@ -213,7 +238,8 @@ releases:
           - --kustomize
           - ../../kubernetes/apps/cdi/cdi-instance/manifests
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: home-ops-cli
         args:
           - kubernetes
@@ -222,7 +248,8 @@ releases:
           - deployment/cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver@cdi
           - daemonset/virt-handler@kubevirt
         showlogs: true
-      - events: ['postsync']
+      - events:
+          - "postsync"
         command: kubectl
         args:
           - apply

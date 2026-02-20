@@ -5,16 +5,16 @@ metadata:
   name: add-ndots
 spec:
   rules:
-  - name: add-ndots
-    match:
-      any:
-      - resources:
-          kinds:
-          - Pod
-    mutate:
-      patchStrategicMerge:
-        spec:
-          dnsConfig:
-            options:
-              - name: ndots
-                value: "2"
+    - name: add-ndots
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            dnsConfig:
+              options:
+                - name: ndots
+                  value: "2"

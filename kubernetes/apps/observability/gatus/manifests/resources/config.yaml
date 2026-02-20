@@ -5,7 +5,8 @@ security:
     client-id: cf97a83c-445e-4d2c-93ac-f13a1a037c59
     client-secret: ${OIDC_CLIENT_SECRET}
     redirect-url: https://status.darkfellanetwork.com/authorization-code/callback
-    scopes: [openid]
+    scopes:
+      - openid
 
 web:
   port: ${WEB_PORT}

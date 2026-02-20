@@ -27,11 +27,11 @@ spec:
       runAsNonRoot: true
       runAsUser: 65532
       runAsGroup: 65532
-      seccompProfile: { type: RuntimeDefault }
+      seccompProfile: {type: RuntimeDefault}
     securityContext:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
-      capabilities: { drop: ["ALL"] }
+      capabilities: {drop: ["ALL"]}
     flags:
       watchSingleNamespace: arc-runners
     namespaceOverride: arc-system

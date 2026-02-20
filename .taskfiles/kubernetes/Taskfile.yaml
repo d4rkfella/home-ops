@@ -1,5 +1,6 @@
+---
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: '3'
+version: "3"
 
 tasks:
   node-shell:
@@ -7,7 +8,8 @@ tasks:
     interactive: true
     cmd: kubectl node-shell -n kube-system -x {{.NODE}}
     requires:
-      vars: [NODE]
+      vars:
+        - NODE
     preconditions:
       - kubectl get nodes {{.NODE}}
       - kubectl node-shell --version
@@ -16,7 +18,7 @@ tasks:
   sync-secrets:
     desc: Sync all ExternalSecrets
     cmds:
-      - for: { var: SECRETS, split: "\n" }
+      - for: {var: SECRETS, split: " "}
         cmd: kubectl --namespace {{splitList "," .ITEM | first}} annotate externalsecret {{splitList "," .ITEM | last}} force-sync="{{now | unixEpoch}}" --overwrite
     vars:
       SECRETS:
@@ -29,7 +31,10 @@ tasks:
     cmds:
       - for:
           matrix:
-            PHASE: [Failed, Pending, Succeeded]
+            PHASE:
+              - Failed
+              - Pending
+              - Succeeded
         cmd: kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true
     preconditions:
       - which kubectl

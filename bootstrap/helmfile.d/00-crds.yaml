@@ -3,9 +3,11 @@
 # It is not intended to be used with helmfile apply or sync.
 
 helmDefaults:
-  args: ['--include-crds', '--no-hooks'] # Prevent helmfile apply or sync
+  args:
+    - "--include-crds"
+    - "--no-hooks"
 
-releases:
+releases: # Prevent helmfile apply or sync
   - name: envoy-gateway
     namespace: envoy-gateway-system
     chart: oci://mirror.gcr.io/envoyproxy/gateway-helm

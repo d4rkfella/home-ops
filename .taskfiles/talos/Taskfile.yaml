@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: '3'
+version: "3"
 
 tasks:
   apply-config:
@@ -11,7 +11,8 @@ tasks:
           /usr/local/bin/envsubst | \
               talosctl apply-config --nodes {{.IP}} --file /dev/stdin
     requires:
-      vars: ['IP']
+      vars:
+        - "IP"
     preconditions:
       - test -f {{.ROOT_DIR}}/talosconfig
       - test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml
@@ -22,7 +23,11 @@ tasks:
     prompt: Regenerate talosconfig ... continue?
     cmd: home-ops-cli talos regen-talosconfig {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}
     requires:
-      vars: ['MACHINE_CONFIG_FILEPATH', 'CONTEXT_NAME', 'ENDPOINTS', 'NODES']
+      vars:
+        - "MACHINE_CONFIG_FILEPATH"
+        - "CONTEXT_NAME"
+        - "ENDPOINTS"
+        - "NODES"
     preconditions:
       - which home-ops-cli
       - which sops

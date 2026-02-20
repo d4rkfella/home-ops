@@ -9,16 +9,16 @@ spec:
     kind: OCIRepository
     name: kyverno
   postRenderers:
-  - kustomize:
-      patches:
-        - target:
-            kind: Deployment
-            name: kyverno-admission-controller
-          patch: |
-            - op: replace
-              path: /spec/template/spec/containers/0/resources/limits
-              value:
-                memory: "1024Mi"
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: kyverno-admission-controller
+            patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/resources/limits
+                value:
+                  memory: "1024Mi"
   values:
     crds:
       install: true
@@ -29,11 +29,18 @@ spec:
       rbac:
         clusterRole:
           extraResources:
-            - apiGroups: [""]
-              resources: ["pods"]
-              verbs: ["create", "update", "patch", "delete"]
+            - apiGroups:
+                - ""
+              resources:
+                - "pods"
+              verbs:
+                - "create"
+                - "update"
+                - "patch"
+                - "delete"
 
-            - apiGroups: ["apps"]
+            - apiGroups:
+                - "apps"
               resources:
                 - deployments
                 - statefulsets
@@ -45,7 +52,8 @@ spec:
                 - patch
                 - update
 
-            - apiGroups: ["batch"]
+            - apiGroups:
+                - "batch"
               resources:
                 - jobs
               verbs:
@@ -60,8 +68,10 @@ spec:
       rbac:
         clusterRole:
           extraResources:
-            - apiGroups: [""]
-              resources: ["pods"]
+            - apiGroups:
+                - ""
+              resources:
+                - "pods"
               verbs:
                 - get
                 - list
@@ -70,7 +80,8 @@ spec:
                 - update
                 - delete
 
-            - apiGroups: ["apps"]
+            - apiGroups:
+                - "apps"
               resources:
                 - deployments
                 - statefulsets
@@ -82,7 +93,8 @@ spec:
                 - patch
                 - update
 
-            - apiGroups: ["batch"]
+            - apiGroups:
+                - "batch"
               resources:
                 - jobs
               verbs:

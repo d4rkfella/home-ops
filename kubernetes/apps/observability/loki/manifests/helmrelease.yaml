@@ -9,15 +9,15 @@ spec:
     kind: OCIRepository
     name: loki
   postRenderers:
-  - kustomize:
-      patches:
-      - target:
-          kind: StatefulSet
-          name: loki
-        patch: |-
-          - op: add
-            path: /spec/template/spec/hostUsers
-            value: false
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: loki
+            patch: |-
+              - op: add
+                path: /spec/template/spec/hostUsers
+                value: false
   values:
     deploymentMode: SingleBinary
     loki:
@@ -51,9 +51,9 @@ spec:
           enable_alertmanager_v2: true
           alertmanager_url: http://alertmanager-operated.observability.svc.cluster.local:9093
           storage:
-              type: local
-              local:
-                directory: /rules
+            type: local
+            local:
+              directory: /rules
           rule_path: /rules/fake
       limits_config:
         retention_period: 14d

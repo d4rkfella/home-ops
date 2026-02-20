@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -5,19 +6,19 @@ metadata:
 spec:
   validationFailureAction: Enforce
   rules:
-  - name: require-secretstore-vault-provider
-    match:
-      any:
-      - resources:
-          kinds:
-          - SecretStore
-          - ClusterSecretStore
-    validate:
-      message: "You must only use Hashicorp Vault SecretsStore"
-      pattern:
-        spec:
-          provider:
-            vault:
-              auth:
-                kubernetes:
-                  role: external-secrets-operator
+    - name: require-secretstore-vault-provider
+      match:
+        any:
+          - resources:
+              kinds:
+                - SecretStore
+                - ClusterSecretStore
+      validate:
+        message: "You must only use Hashicorp Vault SecretsStore"
+        pattern:
+          spec:
+            provider:
+              vault:
+                auth:
+                  kubernetes:
+                    role: external-secrets-operator

@@ -1,3 +1,4 @@
+---
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -16,10 +17,10 @@ spec:
                 - Pod
       verifyImages:
         - imageReferences:
-          - "ghcr.io/fluxcd/source-controller*"
-          - "ghcr.io/fluxcd/kustomize-controller*"
-          - "ghcr.io/fluxcd/helm-controller*"
-          - "ghcr.io/fluxcd/notification-controller*"
+            - "ghcr.io/fluxcd/source-controller*"
+            - "ghcr.io/fluxcd/kustomize-controller*"
+            - "ghcr.io/fluxcd/helm-controller*"
+            - "ghcr.io/fluxcd/notification-controller*"
           failureAction: Enforce
           type: Cosign
           attestors:
@@ -30,7 +31,7 @@ spec:
                     rekor:
                       url: https://rekor.sigstore.dev
         - imageReferences:
-          - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
+            - "ghcr.io/controlplaneio-fluxcd/flux-operator*"
           failureAction: Enforce
           type: Cosign
           attestors:

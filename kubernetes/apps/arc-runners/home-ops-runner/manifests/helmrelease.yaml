@@ -17,7 +17,8 @@ spec:
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - "ReadWriteOnce"
         storageClassName: openebs-zfs-128k
         resources:
           requests:
@@ -27,13 +28,14 @@ spec:
         hostUsers: false
         securityContext:
           runAsNonRoot: true
-          seccompProfile: { type: Unconfined }
+          seccompProfile: {type: Unconfined}
           runAsUser: 1001
           fsGroup: 123
         containers:
           - name: runner
             image: ghcr.io/actions/actions-runner:2.331.0@sha256:dced476aa42703ebd9aafc295ce52f160989c4528e831fc3be2aef83a1b3f6da
-            command: ["/home/runner/run.sh"]
+            command:
+              - "/home/runner/run.sh"
             env:
               - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
                 value: "false"

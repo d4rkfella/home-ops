@@ -29,7 +29,7 @@ spec:
               QBT_WEBUI_PORT: &port 80
               QBT_TORRENTING_PORT: &torrentPort 50413
               CROSS_SEED_ENABLED: true
-              CROSS_SEED_URL: https://cross-seed.darkfellanetwork.com
+              CROSS_SEED_URL: http://cross-seed.media.svc.cluster.local:2468
               PUSHOVER_ENABLED: true
             envFrom:
             - secretRef:
@@ -74,10 +74,6 @@ spec:
 
     defaultPodOptions:
       terminationGracePeriodSeconds: 300
-      hostAliases:
-        - ip: "192.168.91.52"
-          hostnames:
-            - "cross-seed.darkfellanetwork.com"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

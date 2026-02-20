@@ -65,7 +65,7 @@ releases:
 
   - name: zfs-localpv
     namespace: openebs-system
-    chart: oci://ghcr.io/d4rkfella/charts-mirror/zfs-localpv
+    chart: oci://ghcr.io/openebs/charts/zfs-localpv
     version: 2.9.0
     values: ['./templates/values.yaml.gotmpl']
     needs: ['cert-manager/cert-manager']

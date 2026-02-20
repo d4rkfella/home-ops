@@ -65,21 +65,6 @@ spec:
           http:
             port: *port
 
-    route:
-      app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            url: https://{{ .Release.Name }}.darkfellanetwork.com/api/ping
-        hostnames: ["{{ .Release.Name }}.darkfellanetwork.com"]
-        parentRefs:
-          - name: internal
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-
     persistence:
       config:
         type: emptyDir

@@ -6,8 +6,11 @@
         'Artifactory Group',
       ],
       groupName: 'Artifactory',
-      matchFileNames: [
-        'kubernetes/apps/artifactory/artifactory/manifests/helmrelease.yaml',
+      matchPackageNames: [
+        '/artifactory/',
+      ],
+      matchDatasources: [
+        'docker',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',

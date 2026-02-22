@@ -4,8 +4,6 @@ radarr:
     base_url: http://radarr.media.svc.cluster.local
     api_key: !env_var RADARR_API_KEY
     delete_old_custom_formats: true
-    # replace_existing_custom_formats removed in v8.0.0
-    # Run `recyclarr state repair --adopt` once to adopt any manually-created custom formats
     media_naming:
       folder: plex-tmdb
       movie:
@@ -71,8 +69,6 @@ sonarr:
     base_url: http://sonarr.media.svc.cluster.local
     api_key: !env_var SONARR_API_KEY
     delete_old_custom_formats: true
-    # replace_existing_custom_formats removed in v8.0.0
-    # Run `recyclarr state repair --adopt` once to adopt any manually-created custom formats
     media_naming:
       series: plex-tvdb
       season: default

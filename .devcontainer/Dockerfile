@@ -34,7 +34,7 @@ RUN helmfile --version
 COPY --from=ghcr.io/astral-sh/uv:0.10.4-trixie@sha256:3f5bf82a93285dee7e10f38592000a95537f77afe43971240ecd24b7fb5ed89d /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
-COPY --from=ghcr.io/getsops/sops:v3.11.0@sha256:6ce00ac946e1a52b2d1e5b7087441f7b6ef7bad907753104013f8bdb8f5fd891 /usr/local/bin/sops /usr/local/bin/
+COPY --from=ghcr.io/getsops/sops:v3.12.1@sha256:fb359c677851ed80dc1c80bceb006e68235051c20665ad7686cc9240f26b5e72 /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
 COPY --from=mikefarah/yq:4.52.4@sha256:a4c2cafdf4674b2dc3c6ac457fe1486d55d7d93edb3ed4459637afda3c286af6 /usr/bin/yq /usr/local/bin/

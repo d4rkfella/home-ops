@@ -32,6 +32,8 @@ spec:
               - sync
             env:
               COMPlus_EnableDiagnostics: "0"
+              RECYCLARR_CONFIG_DIR: /config
+              RECYCLARR_DATA_DIR: /data
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -71,11 +73,7 @@ spec:
           - path: /config/recyclarr.yml
             subPath: recyclarr.yml
             readOnly: true
-      config-logs:
+      data:
         type: emptyDir
         globalMounts:
-          - path: /config/logs
-      config-repos:
-        type: emptyDir
-        globalMounts:
-          - path: /config/repos
+          - path: /data

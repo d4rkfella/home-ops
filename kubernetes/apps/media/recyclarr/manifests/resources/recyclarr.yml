@@ -36,12 +36,6 @@ radarr:
       type: movie
     custom_formats:
       - trash_ids:
-          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
-          - 2899d84dc9372de3408e6d8cc18e9666 # x264
-        assign_scores_to:
-          - name: SQP-3
-            score: 0
-      - trash_ids:
           - caa37d0df9c348912df1fb1d88f9273a # HDR10+ Boost
           - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
           - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
@@ -51,7 +45,7 @@ radarr:
           - f537cf427b64c38c8e36298f657e4828 # Scene
           - f700d29429c023a5734505e77daeaea7 # DV (Disk)
           - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
-          - dc98083864ea246d05a42df0d05f81cc # x265 (HD)
+          - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
           - 0f12c086e289cf966fa5948eac571f44 # Hybrid
           - 570bc9ebecd92723d2d21500f4be314c # Remaster
           - eca37840c13c6ef2dd0262b141a5482f # 4K Remaster

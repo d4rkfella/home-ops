@@ -1,19 +1,16 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json
 radarr:
   radarr:
     base_url: http://radarr.media.svc.cluster.local
     api_key: !env_var RADARR_API_KEY
-
     delete_old_custom_formats: true
-    replace_existing_custom_formats: true
-
+    # replace_existing_custom_formats removed in v8.0.0
+    # Run `recyclarr state repair --adopt` once to adopt any manually-created custom formats
     media_naming:
       folder: plex-tmdb
       movie:
         rename: true
         standard: plex-tmdb
-
     quality_profiles:
       - name: SQP-3
         reset_unmatched_scores:
@@ -36,11 +33,9 @@ radarr:
               - WEBDL-1080p
               - WEBRip-1080p
               - Remux-1080p
-
     include:
       - template: radarr-quality-definition-sqp-uhd
       - template: radarr-custom-formats-sqp-3
-
     custom_formats:
       - trash_ids:
           - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
@@ -75,10 +70,9 @@ sonarr:
   sonarr:
     base_url: http://sonarr.media.svc.cluster.local
     api_key: !env_var SONARR_API_KEY
-
     delete_old_custom_formats: true
-    replace_existing_custom_formats: true
-
+    # replace_existing_custom_formats removed in v8.0.0
+    # Run `recyclarr state repair --adopt` once to adopt any manually-created custom formats
     media_naming:
       series: plex-tvdb
       season: default
@@ -87,7 +81,6 @@ sonarr:
         standard: default
         daily: default
         anime: default
-
     include:
       - template: sonarr-quality-definition-series
       # 1080p
@@ -96,17 +89,14 @@ sonarr:
       # 2160p
       - template: sonarr-v4-quality-profile-web-2160p
       - template: sonarr-v4-custom-formats-web-2160p
-
     quality_profiles:
       - name: WEB-1080p
       - name: WEB-2160p
-
     custom_formats:
       - trash_ids:
           - 0c4b99df9206d2cfac3c05ab897dd62a # HDR10Plus Boost
         assign_scores_to:
           - name: WEB-2160p
-
       - trash_ids:
           - 32b367365729d530ca1c124a0b180c64 # Bad Dual Groups
           - 82d40da2bc6923f41e14394075dd4b03 # No-RlsGroup

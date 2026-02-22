@@ -42,7 +42,8 @@ radarr:
             score: 0
       - trash_ids:
           - caa37d0df9c348912df1fb1d88f9273a # HDR10+ Boost
-          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
+          - b337d6812e06c200ec9a2d3cfa9d20a7 # DV Boost
+          - 923b6abef9b17f937fab56cfcf89e1f1 # DV (w/o HDR fallback)
           - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups
           - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5 # No-RlsGroup
           - 7357cf5161efbf8c4d5d0c30b4815ee2 # Obfuscated
@@ -83,6 +84,7 @@ sonarr:
       type: series
     custom_formats:
       - trash_ids:
+          - 7c3a61a9c6cb04f52f1544be6d44a026 # DV Boost
           - 0c4b99df9206d2cfac3c05ab897dd62a # HDR10Plus Boost
         assign_scores_to:
           - name: WEB-2160p

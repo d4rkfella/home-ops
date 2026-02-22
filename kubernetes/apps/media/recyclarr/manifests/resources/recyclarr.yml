@@ -32,8 +32,8 @@ radarr:
               - WEBRip-1080p
               - Remux-1080p
     include:
-      - template: radarr-quality-definition-sqp-uhd
-      - template: radarr-custom-formats-sqp-3
+      - template: sqp-uhd
+      - template: sqp-3
     custom_formats:
       - trash_ids:
           - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)

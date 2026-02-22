@@ -36,6 +36,11 @@ radarr:
       type: movie
     custom_formats:
       - trash_ids:
+          - 2899d84dc9372de3408e6d8cc18e9666 # x264
+        assign_scores_to:
+          - name: SQP-3
+            score: 0
+      - trash_ids:
           - caa37d0df9c348912df1fb1d88f9273a # HDR10+ Boost
           - 923b6abef9b17f937fab56cfcf89e1f1 # DV (WEBDL)
           - b6832f586342ef70d9c128d40c07b872 # Bad Dual Groups

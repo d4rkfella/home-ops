@@ -10,7 +10,7 @@ radarr:
         rename: true
         standard: plex-tmdb
     quality_profiles:
-      - name: sqp-3
+      - name: SQP-3
         trash_id: 2cf36c1f0106ffac993be003ade51865
         reset_unmatched_scores:
           enabled: true
@@ -78,8 +78,8 @@ sonarr:
         daily: default
         anime: default
     quality_profiles:
-      - name: WEB-1080p
       - name: WEB-2160p
+        trash_id: c4cadd6b35b95f62c3d47a408e53e2f7
     quality_definition:
       type: series
     custom_formats:
@@ -94,5 +94,4 @@ sonarr:
           - 06d66ab109d4d2eddb2794d21526d140 # Retags
           - 1b3994c551cbb92a2c781af061f4ab44 # Scene
         assign_scores_to:
-          - name: WEB-1080p
           - name: WEB-2160p

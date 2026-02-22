@@ -10,7 +10,7 @@ radarr:
         rename: true
         standard: plex-tmdb
     quality_profiles:
-      - name: SQP-3
+      - name: sqp-3
         trash_id: 2cf36c1f0106ffac993be003ade51865
         reset_unmatched_scores:
           enabled: true

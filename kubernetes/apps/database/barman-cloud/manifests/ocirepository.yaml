@@ -13,3 +13,6 @@ spec:
     tag: 0.5.0
   verify:
     provider: cosign
+    matchOIDCIdentity:
+      - issuer: https://token.actions.githubusercontent.com
+        subject: https://github.com/cloudnative-pg/charts/.github/workflows/release-publish.yml@refs/heads/main

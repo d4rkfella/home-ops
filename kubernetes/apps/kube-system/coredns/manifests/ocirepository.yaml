@@ -11,5 +11,5 @@ spec:
   url: oci://ghcr.io/coredns/charts/coredns
   ref:
     tag: 1.45.2
-    #verify:
-    #provider: cosign
+  verify:
+    provider: cosign

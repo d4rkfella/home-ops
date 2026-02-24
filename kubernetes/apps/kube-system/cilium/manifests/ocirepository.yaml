@@ -11,5 +11,5 @@ spec:
   url: oci://quay.io/cilium/charts/cilium
   ref:
     tag: 1.19.1
-  #verify:
-    #provider: cosign
+  verify:
+    provider: cosign

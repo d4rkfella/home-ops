@@ -49,7 +49,7 @@ RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION
     rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.7.0
+ARG VIRTCTL_VERSION=v1.7.1
 RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64
 
 # renovate: datasource=github-releases depName=helm/helm

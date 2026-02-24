@@ -21,4 +21,4 @@ releases: # Prevent helmfile apply or sync
   - name: grafana-operator
     namespace: observability
     chart: oci://ghcr.io/grafana/helm-charts/grafana-operator
-    version: 5.21.4
+    version: 5.22.0

@@ -11,5 +11,3 @@ spec:
   url: oci://ghcr.io/postfinance/charts/kubelet-csr-approver
   ref:
     tag: 1.2.13
-  verify:
-    provider: cosign

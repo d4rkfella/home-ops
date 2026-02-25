@@ -28,7 +28,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.5@sha256:be924970ba7438c22e18067dec5637946d6566eac711f5bedd1584e7137008fb /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.3.1@sha256:f95e2af1385fd38b39f0cb411beb3e1572a8a59c55e8257f9d588d45705695ed /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.3.2@sha256:c28ea2ea0d8d2086e7566b73c7430b148f59cb1ef08306c147ad7606d6759e55 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
 COPY --from=ghcr.io/astral-sh/uv:0.10.6-trixie@sha256:87e35fb981de854e3c04390d2fcba9030666f09b5831b56473c3bee215b63ba0 /usr/local/bin/uv* /usr/local/bin/

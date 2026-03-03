@@ -1,82 +1,102 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Renovate
-
-on:
-  push:
-    branches:
-      - main
-    paths:
-      - .renovaterc.json5
-      - .renovate/**.json5
-  schedule:
-    - cron: 0 * * * *
-  workflow_dispatch:
-    inputs:
-      dryRun:
-        description: Dry Run
-        type: boolean
-        default: false
-        required: true
-      logLevel:
-        description: Log Level
-        type: choice
-        default: debug
-        options:
-          - debug
-          - info
-        required: true
-      version:
-        description: Renovate Version
-        default: latest
-        required: true
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
-
-jobs:
-  main:
-    name: Renovate
-    runs-on: ubuntu-latest
-    permissions:
-      packages: read
-    steps:
-      - name: Generate Token
-        uses: actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf # v2.2.1
-        id: app-token
-        with:
-          app-id: ${{ secrets.BOT_APP_ID }}
-          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
-
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-          token: ${{ steps.app-token.outputs.token }}
-
-      - name: Run Renovate
-        uses: renovatebot/github-action@8d75b92f43899d483728e9a8a7fd44238020f6e6 # v46.1.2
-        env:
-          LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
-          RENOVATE_AUTODISCOVER: true
-          RENOVATE_AUTODISCOVER_FILTER: ${{ github.repository }}
-          RENOVATE_DRY_RUN: ${{ inputs.dryRun }}
-          RENOVATE_INTERNAL_CHECKS_FILTER: strict
-          RENOVATE_PLATFORM: github
-          RENOVATE_PLATFORM_COMMIT: true
-          RENOVATE_HOST_RULES: |
-            [
-              {
-                "hostType": "docker",
-                "matchHost": "ghcr.io",
-                "username": "x-access-token",
-                "password": "${{ secrets.BOT_GITHUB_TOKEN }}"
-              }
-            ]
-        with:
-          token: ${{ steps.app-token.outputs.token }}
-          renovate-version: ${{ inputs.version || 'latest' }}
+{
+  # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+  name: "Renovate",
+  "on": {
+    push: {
+      branches: [
+        "main",
+      ],
+      paths: [
+        ".renovaterc.json5",
+        ".renovate/**.json5",
+      ],
+    },
+    schedule: [{
+      cron: "0 * * * *",
+    }],
+    workflow_dispatch: {
+      inputs: {
+        dryRun: {
+          description: "Dry Run",
+          type: "boolean",
+          default: false,
+          required: true,
+        },
+        logLevel: {
+          description: "Log Level",
+          type: "choice",
+          default: "debug",
+          options: [
+            "debug",
+            "info",
+          ],
+          required: true,
+        },
+        version: {
+          description: "Renovate Version",
+          default: "latest",
+          required: true,
+        },
+      },
+    },
+  },
+  concurrency: {
+    group: "${{ github.workflow }}-${{ github.event.number || github.ref }}",
+    cancel-in-progress: true,
+  },
+  permissions: {
+    contents: "read",
+  },
+  jobs: {
+    main: {
+      name: "Renovate",
+      runs-on: "ubuntu-latest",
+      permissions: {
+        packages: "read",
+      },
+      steps: [{
+        name: "Generate Token",
+        uses: "actions/create-github-app-token@29824e69f54612133e76f7eaac726eef6c875baf", # v2.2.1
+        id: "app-token",
+        with: {
+          app-id: "${{ secrets.BOT_APP_ID }}",
+          private-key: "${{ secrets.BOT_APP_PRIVATE_KEY }}",
+        },
+      }, {
+        name: "Checkout",
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd", # v6.0.2
+        with: {
+          persist-credentials: false,
+          token: "${{ steps.app-token.outputs.token }}",
+        },
+      }, {
+        name: "Run Renovate",
+        uses: "renovatebot/github-action@8d75b92f43899d483728e9a8a7fd44238020f6e6", # v46.1.2
+        env: {
+          LOG_LEVEL: "${{ inputs.logLevel || 'debug' }}",
+          RENOVATE_AUTODISCOVER: true,
+          RENOVATE_AUTODISCOVER_FILTER: "${{ github.repository }}",
+          RENOVATE_DRY_RUN: "${{ inputs.dryRun }}",
+          RENOVATE_INTERNAL_CHECKS_FILTER: "strict",
+          RENOVATE_PLATFORM: "github",
+          RENOVATE_PLATFORM_COMMIT: true,
+          RENOVATE_HOST_RULES: "\
+             [\n\
+            \  {\n\
+            \    \"hostType\": \"docker\",\n\
+            \    \"matchHost\": \"ghcr.io\",\n\
+            \    \"username\": \"x-access-token\",\n\
+            \    \"password\": \"${{ secrets.BOT_GITHUB_TOKEN }}\"\n\
+            \  }\n\
+             ]\n\
+            ",
+        },
+        with: {
+          token: "${{ steps.app-token.outputs.token }}",
+          renovate-version: "${{ inputs.version || 'latest' }}",
+        },
+      }],
+    },
+  },
+}

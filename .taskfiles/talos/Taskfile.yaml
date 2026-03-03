@@ -1,33 +1,43 @@
 ---
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: "3"
-
-tasks:
-  apply-config:
-    desc: Apply configuration file to a talos node
-    prompt: Apply configuration file ... continue?
-    cmd: |
-      sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \
-          /usr/local/bin/envsubst | \
-              talosctl apply-config --nodes {{.IP}} --file /dev/stdin
-    requires:
-      vars:
-        - "IP"
-    preconditions:
-      - test -f {{.ROOT_DIR}}/talosconfig
-      - test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml
-
-  regenerate-talosconfig:
-    desc: Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.
-    interactive: true
-    prompt: Regenerate talosconfig ... continue?
-    cmd: home-ops-cli talos regen-talosconfig {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}
-    requires:
-      vars:
-        - "MACHINE_CONFIG_FILEPATH"
-        - "CONTEXT_NAME"
-        - "ENDPOINTS"
-        - "NODES"
-    preconditions:
-      - which home-ops-cli
-      - which sops
+{
+  # yaml-language-server: $schema=https://taskfile.dev/schema.json
+  version: "3",
+  tasks: {
+    apply-config: {
+      desc: "Apply configuration file to a talos node",
+      prompt: "Apply configuration file ... continue?",
+      cmd: "\
+         sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \\\n\
+        \    /usr/local/bin/envsubst | \\\n\
+        \        talosctl apply-config --nodes {{.IP}} --file /dev/stdin\n\
+        ",
+      requires: {
+        vars: [
+          "IP",
+        ],
+      },
+      preconditions: [
+        "test -f {{.ROOT_DIR}}/talosconfig",
+        "test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml",
+      ],
+    },
+    regenerate-talosconfig: {
+      desc: "Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.",
+      interactive: true,
+      prompt: "Regenerate talosconfig ... continue?",
+      cmd: "home-ops-cli talos regen-talosconfig {{.MACHINE_CONFIG_FILEPATH}} --context {{.CONTEXT_NAME}} --endpoints {{.ENDPOINTS}} --nodes {{.NODES}}",
+      requires: {
+        vars: [
+          "MACHINE_CONFIG_FILEPATH",
+          "CONTEXT_NAME",
+          "ENDPOINTS",
+          "NODES",
+        ],
+      },
+      preconditions: [
+        "which home-ops-cli",
+        "which sops",
+      ],
+    },
+  },
+}

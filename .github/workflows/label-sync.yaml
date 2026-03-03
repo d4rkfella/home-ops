@@ -1,41 +1,53 @@
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Label Sync
-
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - "main"
-    paths:
-      - ".github/labels.yaml"
-  schedule:
-    - cron: "0 0 * * *" # Every day at midnight
-
-permissions:
-  contents: read
-
-jobs:
-  main:
-    name: Label Sync - Sync Labels
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: read
-      issues: write
-    steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          sparse-checkout: .github/labels.yaml
-          persist-credentials: false
-
-      - name: Sync Labels
-        uses: EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a #v2.3.3
-        with:
-          config-file: .github/labels.yaml
-          delete-other-labels: true
+{
+  # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+  name: "Label Sync",
+  "on": {
+    workflow_dispatch: ,
+    push: {
+      branches: [
+        "main",
+      ],
+      paths: [
+        ".github/labels.yaml",
+      ],
+    },
+    schedule: [{
+      cron: "0 0 * * *", # Every day at midnight
+    }],
+  },
+  permissions: {
+    contents: "read",
+  },
+  jobs: {
+    main: {
+      name: "Label Sync - Sync Labels",
+      runs-on: "ubuntu-24.04",
+      permissions: {
+        contents: "read",
+        issues: "write",
+      },
+      steps: [{
+        name: "Harden the runner (Audit all outbound calls)",
+        uses: "step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b", # v2.15.0
+        with: {
+          egress-policy: "audit",
+        },
+      }, {
+        name: "Checkout",
+        uses: "actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd", # v6.0.2
+        with: {
+          sparse-checkout: ".github/labels.yaml",
+          persist-credentials: false,
+        },
+      }, {
+        name: "Sync Labels",
+        uses: "EndBug/label-sync@52074158190acb45f3077f9099fea818aa43f97a", #v2.3.3
+        with: {
+          config-file: ".github/labels.yaml",
+          delete-other-labels: true,
+        },
+      }],
+    },
+  },
+}

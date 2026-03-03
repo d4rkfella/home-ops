@@ -1,12 +1,16 @@
 ---
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: "3"
-
-tasks:
-  s3-browser:
-    desc: Interactive S3 object storage browser
-    silent: true
-    interactive: true
-    cmd: home-ops-cli aws manager
-    preconditions:
-      - which home-ops-cli
+{
+  # yaml-language-server: $schema=https://taskfile.dev/schema.json
+  version: "3",
+  tasks: {
+    s3-browser: {
+      desc: "Interactive S3 object storage browser",
+      silent: true,
+      interactive: true,
+      cmd: "home-ops-cli aws manager",
+      preconditions: [
+        "which home-ops-cli",
+      ],
+    },
+  },
+}

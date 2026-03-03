@@ -1,74 +1,98 @@
 ---
-# yaml-language-server: $schema=https://taskfile.dev/schema.json
-version: "3"
-
-tasks:
-  node-shell:
-    desc: Open a shell to a node [NODE=required]
-    interactive: true
-    cmd: kubectl node-shell -n kube-system -x {{.NODE}}
-    requires:
-      vars:
-        - NODE
-    preconditions:
-      - kubectl get nodes {{.NODE}}
-      - kubectl node-shell --version
-      - which kubectl
-
-  sync-secrets:
-    desc: Sync all ExternalSecrets
-    cmds:
-      - for: {var: SECRETS, split: " "}
-        cmd: kubectl --namespace {{splitList "," .ITEM | first}} annotate externalsecret {{splitList "," .ITEM | last}} force-sync="{{now | unixEpoch}}" --overwrite
-    vars:
-      SECRETS:
-        sh: kubectl get externalsecret --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}'
-    preconditions:
-      - which kubectl
-
-  cleanse-pods:
-    desc: Cleanse pods with a Failed/Pending/Succeeded phase
-    cmds:
-      - for:
-          matrix:
-            PHASE:
-              - Failed
-              - Pending
-              - Succeeded
-        cmd: kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true
-    preconditions:
-      - which kubectl
-
-  # https://docs.github.com/en/enterprise-cloud@latest/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/deploying-runner-scale-sets-with-actions-runner-controller#upgrading-arc
-  upgrade-arc:
-    desc: Upgrade the ARC
-    cmds:
-      - helm -n arc-runners uninstall home-ops-runner
-      - helm -n arc-system uninstall actions-runner-controller
-      - sleep 5
-      - flux -n arc-system reconcile hr actions-runner-controller
-      - flux -n arc-runners reconcile hr home-ops-runner
-    preconditions:
-      - which flux helm
-
-  kubevirt-manager:
-    desc: "Manage KubeVirt VMs"
-    interactive: true
-    silent: true
-    cmds:
-      - home-ops-cli kubevirt manager
-    preconditions:
-      - which kubectl
-      - which virtctl
-      - which home-ops-cli
-
-  start-pgadmin:
-    desc: Start pgAdmin server
-    silent: true
-    cmds:
-      - |
-        kubectl port-forward svc/postgres-db-rw 5432:5432 -n database >/dev/null 2>&1 &
-        pgadmin4
-
-    preconditions:
-      - which kubectl pgadmin4
+{
+  # yaml-language-server: $schema=https://taskfile.dev/schema.json
+  version: "3",
+  tasks: {
+    node-shell: {
+      desc: "Open a shell to a node [NODE=required]",
+      interactive: true,
+      cmd: "kubectl node-shell -n kube-system -x {{.NODE}}",
+      requires: {
+        vars: [
+          "NODE",
+        ],
+      },
+      preconditions: [
+        "kubectl get nodes {{.NODE}}",
+        "kubectl node-shell --version",
+        "which kubectl",
+      ],
+    },
+    sync-secrets: {
+      desc: "Sync all ExternalSecrets",
+      cmds: [{
+        for: {
+          var: "SECRETS",
+          split: " ",
+        },
+        cmd: "kubectl --namespace {{splitList \",\" .ITEM | first}} annotate externalsecret {{splitList \",\" .ITEM | last}} force-sync=\"{{now | unixEpoch}}\" --overwrite",
+      }],
+      vars: {
+        SECRETS: {
+          sh: "kubectl get externalsecret --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{\"\\n\"}{end}'",
+        },
+      },
+      preconditions: [
+        "which kubectl",
+      ],
+    },
+    cleanse-pods: {
+      desc: "Cleanse pods with a Failed/Pending/Succeeded phase",
+      cmds: [{
+        for: {
+          matrix: {
+            PHASE: [
+              "Failed",
+              "Pending",
+              "Succeeded",
+            ],
+          },
+        },
+        cmd: "kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true",
+      }],
+      preconditions: [
+        "which kubectl",
+      ],
+    },
+    # https://docs.github.com/en/enterprise-cloud@latest/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/deploying-runner-scale-sets-with-actions-runner-controller#upgrading-arc
+    upgrade-arc: {
+      desc: "Upgrade the ARC",
+      cmds: [
+        "helm -n arc-runners uninstall home-ops-runner",
+        "helm -n arc-system uninstall actions-runner-controller",
+        "sleep 5",
+        "flux -n arc-system reconcile hr actions-runner-controller",
+        "flux -n arc-runners reconcile hr home-ops-runner",
+      ],
+      preconditions: [
+        "which flux helm",
+      ],
+    },
+    kubevirt-manager: {
+      desc: "Manage KubeVirt VMs",
+      interactive: true,
+      silent: true,
+      cmds: [
+        "home-ops-cli kubevirt manager",
+      ],
+      preconditions: [
+        "which kubectl",
+        "which virtctl",
+        "which home-ops-cli",
+      ],
+    },
+    start-pgadmin: {
+      desc: "Start pgAdmin server",
+      silent: true,
+      cmds: [
+        "\
+           kubectl port-forward svc/postgres-db-rw 5432:5432 -n database >/dev/null 2>&1 &\n\
+           pgadmin4\n\
+          ",
+      ],
+      preconditions: [
+        "which kubectl pgadmin4",
+      ],
+    },
+  },
+}

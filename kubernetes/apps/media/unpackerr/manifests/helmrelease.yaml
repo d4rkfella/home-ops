@@ -1,82 +1,119 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app unpackerr
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template
-  values:
-    controllers:
-      unpackerr:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: ghcr.io/unpackerr/unpackerr
-              tag: 0.15.0@sha256:9f4cb99b78d8fe2d55f79c490a715e14a8a28d9868373dad642ca5adc2ac3e91
-            env:
-              TZ: Europe/Sofia
-              UN_WEBSERVER_METRICS: true
-              UN_WEBSERVER_LOG_FILE: /logs/webserver.log
-              UN_ACTIVITY: true
-              UN_SONARR_0_URL: http://sonarr.media.svc.cluster.local
-              UN_SONARR_0_PATHS_0: /data/downloads/torrents/tv
-              UN_RADARR_0_URL: http://radarr.media.svc.cluster.local
-              UN_RADARR_0_PATHS_0: /data/downloads/torrents/movies
-            envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 4Gi
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
-
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: 5656
-
-    serviceMonitor:
-      app:
-        serviceName: *app
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
-
-    persistence:
-      logs:
-        type: emptyDir
-      media:
-        type: nfs
-        server: 192.168.91.40
-        path: /mnt/exos20/data/downloads/torrents
-        globalMounts:
-          - path: /data/downloads/torrents
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "unpackerr",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "app-template",
+    },
+    values: {
+      controllers: {
+        unpackerr: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/unpackerr/unpackerr",
+                tag: "0.15.0@sha256:9f4cb99b78d8fe2d55f79c490a715e14a8a28d9868373dad642ca5adc2ac3e91",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+                UN_WEBSERVER_METRICS: true,
+                UN_WEBSERVER_LOG_FILE: "/logs/webserver.log",
+                UN_ACTIVITY: true,
+                UN_SONARR_0_URL: "http://sonarr.media.svc.cluster.local",
+                UN_SONARR_0_PATHS_0: "/data/downloads/torrents/tv",
+                UN_RADARR_0_URL: "http://radarr.media.svc.cluster.local",
+                UN_RADARR_0_PATHS_0: "/data/downloads/torrents/movies",
+              },
+              envFrom: [{
+                secretRef: {
+                  name: "{{ .Release.Name }}-secret",
+                },
+              }],
+              probes: {
+                liveness: {
+                  enabled: true,
+                },
+                readiness: {
+                  enabled: true,
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "10m",
+                },
+                limits: {
+                  memory: "4Gi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "unpackerr",
+          ports: {
+            http: {
+              port: 5656,
+            },
+          },
+        },
+      },
+      serviceMonitor: {
+        app: {
+          serviceName: "unpackerr",
+          endpoints: [{
+            port: "http",
+            scheme: "http",
+            path: "/metrics",
+            interval: "1m",
+            scrapeTimeout: "10s",
+          }],
+        },
+      },
+      persistence: {
+        logs: {
+          type: "emptyDir",
+        },
+        media: {
+          type: "nfs",
+          server: "192.168.91.40",
+          path: "/mnt/exos20/data/downloads/torrents",
+          globalMounts: [{
+            path: "/data/downloads/torrents",
+          }],
+        },
+      },
+    },
+  },
+}

@@ -1,86 +1,110 @@
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-zfs-1m
-  annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
-allowVolumeExpansion: true
-parameters:
-  thinprovision: "yes"
-  recordsize: "1m"
-  compression: "lz4"
-  dedup: "off"
-  fstype: "zfs"
-  shared: "yes"
-  poolname: "ssd_pool"
-provisioner: zfs.csi.openebs.io
-
+{
+  apiVersion: "storage.k8s.io/v1",
+  kind: "StorageClass",
+  metadata: {
+    name: "openebs-zfs-1m",
+    annotations: {
+      cdi.kubevirt.io/clone-strategy: "snapshot",
+    },
+  },
+  allowVolumeExpansion: true,
+  parameters: {
+    thinprovision: "yes",
+    recordsize: "1m",
+    compression: "lz4",
+    dedup: "off",
+    fstype: "zfs",
+    shared: "yes",
+    poolname: "ssd_pool",
+  },
+  provisioner: "zfs.csi.openebs.io",
+}
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-zfs-128k
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-    cdi.kubevirt.io/clone-strategy: snapshot
-allowVolumeExpansion: true
-parameters:
-  thinprovision: "yes"
-  recordsize: "128k"
-  compression: "lz4"
-  dedup: "off"
-  fstype: "zfs"
-  shared: "yes"
-  poolname: "ssd_pool"
-provisioner: zfs.csi.openebs.io
+{
+  apiVersion: "storage.k8s.io/v1",
+  kind: "StorageClass",
+  metadata: {
+    name: "openebs-zfs-128k",
+    annotations: {
+      storageclass.kubernetes.io/is-default-class: "true",
+      cdi.kubevirt.io/clone-strategy: "snapshot",
+    },
+  },
+  allowVolumeExpansion: true,
+  parameters: {
+    thinprovision: "yes",
+    recordsize: "128k",
+    compression: "lz4",
+    dedup: "off",
+    fstype: "zfs",
+    shared: "yes",
+    poolname: "ssd_pool",
+  },
+  provisioner: "zfs.csi.openebs.io",
+}
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-zfs-32k
-  annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
-allowVolumeExpansion: true
-parameters:
-  thinprovision: "yes"
-  recordsize: "32k"
-  compression: "lz4"
-  dedup: "off"
-  fstype: "zfs"
-  shared: "yes"
-  poolname: "ssd_pool"
-provisioner: zfs.csi.openebs.io
+{
+  apiVersion: "storage.k8s.io/v1",
+  kind: "StorageClass",
+  metadata: {
+    name: "openebs-zfs-32k",
+    annotations: {
+      cdi.kubevirt.io/clone-strategy: "snapshot",
+    },
+  },
+  allowVolumeExpansion: true,
+  parameters: {
+    thinprovision: "yes",
+    recordsize: "32k",
+    compression: "lz4",
+    dedup: "off",
+    fstype: "zfs",
+    shared: "yes",
+    poolname: "ssd_pool",
+  },
+  provisioner: "zfs.csi.openebs.io",
+}
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-zfs-block-64k
-  annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
-    storageclass.kubevirt.io/is-default-virt-class: "true"
-provisioner: zfs.csi.openebs.io
-allowVolumeExpansion: true
-parameters:
-  poolname: "ssd_pool"
-  compression: "on"
-  volblocksize: "64k"
-  thinprovision: "yes"
-  dedup: "off"
-  shared: "yes"
+{
+  apiVersion: "storage.k8s.io/v1",
+  kind: "StorageClass",
+  metadata: {
+    name: "openebs-zfs-block-64k",
+    annotations: {
+      cdi.kubevirt.io/clone-strategy: "snapshot",
+      storageclass.kubevirt.io/is-default-virt-class: "true",
+    },
+  },
+  provisioner: "zfs.csi.openebs.io",
+  allowVolumeExpansion: true,
+  parameters: {
+    poolname: "ssd_pool",
+    compression: "on",
+    volblocksize: "64k",
+    thinprovision: "yes",
+    dedup: "off",
+    shared: "yes",
+  },
+}
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: openebs-zfs-block-16k
-  annotations:
-    cdi.kubevirt.io/clone-strategy: snapshot
-provisioner: zfs.csi.openebs.io
-allowVolumeExpansion: true
-parameters:
-  poolname: "ssd_pool"
-  compression: "on"
-  volblocksize: "16k"
-  thinprovision: "yes"
-  dedup: "off"
-  shared: "yes"
+{
+  apiVersion: "storage.k8s.io/v1",
+  kind: "StorageClass",
+  metadata: {
+    name: "openebs-zfs-block-16k",
+    annotations: {
+      cdi.kubevirt.io/clone-strategy: "snapshot",
+    },
+  },
+  provisioner: "zfs.csi.openebs.io",
+  allowVolumeExpansion: true,
+  parameters: {
+    poolname: "ssd_pool",
+    compression: "on",
+    volblocksize: "16k",
+    thinprovision: "yes",
+    dedup: "off",
+    shared: "yes",
+  },
+}

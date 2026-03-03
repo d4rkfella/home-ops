@@ -1,6 +1,9 @@
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ./pss-baseline-default.yaml
-  - ./pss-restricted-additional.yaml
+{
+  apiVersion: "kustomize.config.k8s.io/v1beta1",
+  kind: "Kustomization",
+  resources: [
+    "./pss-baseline-default.yaml",
+    "./pss-restricted-additional.yaml",
+  ],
+}

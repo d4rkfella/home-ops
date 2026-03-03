@@ -1,32 +1,50 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: envoy-gateway-controller
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: envoy-gateway
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: envoy-gateway
-            patch: |-
-              - op: add
-                path: /spec/template/spec/hostUsers
-                value: false
-  values:
-    global:
-      imageRegistry: mirror.gcr.io
-    config:
-      envoyGateway:
-        provider:
-          type: Kubernetes
-          kubernetes:
-            deploy:
-              type: GatewayNamespace
-        extensionApis:
-          enableBackend: true
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "envoy-gateway-controller",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "envoy-gateway",
+    },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "Deployment",
+            name: "envoy-gateway",
+          },
+          patch: "\
+             - op: add\n\
+            \  path: /spec/template/spec/hostUsers\n\
+            \  value: false\
+            ",
+        }],
+      },
+    }],
+    values: {
+      global: {
+        imageRegistry: "mirror.gcr.io",
+      },
+      config: {
+        envoyGateway: {
+          provider: {
+            type: "Kubernetes",
+            kubernetes: {
+              deploy: {
+                type: "GatewayNamespace",
+              },
+            },
+          },
+          extensionApis: {
+            enableBackend: true,
+          },
+        },
+      },
+    },
+  },
+}

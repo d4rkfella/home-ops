@@ -1,51 +1,75 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: alloy
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: alloy
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: StatefulSet
-              name: alloy
-            patch: |-
-              - op: add
-                path: /spec/template/spec/hostUsers
-                value: false
-  values:
-    fullnameOverride: alloy
-    serviceMonitor:
-      enabled: true
-    alloy:
-      configMap:
-        create: false
-        name: alloy-configmap
-        key: config.alloy
-      storagePath: /var/lib/alloy
-      enableReporting: false
-      mounts:
-        extra:
-          - name: alloy
-            mountPath: /var/lib/alloy
-    controller:
-      podAnnotations:
-        configmap.reloader.stakater.com/reload: alloy-configmap
-      type: "statefulset"
-      replicas: 1
-      enableStatefulSetAutoDeletePVC: true
-      volumeClaimTemplates:
-        - metadata:
-            name: alloy
-          spec:
-            accessModes:
-              - ReadWriteOnce
-            storageClassName: openebs-zfs-128k
-            resources:
-              requests:
-                storage: 5Gi
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "alloy",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "alloy",
+    },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "StatefulSet",
+            name: "alloy",
+          },
+          patch: "\
+             - op: add\n\
+            \  path: /spec/template/spec/hostUsers\n\
+            \  value: false\
+            ",
+        }],
+      },
+    }],
+    values: {
+      fullnameOverride: "alloy",
+      serviceMonitor: {
+        enabled: true,
+      },
+      alloy: {
+        configMap: {
+          create: false,
+          name: "alloy-configmap",
+          key: "config.alloy",
+        },
+        storagePath: "/var/lib/alloy",
+        enableReporting: false,
+        mounts: {
+          extra: [{
+            name: "alloy",
+            mountPath: "/var/lib/alloy",
+          }],
+        },
+      },
+      controller: {
+        podAnnotations: {
+          configmap.reloader.stakater.com/reload: "alloy-configmap",
+        },
+        type: "statefulset",
+        replicas: 1,
+        enableStatefulSetAutoDeletePVC: true,
+        volumeClaimTemplates: [{
+          metadata: {
+            name: "alloy",
+          },
+          spec: {
+            accessModes: [
+              "ReadWriteOnce",
+            ],
+            storageClassName: "openebs-zfs-128k",
+            resources: {
+              requests: {
+                storage: "5Gi",
+              },
+            },
+          },
+        }],
+      },
+    },
+  },
+}

@@ -1,121 +1,189 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app bazarr
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template
-  values:
-    controllers:
-      bazarr:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: ghcr.io/d4rkfella/bazarr
-              tag: 1.5.6@sha256:4bf6c0d5b730f2e70fd36eb2629d3e64a41a943a54afb5da94061d044b205362
-            env:
-              TZ: Europe/Sofia
-              POSTGRES_ENABLED: "true"
-              POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
-              POSTGRES_PORT: 5432
-              POSTGRES_DATABASE: "{{ .Release.Name }}"
-              POSTGRES_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USERNAME
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASSWORD
-            probes:
-              startup:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/system/ping
-                    port: &port 6767
-                  periodSeconds: 10
-                  failureThreshold: 30
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/system/ping
-                    port: *port
-                  initialDelaySeconds: 5
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 4Gi
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
-
-    service:
-      app:
-        controller: bazarr
-        ports:
-          http:
-            port: *port
-
-    route:
-      app:
-        hostnames:
-          - "bazarr.darkfellanetwork.com"
-        parentRefs:
-          - name: internal
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-            timeouts:
-              request: 1200s
-
-    persistence:
-      config:
-        existingClaim: *app
-        globalMounts:
-          - path: /config
-      log:
-        type: emptyDir
-        globalMounts:
-          - path: /config/log
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cache
-      tmp:
-        type: emptyDir
-      media:
-        type: nfs
-        server: 192.168.91.40
-        path: /mnt/exos20/data/media
-        globalMounts:
-          - path: /data/media
+{
+  # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "bazarr",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "app-template",
+    },
+    values: {
+      controllers: {
+        bazarr: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/d4rkfella/bazarr",
+                tag: "1.5.6@sha256:4bf6c0d5b730f2e70fd36eb2629d3e64a41a943a54afb5da94061d044b205362",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+                POSTGRES_ENABLED: "true",
+                POSTGRES_HOST: "postgres-db-rw.database.svc.cluster.local",
+                POSTGRES_PORT: 5432,
+                POSTGRES_DATABASE: "{{ .Release.Name }}",
+                POSTGRES_USERNAME: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "{{ .Release.Name }}-secret",
+                      key: "POSTGRES_USERNAME",
+                    },
+                  },
+                },
+                POSTGRES_PASSWORD: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "{{ .Release.Name }}-secret",
+                      key: "POSTGRES_PASSWORD",
+                    },
+                  },
+                },
+              },
+              probes: {
+                startup: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/system/ping",
+                      port: 6767,
+                    },
+                    periodSeconds: 10,
+                    failureThreshold: 30,
+                  },
+                },
+                liveness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/system/ping",
+                      port: 6767,
+                    },
+                    initialDelaySeconds: 5,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/system/ping",
+                      port: 6767,
+                    },
+                    initialDelaySeconds: 5,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "10m",
+                },
+                limits: {
+                  memory: "4Gi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "bazarr",
+          ports: {
+            http: {
+              port: 6767,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "bazarr.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "bazarr",
+              port: 6767,
+            }],
+            timeouts: {
+              request: "1200s",
+            },
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          existingClaim: "bazarr",
+          globalMounts: [{
+            path: "/config",
+          }],
+        },
+        log: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/config/log",
+          }],
+        },
+        cache: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/config/cache",
+          }],
+        },
+        tmp: {
+          type: "emptyDir",
+        },
+        media: {
+          type: "nfs",
+          server: "192.168.91.40",
+          path: "/mnt/exos20/data/media",
+          globalMounts: [{
+            path: "/data/media",
+          }],
+        },
+      },
+    },
+  },
+}

@@ -1,37 +1,55 @@
 ---
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: mount-internal-ca
-spec:
-  rules:
-    - name: mount-internal-ca
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-              annotations:
-                security.darkfellanetwork.com/mount-internal-ca: "true"
-
-      mutate:
-        patchStrategicMerge:
-          spec:
-            volumes:
-              - name: internal-ca
-                secret:
-                  secretName: internal-ca-secret
-            initContainers:
-              - (name): "*"
-                volumeMounts:
-                  - name: internal-ca
-                    mountPath: /etc/ssl/certs/internal-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
-            containers:
-              - (name): "*"
-                volumeMounts:
-                  - name: internal-ca
-                    mountPath: /etc/ssl/certs/internal-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
+{
+  apiVersion: "kyverno.io/v1",
+  kind: "ClusterPolicy",
+  metadata: {
+    name: "mount-internal-ca",
+  },
+  spec: {
+    rules: [{
+      name: "mount-internal-ca",
+      match: {
+        any: [{
+          resources: {
+            kinds: [
+              "Pod",
+            ],
+            annotations: {
+              security.darkfellanetwork.com/mount-internal-ca: "true",
+            },
+          },
+        }],
+      },
+      mutate: {
+        patchStrategicMerge: {
+          spec: {
+            volumes: [{
+              name: "internal-ca",
+              secret: {
+                secretName: "internal-ca-secret",
+              },
+            }],
+            initContainers: [{
+              "(name)": "*",
+              volumeMounts: [{
+                name: "internal-ca",
+                mountPath: "/etc/ssl/certs/internal-ca.crt",
+                subPath: "ca.crt",
+                readOnly: true,
+              }],
+            }],
+            containers: [{
+              "(name)": "*",
+              volumeMounts: [{
+                name: "internal-ca",
+                mountPath: "/etc/ssl/certs/internal-ca.crt",
+                subPath: "ca.crt",
+                readOnly: true,
+              }],
+            }],
+          },
+        },
+      },
+    }],
+  },
+}

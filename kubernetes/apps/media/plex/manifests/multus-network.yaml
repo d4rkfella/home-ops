@@ -1,37 +1,42 @@
 ---
-apiVersion: k8s.cni.cncf.io/v1
-kind: NetworkAttachmentDefinition
-metadata:
-  name: plex
-spec:
-  config: |-
-    {
-      "cniVersion": "0.3.1",
-      "name": "plex",
-      "plugins": [
-        {
-          "type": "bridge",
-          "bridge": "br0",
-          "ipam": {
-            "type": "static",
-            "addresses": [
-              {
-                "address": "192.168.91.43/24"
-              }
-            ],
-            "dns": {
-              "nameservers": [
-                "192.168.91.1"
-              ]
-            }
-          }
-        },
-        {
-          "type": "tuning",
-          "capabilities": {
-            "mac": true
-          },
-          "mac": "6e:e3:71:7f:86:f7"
-        }
-      ]
-    }
+{
+  apiVersion: "k8s.cni.cncf.io/v1",
+  kind: "NetworkAttachmentDefinition",
+  metadata: {
+    name: "plex",
+  },
+  spec: {
+    config: "\
+       {\n\
+      \  \"cniVersion\": \"0.3.1\",\n\
+      \  \"name\": \"plex\",\n\
+      \  \"plugins\": [\n\
+      \    {\n\
+      \      \"type\": \"bridge\",\n\
+      \      \"bridge\": \"br0\",\n\
+      \      \"ipam\": {\n\
+      \        \"type\": \"static\",\n\
+      \        \"addresses\": [\n\
+      \          {\n\
+      \            \"address\": \"192.168.91.43/24\"\n\
+      \          }\n\
+      \        ],\n\
+      \        \"dns\": {\n\
+      \          \"nameservers\": [\n\
+      \            \"192.168.91.1\"\n\
+      \          ]\n\
+      \        }\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"type\": \"tuning\",\n\
+      \      \"capabilities\": {\n\
+      \        \"mac\": true\n\
+      \      },\n\
+      \      \"mac\": \"6e:e3:71:7f:86:f7\"\n\
+      \    }\n\
+      \  ]\n\
+       }\
+      ",
+  },
+}

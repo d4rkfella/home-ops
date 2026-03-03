@@ -1,28 +1,39 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app qbitmanage
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/volsync
-  dependsOn:
-    - name: qbittorrent
-  interval: 1h
-  timeout: 5m
-  retryInterval: 2m
-  path: ./kubernetes/apps/media/qbitmanage/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CAPACITY: 2Gi
-      VOLSYNC_CACHE_CAPACITY: 1Gi
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  wait: false
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "qbitmanage",
+  },
+  spec: {
+    commonMetadata: {
+      labels: {
+        app.kubernetes.io/name: "qbitmanage",
+      },
+    },
+    components: [
+      "../../../../components/volsync",
+    ],
+    dependsOn: [{
+      name: "qbittorrent",
+    }],
+    interval: "1h",
+    timeout: "5m",
+    retryInterval: "2m",
+    path: "./kubernetes/apps/media/qbitmanage/manifests",
+    postBuild: {
+      substitute: {
+        APP: "qbitmanage",
+        VOLSYNC_CAPACITY: "2Gi",
+        VOLSYNC_CACHE_CAPACITY: "1Gi",
+      },
+    },
+    prune: true,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    wait: false,
+  },
+}

@@ -1,119 +1,181 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app sonarr
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template
-  values:
-    controllers:
-      sonarr:
-        annotations:
-          reloader.stakater.com/auto: "true"
-
-        containers:
-          app:
-            image:
-              repository: ghcr.io/d4rkfella/sonarr
-              tag: 4.0.16@sha256:2c2a12918d957b7821083e131cdf9b55a343b68479dde1e358990fe1bb81dc1b
-            env:
-              TZ: Europe/Sofia
-              SONARR__APP__INSTANCENAME: "{{ .Release.Name }}"
-              SONARR__APP__THEME: dark
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              SONARR__LOG__DBENABLED: "False"
-              SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 80
-              SONARR__SERVER__BINDADDRESS: 0.0.0.0
-              SONARR__AUTH__APIKEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret "{{ .Release.Name }}-secret"
-                    key: SONARR_API_KEY
-              SONARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
-              SONARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
-              SONARR__POSTGRES__USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_USERNAME
-              SONARR__POSTGRES__PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASSWORD
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ping
-                    port: *port
-                  initialDelaySeconds: 2
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 100m
-                memory: 512Mi
-              limits:
-                memory: 4Gi
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
-
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: *port
-
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.darkfellanetwork.com"
-        parentRefs:
-          - name: internal
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-
-    persistence:
-      config:
-        suffix: config
-        type: persistentVolumeClaim
-        size: 15Gi
-        storageClass: openebs-zfs-128k
-        accessMode: ReadWriteOnce
-        globalMounts:
-          - path: /config
-      tmp:
-        type: emptyDir
-      media:
-        type: nfs
-        server: 192.168.91.40
-        path: /mnt/exos20/data
-        globalMounts:
-          - path: /data
+{
+  # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "sonarr",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "app-template",
+    },
+    values: {
+      controllers: {
+        sonarr: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/d4rkfella/sonarr",
+                tag: "4.0.16@sha256:2c2a12918d957b7821083e131cdf9b55a343b68479dde1e358990fe1bb81dc1b",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+                SONARR__APP__INSTANCENAME: "{{ .Release.Name }}",
+                SONARR__APP__THEME: "dark",
+                SONARR__AUTH__METHOD: "External",
+                SONARR__AUTH__REQUIRED: "DisabledForLocalAddresses",
+                SONARR__LOG__DBENABLED: "False",
+                SONARR__LOG__LEVEL: "info",
+                SONARR__SERVER__PORT: 80,
+                SONARR__SERVER__BINDADDRESS: "0.0.0.0",
+                SONARR__AUTH__APIKEY: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "{{ .Release.Name }}-secret",
+                      key: "SONARR_API_KEY",
+                    },
+                  },
+                },
+                SONARR__POSTGRES__HOST: "postgres-db-rw.database.svc.cluster.local",
+                SONARR__POSTGRES__MAINDB: "{{ .Release.Name }}",
+                SONARR__POSTGRES__USER: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "{{ .Release.Name }}-secret",
+                      key: "POSTGRES_USERNAME",
+                    },
+                  },
+                },
+                SONARR__POSTGRES__PASSWORD: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "{{ .Release.Name }}-secret",
+                      key: "POSTGRES_PASSWORD",
+                    },
+                  },
+                },
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/ping",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 2,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/ping",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 2,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "100m",
+                  memory: "512Mi",
+                },
+                limits: {
+                  memory: "4Gi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "sonarr",
+          ports: {
+            http: {
+              port: 80,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "{{ .Release.Name }}.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "sonarr",
+              port: 80,
+            }],
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          suffix: "config",
+          type: "persistentVolumeClaim",
+          size: "15Gi",
+          storageClass: "openebs-zfs-128k",
+          accessMode: "ReadWriteOnce",
+          globalMounts: [{
+            path: "/config",
+          }],
+        },
+        tmp: {
+          type: "emptyDir",
+        },
+        media: {
+          type: "nfs",
+          server: "192.168.91.40",
+          path: "/mnt/exos20/data",
+          globalMounts: [{
+            path: "/data",
+          }],
+        },
+      },
+    },
+  },
+}

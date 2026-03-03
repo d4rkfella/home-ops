@@ -1,86 +1,120 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: cert-manager
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: cert-manager
-  values:
-    global:
-      hostUsers: false
-    crds:
-      enabled: true
-      keep: true
-    enableCertificateOwnerRef: true
-    dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
-    dns01RecursiveNameserversOnly: true
-    prometheus:
-      enabled: true
-      servicemonitor:
-        enabled: true
-        endpointAdditionalProperties:
-          scheme: https
-          tlsConfig:
-            serverName: cert-manager-metrics
-            ca:
-              secret:
-                name: cert-manager-metrics-ca
-                key: "tls.crt"
-    config:
-      metricsTLSConfig:
-        dynamic:
-          secretNamespace: "cert-manager"
-          secretName: "cert-manager-metrics-ca"
-          dnsNames:
-            - cert-manager-metrics
-    webhook:
-      config:
-        metricsTLSConfig:
-          dynamic:
-            secretNamespace: "cert-manager"
-            secretName: "cert-manager-metrics-ca"
-            dnsNames:
-              - cert-manager-metrics
-    cainjector:
-      config:
-        metricsTLSConfig:
-          dynamic:
-            secretNamespace: "cert-manager"
-            secretName: "cert-manager-metrics-ca"
-            dnsNames:
-              - cert-manager-metrics
-    hostAliases:
-      - ip: "192.168.91.53"
-        hostnames:
-          - vault.darkfellanetwork.com
-    extraObjects:
-      - |
-        apiVersion: v1
-        kind: ServiceAccount
-        metadata:
-          name: vault-issuer
-      - |
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: Role
-        metadata:
-          name: vault-issuer
-        rules:
-          - apiGroups: ['']
-            resources: ['serviceaccounts/token']
-            resourceNames: ['vault-issuer']
-            verbs: ['create']
-      - |-
-        apiVersion: rbac.authorization.k8s.io/v1
-        kind: RoleBinding
-        metadata:
-          name: vault-issuer
-        subjects:
-          - kind: ServiceAccount
-            name: cert-manager
-        roleRef:
-          apiGroup: rbac.authorization.k8s.io
-          kind: Role
-          name: vault-issuer
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "cert-manager",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "cert-manager",
+    },
+    values: {
+      global: {
+        hostUsers: false,
+      },
+      crds: {
+        enabled: true,
+        keep: true,
+      },
+      enableCertificateOwnerRef: true,
+      dns01RecursiveNameservers: "https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query",
+      dns01RecursiveNameserversOnly: true,
+      prometheus: {
+        enabled: true,
+        servicemonitor: {
+          enabled: true,
+          endpointAdditionalProperties: {
+            scheme: "https",
+            tlsConfig: {
+              serverName: "cert-manager-metrics",
+              ca: {
+                secret: {
+                  name: "cert-manager-metrics-ca",
+                  key: "tls.crt",
+                },
+              },
+            },
+          },
+        },
+      },
+      config: {
+        metricsTLSConfig: {
+          dynamic: {
+            secretNamespace: "cert-manager",
+            secretName: "cert-manager-metrics-ca",
+            dnsNames: [
+              "cert-manager-metrics",
+            ],
+          },
+        },
+      },
+      webhook: {
+        config: {
+          metricsTLSConfig: {
+            dynamic: {
+              secretNamespace: "cert-manager",
+              secretName: "cert-manager-metrics-ca",
+              dnsNames: [
+                "cert-manager-metrics",
+              ],
+            },
+          },
+        },
+      },
+      cainjector: {
+        config: {
+          metricsTLSConfig: {
+            dynamic: {
+              secretNamespace: "cert-manager",
+              secretName: "cert-manager-metrics-ca",
+              dnsNames: [
+                "cert-manager-metrics",
+              ],
+            },
+          },
+        },
+      },
+      hostAliases: [{
+        ip: "192.168.91.53",
+        hostnames: [
+          "vault.darkfellanetwork.com",
+        ],
+      }],
+      extraObjects: [
+        "\
+           apiVersion: v1\n\
+           kind: ServiceAccount\n\
+           metadata:\n\
+          \  name: vault-issuer\n\
+          ",
+        "\
+           apiVersion: rbac.authorization.k8s.io/v1\n\
+           kind: Role\n\
+           metadata:\n\
+          \  name: vault-issuer\n\
+           rules:\n\
+          \  - apiGroups: ['']\n\
+          \    resources: ['serviceaccounts/token']\n\
+          \    resourceNames: ['vault-issuer']\n\
+          \    verbs: ['create']\n\
+          ",
+        "\
+           apiVersion: rbac.authorization.k8s.io/v1\n\
+           kind: RoleBinding\n\
+           metadata:\n\
+          \  name: vault-issuer\n\
+           subjects:\n\
+          \  - kind: ServiceAccount\n\
+          \    name: cert-manager\n\
+           roleRef:\n\
+          \  apiGroup: rbac.authorization.k8s.io\n\
+          \  kind: Role\n\
+          \  name: vault-issuer\
+          ",
+      ],
+    },
+  },
+}

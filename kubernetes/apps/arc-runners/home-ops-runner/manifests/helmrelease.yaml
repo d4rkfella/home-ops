@@ -1,62 +1,91 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: home-ops-runner
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: gha-runner-scale-set
-  values:
-    githubConfigUrl: https://github.com/d4rkfella/vm-container-disks
-    githubConfigSecret: home-ops-runner-secret
-    namespaceOverride: arc-runners
-    minRunners: 1
-    maxRunners: 3
-    containerMode:
-      type: kubernetes
-      kubernetesModeWorkVolumeClaim:
-        accessModes:
-          - "ReadWriteOnce"
-        storageClassName: openebs-zfs-128k
-        resources:
-          requests:
-            storage: 160Gi
-    template:
-      spec:
-        hostUsers: false
-        securityContext:
-          runAsNonRoot: true
-          seccompProfile: {type: Unconfined}
-          runAsUser: 1001
-          fsGroup: 123
-        containers:
-          - name: runner
-            image: ghcr.io/actions/actions-runner:2.332.0@sha256:8c3f5970b8ceb90cbd3e89b80c6806bb74d9c31686e9177c743323a4539d12f5
-            command:
-              - "/home/runner/run.sh"
-            env:
-              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
-                value: "false"
-              - name: NODE
-                valueFrom:
-                  fieldRef:
-                    fieldPath: status.hostIP
-            volumeMounts:
-              - mountPath: /var/run/secrets/buildkit
-                name: buildkit-tls
-                readOnly: true
-            securityContext:
-              allowPrivilegeEscalation: true
-              readOnlyRootFilesystem: false
-            resources:
-              limits:
-                devices.kubevirt.io/kvm: "1"
-        volumes:
-          - name: buildkit-tls
-            secret:
-              secretName: buildkit-client-tls
-    controllerServiceAccount:
-      name: actions-runner-controller
-      namespace: arc-system
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "home-ops-runner",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "gha-runner-scale-set",
+    },
+    values: {
+      githubConfigUrl: "https://github.com/d4rkfella/vm-container-disks",
+      githubConfigSecret: "home-ops-runner-secret",
+      namespaceOverride: "arc-runners",
+      minRunners: 1,
+      maxRunners: 3,
+      containerMode: {
+        type: "kubernetes",
+        kubernetesModeWorkVolumeClaim: {
+          accessModes: [
+            "ReadWriteOnce",
+          ],
+          storageClassName: "openebs-zfs-128k",
+          resources: {
+            requests: {
+              storage: "160Gi",
+            },
+          },
+        },
+      },
+      template: {
+        spec: {
+          hostUsers: false,
+          securityContext: {
+            runAsNonRoot: true,
+            seccompProfile: {
+              type: "Unconfined",
+            },
+            runAsUser: 1001,
+            fsGroup: 123,
+          },
+          containers: [{
+            name: "runner",
+            image: "ghcr.io/actions/actions-runner:2.332.0@sha256:8c3f5970b8ceb90cbd3e89b80c6806bb74d9c31686e9177c743323a4539d12f5",
+            command: [
+              "/home/runner/run.sh",
+            ],
+            env: [{
+              name: "ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER",
+              value: "false",
+            }, {
+              name: "NODE",
+              valueFrom: {
+                fieldRef: {
+                  fieldPath: "status.hostIP",
+                },
+              },
+            }],
+            volumeMounts: [{
+              mountPath: "/var/run/secrets/buildkit",
+              name: "buildkit-tls",
+              readOnly: true,
+            }],
+            securityContext: {
+              allowPrivilegeEscalation: true,
+              readOnlyRootFilesystem: false,
+            },
+            resources: {
+              limits: {
+                devices.kubevirt.io/kvm: "1",
+              },
+            },
+          }],
+          volumes: [{
+            name: "buildkit-tls",
+            secret: {
+              secretName: "buildkit-client-tls",
+            },
+          }],
+        },
+      },
+      controllerServiceAccount: {
+        name: "actions-runner-controller",
+        namespace: "arc-system",
+      },
+    },
+  },
+}

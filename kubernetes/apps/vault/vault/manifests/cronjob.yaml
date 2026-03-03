@@ -1,52 +1,79 @@
 ---
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: vaultbackup
-spec:
-  concurrencyPolicy: Forbid
-  schedule: "0 7 * * *"
-  jobTemplate:
-    spec:
-      backoffLimit: 3
-      template:
-        spec:
-          serviceAccountName: vault
-          containers:
-            - name: vaultbackup
-              image: ghcr.io/d4rkfella/home-ops-cli:0.4.53@sha256:ca01deeb7e712c1a31d91321d152d5a8088ee03f70f28ddedf24ffea8d2465ac
-              imagePullPolicy: IfNotPresent
-              args:
-                - vault
-                - backup-raft-snapshot
-              env:
-                - name: VAULT_ADDR
-                  value: https://vault.darkfellanetwork.com:8200
-                - name: VAULT_K8S_ROLE
-                  value: vault
-                - name: AWS_ENDPOINT_URL
-                  value: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
-                - name: S3_BUCKET_NAME
-                  value: hashicorp-vault-backup
-              envFrom:
-                - secretRef:
-                    name: vault-backup-secret
-              securityContext:
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: true
-                capabilities: {drop: ["ALL"]}
-              resources:
-                limits:
-                  cpu: "1"
-                  memory: "1.5Gi"
-                requests:
-                  cpu: "500m"
-                  memory: "1Gi"
-          restartPolicy: OnFailure
-          securityContext:
-            runAsNonRoot: true
-            runAsUser: 65532
-            runAsGroup: 65532
-            seccompProfile: {type: RuntimeDefault}
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
+{
+  apiVersion: "batch/v1",
+  kind: "CronJob",
+  metadata: {
+    name: "vaultbackup",
+  },
+  spec: {
+    concurrencyPolicy: "Forbid",
+    schedule: "0 7 * * *",
+    jobTemplate: {
+      spec: {
+        backoffLimit: 3,
+        template: {
+          spec: {
+            serviceAccountName: "vault",
+            containers: [{
+              name: "vaultbackup",
+              image: "ghcr.io/d4rkfella/home-ops-cli:0.4.53@sha256:ca01deeb7e712c1a31d91321d152d5a8088ee03f70f28ddedf24ffea8d2465ac",
+              imagePullPolicy: "IfNotPresent",
+              args: [
+                "vault",
+                "backup-raft-snapshot",
+              ],
+              env: [{
+                name: "VAULT_ADDR",
+                value: "https://vault.darkfellanetwork.com:8200",
+              }, {
+                name: "VAULT_K8S_ROLE",
+                value: "vault",
+              }, {
+                name: "AWS_ENDPOINT_URL",
+                value: "https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com",
+              }, {
+                name: "S3_BUCKET_NAME",
+                value: "hashicorp-vault-backup",
+              }],
+              envFrom: [{
+                secretRef: {
+                  name: "vault-backup-secret",
+                },
+              }],
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                limits: {
+                  cpu: "1",
+                  memory: "1.5Gi",
+                },
+                requests: {
+                  cpu: "500m",
+                  memory: "1Gi",
+                },
+              },
+            }],
+            restartPolicy: "OnFailure",
+            securityContext: {
+              runAsNonRoot: true,
+              runAsUser: 65532,
+              runAsGroup: 65532,
+              seccompProfile: {
+                type: "RuntimeDefault",
+              },
+            },
+          },
+        },
+      },
+    },
+    successfulJobsHistoryLimit: 1,
+    failedJobsHistoryLimit: 1,
+  },
+}

@@ -1,28 +1,42 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: multus
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: multus
-  values:
-    cni-plugins:
-      image:
-        repository: ghcr.io/d4rkfella/cni-plugins
-        tag: 1.9.0@sha256:edfbb4a6fab37d9b1ccf828fab9a41cbd4519ae344b6fab51ac2e35b33d0416b
-      resources: {}
-    multus:
-      image:
-        repository: ghcr.io/d4rkfella/multus-cni
-        tag: 4.2.4@sha256:a43a873a951aff0be807ac6fc9cac373cab77efded7168141850541a2178c427
-      resources:
-        requests:
-          cpu: 10m
-        limits:
-          memory: 512Mi
-    cni:
-      netPath: /etc/cni/net.d
-      binPath: /opt/cni/bin
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "multus",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "multus",
+    },
+    values: {
+      cni-plugins: {
+        image: {
+          repository: "ghcr.io/d4rkfella/cni-plugins",
+          tag: "1.9.0@sha256:edfbb4a6fab37d9b1ccf828fab9a41cbd4519ae344b6fab51ac2e35b33d0416b",
+        },
+        resources: {},
+      },
+      multus: {
+        image: {
+          repository: "ghcr.io/d4rkfella/multus-cni",
+          tag: "4.2.4@sha256:a43a873a951aff0be807ac6fc9cac373cab77efded7168141850541a2178c427",
+        },
+        resources: {
+          requests: {
+            cpu: "10m",
+          },
+          limits: {
+            memory: "512Mi",
+          },
+        },
+      },
+      cni: {
+        netPath: "/etc/cni/net.d",
+        binPath: "/opt/cni/bin",
+      },
+    },
+  },
+}

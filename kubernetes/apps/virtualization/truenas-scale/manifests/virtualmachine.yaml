@@ -1,91 +1,135 @@
 ---
-apiVersion: kubevirt.io/v1
-kind: VirtualMachine
-metadata:
-  name: truenas
-spec:
-  runStrategy: Always
-  template:
-    metadata:
-      labels:
-        kubevirt.io/domain: truenas
-    spec:
-      priorityClassName: system-node-critical
-      networks:
-        - name: bridge-1
-          multus:
-            default: true
-            networkName: virtualization/truenas-vm-1
-        - name: bridge-2
-          multus:
-            networkName: virtualization/truenas-vm-2
-      domain:
-        clock:
-          utc: {}
-        cpu:
-          model: host-passthrough
-          dedicatedCpuPlacement: true
-          isolateEmulatorThread: true
-        ioThreadsPolicy: auto
-        features:
-          acpi: {}
-          apic: {}
-          smm:
-            enabled: false
-        firmware:
-          bootloader:
-            efi:
-              secureBoot: false
-        devices:
-          clientPassthrough: {}
-          autoattachVSOCK: true
-          autoattachInputDevice: false
-          autoattachMemBalloon: false
-          hostDevices:
-            - deviceName: devices.kubevirt.io/nvme
-              name: intel-optane
-            - deviceName: devices.kubevirt.io/sas
-              name: sas
-          interfaces:
-            - name: bridge-1
-              bridge: {}
-              model: virtio
-            - name: bridge-2
-              bridge: {}
-              model: virtio
-          disks:
-            - name: os-disk
-              bootOrder: 1
-              disk:
-                bus: virtio
-        machine:
-          type: q35
-        resources:
-          requests:
-            cpu: 4
-            memory: 52Gi
-          limits:
-            cpu: 4
-            memory: 52Gi
-        memory:
-          hugepages:
-            pageSize: "2Mi"
-      volumes:
-        - dataVolume:
-            name: truenas-os-disk
-          name: os-disk
-  dataVolumeTemplates:
-    - metadata:
-        name: truenas-os-disk
-      spec:
-        storage:
-          storageClassName: openebs-zfs-block-16k
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 32Gi
-        source:
-          registry:
-            url: "docker://ghcr.io/d4rkfella/truenas-vm-disk@sha256:4e07517490140279ce16c742b511afda03bfec48a5e7ca98630e6fcfd1169ff9"
-            secretRef: endpoint-secret
+{
+  apiVersion: "kubevirt.io/v1",
+  kind: "VirtualMachine",
+  metadata: {
+    name: "truenas",
+  },
+  spec: {
+    runStrategy: "Always",
+    template: {
+      metadata: {
+        labels: {
+          kubevirt.io/domain: "truenas",
+        },
+      },
+      spec: {
+        priorityClassName: "system-node-critical",
+        networks: [{
+          name: "bridge-1",
+          multus: {
+            default: true,
+            networkName: "virtualization/truenas-vm-1",
+          },
+        }, {
+          name: "bridge-2",
+          multus: {
+            networkName: "virtualization/truenas-vm-2",
+          },
+        }],
+        domain: {
+          clock: {
+            utc: {},
+          },
+          cpu: {
+            model: "host-passthrough",
+            dedicatedCpuPlacement: true,
+            isolateEmulatorThread: true,
+          },
+          ioThreadsPolicy: "auto",
+          features: {
+            acpi: {},
+            apic: {},
+            smm: {
+              enabled: false,
+            },
+          },
+          firmware: {
+            bootloader: {
+              efi: {
+                secureBoot: false,
+              },
+            },
+          },
+          devices: {
+            clientPassthrough: {},
+            autoattachVSOCK: true,
+            autoattachInputDevice: false,
+            autoattachMemBalloon: false,
+            hostDevices: [{
+              deviceName: "devices.kubevirt.io/nvme",
+              name: "intel-optane",
+            }, {
+              deviceName: "devices.kubevirt.io/sas",
+              name: "sas",
+            }],
+            interfaces: [{
+              name: "bridge-1",
+              bridge: {},
+              model: "virtio",
+            }, {
+              name: "bridge-2",
+              bridge: {},
+              model: "virtio",
+            }],
+            disks: [{
+              name: "os-disk",
+              bootOrder: 1,
+              disk: {
+                bus: "virtio",
+              },
+            }],
+          },
+          machine: {
+            type: "q35",
+          },
+          resources: {
+            requests: {
+              cpu: 4,
+              memory: "52Gi",
+            },
+            limits: {
+              cpu: 4,
+              memory: "52Gi",
+            },
+          },
+          memory: {
+            hugepages: {
+              pageSize: "2Mi",
+            },
+          },
+        },
+        volumes: [{
+          dataVolume: {
+            name: "truenas-os-disk",
+          },
+          name: "os-disk",
+        }],
+      },
+    },
+    dataVolumeTemplates: [{
+      metadata: {
+        name: "truenas-os-disk",
+      },
+      spec: {
+        storage: {
+          storageClassName: "openebs-zfs-block-16k",
+          accessModes: [
+            "ReadWriteOnce",
+          ],
+          resources: {
+            requests: {
+              storage: "32Gi",
+            },
+          },
+        },
+        source: {
+          registry: {
+            url: "docker://ghcr.io/d4rkfella/truenas-vm-disk@sha256:4e07517490140279ce16c742b511afda03bfec48a5e7ca98630e6fcfd1169ff9",
+            secretRef: "endpoint-secret",
+          },
+        },
+      },
+    }],
+  },
+}

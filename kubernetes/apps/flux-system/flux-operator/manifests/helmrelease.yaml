@@ -1,40 +1,58 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: flux-operator
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: flux-operator
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: (flux-operator)
-            patch: |-
-              - op: add
-                path: /spec/template/spec/hostUsers
-                value: false
-  values:
-    serviceMonitor:
-      create: true
-    web:
-      config:
-        baseURL: "https://flux.darkfellanetwork.com"
-        authentication:
-          type: OAuth2
-          oauth2:
-            provider: OIDC
-            issuerURL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET"
-  valuesFrom:
-    - kind: Secret
-      name: flux-web-client
-      valuesKey: CLIENT_ID
-      targetPath: web.config.authentication.oauth2.clientID
-    - kind: Secret
-      name: flux-web-client
-      valuesKey: CLIENT_SECRET
-      targetPath: web.config.authentication.oauth2.clientSecret
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "flux-operator",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "flux-operator",
+    },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "Deployment",
+            name: "(flux-operator)",
+          },
+          patch: "\
+             - op: add\n\
+            \  path: /spec/template/spec/hostUsers\n\
+            \  value: false\
+            ",
+        }],
+      },
+    }],
+    values: {
+      serviceMonitor: {
+        create: true,
+      },
+      web: {
+        config: {
+          baseURL: "https://flux.darkfellanetwork.com",
+          authentication: {
+            type: "OAuth2",
+            oauth2: {
+              provider: "OIDC",
+              issuerURL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
+            },
+          },
+        },
+      },
+    },
+    valuesFrom: [{
+      kind: "Secret",
+      name: "flux-web-client",
+      valuesKey: "CLIENT_ID",
+      targetPath: "web.config.authentication.oauth2.clientID",
+    }, {
+      kind: "Secret",
+      name: "flux-web-client",
+      valuesKey: "CLIENT_SECRET",
+      targetPath: "web.config.authentication.oauth2.clientSecret",
+    }],
+  },
+}

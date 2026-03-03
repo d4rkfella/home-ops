@@ -1,24 +1,35 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app cross-seed
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: qbittorrent
-    - name: prowlarr
-    - name: radarr
-    - name: sonarr
-  interval: 1h
-  timeout: 5m
-  retryInterval: 2m
-  path: ./kubernetes/apps/media/cross-seed/manifests
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  wait: false
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "cross-seed",
+  },
+  spec: {
+    commonMetadata: {
+      labels: {
+        app.kubernetes.io/name: "cross-seed",
+      },
+    },
+    dependsOn: [{
+      name: "qbittorrent",
+    }, {
+      name: "prowlarr",
+    }, {
+      name: "radarr",
+    }, {
+      name: "sonarr",
+    }],
+    interval: "1h",
+    timeout: "5m",
+    retryInterval: "2m",
+    path: "./kubernetes/apps/media/cross-seed/manifests",
+    prune: true,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    wait: false,
+  },
+}

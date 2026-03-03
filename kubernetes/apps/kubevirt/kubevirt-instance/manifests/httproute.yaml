@@ -1,54 +1,80 @@
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
-  name: virt-exportproxy
-  annotations:
-    gatus.home-operations.com/endpoint: |-
-      url: https://virt-exportproxy.darkfellanetwork.com/healthz
-spec:
-  hostnames:
-    - "virt-exportproxy.darkfellanetwork.com"
-  parentRefs:
-    - name: internal
-      namespace: envoy-gateway-system
-      sectionName: https
-  rules:
-    - backendRefs:
-        - name: virt-exportproxy
-          port: 443
-      timeouts:
-        request: 1200s
+{
+  apiVersion: "gateway.networking.k8s.io/v1",
+  kind: "HTTPRoute",
+  metadata: {
+    name: "virt-exportproxy",
+    annotations: {
+      gatus.home-operations.com/endpoint: "url: https://virt-exportproxy.darkfellanetwork.com/healthz",
+    },
+  },
+  spec: {
+    hostnames: [
+      "virt-exportproxy.darkfellanetwork.com",
+    ],
+    parentRefs: [{
+      name: "internal",
+      namespace: "envoy-gateway-system",
+      sectionName: "https",
+    }],
+    rules: [{
+      backendRefs: [{
+        name: "virt-exportproxy",
+        port: 443,
+      }],
+      timeouts: {
+        request: "1200s",
+      },
+    }],
+  },
+}
 ---
-apiVersion: gateway.networking.k8s.io/v1
-kind: BackendTLSPolicy
-metadata:
-  name: virt-exportproxy
-spec:
-  targetRefs:
-    - group: ""
-      kind: Service
-      name: virt-exportproxy
-  validation:
-    hostname: virt-exportproxy.kubevirt.svc.cluster.local
-    caCertificateRefs:
-      - kind: ConfigMap
-        name: kubevirt-ca
-        group: ""
+{
+  apiVersion: "gateway.networking.k8s.io/v1",
+  kind: "BackendTLSPolicy",
+  metadata: {
+    name: "virt-exportproxy",
+  },
+  spec: {
+    targetRefs: [{
+      group: "",
+      kind: "Service",
+      name: "virt-exportproxy",
+    }],
+    validation: {
+      hostname: "virt-exportproxy.kubevirt.svc.cluster.local",
+      caCertificateRefs: [{
+        kind: "ConfigMap",
+        name: "kubevirt-ca",
+        group: "",
+      }],
+    },
+  },
+}
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: vmexport
-spec:
-  rules:
-    - host: virt-exportproxy.darkfellanetwork.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: virt-exportproxy
-                port:
-                  number: 443
+{
+  apiVersion: "networking.k8s.io/v1",
+  kind: "Ingress",
+  metadata: {
+    name: "vmexport",
+  },
+  spec: {
+    rules: [{
+      host: "virt-exportproxy.darkfellanetwork.com",
+      http: {
+        paths: [{
+          path: "/",
+          pathType: "Prefix",
+          backend: {
+            service: {
+              name: "virt-exportproxy",
+              port: {
+                number: 443,
+              },
+            },
+          },
+        }],
+      },
+    }],
+  },
+}

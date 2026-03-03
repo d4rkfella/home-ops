@@ -1,23 +1,28 @@
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ./namespace.yaml
-  - ./seerr/ks.yaml
-  - ./radarr/ks.yaml
-  - ./sonarr/ks.yaml
-  - ./unpackerr/ks.yaml
-  - ./autobrr/ks.yaml
-  - ./bazarr/ks.yaml
-  - ./qbittorrent/ks.yaml
-  - ./qbitmanage/ks.yaml
-  - ./prowlarr/ks.yaml
-  - ./flaresolverr/ks.yaml
-  - ./cross-seed/ks.yaml
-  - ./recyclarr/ks.yaml
-  - ./plex/ks.yaml
-components:
-  - ../../components/common
-  - ../../components/repos/app-template
-transformers:
-  - ./transformers
+{
+  apiVersion: "kustomize.config.k8s.io/v1beta1",
+  kind: "Kustomization",
+  resources: [
+    "./namespace.yaml",
+    "./seerr/ks.yaml",
+    "./radarr/ks.yaml",
+    "./sonarr/ks.yaml",
+    "./unpackerr/ks.yaml",
+    "./autobrr/ks.yaml",
+    "./bazarr/ks.yaml",
+    "./qbittorrent/ks.yaml",
+    "./qbitmanage/ks.yaml",
+    "./prowlarr/ks.yaml",
+    "./flaresolverr/ks.yaml",
+    "./cross-seed/ks.yaml",
+    "./recyclarr/ks.yaml",
+    "./plex/ks.yaml",
+  ],
+  components: [
+    "../../components/common",
+    "../../components/repos/app-template",
+  ],
+  transformers: [
+    "./transformers",
+  ],
+}

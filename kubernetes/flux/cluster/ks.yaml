@@ -1,76 +1,91 @@
 ---
+
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cluster-apps
-  namespace: flux-system
-spec:
-  decryption:
-    provider: sops
-  deletionPolicy: WaitForTermination
-  interval: 1h
-  path: ./kubernetes/apps
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  wait: false
-  patches:
-    - # Add Kustomization defaults for all child Kustomizations
-      patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          decryption:
-            provider: sops
-          deletionPolicy: WaitForTermination
-          patches:
-            - patch: |-
-                apiVersion: helm.toolkit.fluxcd.io/v2
-                kind: HelmRelease
-                metadata:
-                  name: not-used
-                spec:
-                  install:
-                    crds: CreateReplace
-                    strategy:
-                      name: RetryOnFailure
-                  rollback:
-                    cleanupOnFail: true
-                  upgrade:
-                    cleanupOnFail: true
-                    crds: CreateReplace
-                    strategy:
-                      name: RemediateOnFailure
-                    remediation:
-                      remediateLastFailure: true
-                      retries: 2
-                  driftDetection:
-                    mode: enabled
-              target:
-                group: helm.toolkit.fluxcd.io
-                kind: HelmRelease
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        kind: Kustomization
+{
+  # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "cluster-apps",
+    namespace: "flux-system",
+  },
+  spec: {
+    decryption: {
+      provider: "sops",
+    },
+    deletionPolicy: "WaitForTermination",
+    interval: "1h",
+    path: "./kubernetes/apps",
+    prune: true,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    wait: false,
+    patches: [{
+      # Add Kustomization defaults for all child Kustomizations
+      patch: "\
+         apiVersion: kustomize.toolkit.fluxcd.io/v1\n\
+         kind: Kustomization\n\
+         metadata:\n\
+        \  name: not-used\n\
+         spec:\n\
+        \  decryption:\n\
+        \    provider: sops\n\
+        \  deletionPolicy: WaitForTermination\n\
+        \  patches:\n\
+        \    - patch: |-\n\
+        \        apiVersion: helm.toolkit.fluxcd.io/v2\n\
+        \        kind: HelmRelease\n\
+        \        metadata:\n\
+        \          name: not-used\n\
+        \        spec:\n\
+        \          install:\n\
+        \            crds: CreateReplace\n\
+        \            strategy:\n\
+        \              name: RetryOnFailure\n\
+        \          rollback:\n\
+        \            cleanupOnFail: true\n\
+        \          upgrade:\n\
+        \            cleanupOnFail: true\n\
+        \            crds: CreateReplace\n\
+        \            strategy:\n\
+        \              name: RemediateOnFailure\n\
+        \            remediation:\n\
+        \              remediateLastFailure: true\n\
+        \              retries: 2\n\
+        \          driftDetection:\n\
+        \            mode: enabled\n\
+        \      target:\n\
+        \        group: helm.toolkit.fluxcd.io\n\
+        \        kind: HelmRelease\
+        ",
+      target: {
+        group: "kustomize.toolkit.fluxcd.io",
+        kind: "Kustomization",
+      },
+    }],
+  },
+}
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: cluster-vap
-  namespace: flux-system
-spec:
-  path: ./kubernetes/vap
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 1h
-  retryInterval: 2m
-  timeout: 5m
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "cluster-vap",
+    namespace: "flux-system",
+  },
+  spec: {
+    path: "./kubernetes/vap",
+    prune: true,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    interval: "1h",
+    retryInterval: "2m",
+    timeout: "5m",
+  },
+}

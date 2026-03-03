@@ -1,29 +1,40 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app qbittorrent
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      name: *app
-      namespace: media
-  components:
-    - ../../../../components/volsync
-  path: ./kubernetes/apps/media/qbittorrent/manifests
-  postBuild:
-    substitute:
-      APP: *app
-      VOLSYNC_CAPACITY: 5Gi
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 1h
-  timeout: 5m
-  retryInterval: 2m
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "qbittorrent",
+  },
+  spec: {
+    commonMetadata: {
+      labels: {
+        app.kubernetes.io/name: "qbittorrent",
+      },
+    },
+    healthChecks: [{
+      apiVersion: "helm.toolkit.fluxcd.io/v2",
+      kind: "HelmRelease",
+      name: "qbittorrent",
+      namespace: "media",
+    }],
+    components: [
+      "../../../../components/volsync",
+    ],
+    path: "./kubernetes/apps/media/qbittorrent/manifests",
+    postBuild: {
+      substitute: {
+        APP: "qbittorrent",
+        VOLSYNC_CAPACITY: "5Gi",
+      },
+    },
+    prune: true,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    interval: "1h",
+    timeout: "5m",
+    retryInterval: "2m",
+  },
+}

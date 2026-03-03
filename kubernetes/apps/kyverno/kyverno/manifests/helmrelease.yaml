@@ -1,124 +1,175 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app kyverno
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: kyverno
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: kyverno-admission-controller
-            patch: |
-              - op: replace
-                path: /spec/template/spec/containers/0/resources/limits
-                value:
-                  memory: "1024Mi"
-  values:
-    crds:
-      install: true
-    grafana:
-      enabled: true
-    admissionController:
-      replicas: 1
-      rbac:
-        clusterRole:
-          extraResources:
-            - apiGroups:
-                - ""
-              resources:
-                - "pods"
-              verbs:
-                - "create"
-                - "update"
-                - "patch"
-                - "delete"
-
-            - apiGroups:
-                - "apps"
-              resources:
-                - deployments
-                - statefulsets
-                - daemonsets
-              verbs:
-                - get
-                - list
-                - watch
-                - patch
-                - update
-
-            - apiGroups:
-                - "batch"
-              resources:
-                - jobs
-              verbs:
-                - get
-                - list
-                - watch
-                - patch
-                - update
-      serviceMonitor:
-        enabled: true
-    backgroundController:
-      rbac:
-        clusterRole:
-          extraResources:
-            - apiGroups:
-                - ""
-              resources:
-                - "pods"
-              verbs:
-                - get
-                - list
-                - watch
-                - patch
-                - update
-                - delete
-
-            - apiGroups:
-                - "apps"
-              resources:
-                - deployments
-                - statefulsets
-                - daemonsets
-              verbs:
-                - get
-                - list
-                - watch
-                - patch
-                - update
-
-            - apiGroups:
-                - "batch"
-              resources:
-                - jobs
-              verbs:
-                - get
-                - list
-                - watch
-                - patch
-                - update
-      resources:
-        requests:
-          cpu: 100m
-        limits:
-          memory: 1Gi
-      serviceMonitor:
-        enabled: true
-    cleanupController:
-      serviceMonitor:
-        enabled: true
-    reportsController:
-      serviceMonitor:
-        enabled: true
-      resources:
-        limits:
-          memory: 3072Mi
-        requests:
-          cpu: 100m
-          memory: 1024Mi
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "kyverno",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "kyverno",
+    },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "Deployment",
+            name: "kyverno-admission-controller",
+          },
+          patch: "\
+             - op: replace\n\
+            \  path: /spec/template/spec/containers/0/resources/limits\n\
+            \  value:\n\
+            \    memory: \"1024Mi\"\n\
+            ",
+        }],
+      },
+    }],
+    values: {
+      crds: {
+        install: true,
+      },
+      grafana: {
+        enabled: true,
+      },
+      admissionController: {
+        replicas: 1,
+        rbac: {
+          clusterRole: {
+            extraResources: [{
+              apiGroups: [
+                "",
+              ],
+              resources: [
+                "pods",
+              ],
+              verbs: [
+                "create",
+                "update",
+                "patch",
+                "delete",
+              ],
+            }, {
+              apiGroups: [
+                "apps",
+              ],
+              resources: [
+                "deployments",
+                "statefulsets",
+                "daemonsets",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+                "patch",
+                "update",
+              ],
+            }, {
+              apiGroups: [
+                "batch",
+              ],
+              resources: [
+                "jobs",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+                "patch",
+                "update",
+              ],
+            }],
+          },
+        },
+        serviceMonitor: {
+          enabled: true,
+        },
+      },
+      backgroundController: {
+        rbac: {
+          clusterRole: {
+            extraResources: [{
+              apiGroups: [
+                "",
+              ],
+              resources: [
+                "pods",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+                "patch",
+                "update",
+                "delete",
+              ],
+            }, {
+              apiGroups: [
+                "apps",
+              ],
+              resources: [
+                "deployments",
+                "statefulsets",
+                "daemonsets",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+                "patch",
+                "update",
+              ],
+            }, {
+              apiGroups: [
+                "batch",
+              ],
+              resources: [
+                "jobs",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+                "patch",
+                "update",
+              ],
+            }],
+          },
+        },
+        resources: {
+          requests: {
+            cpu: "100m",
+          },
+          limits: {
+            memory: "1Gi",
+          },
+        },
+        serviceMonitor: {
+          enabled: true,
+        },
+      },
+      cleanupController: {
+        serviceMonitor: {
+          enabled: true,
+        },
+      },
+      reportsController: {
+        serviceMonitor: {
+          enabled: true,
+        },
+        resources: {
+          limits: {
+            memory: "3072Mi",
+          },
+          requests: {
+            cpu: "100m",
+            memory: "1024Mi",
+          },
+        },
+      },
+    },
+  },
+}

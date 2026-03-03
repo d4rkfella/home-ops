@@ -1,133 +1,198 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app seerr
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template
-  dependsOn:
-    - name: volsync
-      namespace: volsync-system
-  values:
-    controllers:
-      seerr:
-        annotations:
-          reloader.stakater.com/auto: "true"
-
-        containers:
-          app:
-            image:
-              repository: ghcr.io/d4rkfella/seerr
-              tag: 3.1.0@sha256:b66a1939d46714b362cdb8a0deae0812840539a6661a15a43c4fd77bd0e8479f
-            env:
-              TZ: Europe/Sofia
-              LOG_LEVEL: "info"
-              PORT: &port 80
-              DB_TYPE: postgres
-              DB_HOST: postgres-db-rw.database.svc.cluster.local
-              DB_NAME: seerr
-              DB_USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret seerr-secret
-                    key: POSTGRES_USERNAME
-              DB_PASS:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASSWORD
-              DB_USE_SSL: "true"
-              DB_SSL_CA_FILE: /etc/ssl/certs/postgres-ca.crt
-              DB_LOG_QUERIES: "false"
-              DB_SSL_REJECT_UNAUTHORIZED: "true"
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/v1/status
-                    port: *port
-                  initialDelaySeconds: 2
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: true
-                spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 10m
-                memory: 512Mi
-              limits:
-                memory: 2Gi
-
-    defaultPodOptions:
-      hostUsers: false
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
-
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: *port
-
-    route:
-      app:
-        annotations:
-          gatus.home-operations.com/endpoint: |-
-            url: https://{{ .Release.Name }}.darkfellanetwork.com/api/v1/status
-        hostnames:
-          - "requests.darkfellanetwork.com"
-          - "{{ .Release.Name }}.darkfellanetwork.com"
-        parentRefs:
-          - name: external
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-
-    persistence:
-      config:
-        existingClaim: *app
-        globalMounts:
-          - path: /usr/lib/seerr/config
-      cache:
-        suffix: cache
-        type: persistentVolumeClaim
-        size: 20Gi
-        accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-128k
-        globalMounts:
-          - path: /usr/lib/seerr/config/cache
-      logs:
-        type: emptyDir
-        globalMounts:
-          - path: /usr/lib/seerr/config/logs
-      postgres-ca:
-        type: secret
-        name: *secret
-        globalMounts:
-          - path: /etc/ssl/certs/postgres-ca.crt
-            subPath: ca.crt
-            readOnly: true
+{
+  # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "seerr",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "app-template",
+    },
+    dependsOn: [{
+      name: "volsync",
+      namespace: "volsync-system",
+    }],
+    values: {
+      controllers: {
+        seerr: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/d4rkfella/seerr",
+                tag: "3.1.0@sha256:b66a1939d46714b362cdb8a0deae0812840539a6661a15a43c4fd77bd0e8479f",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+                LOG_LEVEL: "info",
+                PORT: 80,
+                DB_TYPE: "postgres",
+                DB_HOST: "postgres-db-rw.database.svc.cluster.local",
+                DB_NAME: "seerr",
+                DB_USER: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "seerr-secret",
+                      key: "POSTGRES_USERNAME",
+                    },
+                  },
+                },
+                DB_PASS: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "seerr-secret",
+                      key: "POSTGRES_PASSWORD",
+                    },
+                  },
+                },
+                DB_USE_SSL: "true",
+                DB_SSL_CA_FILE: "/etc/ssl/certs/postgres-ca.crt",
+                DB_LOG_QUERIES: "false",
+                DB_SSL_REJECT_UNAUTHORIZED: "true",
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/v1/status",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 2,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/v1/status",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 2,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+                startup: {
+                  enabled: true,
+                  spec: {
+                    failureThreshold: 30,
+                    periodSeconds: 10,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "10m",
+                  memory: "512Mi",
+                },
+                limits: {
+                  memory: "2Gi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        hostUsers: false,
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "seerr",
+          ports: {
+            http: {
+              port: 80,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          annotations: {
+            gatus.home-operations.com/endpoint: "url: https://{{ .Release.Name }}.darkfellanetwork.com/api/v1/status",
+          },
+          hostnames: [
+            "requests.darkfellanetwork.com",
+            "{{ .Release.Name }}.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "external",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "seerr",
+              port: 80,
+            }],
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          existingClaim: "seerr",
+          globalMounts: [{
+            path: "/usr/lib/seerr/config",
+          }],
+        },
+        cache: {
+          suffix: "cache",
+          type: "persistentVolumeClaim",
+          size: "20Gi",
+          accessMode: "ReadWriteOnce",
+          storageClass: "openebs-zfs-128k",
+          globalMounts: [{
+            path: "/usr/lib/seerr/config/cache",
+          }],
+        },
+        logs: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/usr/lib/seerr/config/logs",
+          }],
+        },
+        postgres-ca: {
+          type: "secret",
+          name: "seerr-secret",
+          globalMounts: [{
+            path: "/etc/ssl/certs/postgres-ca.crt",
+            subPath: "ca.crt",
+            readOnly: true,
+          }],
+        },
+      },
+    },
+  },
+}

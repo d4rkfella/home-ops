@@ -1,13 +1,19 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: OCIRepository
-metadata:
-  name: kyverno
-spec:
-  interval: 1h
-  layerSelector:
-    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
-    operation: copy
-  url: oci://ghcr.io/kyverno/charts/kyverno
-  ref:
-    tag: 3.7.1
+{
+  apiVersion: "source.toolkit.fluxcd.io/v1",
+  kind: "OCIRepository",
+  metadata: {
+    name: "kyverno",
+  },
+  spec: {
+    interval: "1h",
+    layerSelector: {
+      mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip",
+      operation: "copy",
+    },
+    url: "oci://ghcr.io/kyverno/charts/kyverno",
+    ref: {
+      tag: "3.7.1",
+    },
+  },
+}

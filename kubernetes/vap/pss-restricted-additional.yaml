@@ -1,132 +1,170 @@
 ---
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingAdmissionPolicy
-metadata:
-  name: restricted-pss-policy
-spec:
-  failurePolicy: Fail
-  matchConstraints:
-    resourceRules:
-      - apiGroups:
-          - ""
-        apiVersions:
-          - "v1"
-        operations:
-          - "CREATE"
-          - "UPDATE"
-        resources:
-          - "pods"
-  validations:
-    # 1. Enforce runAsNonRoot at Pod level
-    - expression: |
-        !has(object.spec.containers) ||
-        object.spec.containers.all(c,
-          ( has(c.securityContext) &&
-            has(c.securityContext.runAsNonRoot) &&
-            c.securityContext.runAsNonRoot
-          ) ||
-          (
-            ( !has(c.securityContext) ||
-              !has(c.securityContext.runAsNonRoot)
-            ) &&
-            ( has(object.spec.securityContext) &&
-              has(object.spec.securityContext.runAsNonRoot) &&
-              object.spec.securityContext.runAsNonRoot
-            )
-          )
-        )
-      message: "Each container must set securityContext.runAsNonRoot to true, unless Pod securityContext.runAsNonRoot is set to true"
-
-    # 2. Disallow privilege escalation in all containers
-    - expression: |
-        !has(object.spec.containers) ||
-        object.spec.containers.all(c,
-          has(c.securityContext) &&
-          has(c.securityContext.allowPrivilegeEscalation) &&
-          c.securityContext.allowPrivilegeEscalation == false
-        )
-      message: "All containers must set securityContext.allowPrivilegeEscalation=false"
-
-    # 3. Disallow privilege escalation in initContainers
-    - expression: |
-        !has(object.spec.initContainers) ||
-        object.spec.initContainers.all(c,
-          has(c.securityContext) &&
-          has(c.securityContext.allowPrivilegeEscalation) &&
-          c.securityContext.allowPrivilegeEscalation == false
-        )
-      message: "All initContainers must set securityContext.allowPrivilegeEscalation=false"
-
-    # 4. Require dropCapabilities=ALL in all containers
-    - expression: |
-        !has(object.spec.containers) ||
-        object.spec.containers.all(c,
-          has(c.securityContext) &&
-          has(c.securityContext.capabilities) &&
-          has(c.securityContext.capabilities.drop) &&
-          c.securityContext.capabilities.drop.exists(cap, cap == "ALL")
-        )
-      message: "All containers must drop all capabilities (capabilities.drop must include \"ALL\")"
-
-    # 5. Enforce readOnlyRootFilesystem in all containers
-    - expression: |
-        !has(object.spec.containers) ||
-        object.spec.containers.all(c,
-          has(c.securityContext) &&
-          has(c.securityContext.readOnlyRootFilesystem) &&
-          c.securityContext.readOnlyRootFilesystem == true
-        )
-      message: "All containers must set securityContext.readOnlyRootFilesystem=true"
-
-    # 6. Enforce seccomp profile
-    - expression: |
-        !has(object.spec.containers) ||
-        object.spec.containers.all(c,
-          ( has(c.securityContext) &&
-            has(c.securityContext.seccompProfile) &&
-            has(c.securityContext.seccompProfile.type) &&
-            ( c.securityContext.seccompProfile.type == "RuntimeDefault" ||
-              c.securityContext.seccompProfile.type == "Localhost"
-            )
-          ) ||
-          (
-            ( !has(c.securityContext) ||
-              !has(c.securityContext.seccompProfile) ||
-              !has(c.securityContext.seccompProfile.type)
-            ) &&
-            ( has(object.spec.securityContext) &&
-              has(object.spec.securityContext.seccompProfile) &&
-              has(object.spec.securityContext.seccompProfile.type) &&
-              ( object.spec.securityContext.seccompProfile.type == "RuntimeDefault" ||
-                object.spec.securityContext.seccompProfile.type == "Localhost"
-              )
-            )
-          )
-        )
-      message: "Each container must set securityContext.seccompProfile.type to RuntimeDefault or Localhost, unless Pod securityContext.seccompProfile.type is set to RuntimeDefault or Localhost"
+{
+  apiVersion: "admissionregistration.k8s.io/v1",
+  kind: "ValidatingAdmissionPolicy",
+  metadata: {
+    name: "restricted-pss-policy",
+  },
+  spec: {
+    failurePolicy: "Fail",
+    matchConstraints: {
+      resourceRules: [{
+        apiGroups: [
+          "",
+        ],
+        apiVersions: [
+          "v1",
+        ],
+        operations: [
+          "CREATE",
+          "UPDATE",
+        ],
+        resources: [
+          "pods",
+        ],
+      }],
+    },
+    validations: [
+      # 1. Enforce runAsNonRoot at Pod level
+      {
+        expression: "\
+           !has(object.spec.containers) ||\n\
+           object.spec.containers.all(c,\n\
+          \  ( has(c.securityContext) &&\n\
+          \    has(c.securityContext.runAsNonRoot) &&\n\
+          \    c.securityContext.runAsNonRoot\n\
+          \  ) ||\n\
+          \  (\n\
+          \    ( !has(c.securityContext) ||\n\
+          \      !has(c.securityContext.runAsNonRoot)\n\
+          \    ) &&\n\
+          \    ( has(object.spec.securityContext) &&\n\
+          \      has(object.spec.securityContext.runAsNonRoot) &&\n\
+          \      object.spec.securityContext.runAsNonRoot\n\
+          \    )\n\
+          \  )\n\
+           )\n\
+          ",
+        message: "Each container must set securityContext.runAsNonRoot to true, unless Pod securityContext.runAsNonRoot is set to true",
+      },
+      # 2. Disallow privilege escalation in all containers
+      {
+        expression: "\
+           !has(object.spec.containers) ||\n\
+           object.spec.containers.all(c,\n\
+          \  has(c.securityContext) &&\n\
+          \  has(c.securityContext.allowPrivilegeEscalation) &&\n\
+          \  c.securityContext.allowPrivilegeEscalation == false\n\
+           )\n\
+          ",
+        message: "All containers must set securityContext.allowPrivilegeEscalation=false",
+      },
+      # 3. Disallow privilege escalation in initContainers
+      {
+        expression: "\
+           !has(object.spec.initContainers) ||\n\
+           object.spec.initContainers.all(c,\n\
+          \  has(c.securityContext) &&\n\
+          \  has(c.securityContext.allowPrivilegeEscalation) &&\n\
+          \  c.securityContext.allowPrivilegeEscalation == false\n\
+           )\n\
+          ",
+        message: "All initContainers must set securityContext.allowPrivilegeEscalation=false",
+      },
+      # 4. Require dropCapabilities=ALL in all containers
+      {
+        expression: "\
+           !has(object.spec.containers) ||\n\
+           object.spec.containers.all(c,\n\
+          \  has(c.securityContext) &&\n\
+          \  has(c.securityContext.capabilities) &&\n\
+          \  has(c.securityContext.capabilities.drop) &&\n\
+          \  c.securityContext.capabilities.drop.exists(cap, cap == \"ALL\")\n\
+           )\n\
+          ",
+        message: "All containers must drop all capabilities (capabilities.drop must include \"ALL\")",
+      },
+      # 5. Enforce readOnlyRootFilesystem in all containers
+      {
+        expression: "\
+           !has(object.spec.containers) ||\n\
+           object.spec.containers.all(c,\n\
+          \  has(c.securityContext) &&\n\
+          \  has(c.securityContext.readOnlyRootFilesystem) &&\n\
+          \  c.securityContext.readOnlyRootFilesystem == true\n\
+           )\n\
+          ",
+        message: "All containers must set securityContext.readOnlyRootFilesystem=true",
+      },
+      # 6. Enforce seccomp profile
+      {
+        expression: "\
+           !has(object.spec.containers) ||\n\
+           object.spec.containers.all(c,\n\
+          \  ( has(c.securityContext) &&\n\
+          \    has(c.securityContext.seccompProfile) &&\n\
+          \    has(c.securityContext.seccompProfile.type) &&\n\
+          \    ( c.securityContext.seccompProfile.type == \"RuntimeDefault\" ||\n\
+          \      c.securityContext.seccompProfile.type == \"Localhost\"\n\
+          \    )\n\
+          \  ) ||\n\
+          \  (\n\
+          \    ( !has(c.securityContext) ||\n\
+          \      !has(c.securityContext.seccompProfile) ||\n\
+          \      !has(c.securityContext.seccompProfile.type)\n\
+          \    ) &&\n\
+          \    ( has(object.spec.securityContext) &&\n\
+          \      has(object.spec.securityContext.seccompProfile) &&\n\
+          \      has(object.spec.securityContext.seccompProfile.type) &&\n\
+          \      ( object.spec.securityContext.seccompProfile.type == \"RuntimeDefault\" ||\n\
+          \        object.spec.securityContext.seccompProfile.type == \"Localhost\"\n\
+          \      )\n\
+          \    )\n\
+          \  )\n\
+           )\n\
+          ",
+        message: "Each container must set securityContext.seccompProfile.type to RuntimeDefault or Localhost, unless Pod securityContext.seccompProfile.type is set to RuntimeDefault or Localhost",
+      },
+    ],
+  },
+}
 ---
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingAdmissionPolicyBinding
-metadata:
-  name: restricted-pss-binding
-spec:
-  policyName: restricted-pss-policy
-  validationActions:
-    - "Deny"
-  matchResources:
-    resourceRules:
-      - apiGroups:
-          - ""
-        apiVersions:
-          - "v1"
-        resources:
-          - "pods"
-        operations:
-          - "CREATE"
-          - "UPDATE"
-    namespaceSelector:
-      matchExpressions:
-        - key: pod-security.kubernetes.io/enforce
-          operator: In
-          values:
-            - "restricted"
+{
+  apiVersion: "admissionregistration.k8s.io/v1",
+  kind: "ValidatingAdmissionPolicyBinding",
+  metadata: {
+    name: "restricted-pss-binding",
+  },
+  spec: {
+    policyName: "restricted-pss-policy",
+    validationActions: [
+      "Deny",
+    ],
+    matchResources: {
+      resourceRules: [{
+        apiGroups: [
+          "",
+        ],
+        apiVersions: [
+          "v1",
+        ],
+        resources: [
+          "pods",
+        ],
+        operations: [
+          "CREATE",
+          "UPDATE",
+        ],
+      }],
+      namespaceSelector: {
+        matchExpressions: [{
+          key: "pod-security.kubernetes.io/enforce",
+          operator: "In",
+          values: [
+            "restricted",
+          ],
+        }],
+      },
+    },
+  },
+}

@@ -1,23 +1,35 @@
 ---
-apiVersion: cdi.kubevirt.io/v1beta1
-kind: CDI
-metadata:
-  name: cdi
-spec:
-  imagePullPolicy: IfNotPresent
-  infra:
-    nodeSelector:
-      kubernetes.io/os: linux
-    tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-  workload:
-    nodeSelector:
-      kubernetes.io/os: linux
-  config:
-    scratchSpaceStorageClass: openebs-zfs-128k
-    podResourceRequirements:
-      requests:
-        cpu: "100m"
-        memory: "60M"
-    uploadProxyURLOverride: "https://cdi-uploadproxy.darkfellanetwork.com"
+{
+  apiVersion: "cdi.kubevirt.io/v1beta1",
+  kind: "CDI",
+  metadata: {
+    name: "cdi",
+  },
+  spec: {
+    imagePullPolicy: "IfNotPresent",
+    infra: {
+      nodeSelector: {
+        kubernetes.io/os: "linux",
+      },
+      tolerations: [{
+        key: "CriticalAddonsOnly",
+        operator: "Exists",
+      }],
+    },
+    workload: {
+      nodeSelector: {
+        kubernetes.io/os: "linux",
+      },
+    },
+    config: {
+      scratchSpaceStorageClass: "openebs-zfs-128k",
+      podResourceRequirements: {
+        requests: {
+          cpu: "100m",
+          memory: "60M",
+        },
+      },
+      uploadProxyURLOverride: "https://cdi-uploadproxy.darkfellanetwork.com",
+    },
+  },
+}

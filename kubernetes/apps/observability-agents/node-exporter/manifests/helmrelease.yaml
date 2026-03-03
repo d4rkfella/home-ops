@@ -1,35 +1,51 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app node-exporter
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: prometheus-node-exporter
-  values:
-    fullnameOverride: *app
-    podLabels:
-      jobLabel: node-exporter
-    releaseLabel: true
-    extraArgs:
-      - --collector.filesystem.mount-points-exclude=^/(dev|etc|proc|run/containerd/.+|sys|var/lib/kubelet/.+)($|/)
-      - --collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$
-    service:
-      portName: http-metrics
-    prometheus:
-      monitor:
-        enabled: true
-        jobLabel: jobLabel
-        attachMetadata:
-          node: true
-        relabelings:
-          - sourceLabels:
-              - __meta_kubernetes_pod_node_name
-            targetLabel: instance
-        metricRelabelings:
-          - action: labeldrop
-            regex: (pod)
-    rbac:
-      pspEnabled: false
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "node-exporter",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "prometheus-node-exporter",
+    },
+    values: {
+      fullnameOverride: "node-exporter",
+      podLabels: {
+        jobLabel: "node-exporter",
+      },
+      releaseLabel: true,
+      extraArgs: [
+        "--collector.filesystem.mount-points-exclude=^/(dev|etc|proc|run/containerd/.+|sys|var/lib/kubelet/.+)($|/)",
+        "--collector.filesystem.fs-types-exclude=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|sysfs|tracefs)$",
+      ],
+      service: {
+        portName: "http-metrics",
+      },
+      prometheus: {
+        monitor: {
+          enabled: true,
+          jobLabel: "jobLabel",
+          attachMetadata: {
+            node: true,
+          },
+          relabelings: [{
+            sourceLabels: [
+              "__meta_kubernetes_pod_node_name",
+            ],
+            targetLabel: "instance",
+          }],
+          metricRelabelings: [{
+            action: "labeldrop",
+            regex: "(pod)",
+          }],
+        },
+      },
+      rbac: {
+        pspEnabled: false,
+      },
+    },
+  },
+}

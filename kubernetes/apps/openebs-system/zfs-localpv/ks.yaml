@@ -1,18 +1,25 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: &app zfs-localpv
-spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/openebs-system/zfs-localpv/manifests
-  prune: false
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-    namespace: flux-system
-  interval: 1h
-  timeout: 5m
-  retryInterval: 2m
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "zfs-localpv",
+  },
+  spec: {
+    commonMetadata: {
+      labels: {
+        app.kubernetes.io/name: "zfs-localpv",
+      },
+    },
+    path: "./kubernetes/apps/openebs-system/zfs-localpv/manifests",
+    prune: false,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    interval: "1h",
+    timeout: "5m",
+    retryInterval: "2m",
+  },
+}

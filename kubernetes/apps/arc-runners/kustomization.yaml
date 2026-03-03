@@ -1,11 +1,16 @@
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-resources:
-  - ./namespace.yaml
-  - ./common/ks.yaml
-  - ./home-ops-runner/ks.yaml
-components:
-  - ../../components/common
-transformers:
-  - ./transformers
+{
+  apiVersion: "kustomize.config.k8s.io/v1beta1",
+  kind: "Kustomization",
+  resources: [
+    "./namespace.yaml",
+    "./common/ks.yaml",
+    "./home-ops-runner/ks.yaml",
+  ],
+  components: [
+    "../../components/common",
+  ],
+  transformers: [
+    "./transformers",
+  ],
+}

@@ -1,261 +1,331 @@
 ---
-helmDefaults:
-  cleanupOnFail: true
-  wait: true
-  waitForJobs: true
-
-releases:
-  - name: cilium
-    namespace: kube-system
-    chart: oci://quay.io/cilium/charts/cilium
-    version: 1.19.1
-    values: ['./templates/values.yaml.gotmpl']
-    hooks:
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=kube-system
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../../kubernetes/apps/kube-system/cilium/manifests/config.yaml
-        showlogs: true
-
-  - name: coredns
-    namespace: kube-system
-    chart: oci://ghcr.io/coredns/charts/coredns
-    version: 1.45.2
-    values:
-      - "./templates/values.yaml.gotmpl"
-    needs:
-      - "kube-system/cilium"
-
-  - name: kubelet-csr-approver
-    namespace: kube-system
-    chart: oci://ghcr.io/postfinance/charts/kubelet-csr-approver
-    version: 1.2.13
-    values:
-      - "./templates/values.yaml.gotmpl"
-    needs:
-      - "kube-system/coredns"
-
-  - name: cert-manager
-    namespace: cert-manager
-    chart: oci://quay.io/jetstack/charts/cert-manager
-    version: v1.19.4
-    values:
-      - "./templates/values.yaml.gotmpl"
-    needs:
-      - "kube-system/kubelet-csr-approver"
-    hooks:
-      - events:
-          - "postsync"
-        command: sh
-        args:
-          - -c
-          - |
-            sops -d ../../kubernetes/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --namespace=cert-manager --field-manager=kustomize-controller -f -
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=cert-manager
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../../kubernetes/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml
-        showlogs: true
-
-  - name: zfs-localpv
-    namespace: openebs-system
-    chart: oci://ghcr.io/openebs/charts/zfs-localpv
-    version: 2.9.1
-    values: ['./templates/values.yaml.gotmpl']
-    needs: ['cert-manager/cert-manager']
-    hooks:
-      - events:
-          - "presync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=kube-system
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../create-zpool.yaml
-        showlogs: true
-      - events:
-          - "presync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=openebs-system
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../../kubernetes/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml
-          - -f
-          - ../../kubernetes/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml
-
-  - name: vault
-    namespace: vault
-    chart: oci://ghcr.io/d4rkfella/charts-mirror/vault
-    version: 0.32.0
-    values:
-      - "./templates/values.yaml.gotmpl"
-    needs:
-      - "cert-manager/cert-manager"
-    hooks:
-      - events:
-          - "presync"
-        command: sh
-        args:
-          - -c
-          - |
-            sops -d ../../kubernetes/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --namespace=vault --field-manager=kustomize-controller -f -
-        showlogs: true
-      - events:
-          - "presync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=vault
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../../kubernetes/apps/vault/vault/manifests/certificate.yaml
-        showlogs: true
-      - events:
-          - "postsync"
-        command: home-ops-cli
-        args:
-          - vault
-          - bootstrap
-          - --s3-bucket
-          - hashicorp-vault-backup
-          - --aws-profile
-          - cloudflare
-        showlogs: true
-
-  - name: external-secrets
-    namespace: external-secrets
-    chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    version: 2.0.1
-    values:
-      - "./templates/values.yaml.gotmpl"
+{
+  helmDefaults: {
+    cleanupOnFail: true,
+    wait: true,
+    waitForJobs: true,
+  },
+  releases: [{
+    name: "cilium",
+    namespace: "kube-system",
+    chart: "oci://quay.io/cilium/charts/cilium",
+    version: "1.19.1",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=kube-system",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/kube-system/cilium/manifests/config.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "coredns",
+    namespace: "kube-system",
+    chart: "oci://ghcr.io/coredns/charts/coredns",
+    version: "1.45.2",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "kube-system/cilium",
+    ],
+  }, {
+    name: "kubelet-csr-approver",
+    namespace: "kube-system",
+    chart: "oci://ghcr.io/postfinance/charts/kubelet-csr-approver",
+    version: "1.2.13",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "kube-system/coredns",
+    ],
+  }, {
+    name: "cert-manager",
+    namespace: "cert-manager",
+    chart: "oci://quay.io/jetstack/charts/cert-manager",
+    version: "v1.19.4",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "kube-system/kubelet-csr-approver",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           sops -d ../../kubernetes/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --namespace=cert-manager --field-manager=kustomize-controller -f -\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=cert-manager",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "zfs-localpv",
+    namespace: "openebs-system",
+    chart: "oci://ghcr.io/openebs/charts/zfs-localpv",
+    version: "2.9.1",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=kube-system",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../create-zpool.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.4.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=openebs-system",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml",
+        "-f",
+        "../../kubernetes/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml",
+      ],
+    }],
+  }, {
+    name: "vault",
+    namespace: "vault",
+    chart: "oci://ghcr.io/d4rkfella/charts-mirror/vault",
+    version: "0.32.0",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           sops -d ../../kubernetes/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --namespace=vault --field-manager=kustomize-controller -f -\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=vault",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/vault/vault/manifests/certificate.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "home-ops-cli",
+      args: [
+        "vault",
+        "bootstrap",
+        "--s3-bucket",
+        "hashicorp-vault-backup",
+        "--aws-profile",
+        "cloudflare",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "external-secrets",
+    namespace: "external-secrets",
+    chart: "oci://ghcr.io/external-secrets/charts/external-secrets",
+    version: "2.0.1",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
     #needs: ['vault/vault']
-    hooks:
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=cert-manager
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - ../../kubernetes/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml
-
-  - name: multus
-    namespace: kube-system
-    chart: oci://ghcr.io/bjw-s-labs/helm/multus
-    version: 1.2.0
-    values:
-      - "./templates/values.yaml.gotmpl"
-    needs:
-      - "cert-manager/cert-manager"
-    hooks:
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=kubevirt
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - --kustomize
-          - ../../kubernetes/apps/kubevirt/kubevirt-operator/manifests
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=kubevirt
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - --kustomize
-          - ../../kubernetes/apps/kubevirt/kubevirt-instance/manifests
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=cdi
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - --kustomize
-          - ../../kubernetes/apps/cdi/cdi-operator/manifests
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=cdi
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - --kustomize
-          - ../../kubernetes/apps/cdi/cdi-instance/manifests
-        showlogs: true
-      - events:
-          - "postsync"
-        command: home-ops-cli
-        args:
-          - kubernetes
-          - wait
-          - deployment/virt-operator,virt-controller,virt-api@kubevirt
-          - deployment/cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver@cdi
-          - daemonset/virt-handler@kubevirt
-        showlogs: true
-      - events:
-          - "postsync"
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --namespace=virtualization
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - --kustomize
-          - ../../kubernetes/apps/virtualization/truenas-scale/manifests
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=cert-manager",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml",
+      ],
+    }],
+  }, {
+    name: "multus",
+    namespace: "kube-system",
+    chart: "oci://ghcr.io/bjw-s-labs/helm/multus",
+    version: "1.2.0",
+    values: [
+      "./templates/values.yaml.gotmpl",
+    ],
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=kubevirt",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "--kustomize",
+        "../../kubernetes/apps/kubevirt/kubevirt-operator/manifests",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=kubevirt",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "--kustomize",
+        "../../kubernetes/apps/kubevirt/kubevirt-instance/manifests",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=cdi",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "--kustomize",
+        "../../kubernetes/apps/cdi/cdi-operator/manifests",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=cdi",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "--kustomize",
+        "../../kubernetes/apps/cdi/cdi-instance/manifests",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "home-ops-cli",
+      args: [
+        "kubernetes",
+        "wait",
+        "deployment/virt-operator,virt-controller,virt-api@kubevirt",
+        "deployment/cdi-uploadproxy,cdi-operator,cdi-deployment,cdi-apiserver@cdi",
+        "daemonset/virt-handler@kubevirt",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=virtualization",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "--kustomize",
+        "../../kubernetes/apps/virtualization/truenas-scale/manifests",
+      ],
+    }],
+  }],
+}

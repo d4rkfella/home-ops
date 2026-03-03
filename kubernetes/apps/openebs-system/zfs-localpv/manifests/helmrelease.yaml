@@ -1,48 +1,70 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: zfs-localpv
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: zfs-localpv
-  values:
-    crds:
-      csi:
-        volumeSnapshots:
-          enabled: false
-    zfsNode:
-      encrKeysDir: /var/openebs/keys
-      driverRegistrar:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/csi-node-driver-registrar
-          tag: v2.16.0
-    zfsController:
-      resizer:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/csi-resizer
-          tag: v2.1.0
-      snapshotter:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/csi-snapshotter
-          tag: v8.5.0
-      snapshotController:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/snapshot-controller
-          tag: v8.5.0
-      provisioner:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/csi-provisioner
-          tag: v6.2.0
-    zfs:
-      bin: /usr/local/sbin/zfs
-
-    analytics:
-      enabled: false
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "zfs-localpv",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "zfs-localpv",
+    },
+    values: {
+      crds: {
+        csi: {
+          volumeSnapshots: {
+            enabled: false,
+          },
+        },
+      },
+      zfsNode: {
+        encrKeysDir: "/var/openebs/keys",
+        driverRegistrar: {
+          image: {
+            registry: "registry.k8s.io/",
+            repository: "sig-storage/csi-node-driver-registrar",
+            tag: "v2.16.0",
+          },
+        },
+      },
+      zfsController: {
+        resizer: {
+          image: {
+            registry: "registry.k8s.io/",
+            repository: "sig-storage/csi-resizer",
+            tag: "v2.1.0",
+          },
+        },
+        snapshotter: {
+          image: {
+            registry: "registry.k8s.io/",
+            repository: "sig-storage/csi-snapshotter",
+            tag: "v8.5.0",
+          },
+        },
+        snapshotController: {
+          image: {
+            registry: "registry.k8s.io/",
+            repository: "sig-storage/snapshot-controller",
+            tag: "v8.5.0",
+          },
+        },
+        provisioner: {
+          image: {
+            registry: "registry.k8s.io/",
+            repository: "sig-storage/csi-provisioner",
+            tag: "v6.2.0",
+          },
+        },
+      },
+      zfs: {
+        bin: "/usr/local/sbin/zfs",
+      },
+      analytics: {
+        enabled: false,
+      },
+    },
+  },
+}

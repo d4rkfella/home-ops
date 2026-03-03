@@ -1,204 +1,306 @@
 ---
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: &app gatus
-spec:
-  interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: app-template
-  values:
-    controllers:
-      gatus:
-        annotations:
-          reloader.stakater.com/auto: "true"
-        initContainers:
-          gatus-sidecar:
-            image:
-              repository: ghcr.io/home-operations/gatus-sidecar
-              tag: 0.0.13@sha256:40d549ea5ae89acac94bdf4cee1233e718a96c6e382c67f7e28de688511169d2
-            args:
-              - --auto-httproute
-              - --enable-httproute
-              - --enable-service
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 64Mi
-            restartPolicy: Always
-        containers:
-          app:
-            image:
-              repository: ghcr.io/twin/gatus
-              tag: v5.35.0@sha256:21609f31be8c4e680ce3004b24276305666239c99aff58391503f3fb6142f39d
-            env:
-              TZ: Europe/Sofia
-              GATUS_CONFIG_PATH: /config
-              GATUS_DELAY_START_SECONDS: 5
-              WEB_PORT: &port 80
-              POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
-              POSTGRES_PORT: 5432
-              POSTGRES_DBNAME: gatus
-              POSTGRES_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: &secret gatus-secret
-                    key: POSTGRES_USERNAME
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: POSTGRES_PASSWORD
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_TOKEN
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: PUSHOVER_USER_KEY
-              OIDC_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: *secret
-                    key: OIDC_CLIENT_SECRET
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 100m
-              limits:
-                memory: 256Mi
-
-    defaultPodOptions:
-      hostUsers: false
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 65532
-        runAsGroup: 65532
-        fsGroup: 65532
-        fsGroupChangePolicy: OnRootMismatch
-        seccompProfile: {type: RuntimeDefault}
-
-    service:
-      app:
-        controller: gatus
-        ports:
-          http:
-            port: *port
-
-    serviceMonitor:
-      app:
-        serviceName: gatus
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
-
-    route:
-      app:
-        hostnames:
-          - "status.darkfellanetwork.com"
-          - "{{ .Release.Name }}.darkfellanetwork.com"
-        annotations:
-          gatus.home-operations.com/enabled: "true"
-          gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 200"]
-        parentRefs:
-          - name: external
-            namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
-
-    persistence:
-      config:
-        type: emptyDir
-      config-file:
-        type: configMap
-        name: gatus-configmap
-        globalMounts:
-          - path: /config/config.yaml
-            subPath: config.yaml
-            readOnly: true
-      postgres-ca:
-        type: secret
-        name: *secret
-        advancedMounts:
-          gatus:
-            app:
-              - path: /etc/ssl/certs/postgres-ca.crt
-                subPath: ca.crt
-                readOnly: true
-
-    rbac:
-      roles:
-        gatus:
-          type: ClusterRole
-          rules:
-            - apiGroups:
-                - ""
-              resources:
-                - "configmaps"
-              verbs:
-                - "get"
-                - "watch"
-                - "list"
-            - apiGroups:
-                - ""
-              resources:
-                - "services"
-              verbs:
-                - "get"
-                - "list"
-                - "watch"
-            - apiGroups:
-                - "networking.k8s.io"
-              resources:
-                - "ingresses"
-              verbs:
-                - "get"
-                - "list"
-                - "watch"
-            - apiGroups:
-                - "gateway.networking.k8s.io"
-              resources:
-                - "httproutes"
-                - "gateways"
-              verbs:
-                - "get"
-                - "list"
-                - "watch"
-      bindings:
-        gatus:
-          type: ClusterRoleBinding
-          roleRef:
-            identifier: gatus
-          subjects:
-            - identifier: gatus
-
-    serviceAccount:
-      gatus: {}
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "gatus",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "app-template",
+    },
+    values: {
+      controllers: {
+        gatus: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          initContainers: {
+            gatus-sidecar: {
+              image: {
+                repository: "ghcr.io/home-operations/gatus-sidecar",
+                tag: "0.0.13@sha256:40d549ea5ae89acac94bdf4cee1233e718a96c6e382c67f7e28de688511169d2",
+              },
+              args: [
+                "--auto-httproute",
+                "--enable-httproute",
+                "--enable-service",
+              ],
+              resources: {
+                requests: {
+                  cpu: "10m",
+                },
+                limits: {
+                  memory: "64Mi",
+                },
+              },
+              restartPolicy: "Always",
+            },
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/twin/gatus",
+                tag: "v5.35.0@sha256:21609f31be8c4e680ce3004b24276305666239c99aff58391503f3fb6142f39d",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+                GATUS_CONFIG_PATH: "/config",
+                GATUS_DELAY_START_SECONDS: 5,
+                WEB_PORT: 80,
+                POSTGRES_HOST: "postgres-db-rw.database.svc.cluster.local",
+                POSTGRES_PORT: 5432,
+                POSTGRES_DBNAME: "gatus",
+                POSTGRES_USERNAME: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "gatus-secret",
+                      key: "POSTGRES_USERNAME",
+                    },
+                  },
+                },
+                POSTGRES_PASSWORD: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "gatus-secret",
+                      key: "POSTGRES_PASSWORD",
+                    },
+                  },
+                },
+                PUSHOVER_TOKEN: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "gatus-secret",
+                      key: "PUSHOVER_TOKEN",
+                    },
+                  },
+                },
+                PUSHOVER_USER_KEY: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "gatus-secret",
+                      key: "PUSHOVER_USER_KEY",
+                    },
+                  },
+                },
+                OIDC_CLIENT_SECRET: {
+                  valueFrom: {
+                    secretKeyRef: {
+                      name: "gatus-secret",
+                      key: "OIDC_CLIENT_SECRET",
+                    },
+                  },
+                },
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/health",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 0,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/health",
+                      port: 80,
+                    },
+                    initialDelaySeconds: 0,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "100m",
+                },
+                limits: {
+                  memory: "256Mi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        hostUsers: false,
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "gatus",
+          ports: {
+            http: {
+              port: 80,
+            },
+          },
+        },
+      },
+      serviceMonitor: {
+        app: {
+          serviceName: "gatus",
+          endpoints: [{
+            port: "http",
+            scheme: "http",
+            path: "/metrics",
+            interval: "1m",
+            scrapeTimeout: "10s",
+          }],
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "status.darkfellanetwork.com",
+            "{{ .Release.Name }}.darkfellanetwork.com",
+          ],
+          annotations: {
+            gatus.home-operations.com/enabled: "true",
+            gatus.home-operations.com/endpoint: "conditions: [\"[STATUS] == 200\"]",
+          },
+          parentRefs: [{
+            name: "external",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "gatus",
+              port: 80,
+            }],
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          type: "emptyDir",
+        },
+        config-file: {
+          type: "configMap",
+          name: "gatus-configmap",
+          globalMounts: [{
+            path: "/config/config.yaml",
+            subPath: "config.yaml",
+            readOnly: true,
+          }],
+        },
+        postgres-ca: {
+          type: "secret",
+          name: "gatus-secret",
+          advancedMounts: {
+            gatus: {
+              app: [{
+                path: "/etc/ssl/certs/postgres-ca.crt",
+                subPath: "ca.crt",
+                readOnly: true,
+              }],
+            },
+          },
+        },
+      },
+      rbac: {
+        roles: {
+          gatus: {
+            type: "ClusterRole",
+            rules: [{
+              apiGroups: [
+                "",
+              ],
+              resources: [
+                "configmaps",
+              ],
+              verbs: [
+                "get",
+                "watch",
+                "list",
+              ],
+            }, {
+              apiGroups: [
+                "",
+              ],
+              resources: [
+                "services",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+              ],
+            }, {
+              apiGroups: [
+                "networking.k8s.io",
+              ],
+              resources: [
+                "ingresses",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+              ],
+            }, {
+              apiGroups: [
+                "gateway.networking.k8s.io",
+              ],
+              resources: [
+                "httproutes",
+                "gateways",
+              ],
+              verbs: [
+                "get",
+                "list",
+                "watch",
+              ],
+            }],
+          },
+        },
+        bindings: {
+          gatus: {
+            type: "ClusterRoleBinding",
+            roleRef: {
+              identifier: "gatus",
+            },
+            subjects: [{
+              identifier: "gatus",
+            }],
+          },
+        },
+      },
+      serviceAccount: {
+        gatus: {},
+      },
+    },
+  },
+}

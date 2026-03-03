@@ -1,79 +1,99 @@
 ---
-apiVersion: k8s.keycloak.org/v2alpha1
-kind: Keycloak
-metadata:
-  name: keycloak
-spec:
-  unsupported:
-    podTemplate:
-      spec:
-        volumes:
-          - name: postgres-ca
-            secret:
-              secretName: &secret keycloak-secret
-          - name: tmpfs
-            emptyDir: {}
-          - name: data
-            emptyDir: {}
-        containers:
-          - name: keycloak
-            env:
-              - name: KC_DB_URL_PROPERTIES
-                value: "?sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.crt"
-            volumeMounts:
-              - name: postgres-ca
-                mountPath: /etc/ssl/certs/cnpg-ca.crt
-                subPath: ca.crt
-                readOnly: true
-              - name: data
-                mountPath: /opt/keycloak/data
-              - name: tmpfs
-                mountPath: /tmp
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-
-        securityContext:
-          runAsUser: 65532
-          runAsGroup: 65532
-          runAsNonRoot: true
-          seccompProfile: {type: RuntimeDefault}
-
-        hostUsers: false
-
-  db:
-    vendor: postgres
-    usernameSecret:
-      name: *secret
-      key: POSTGRES_USERNAME
-    passwordSecret:
-      name: *secret
-      key: POSTGRES_PASSWORD
-    host: postgres-db-rw.database.svc.cluster.local
-    database: keycloak
-    port: 5432
-    schema: public
-
-  instances: 1
-
-  image: ghcr.io/d4rkfella/keycloak:26.5.4@sha256:a56ee6cf7a42df1519c2008e6d8cba881fbcd26be8f95aaf1c7e9a314ef8eef6
-
-  startOptimized: true
-
-  #bootstrapAdmin:
-  #user:
-  #secret: *secret
-
-  proxy:
-    headers: xforwarded
-
-  hostname:
-    hostname: https://accounts.darkfellanetwork.com
-
-  http:
-    httpEnabled: true
-    httpPort: 80
-
-  ingress:
-    enabled: false
+{
+  apiVersion: "k8s.keycloak.org/v2alpha1",
+  kind: "Keycloak",
+  metadata: {
+    name: "keycloak",
+  },
+  spec: {
+    unsupported: {
+      podTemplate: {
+        spec: {
+          volumes: [{
+            name: "postgres-ca",
+            secret: {
+              secretName: "keycloak-secret",
+            },
+          }, {
+            name: "tmpfs",
+            emptyDir: {},
+          }, {
+            name: "data",
+            emptyDir: {},
+          }],
+          containers: [{
+            name: "keycloak",
+            env: [{
+              name: "KC_DB_URL_PROPERTIES",
+              value: "?sslmode=verify-full&sslrootcert=/etc/ssl/certs/cnpg-ca.crt",
+            }],
+            volumeMounts: [{
+              name: "postgres-ca",
+              mountPath: "/etc/ssl/certs/cnpg-ca.crt",
+              subPath: "ca.crt",
+              readOnly: true,
+            }, {
+              name: "data",
+              mountPath: "/opt/keycloak/data",
+            }, {
+              name: "tmpfs",
+              mountPath: "/tmp",
+            }],
+            securityContext: {
+              allowPrivilegeEscalation: false,
+              readOnlyRootFilesystem: true,
+              capabilities: {
+                drop: [
+                  "ALL",
+                ],
+              },
+            },
+          }],
+          securityContext: {
+            runAsUser: 65532,
+            runAsGroup: 65532,
+            runAsNonRoot: true,
+            seccompProfile: {
+              type: "RuntimeDefault",
+            },
+          },
+          hostUsers: false,
+        },
+      },
+    },
+    db: {
+      vendor: "postgres",
+      usernameSecret: {
+        name: "keycloak-secret",
+        key: "POSTGRES_USERNAME",
+      },
+      passwordSecret: {
+        name: "keycloak-secret",
+        key: "POSTGRES_PASSWORD",
+      },
+      host: "postgres-db-rw.database.svc.cluster.local",
+      database: "keycloak",
+      port: 5432,
+      schema: "public",
+    },
+    instances: 1,
+    image: "ghcr.io/d4rkfella/keycloak:26.5.4@sha256:a56ee6cf7a42df1519c2008e6d8cba881fbcd26be8f95aaf1c7e9a314ef8eef6",
+    startOptimized: true,
+    #bootstrapAdmin:
+    #user:
+    #secret: *secret
+    proxy: {
+      headers: "xforwarded",
+    },
+    hostname: {
+      hostname: "https://accounts.darkfellanetwork.com",
+    },
+    http: {
+      httpEnabled: true,
+      httpPort: 80,
+    },
+    ingress: {
+      enabled: false,
+    },
+  },
+}

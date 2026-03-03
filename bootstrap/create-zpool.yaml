@@ -1,192 +1,222 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: scripts
-data:
-  create_zpool.sh: |
-    #!/usr/bin/env bash
-    set -Eeuo pipefail
-
-    ###############################################################################
-    # Configuration
-    ###############################################################################
-
-    : "${POOL_NAME:=zfspool}"
-    : "${WIPE_DISKS:=false}"
-
-    ###############################################################################
-    # Logging
-    ###############################################################################
-
-    log() {
-        printf '[%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*"
-    }
-
-    fatal() {
-        log "ERROR: $*"
-        exit 1
-    }
-
-    ###############################################################################
-    # Required environment variables
-    ###############################################################################
-
-    [ -n "${TALOS_VERSION:-}" ] || fatal "TALOS_VERSION is not set"
-    [ -n "${DEVICES:-}" ]       || fatal "DEVICES is not set"
-    [ -n "${ASHIFT:-}" ]        || fatal "ASHIFT is not set"
-
-    ###############################################################################
-    # ZFS installation (Talos extension)
-    ###############################################################################
-
-    log "Resolving ZFS extension for Talos ${TALOS_VERSION}"
-
-    ZFS_IMAGE="$(
-        crane export "ghcr.io/siderolabs/extensions:${TALOS_VERSION}" \
-            | tar x -O image-digests \
-            | awk '/zfs/ { print $1; exit }'
-    )" || fatal "Unable to resolve ZFS extension image"
-
-    [ -n "$ZFS_IMAGE" ] || fatal "No ZFS extension found for Talos ${TALOS_VERSION}"
-
-    log "Verifying ZFS extension signature"
-
-    cosign verify \
-        --certificate-identity-regexp '@siderolabs\.com$' \
-        --certificate-oidc-issuer https://accounts.google.com \
-        "$ZFS_IMAGE" >/dev/null 2>&1 \
-        || fatal "ZFS extension signature verification failed"
-
-    log "Installing ZFS utilities"
-
-    crane export "$ZFS_IMAGE" | tar --strip-components=1 -x -C / \
-        || fatal "Failed to install ZFS extension"
-
-    ###############################################################################
-    # Device validation
-    ###############################################################################
-
-    read -ra DEV_ARRAY <<< "$DEVICES"
-
-    for dev in "${DEV_ARRAY[@]}"; do
-        [ -e "$dev" ] || fatal "Device not found: $dev"
-    done
-
-    ###############################################################################
-    # Idempotency checks
-    ###############################################################################
-
-    if zpool list -H -o name 2>/dev/null | grep -qx "$POOL_NAME"; then
-        log "ZFS pool '${POOL_NAME}' already exists; skipping further actions"
-        zpool status "$POOL_NAME"
-        exit 0
-    fi
-
-    fs_detected=false
-    for dev in "${DEV_ARRAY[@]}"; do
-        if blkid "$dev" >/dev/null 2>&1; then
-            log "Existing disk signature detected on ${dev}"
-            fs_detected=true
-        fi
-    done
-
-    if [[ "$fs_detected" == "true" && "$WIPE_DISKS" != "true" ]]; then
-        log "Disk signatures present and WIPE_DISKS is disabled; skipping pool creation"
-        exit 0
-    fi
-
-    ###############################################################################
-    # Optional disk wipe
-    ###############################################################################
-
-    if [[ "$fs_detected" == "true" && "$WIPE_DISKS" == "true" ]]; then
-        log "Disk wipe enabled; clearing existing signatures"
-
-        for dev in "${DEV_ARRAY[@]}"; do
-            log "Clearing filesystem signatures on ${dev}"
-            wipefs -a "$dev"
-        done
-    fi
-
-    ###############################################################################
-    # ZFS pool creation (mirrored vdevs)
-    ###############################################################################
-
-    if (( ${#DEV_ARRAY[@]} % 2 != 0 )); then
-        fatal "Mirror configuration requires an even number of devices"
-    fi
-
-    ZPOOL_CMD=(
-        zpool create
-        -m legacy
-        -o "ashift=${ASHIFT}"
-        -f
-        "$POOL_NAME"
-    )
-
-    for (( i=0; i<${#DEV_ARRAY[@]}; i+=2 )); do
-        ZPOOL_CMD+=("mirror" "${DEV_ARRAY[i]}" "${DEV_ARRAY[i+1]}")
-    done
-
-    log "Creating ZFS pool '${POOL_NAME}'"
-
-    "${ZPOOL_CMD[@]}" || fatal "ZFS pool creation failed"
-
-    log "ZFS pool '${POOL_NAME}' successfully created"
-    zpool status "$POOL_NAME"
+{
+  apiVersion: "v1",
+  kind: "ConfigMap",
+  metadata: {
+    name: "scripts",
+  },
+  data: {
+    create_zpool.sh: "\
+       #!/usr/bin/env bash\n\
+       set -Eeuo pipefail\n\
+       \n\
+       ###############################################################################\n\
+       # Configuration\n\
+       ###############################################################################\n\
+       \n\
+       : \"${POOL_NAME:=zfspool}\"\n\
+       : \"${WIPE_DISKS:=false}\"\n\
+       \n\
+       ###############################################################################\n\
+       # Logging\n\
+       ###############################################################################\n\
+       \n\
+       log() {\n\
+      \    printf '[%s] %s\\n' \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\" \"$*\"\n\
+       }\n\
+       \n\
+       fatal() {\n\
+      \    log \"ERROR: $*\"\n\
+      \    exit 1\n\
+       }\n\
+       \n\
+       ###############################################################################\n\
+       # Required environment variables\n\
+       ###############################################################################\n\
+       \n\
+       [ -n \"${TALOS_VERSION:-}\" ] || fatal \"TALOS_VERSION is not set\"\n\
+       [ -n \"${DEVICES:-}\" ]       || fatal \"DEVICES is not set\"\n\
+       [ -n \"${ASHIFT:-}\" ]        || fatal \"ASHIFT is not set\"\n\
+       \n\
+       ###############################################################################\n\
+       # ZFS installation (Talos extension)\n\
+       ###############################################################################\n\
+       \n\
+       log \"Resolving ZFS extension for Talos ${TALOS_VERSION}\"\n\
+       \n\
+       ZFS_IMAGE=\"$(\n\
+      \    crane export \"ghcr.io/siderolabs/extensions:${TALOS_VERSION}\" \\\n\
+      \        | tar x -O image-digests \\\n\
+      \        | awk '/zfs/ { print $1; exit }'\n\
+       )\" || fatal \"Unable to resolve ZFS extension image\"\n\
+       \n\
+       [ -n \"$ZFS_IMAGE\" ] || fatal \"No ZFS extension found for Talos ${TALOS_VERSION}\"\n\
+       \n\
+       log \"Verifying ZFS extension signature\"\n\
+       \n\
+       cosign verify \\\n\
+      \    --certificate-identity-regexp '@siderolabs\\.com$' \\\n\
+      \    --certificate-oidc-issuer https://accounts.google.com \\\n\
+      \    \"$ZFS_IMAGE\" >/dev/null 2>&1 \\\n\
+      \    || fatal \"ZFS extension signature verification failed\"\n\
+       \n\
+       log \"Installing ZFS utilities\"\n\
+       \n\
+       crane export \"$ZFS_IMAGE\" | tar --strip-components=1 -x -C / \\\n\
+      \    || fatal \"Failed to install ZFS extension\"\n\
+       \n\
+       ###############################################################################\n\
+       # Device validation\n\
+       ###############################################################################\n\
+       \n\
+       read -ra DEV_ARRAY <<< \"$DEVICES\"\n\
+       \n\
+       for dev in \"${DEV_ARRAY[@]}\"; do\n\
+      \    [ -e \"$dev\" ] || fatal \"Device not found: $dev\"\n\
+       done\n\
+       \n\
+       ###############################################################################\n\
+       # Idempotency checks\n\
+       ###############################################################################\n\
+       \n\
+       if zpool list -H -o name 2>/dev/null | grep -qx \"$POOL_NAME\"; then\n\
+      \    log \"ZFS pool '${POOL_NAME}' already exists; skipping further actions\"\n\
+      \    zpool status \"$POOL_NAME\"\n\
+      \    exit 0\n\
+       fi\n\
+       \n\
+       fs_detected=false\n\
+       for dev in \"${DEV_ARRAY[@]}\"; do\n\
+      \    if blkid \"$dev\" >/dev/null 2>&1; then\n\
+      \        log \"Existing disk signature detected on ${dev}\"\n\
+      \        fs_detected=true\n\
+      \    fi\n\
+       done\n\
+       \n\
+       if [[ \"$fs_detected\" == \"true\" && \"$WIPE_DISKS\" != \"true\" ]]; then\n\
+      \    log \"Disk signatures present and WIPE_DISKS is disabled; skipping pool creation\"\n\
+      \    exit 0\n\
+       fi\n\
+       \n\
+       ###############################################################################\n\
+       # Optional disk wipe\n\
+       ###############################################################################\n\
+       \n\
+       if [[ \"$fs_detected\" == \"true\" && \"$WIPE_DISKS\" == \"true\" ]]; then\n\
+      \    log \"Disk wipe enabled; clearing existing signatures\"\n\
+       \n\
+      \    for dev in \"${DEV_ARRAY[@]}\"; do\n\
+      \        log \"Clearing filesystem signatures on ${dev}\"\n\
+      \        wipefs -a \"$dev\"\n\
+      \    done\n\
+       fi\n\
+       \n\
+       ###############################################################################\n\
+       # ZFS pool creation (mirrored vdevs)\n\
+       ###############################################################################\n\
+       \n\
+       if (( ${#DEV_ARRAY[@]} % 2 != 0 )); then\n\
+      \    fatal \"Mirror configuration requires an even number of devices\"\n\
+       fi\n\
+       \n\
+       ZPOOL_CMD=(\n\
+      \    zpool create\n\
+      \    -m legacy\n\
+      \    -o \"ashift=${ASHIFT}\"\n\
+      \    -f\n\
+      \    \"$POOL_NAME\"\n\
+       )\n\
+       \n\
+       for (( i=0; i<${#DEV_ARRAY[@]}; i+=2 )); do\n\
+      \    ZPOOL_CMD+=(\"mirror\" \"${DEV_ARRAY[i]}\" \"${DEV_ARRAY[i+1]}\")\n\
+       done\n\
+       \n\
+       log \"Creating ZFS pool '${POOL_NAME}'\"\n\
+       \n\
+       \"${ZPOOL_CMD[@]}\" || fatal \"ZFS pool creation failed\"\n\
+       \n\
+       log \"ZFS pool '${POOL_NAME}' successfully created\"\n\
+       zpool status \"$POOL_NAME\"\n\
+      ",
+  },
+}
 ---
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: create-zpool
-  namespace: kube-system
-spec:
-  ttlSecondsAfterFinished: 600
-  backoffLimit: 0
-  template:
-    metadata:
-      labels:
-        job-name: create-zpool
-    spec:
-      containers:
-        - name: create-zpool
-          image: alpine:3.23
-          command:
-            - /bin/sh
-            - -c
-            - |
-              apk add --no-cache bash curl crane cosign libuuid e2fsprogs
-              /scripts/create_zpool.sh
-          securityContext:
-            privileged: true
-          env:
-            - name: DEVICES
-              value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd"
-            - name: ASHIFT
-              value: "12"
-            - name: POOL_NAME
-              value: "ssd_pool"
-            - name: TALOS_VERSION
-              value: "v1.12.0"
-          resources:
-            limits:
-              cpu: "1"
-              memory: "512Mi"
-            requests:
-              cpu: "500m"
-              memory: "256Mi"
-          volumeMounts:
-            - name: dev
-              mountPath: /dev
-            - name: scripts
-              mountPath: /scripts
-      volumes:
-        - name: dev
-          hostPath:
-            path: /dev
-        - name: scripts
-          configMap:
-            name: scripts
-            defaultMode: 0755
-      restartPolicy: Never
+{
+  apiVersion: "batch/v1",
+  kind: "Job",
+  metadata: {
+    name: "create-zpool",
+    namespace: "kube-system",
+  },
+  spec: {
+    ttlSecondsAfterFinished: 600,
+    backoffLimit: 0,
+    template: {
+      metadata: {
+        labels: {
+          job-name: "create-zpool",
+        },
+      },
+      spec: {
+        containers: [{
+          name: "create-zpool",
+          image: "alpine:3.23",
+          command: [
+            "/bin/sh",
+            "-c",
+            "\
+               apk add --no-cache bash curl crane cosign libuuid e2fsprogs\n\
+               /scripts/create_zpool.sh\n\
+              ",
+          ],
+          securityContext: {
+            privileged: true,
+          },
+          env: [{
+            name: "DEVICES",
+            value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd",
+          }, {
+            name: "ASHIFT",
+            value: "12",
+          }, {
+            name: "POOL_NAME",
+            value: "ssd_pool",
+          }, {
+            name: "TALOS_VERSION",
+            value: "v1.12.0",
+          }],
+          resources: {
+            limits: {
+              cpu: "1",
+              memory: "512Mi",
+            },
+            requests: {
+              cpu: "500m",
+              memory: "256Mi",
+            },
+          },
+          volumeMounts: [{
+            name: "dev",
+            mountPath: "/dev",
+          }, {
+            name: "scripts",
+            mountPath: "/scripts",
+          }],
+        }],
+        volumes: [{
+          name: "dev",
+          hostPath: {
+            path: "/dev",
+          },
+        }, {
+          name: "scripts",
+          configMap: {
+            name: "scripts",
+            defaultMode: 0755,
+          },
+        }],
+        restartPolicy: "Never",
+      },
+    },
+  },
+}

@@ -82,6 +82,20 @@ RUN curl -fsSL -O "https://download.libguestfs.org/binaries/appliance/appliance-
     chmod +x /usr/local/bin/* && \
     rm -rf /tmp/*
 
+# renovate: datasource=github-releases depName=evilmartians/lefthook
+ARG LEFTHOOK_VERSION=v2.1.2
+RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
+    dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
+    rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb
+
+# renovate: datasource=github-releases depName=google/yamlfmt
+ARG YAMLFMT_VERSION=v0.21.0
+RUN curl -fsSLO "https://github.com/google/yamlfmt/releases/download/${YAMLFMT_VERSION}/yamlfmt_${YAMLFMT_VERSION#v}_Linux_x86_64.tar.gz" && \
+    tar -xzf yamlfmt_*.tar.gz yamlfmt && \
+    mv yamlfmt /usr/local/bin/yamlfmt && \
+    rm -rf /tmp/*
+
+
 RUN groupadd --gid $USER_GID $USERNAME || true && \
     useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
     groupadd -g 1003 docker || true && \

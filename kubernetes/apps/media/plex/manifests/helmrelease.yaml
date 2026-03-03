@@ -27,8 +27,38 @@
               },
               env: {
                 TZ: "Europe/Sofia",
-                PLEX_ADVERTISE_URL: "https://plex.darkfellanetwork.com:32400",
+                PLEX_ADVERTISE_URL: "https://plex.darkfellanetwork.com:443",
                 NVIDIA_VISIBLE_DEVICES: "all",
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  spec: {
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/identity",
+                      port: 32400,
+                    },
+                    periodSeconds: 10,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                startup: {
+                  enabled: true,
+                  spec: {
+                    failureThreshold: 30,
+                    periodSeconds: 10,
+                  },
+                },
               },
               securityContext: {
                 allowPrivilegeEscalation: false,
@@ -52,9 +82,6 @@
             },
           },
           pod: {
-            annotations: {
-              k8s.v1.cni.cncf.io/networks: "media/plex",
-            },
             runtimeClassName: "nvidia",
           },
         },
@@ -66,6 +93,51 @@
           runAsGroup: 65532,
           fsGroup: 65532,
           fsGroupChangePolicy: "OnRootMismatch",
+        },
+      },
+      service: {
+        app: {
+          ports: {
+            http: {
+              port: 32400,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "plex.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "plex",
+            namespace: "envoy-gateway-system",
+          }],
+          rules: [{
+            backendRefs: [{
+              identifier: "app",
+              port: 32400,
+            }],
+            filters: [{
+              type: "RequestHeaderModifier",
+              requestHeaderModifier: {
+                remove: [
+                  "Range",
+                ],
+              },
+            }],
+            matches: [{
+              path: {
+                type: "PathPrefix",
+                value: "/library/streams",
+              },
+            }],
+          }, {
+            backendRefs: [{
+              identifier: "app",
+              port: 32400,
+            }],
+          }],
         },
       },
       persistence: {

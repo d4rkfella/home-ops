@@ -15,7 +15,6 @@
     values: {
       controllers: {
         plex: {
-          strategy: "Recreate",
           annotations: {
             reloader.stakater.com/auto: "true",
           },
@@ -177,15 +176,6 @@
           }, {
             path: "/tmp",
             subPath: "tmp",
-          }],
-        },
-        cert: {
-          type: "secret",
-          name: "plex-tls",
-          globalMounts: [{
-            path: "/etc/ssl/certs/plex-keystore.p12",
-            subPath: "keystore.p12",
-            readOnly: true,
           }],
         },
       },

@@ -227,11 +227,11 @@
     gatewayClassName: "envoy",
     addresses: [{
       type: "IPAddress",
-      value: "192.168.91.43",
+      value: "192.168.91.60",
     }],
     infrastructure: {
       annotations: {
-        lbipam.cilium.io/ips: "192.168.91.43",
+        lbipam.cilium.io/ips: "192.168.91.60",
       },
     },
     listeners: [{

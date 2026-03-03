@@ -15,4 +15,4 @@ spec:
     provider: cosign
     matchOIDCIdentity:
     - issuer: https://token.actions.githubusercontent.com
-      subject: https://github.com/d4rkfella/charts-mirror/.github/workflows/release.yaml@refs/heads/main
+      subject: https://github.com/d4rkfella/charts-mirror/.github/workflows/chart-builder.yaml@refs/heads/main

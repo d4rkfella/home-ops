@@ -109,7 +109,7 @@ RUN groupadd --gid $USER_GID $USERNAME || true && \
 USER $USERNAME
 
 # renovate: datasource=pypi depName=pgadmin4
-ARG PGADMIN4_VERSION=9.12
+ARG PGADMIN4_VERSION=9.13
 # renovate: datasource=pypi depName=home-ops-cli
 ARG HOME_OPS_CLI_VERSION=0.4.53
 RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \

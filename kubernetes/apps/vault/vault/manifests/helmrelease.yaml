@@ -44,7 +44,7 @@
         enabled: true,
         image: {
           repository: "hashicorp/vault",
-          tag: "1.21.3",
+          tag: "1.21.4",
           pullPolicy: "IfNotPresent",
         },
         updateStrategyType: "RollingUpdate",

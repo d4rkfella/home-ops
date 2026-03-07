@@ -41,7 +41,7 @@ COPY --from=mikefarah/yq:4.52.4@sha256:a4c2cafdf4674b2dc3c6ac457fe1486d55d7d93ed
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.48.0
+ARG TASK_VERSION=v3.49.0
 RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && \

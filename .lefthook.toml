@@ -2,6 +2,6 @@
 parallel = true
 
 [pre-commit.commands.format-yaml]
-run = "yamlfmt {staged_files}"
+run = "echo {staged_files} | tr ' ' '\\n' | grep -v '^.github/' | xargs -r yamlfmt"
 glob = ["*.yaml"]
 stage_fixed = true

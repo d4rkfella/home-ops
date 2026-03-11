@@ -11,7 +11,7 @@
         '(^|/).+\\.ya?ml(?:\\.j2)?$',
       ],
       matchStrings: [
-        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?(?<currentValue>\\S+)',
+        'datasource=(?<datasource>\S+) depName=(?<depName>\S+)( repository=(?<registryUrl>\S+))?\n.+(:\s|=)(&\S+\s)?"?(?<currentValue>[^",\s]+)"?,?',
         'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)',
       ],
       datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',

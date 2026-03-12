@@ -47,7 +47,7 @@
           "ghcr.io/controlplaneio-fluxcd/flux-operator*",
         ],
         failureAction: "Enforce",
-        type: "Cosign",
+        type: "SigstoreBundle",
         attestors: [{
           entries: [{
             keyless: {

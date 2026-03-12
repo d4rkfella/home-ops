@@ -3,7 +3,7 @@
   apiVersion: "policies.kyverno.io/v1",
   kind: "ImageValidatingPolicy",
   metadata: {
-    name: "verify-images",
+    name: "verify-fluxcd-images",
   },
   spec: {
     webhookConfiguration: {
@@ -37,8 +37,6 @@
       glob: "ghcr.io/fluxcd/helm-controller*",
     }, {
       glob: "ghcr.io/fluxcd/notification-controller*",
-    }, {
-      glob: "ghcr.io/controlplaneio-fluxcd/flux-operator*",
     }],
     attestors: [{
       name: "fluxcd",
@@ -53,7 +51,52 @@
           url: "https://rekor.sigstore.dev",
         },
       },
-    }, {
+    }],
+    validations: [{
+      message: "image must be signed by fluxcd",
+      expression: "\
+         images.containers.map(image,\n\
+        \  verifyImageSignatures(image, [attestors.fluxcd]) > 0\n\
+         ).all(e, e)\
+        ",
+    }],
+  },
+}
+---
+{
+  apiVersion: "policies.kyverno.io/v1",
+  kind: "ImageValidatingPolicy",
+  metadata: {
+    name: "verify-flux-operator-images",
+  },
+  spec: {
+    webhookConfiguration: {
+      timeoutSeconds: 30,
+    },
+    validationActions: [
+      "Deny",
+    ],
+    matchConstraints: {
+      resourceRules: [{
+        apiGroups: [
+          "",
+        ],
+        apiVersions: [
+          "v1",
+        ],
+        operations: [
+          "CREATE",
+          "UPDATE",
+        ],
+        resources: [
+          "pods",
+        ],
+      }],
+    },
+    matchImageReferences: [{
+      glob: "ghcr.io/controlplaneio-fluxcd/flux-operator*",
+    }],
+    attestors: [{
       name: "fluxOperator",
       cosign: {
         keyless: {
@@ -68,10 +111,9 @@
       },
     }],
     validations: [{
-      message: "image must be signed by fluxcd or controlplaneio-fluxcd",
+      message: "image must be signed by controlplaneio-fluxcd",
       expression: "\
          images.containers.map(image,\n\
-        \  verifyImageSignatures(image, [attestors.fluxcd]) > 0 ||\n\
         \  verifyImageSignatures(image, [attestors.fluxOperator]) > 0\n\
          ).all(e, e)\
         ",

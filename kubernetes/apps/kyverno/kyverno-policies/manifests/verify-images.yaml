@@ -1,65 +1,80 @@
 ---
 {
-  apiVersion: "kyverno.io/v1",
-  kind: "ClusterPolicy",
+  apiVersion: "policies.kyverno.io/v1",
+  kind: "ImageValidatingPolicy",
   metadata: {
     name: "verify-images",
   },
   spec: {
     webhookConfiguration: {
-      failurePolicy: "Fail",
       timeoutSeconds: 30,
     },
-    background: true,
-    rules: [{
-      name: "verify-cosign-signature",
-      match: {
-        any: [{
-          resources: {
-            kinds: [
-              "Pod",
-            ],
-          },
-        }],
-      },
-      verifyImages: [{
-        imageReferences: [
-          "ghcr.io/fluxcd/source-controller*",
-          "ghcr.io/fluxcd/kustomize-controller*",
-          "ghcr.io/fluxcd/helm-controller*",
-          "ghcr.io/fluxcd/notification-controller*",
+    validationActions: [
+      "Deny",
+    ],
+    matchConstraints: {
+      resourceRules: [{
+        apiGroups: [
+          "",
         ],
-        failureAction: "Enforce",
-        type: "Cosign",
-        attestors: [{
-          entries: [{
-            keyless: {
-              subjectRegExp: "https://github\\.com/fluxcd/.*",
-              issuer: "https://token.actions.githubusercontent.com",
-              rekor: {
-                url: "https://rekor.sigstore.dev",
-              },
-            },
-          }],
-        }],
-      }, {
-        imageReferences: [
-          "ghcr.io/controlplaneio-fluxcd/flux-operator*",
+        apiVersions: [
+          "v1",
         ],
-        failureAction: "Enforce",
-        type: "SigstoreBundle",
-        attestors: [{
-          entries: [{
-            keyless: {
-              subjectRegExp: "https://github\\.com/controlplaneio-fluxcd/flux-operator/\\.github/workflows/release\\.yaml@refs/tags/.*",
-              issuer: "https://token.actions.githubusercontent.com",
-              rekor: {
-                url: "https://rekor.sigstore.dev",
-              },
-            },
-          }],
-        }],
+        operations: [
+          "CREATE",
+          "UPDATE",
+        ],
+        resources: [
+          "pods",
+        ],
       }],
+    },
+    matchImageReferences: [{
+      glob: "ghcr.io/fluxcd/source-controller*",
+    }, {
+      glob: "ghcr.io/fluxcd/kustomize-controller*",
+    }, {
+      glob: "ghcr.io/fluxcd/helm-controller*",
+    }, {
+      glob: "ghcr.io/fluxcd/notification-controller*",
+    }, {
+      glob: "ghcr.io/controlplaneio-fluxcd/flux-operator*",
+    }],
+    attestors: [{
+      name: "fluxcd",
+      cosign: {
+        keyless: {
+          identities: [{
+            subjectRegExp: "https://github\\.com/fluxcd/.*",
+            issuer: "https://token.actions.githubusercontent.com",
+          }],
+        },
+        ctlog: {
+          url: "https://rekor.sigstore.dev",
+        },
+      },
+    }, {
+      name: "fluxOperator",
+      cosign: {
+        keyless: {
+          identities: [{
+            subjectRegExp: "https://github\\.com/controlplaneio-fluxcd/flux-operator/\\.github/workflows/release\\.yaml@refs/tags/.*",
+            issuer: "https://token.actions.githubusercontent.com",
+          }],
+        },
+        ctlog: {
+          url: "https://rekor.sigstore.dev",
+        },
+      },
+    }],
+    validations: [{
+      message: "image must be signed by fluxcd or controlplaneio-fluxcd",
+      expression: "\
+         images.containers.map(image,\n\
+        \  verifyImageSignatures(image, [attestors.fluxcd]) > 0 ||\n\
+        \  verifyImageSignatures(image, [attestors.fluxOperator]) > 0\n\
+         ).all(e, e)\
+        ",
     }],
   },
 }

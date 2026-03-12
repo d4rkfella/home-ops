@@ -83,7 +83,7 @@ RUN curl -fsSL -O "https://download.libguestfs.org/binaries/appliance/appliance-
     rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
-ARG LEFTHOOK_VERSION=v2.1.3
+ARG LEFTHOOK_VERSION=v2.1.4
 RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
     dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
     rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb

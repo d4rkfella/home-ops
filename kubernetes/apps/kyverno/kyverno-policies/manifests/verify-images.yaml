@@ -30,16 +30,19 @@
           "ghcr.io/fluxcd/notification-controller*",
         ],
         failureAction: "Enforce",
-        type: "Cosign",
-        attestors: [{
-          entries: [{
-            keyless: {
-              subject: "https://github.com/fluxcd/*",
-              issuer: "https://token.actions.githubusercontent.com",
-              rekor: {
-                url: "https://rekor.sigstore.dev",
+        type: "SigstoreBundle",
+        attestations: [{
+          type: "https://sigstore.dev/cosign/sign/v1",
+          attestors: [{
+            entries: [{
+              keyless: {
+                subjectRegExp: "https://github\\.com/fluxcd/.*",
+                issuer: "https://token.actions.githubusercontent.com",
+                rekor: {
+                  url: "https://rekor.sigstore.dev",
+                },
               },
-            },
+            }],
           }],
         }],
       }, {
@@ -48,15 +51,18 @@
         ],
         failureAction: "Enforce",
         type: "SigstoreBundle",
-        attestors: [{
-          entries: [{
-            keyless: {
-              subjectRegExp: "https://github\\.com/controlplaneio-fluxcd/flux-operator/\\.github/workflows/release\\.yaml@refs/tags/.*",
-              issuer: "https://token.actions.githubusercontent.com",
-              rekor: {
-                url: "https://rekor.sigstore.dev",
+        attestations: [{
+          type: "https://sigstore.dev/cosign/sign/v1",
+          attestors: [{
+            entries: [{
+              keyless: {
+                subjectRegExp: "https://github\\.com/controlplaneio-fluxcd/flux-operator/\\.github/workflows/release\\.yaml@refs/tags/.*",
+                issuer: "https://token.actions.githubusercontent.com",
+                rekor: {
+                  url: "https://rekor.sigstore.dev",
+                },
               },
-            },
+            }],
           }],
         }],
       }],

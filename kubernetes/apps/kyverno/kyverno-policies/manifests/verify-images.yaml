@@ -30,7 +30,7 @@
           "ghcr.io/fluxcd/notification-controller*",
         ],
         failureAction: "Enforce",
-        type: "SigstoreBundle",
+        type: "Cosign",
         attestations: [{
           type: "https://sigstore.dev/cosign/sign/v1",
           attestors: [{
@@ -50,7 +50,7 @@
           "ghcr.io/controlplaneio-fluxcd/flux-operator*",
         ],
         failureAction: "Enforce",
-        type: "SigstoreBundle",
+        type: "Cosign",
         attestations: [{
           type: "https://sigstore.dev/cosign/sign/v1",
           attestors: [{

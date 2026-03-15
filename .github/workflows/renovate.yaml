@@ -48,6 +48,8 @@ jobs:
       - name: Generate Token
         uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859 # v3.0.0
         id: app-token
+        env:
+          NODE_USE_ENV_PROXY: "1"
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
@@ -74,7 +76,7 @@ jobs:
                 "hostType": "docker",
                 "matchHost": "ghcr.io",
                 "username": "x-access-token",
-                "password": "${{ steps.app-token.outputs.token }}"
+                "password": "${{ secrets.BOT_GITHUB_TOKEN }}"
               }
             ]
         with:

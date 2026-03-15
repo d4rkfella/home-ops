@@ -74,7 +74,7 @@ jobs:
                 "hostType": "docker",
                 "matchHost": "ghcr.io",
                 "username": "x-access-token",
-                "password": "${{ secrets.BOT_GITHUB_TOKEN }}"
+                "password": "${{ steps.app-token.outputs.token }}"
               }
             ]
         with:

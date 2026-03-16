@@ -36,7 +36,7 @@
         "/\\.yaml(?:\\.j2)?$/",
       ],
       matchStrings: [
-        "oci://(?<depName>[^:]+):(?<currentValue>\\S+)",
+        "oci://(?<depName>[^:]+):(?<currentValue>[^\"\\s,]+)",
       ],
       datasourceTemplate: "docker",
     },

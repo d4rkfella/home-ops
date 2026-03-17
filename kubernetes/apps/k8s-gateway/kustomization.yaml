@@ -7,7 +7,7 @@
     "./k8s-gateway/ks.yaml",
   ],
   components: [
-    "../../components/common",
+    "../../components/alerts",
   ],
   transformers: [
     "./transformers",

@@ -8,7 +8,7 @@
     "./kyverno-policies/ks.yaml",
   ],
   components: [
-    "../../components/common",
+    "../../components/alerts",
   ],
   transformers: [
     "./transformers",

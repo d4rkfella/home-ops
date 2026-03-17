@@ -1,26 +1,20 @@
 ---
 {
+  # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
   apiVersion: "kustomize.toolkit.fluxcd.io/v1",
   kind: "Kustomization",
   metadata: {
-    name: "bazarr",
+    name: "brrpolice",
   },
   spec: {
     components: [
       "../../../../components/volsync",
     ],
-    dependsOn: [{
-      name: "cloudnative-pg-cluster",
-      namespace: "database",
-    }, {
-      name: "keycloak-instance",
-      namespace: "keycloak",
-    }],
-    path: "./kubernetes/apps/media/bazarr/manifests",
+    interval: "1h",
+    path: "./kubernetes/apps/media/brrpolice/manifests",
     postBuild: {
       substitute: {
-        APP: "bazarr",
-        VOLSYNC_CAPACITY: "2Gi",
+        APP: "brrpolice",
       },
     },
     prune: true,
@@ -30,6 +24,5 @@
       namespace: "flux-system",
     },
     wait: false,
-    interval: "1h",
   },
 }

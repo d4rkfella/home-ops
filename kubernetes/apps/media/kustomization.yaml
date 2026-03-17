@@ -10,6 +10,7 @@
     "./unpackerr/ks.yaml",
     "./autobrr/ks.yaml",
     "./bazarr/ks.yaml",
+    "./brrpolice/ks.yaml",
     "./qbittorrent/ks.yaml",
     "./qbitmanage/ks.yaml",
     "./prowlarr/ks.yaml",
@@ -19,7 +20,7 @@
     "./plex/ks.yaml",
   ],
   components: [
-    "../../components/common",
+    "../../components/alerts",
     "../../components/repos/app-template",
   ],
   transformers: [

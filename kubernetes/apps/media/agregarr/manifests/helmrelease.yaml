@@ -1,0 +1,123 @@
+---
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "agregarr",
+  },
+  spec: {
+    chartRef: {
+      kind: "OCIRepository",
+      name: "agregarr",
+    },
+    interval: "1h",
+    values: {
+      controllers: {
+        agregarr: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/agregarr/agregarr",
+                tag: "v2.4.1@sha256:6022aef7ad580478bf100ee4b11f19ad689bb780d241e78e33a3ccc6b5feb569",
+              },
+              env: {
+                PORT: 80,
+                TZ: "Europe/Sofia",
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  spec: {
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/v1/status",
+                      port: 80,
+                    },
+                    periodSeconds: 10,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                startup: {
+                  enabled: true,
+                  spec: {
+                    failureThreshold: 30,
+                    periodSeconds: 10,
+                  },
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "10m",
+                },
+                limits: {
+                  memory: "1Gi",
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+        },
+      },
+      service: {
+        app: {
+          ports: {
+            http: {
+              port: 80,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "{{ .Release.Name }}.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          existingClaim: "{{ .Release.Name }}",
+          globalMounts: [{
+            path: "/app/config",
+          }],
+        },
+        tmp: {
+          type: "emptyDir",
+        },
+      },
+    },
+  },
+}

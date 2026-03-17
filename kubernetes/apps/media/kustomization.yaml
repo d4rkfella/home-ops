@@ -4,6 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
+    "./agregarr/ks.yaml",
     "./seerr/ks.yaml",
     "./radarr/ks.yaml",
     "./sonarr/ks.yaml",

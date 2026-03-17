@@ -20,6 +20,6 @@
     name: "grafana-operator",
     namespace: "observability",
     chart: "oci://ghcr.io/grafana/helm-charts/grafana-operator",
-    version: "5.22.1",
+    version: "5.22.2",
   }], # Prevent helmfile apply or sync
 }

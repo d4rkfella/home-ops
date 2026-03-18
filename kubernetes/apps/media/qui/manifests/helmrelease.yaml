@@ -31,7 +31,7 @@
                 QUI__OIDC_ENABLED: true,
                 QUI__OIDC_ISSUER: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
                 QUI__OIDC_CLIENT_ID: "466c6b7f-3314-41f6-84d7-adb366b7566f",
-                QUI__OIDC_REDIRECT_URL: "https://qui.darkfellanetwork.com/auth/oidc/callback",
+                QUI__OIDC_REDIRECT_URL: "https://qui.darkfellanetwork.com/api/auth/oidc/callback",
                 QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true,
                 TZ: "Europe/Sofia",
               },

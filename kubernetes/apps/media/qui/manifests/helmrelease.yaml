@@ -109,15 +109,6 @@
           },
         },
       },
-      configMaps: {
-        config: {
-          data: {
-            config.toml: "\
-               databaseEngine = \"postgres\"\n\
-              ",
-          },
-        },
-      },
       route: {
         app: {
           hostnames: [
@@ -131,19 +122,7 @@
       },
       persistence: {
         config: {
-          type: "emptyDir",
-          globalMounts: [{
-            path: "/config",
-          }],
-        },
-        config-toml: {
-          type: "configMap",
-          name: "qui",
-          globalMounts: [{
-            path: "/config/config.toml",
-            subPath: "config.toml",
-            readOnly: true,
-          }],
+          existingClaim: "{{ .Release.Name }}",
         },
         media: {
           type: "nfs",

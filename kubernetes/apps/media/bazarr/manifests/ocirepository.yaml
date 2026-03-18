@@ -3,7 +3,7 @@
   apiVersion: "source.toolkit.fluxcd.io/v1",
   kind: "OCIRepository",
   metadata: {
-    name: "agregarr",
+    name: "bazarr",
   },
   spec: {
     interval: "15m",

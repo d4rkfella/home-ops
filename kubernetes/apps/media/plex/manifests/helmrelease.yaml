@@ -10,7 +10,7 @@
     interval: "1h",
     chartRef: {
       kind: "OCIRepository",
-      name: "app-template",
+      name: "plex",
     },
     values: {
       controllers: {
@@ -106,7 +106,7 @@
       route: {
         app: {
           annotations: {
-            "gatus.home-operations.com/endpoint": "conditions: [\"[STATUS] == 401\"]",
+            gatus.home-operations.com/endpoint: "conditions: [\"[STATUS] == 401\"]",
           },
           hostnames: [
             "plex.darkfellanetwork.com",

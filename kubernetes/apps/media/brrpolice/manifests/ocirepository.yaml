@@ -15,5 +15,8 @@
       tag: "4.6.2",
     },
     url: "oci://ghcr.io/bjw-s-labs/helm/app-template",
+    verify: {
+      provider: "cosign",
+    },
   },
 }

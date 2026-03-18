@@ -6,16 +6,8 @@
     name: "qui",
   },
   spec: {
-    components: [
-      "../../../../components/volsync",
-    ],
     interval: "1h",
     path: "./kubernetes/apps/media/qui/manifests",
-    postBuild: {
-      substitute: {
-        APP: "qui",
-      },
-    },
     prune: true,
     sourceRef: {
       kind: "GitRepository",

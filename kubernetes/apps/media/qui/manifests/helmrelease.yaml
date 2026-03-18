@@ -122,7 +122,14 @@
       },
       persistence: {
         config: {
-          existingClaim: "{{ .Release.Name }}",
+          type: "emptyDir",
+          advancedMounts: {
+            autobrr: {
+              app: [{
+                path: "/config",
+              }],
+            },
+          },
         },
         media: {
           type: "nfs",

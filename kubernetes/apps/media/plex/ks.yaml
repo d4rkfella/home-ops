@@ -6,11 +6,6 @@
     name: "plex",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "plex",
-      },
-    },
     components: [
       "../../../../components/volsync",
     ],
@@ -37,7 +32,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

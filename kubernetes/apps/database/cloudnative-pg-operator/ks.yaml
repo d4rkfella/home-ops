@@ -6,11 +6,6 @@
     name: "cloudnative-pg-operator",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cloudnative-pg-operator",
-      },
-    },
     path: "./kubernetes/apps/database/cloudnative-pg-operator/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: true,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

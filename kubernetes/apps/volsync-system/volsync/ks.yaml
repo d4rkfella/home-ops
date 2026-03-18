@@ -6,11 +6,6 @@
     name: "volsync",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "volsync",
-      },
-    },
     path: "./kubernetes/apps/volsync-system/volsync/manifests",
     prune: true,
     sourceRef: {
@@ -19,7 +14,5 @@
       namespace: "flux-system",
     },
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

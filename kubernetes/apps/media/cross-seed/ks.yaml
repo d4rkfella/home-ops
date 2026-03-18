@@ -6,11 +6,6 @@
     name: "cross-seed",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cross-seed",
-      },
-    },
     dependsOn: [{
       name: "qbittorrent",
     }, {
@@ -21,8 +16,6 @@
       name: "sonarr",
     }],
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
     path: "./kubernetes/apps/media/cross-seed/manifests",
     prune: true,
     sourceRef: {

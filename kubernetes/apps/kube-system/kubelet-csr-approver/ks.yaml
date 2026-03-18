@@ -6,11 +6,6 @@
     name: "kubelet-csr-approver",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "kubelet-csr-approver",
-      },
-    },
     path: "./kubernetes/apps/kube-system/kubelet-csr-approver/manifests",
     prune: false,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

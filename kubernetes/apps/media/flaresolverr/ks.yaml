@@ -6,11 +6,6 @@
     name: "flaresolverr",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "flaresolverr",
-      },
-    },
     path: "./kubernetes/apps/media/flaresolverr/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

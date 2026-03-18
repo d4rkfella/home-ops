@@ -6,11 +6,6 @@
     name: "zfs-localpv",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "zfs-localpv",
-      },
-    },
     path: "./kubernetes/apps/openebs-system/zfs-localpv/manifests",
     prune: false,
     sourceRef: {
@@ -19,7 +14,5 @@
       namespace: "flux-system",
     },
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

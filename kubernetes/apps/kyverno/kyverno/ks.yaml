@@ -6,11 +6,6 @@
     name: "kyverno",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "kyverno",
-      },
-    },
     path: "./kubernetes/apps/kyverno/kyverno/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: true,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

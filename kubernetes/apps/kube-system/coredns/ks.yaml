@@ -6,11 +6,6 @@
     name: "coredns",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "coredns",
-      },
-    },
     path: "./kubernetes/apps/kube-system/coredns/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

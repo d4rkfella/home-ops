@@ -6,11 +6,6 @@
     name: "envoy-gateway-instance",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "envoy-gateway-instance",
-      },
-    },
     dependsOn: [{
       name: "envoy-gateway-controller",
     }],
@@ -23,7 +18,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

@@ -6,11 +6,6 @@
     name: "k8s-gateway",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "k8s-gateway",
-      },
-    },
     path: "./kubernetes/apps/k8s-gateway/k8s-gateway/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

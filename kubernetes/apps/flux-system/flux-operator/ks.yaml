@@ -6,11 +6,6 @@
     name: "flux-operator",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "flux-operator",
-      },
-    },
     healthChecks: [{
       apiVersion: "helm.toolkit.fluxcd.io/v2",
       kind: "HelmRelease",
@@ -20,12 +15,10 @@
     interval: "1h",
     path: "./kubernetes/apps/flux-system/flux-operator/manifests",
     prune: true,
-    retryInterval: "2m",
     sourceRef: {
       kind: "GitRepository",
       name: "flux-system",
       namespace: "flux-system",
     },
-    timeout: "5m",
   },
 }

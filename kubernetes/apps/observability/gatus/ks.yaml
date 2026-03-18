@@ -6,11 +6,6 @@
     name: "gatus",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "gatus",
-      },
-    },
     dependsOn: [{
       name: "cloudnative-pg-cluster",
       namespace: "database",
@@ -27,7 +22,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "1m",
   },
 }

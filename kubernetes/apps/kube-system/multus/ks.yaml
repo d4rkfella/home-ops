@@ -6,11 +6,6 @@
     name: "multus",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "multus",
-      },
-    },
     path: "./kubernetes/apps/kube-system/multus/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: true,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

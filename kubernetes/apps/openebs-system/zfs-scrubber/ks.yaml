@@ -6,11 +6,6 @@
     name: "zfs-scrubber",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "zfs-scrubber",
-      },
-    },
     path: "./kubernetes/apps/openebs-system/zfs-scrubber/manifests",
     prune: true,
     sourceRef: {
@@ -20,8 +15,6 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
     postBuild: {
       substitute: {
         # renovate: datasource=docker depName=ghcr.io/siderolabs/installer

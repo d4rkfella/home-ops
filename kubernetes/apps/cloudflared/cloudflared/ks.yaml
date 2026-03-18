@@ -6,11 +6,6 @@
     name: "cloudflared",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cloudflared",
-      },
-    },
     dependsOn: [{
       name: "cloudflare-dns",
       namespace: "external-dns",
@@ -24,7 +19,5 @@
     },
     wait: false,
     interval: "1h",
-    retryInterval: "2m",
-    timeout: "5m",
   },
 }

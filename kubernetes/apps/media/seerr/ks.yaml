@@ -6,11 +6,6 @@
     name: "seerr",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "seerr",
-      },
-    },
     components: [
       "../../../../components/volsync",
     ],
@@ -32,7 +27,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "1m",
   },
 }

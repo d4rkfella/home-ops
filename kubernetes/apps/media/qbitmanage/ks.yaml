@@ -6,11 +6,6 @@
     name: "qbitmanage",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "qbitmanage",
-      },
-    },
     components: [
       "../../../../components/volsync",
     ],
@@ -18,8 +13,6 @@
       name: "qbittorrent",
     }],
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
     path: "./kubernetes/apps/media/qbitmanage/manifests",
     postBuild: {
       substitute: {

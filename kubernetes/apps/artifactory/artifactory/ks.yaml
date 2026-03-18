@@ -13,11 +13,6 @@
       name: "keycloak-instance",
       namespace: "keycloak",
     }],
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "artifactory",
-      },
-    },
     path: "./kubernetes/apps/artifactory/artifactory/manifests",
     prune: true,
     sourceRef: {
@@ -27,7 +22,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

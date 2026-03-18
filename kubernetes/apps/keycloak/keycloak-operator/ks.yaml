@@ -6,7 +6,7 @@
     name: "keycloak-k8s-resources",
   },
   spec: {
-    interval: "24h",
+    interval: "1h",
     url: "https://github.com/keycloak/keycloak-k8s-resources",
     ref: {
       tag: "26.5.5",
@@ -26,8 +26,6 @@
   },
   spec: {
     interval: "1h",
-    retryInterval: "2m",
-    timeout: "5m",
     path: "./kubernetes",
     prune: true,
     wait: true,

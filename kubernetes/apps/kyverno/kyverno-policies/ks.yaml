@@ -6,11 +6,6 @@
     name: "kyverno-policies",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "kyverno-policies",
-      },
-    },
     dependsOn: [{
       name: "kyverno",
     }],
@@ -23,7 +18,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

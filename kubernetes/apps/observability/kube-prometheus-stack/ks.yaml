@@ -6,11 +6,6 @@
     name: "kube-prometheus-stack",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "kube-prometheus-stack",
-      },
-    },
     dependsOn: [{
       name: "vault",
       namespace: "vault",
@@ -24,7 +19,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

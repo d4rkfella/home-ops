@@ -7,11 +7,6 @@
     name: "buildkit-amd64",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "buildkit-amd64",
-      },
-    },
     path: "./kubernetes/apps/buildkit/buildkit-amd64/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
       namespace: "flux-system",
     },
     interval: "1h",
-    retryInterval: "2m",
-    timeout: "5m",
   },
 }

@@ -6,11 +6,6 @@
     name: "recyclarr",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "recyclarr",
-      },
-    },
     dependsOn: [{
       name: "radarr",
       namespace: "media",
@@ -19,8 +14,6 @@
       namespace: "media",
     }],
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
     path: "./kubernetes/apps/media/recyclarr/manifests",
     prune: true,
     sourceRef: {

@@ -6,11 +6,6 @@
     name: "cilium",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cilium",
-      },
-    },
     path: "./kubernetes/apps/kube-system/cilium/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "1m",
   },
 }

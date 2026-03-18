@@ -6,11 +6,6 @@
     name: "envoy-gateway-controller",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "envoy-gateway-controller",
-      },
-    },
     path: "./kubernetes/apps/envoy-gateway-system/envoy-gateway-controller/manifests",
     prune: true,
     sourceRef: {
@@ -25,7 +20,5 @@
       namespace: "envoy-gateway-system",
     }],
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

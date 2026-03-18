@@ -7,11 +7,6 @@
     name: "cloudflare-dns",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cloudflare-dns",
-      },
-    },
     path: "./kubernetes/apps/external-dns/cloudflare-dns/manifests",
     prune: true,
     sourceRef: {
@@ -20,7 +15,5 @@
       namespace: "flux-system",
     },
     interval: "1h",
-    retryInterval: "1m",
-    timeout: "5m",
   },
 }

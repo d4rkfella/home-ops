@@ -12,11 +12,6 @@
     }, {
       name: "keycloak-operator",
     }],
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "keycloak-instance",
-      },
-    },
     healthCheckExprs: [{
       apiVersion: "k8s.keycloak.org/v2alpha1",
       kind: "Keycloak",
@@ -32,7 +27,5 @@
     },
     wait: false,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

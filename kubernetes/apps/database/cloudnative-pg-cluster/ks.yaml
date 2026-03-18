@@ -6,11 +6,6 @@
     name: "cloudnative-pg-cluster",
   },
   spec: {
-    commonMetadata: {
-      labels: {
-        app.kubernetes.io/name: "cloudnative-pg-cluster",
-      },
-    },
     healthCheckExprs: [{
       apiVersion: "postgresql.cnpg.io/v1",
       kind: "Cluster",
@@ -31,7 +26,5 @@
     },
     wait: true,
     interval: "1h",
-    timeout: "5m",
-    retryInterval: "2m",
   },
 }

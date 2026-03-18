@@ -148,3 +148,18 @@
     },
   },
 }
+---
+{
+  apiVersion: "postgresql.cnpg.io/v1",
+  kind: "Database",
+  metadata: {
+    name: "qui-db",
+  },
+  spec: {
+    name: "qui",
+    owner: "5614b25d-2329-4269-b517-e097b6f7ca84",
+    cluster: {
+      name: "postgres-db",
+    },
+  },
+}

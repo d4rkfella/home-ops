@@ -169,6 +169,13 @@
         passwordSecret: {
           name: "gatus-db-password",
         },
+      }, {
+        name: "5614b25d-2329-4269-b517-e097b6f7ca84", # qui
+        login: true,
+        superuser: false,
+        passwordSecret: {
+          name: "qui-db-password",
+        },
       }],
     },
   },

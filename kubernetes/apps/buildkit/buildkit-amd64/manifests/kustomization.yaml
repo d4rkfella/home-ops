@@ -5,6 +5,7 @@
   resources: [
     "./certificate.yaml",
     "./helmrelease.yaml",
+    "./ocirepository.yaml",
   ],
   configMapGenerator: [{
     name: "buildkit-config",

@@ -138,7 +138,7 @@
         },
         config-toml: {
           type: "configMap",
-          name: "qui-config",
+          name: "qui",
           globalMounts: [{
             path: "/config/config.toml",
             subPath: "config.toml",

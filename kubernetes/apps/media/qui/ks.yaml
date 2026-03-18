@@ -16,6 +16,11 @@
       name: "keycloak-instance",
       namespace: "keycloak",
     }],
+    postBuild: {
+      substitute: {
+        APP: "qui",
+      },
+    },
     interval: "1h",
     path: "./kubernetes/apps/media/qui/manifests",
     prune: true,

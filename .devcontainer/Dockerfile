@@ -1,8 +1,6 @@
 FROM debian:trixie-slim@sha256:26f98ccd92fd0a44d6928ce8ff8f4921b4d2f535bfa07555ee5d18f61429cf0c
 
 ARG USERNAME=vscode
-ARG USER_UID=2100
-ARG USER_GID=$USER_UID
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -96,10 +94,8 @@ RUN curl -fsSLO "https://github.com/google/yamlfmt/releases/download/${YAMLFMT_V
     rm -rf /tmp/*
 
 
-RUN groupadd --gid $USER_GID $USERNAME || true && \
-    useradd -s /bin/bash -u $USER_UID -g $USERNAME -m $USERNAME && \
-    groupadd -g 1003 docker || true && \
-    usermod -aG docker $USERNAME && \
+RUN groupadd $USERNAME && \
+    useradd -s /bin/bash -g $USERNAME -m $USERNAME && \
     echo 'alias k=kubectl' >> /home/$USERNAME/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> /home/$USERNAME/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> /home/$USERNAME/.bashrc && \

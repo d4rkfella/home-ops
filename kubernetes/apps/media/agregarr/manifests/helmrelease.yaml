@@ -116,6 +116,11 @@
         },
         tmp: {
           type: "emptyDir",
+          globalMounts: [{
+            path: "/tmp",
+          }, {
+            path: "/var/cache/fontconfig",
+          }],
         },
         media: {
           type: "nfs",

@@ -19,7 +19,7 @@
         VOLSYNC_PGID: "5050",
       },
     },
-    path: "./kubernetes/apps/database/pgadmin/manifests",
+    path: "./kubernetes/apps/pgadmin/pgadmin/manifests",
     prune: true,
     sourceRef: {
       kind: "GitRepository",

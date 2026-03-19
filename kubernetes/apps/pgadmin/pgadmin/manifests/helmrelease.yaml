@@ -31,7 +31,6 @@
                 PGADMIN_DISABLE_POSTFIX: "true",
                 PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['oauth2', 'internal']",
                 PGADMIN_CONFIG_MASTER_PASSWORD: "True",
-                PGADMIN_CONFIG_OAUTH2_SERVER_METADATA_URL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration",
               },
               envFrom: [{
                 secretRef: {

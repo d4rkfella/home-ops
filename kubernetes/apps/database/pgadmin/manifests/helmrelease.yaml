@@ -52,12 +52,16 @@
         },
       },
       defaultPodOptions: {
+        hostUsers: false,
         securityContext: {
           runAsNonRoot: true,
           runAsUser: 5050,
           runAsGroup: 5050,
           fsGroup: 5050,
           fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
         },
       },
       persistence: {

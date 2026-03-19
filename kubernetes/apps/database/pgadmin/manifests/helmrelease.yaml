@@ -1,0 +1,111 @@
+---
+{
+  # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/refs/heads/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "pgadmin",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "pgadmin",
+    },
+    values: {
+      controllers: {
+        pgadmin: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            pgadmin: {
+              image: {
+                repository: "docker.io/dpage/pgadmin4",
+                tag: "9.13@sha256:d243a4bcc02d2ee6b447c601692813531d2d0fbca18b583d9f7f9658da835d81",
+              },
+              env: {
+                GUNICORN_LIMIT_REQUEST_LINE: "0",
+                GUNICORN_LIMIT_REQUEST_FIELD_SIZE: "0",
+                PGADMIN_CUSTOM_CONFIG_DISTRO_FILE: "/tmp/config_distro.py",
+                PGADMIN_DISABLE_POSTFIX: "true",
+              },
+              envFrom: [{
+                secretRef: {
+                  name: "pgadmin-secret",
+                },
+              }],
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                capabilities: {
+                  add: [
+                    "NET_BIND_SERVICE",
+                  ],
+                  drop: [
+                    "ALL",
+                  ],
+                },
+                readOnlyRootFilesystem: true,
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 5050,
+          runAsGroup: 5050,
+          fsGroup: 5050,
+          fsGroupChangePolicy: "OnRootMismatch",
+        },
+      },
+      persistence: {
+        config: {
+          existingClaim: "{{ .Release.Name }}",
+          globalMounts: [{
+            path: "/var/lib/pgadmin",
+          }],
+        },
+        empty: {
+          type: "emptyDir",
+          sizeLimit: "100Mi",
+          globalMounts: [{
+            path: "/tmp",
+            subPath: "tmp",
+          }, {
+            path: "/var/log",
+            subPath: "log",
+          }],
+        },
+      },
+      route: {
+        pgadmin: {
+          hostnames: [
+            "{{ .Release.Name }}.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+          }],
+          rules: [{
+            backendRefs: [{
+              port: 80,
+              name: "pgadmin",
+            }],
+          }],
+        },
+      },
+      service: {
+        pgadmin: {
+          controller: "pgadmin",
+          ports: {
+            http: {
+              port: 80,
+            },
+          },
+        },
+      },
+    },
+  },
+}

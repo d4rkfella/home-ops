@@ -15,6 +15,8 @@
     postBuild: {
       substitute: {
         APP: "pgadmin",
+        VOLSYNC_PUID: "5050",
+        VOLSYNC_PGID: "5050",
       },
     },
     path: "./kubernetes/apps/database/pgadmin/manifests",

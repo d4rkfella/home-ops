@@ -4,9 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
-    "./cloudnative-pg-operator/ks.yaml",
-    "./barman-cloud/ks.yaml",
-    "./cloudnative-pg-cluster/ks.yaml",
+    "./pgadmin/ks.yaml",
   ],
   components: [
     "../../components/alerts",

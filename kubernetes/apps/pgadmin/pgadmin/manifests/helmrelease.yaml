@@ -25,8 +25,8 @@
                 tag: "9.13@sha256:d243a4bcc02d2ee6b447c601692813531d2d0fbca18b583d9f7f9658da835d81",
               },
               env: {
-                GUNICORN_LIMIT_REQUEST_LINE: "0",
-                GUNICORN_LIMIT_REQUEST_FIELD_SIZE: "0",
+                GUNICORN_LIMIT_REQUEST_LINE: 0,
+                GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0,
                 PGADMIN_CUSTOM_CONFIG_DISTRO_FILE: "/tmp/config_distro.py",
                 PGADMIN_DISABLE_POSTFIX: "true",
                 PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['oauth2', 'internal']",

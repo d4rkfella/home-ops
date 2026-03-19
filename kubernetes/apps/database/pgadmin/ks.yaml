@@ -11,9 +11,6 @@
     ],
     dependsOn: [{
       name: "cloudnative-pg-cluster",
-    }, {
-      name: "keycloak-instance",
-      namespace: "keycloak",
     }],
     postBuild: {
       substitute: {

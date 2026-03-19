@@ -232,7 +232,7 @@
     name: "multus",
     namespace: "kube-system",
     chart: "oci://ghcr.io/bjw-s-labs/helm/multus",
-    version: "1.2.0",
+    version: "1.2.1",
     values: [
       "./templates/values.yaml.gotmpl",
     ],

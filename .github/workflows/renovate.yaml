@@ -77,7 +77,7 @@ jobs:
                 "matchHost": "ghcr.io",
                 "matchOrg": "d4rkfella",
                 "username": "x-access-token",
-                "password": "${{ steps.app-token.outputs.token }}"
+                "password": "${{ secrets.BOT_GITHUB_TOKEN }}"
               }
             ]
         with:

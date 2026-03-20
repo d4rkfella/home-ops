@@ -1,10 +1,22 @@
 ---
 {
-  apiVersion: "v1",
-  kind: "ServiceAccount",
+  apiVersion: "rbac.authorization.k8s.io/v1",
+  kind: "ClusterRole",
   metadata: {
     name: "home-ops-runner2",
   },
+  rules: [{
+    apiGroups: [
+      "apiextensions.k8s.io",
+    ],
+    resources: [
+      "customresourcedefinitions",
+    ],
+    verbs: [
+      "get",
+      "list",
+    ],
+  }],
 }
 ---
 {
@@ -16,7 +28,7 @@
   roleRef: {
     apiGroup: "rbac.authorization.k8s.io",
     kind: "ClusterRole",
-    name: "cluster-admin",
+    name: "home-ops-runner2",
   },
   subjects: [{
     kind: "ServiceAccount",

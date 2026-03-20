@@ -1,58 +1,59 @@
-//devcontainer.json
 {
-    "name": "Dev",
-
-    "dockerFile": "Dockerfile",
-    "workspaceFolder": "/project",
-    "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
-    "mounts": [
-      "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-    ],
-    "customizations": {
-      "vscode": {
-        "extensions": [
-            "signageos.signageos-vscode-sops",
-            "BriteSnow.vscode-toggle-quotes",
-            "redhat.vscode-yaml",
-            "albert.TabOut",
-            "editorconfig.editorconfig",
-            "ms-azuretools.vscode-containers",
-            "GitHub.vscode-pull-request-github",
-            "donjayamanne.githistory",
-            "ms-python.python",
-            "ms-python.vscode-pylance"
+  "name": "Dev",
+  "dockerFile": "Dockerfile",
+  "workspaceFolder": "/project",
+  "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "signageos.signageos-vscode-sops",
+        "BriteSnow.vscode-toggle-quotes",
+        "redhat.vscode-yaml",
+        "albert.TabOut",
+        "editorconfig.editorconfig",
+        "ms-azuretools.vscode-containers",
+        "GitHub.vscode-pull-request-github",
+        "donjayamanne.githistory",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ],
+      "settings": {
+        "git.path": "/usr/bin/git",
+        "git.enableCommitSigning": true,
+        "docker.dockerPath": "/usr/bin/docker",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        },
+        "editor.bracketPairColorization.enabled": true,
+        "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+        "editor.fontLigatures": true,
+        "editor.guides.bracketPairs": true,
+        "editor.guides.bracketPairsHorizontal": true,
+        "editor.guides.highlightActiveBracketPair": true,
+        "editor.hover.delay": 1000,
+        "editor.rulers": [
+          100
         ],
-        "settings": {
-            "git.path": "/usr/bin/git",
-            "git.enableCommitSigning": true,
-            "docker.dockerPath": "/usr/bin/docker",
-            "terminal.integrated.defaultProfile.linux": "bash",
-            "terminal.integrated.profiles.linux": { "bash": { "path": "/bin/bash" } },
-            "editor.bracketPairColorization.enabled": true,
-            "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-            "editor.fontLigatures": true,
-            "editor.guides.bracketPairs": true,
-            "editor.guides.bracketPairsHorizontal": true,
-            "editor.guides.highlightActiveBracketPair": true,
-            "editor.hover.delay": 1000,
-            "editor.rulers": [
-                100
-            ],
-            "editor.stickyScroll.enabled": false,
-            "explorer.autoReveal": false,
-
-            "files.associations": {
-                "**/*.json5": "json5"
-            },
-            "files.trimTrailingWhitespace": true,
-            "sops.defaults.ageKeyFile": "./age.key",
-            "sops.creationEnabled": true,
-            "yaml.schemaStore.enable": true,
-            "yaml.schemas": {
-                "https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json": "kubernetes/**/helmrelease.yaml"
-            }
+        "editor.stickyScroll.enabled": false,
+        "explorer.autoReveal": false,
+        "files.associations": {
+          "**/*.json5": "json5"
+        },
+        "files.trimTrailingWhitespace": true,
+        "sops.defaults.ageKeyFile": "./age.key",
+        "sops.creationEnabled": true,
+        "yaml.schemaStore.enable": true,
+        "yaml.schemas": {
+          "kubernetes": "./kubernetes/**/*.yaml"
         }
       }
     }
+  }
 }

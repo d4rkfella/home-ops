@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/policies.kyverno.io/imagevalidatingpolicy_v1beta1.json
 {
   apiVersion: "policies.kyverno.io/v1",
   kind: "ImageValidatingPolicy",

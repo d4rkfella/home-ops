@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/envoyproxy_v1alpha1.json
 {
   apiVersion: "gateway.envoyproxy.io/v1alpha1",
   kind: "EnvoyProxy",
@@ -49,6 +50,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gatewayclass_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "GatewayClass",
@@ -66,6 +68,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
@@ -117,6 +120,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
@@ -169,6 +173,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
@@ -217,6 +222,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
@@ -255,6 +261,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
 {
   apiVersion: "gateway.envoyproxy.io/v1alpha1",
   kind: "BackendTrafficPolicy",
@@ -275,6 +282,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/clienttrafficpolicy_v1alpha1.json
 {
   apiVersion: "gateway.envoyproxy.io/v1alpha1",
   kind: "ClientTrafficPolicy",
@@ -339,6 +347,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/clienttrafficpolicy_v1alpha1.json
 {
   apiVersion: "gateway.envoyproxy.io/v1alpha1",
   kind: "ClientTrafficPolicy",
@@ -405,6 +414,7 @@
   },
 }
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/httproute_v1beta1.json
 {
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "HTTPRoute",

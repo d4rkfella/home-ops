@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/scheduledbackup_v1.json
 {
   apiVersion: "postgresql.cnpg.io/v1",
   kind: "ScheduledBackup",

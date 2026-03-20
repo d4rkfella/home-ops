@@ -1,0 +1,27 @@
+---
+{
+  # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/observability.giantswarm.io/silence_v1alpha2.json
+  apiVersion: "observability.giantswarm.io/v1alpha2",
+  kind: "Silence",
+  metadata: {
+    name: "zfs-volume-usage-critical-truenas-os-disk",
+  },
+  spec: {
+    matchers: [{
+      name: "alertname",
+      value: "ZFSVolumeUsageCritical",
+    }, {
+      name: "persistentvolumeclaim",
+      value: "truenas-os-disk",
+    }, {
+      name: "namespace",
+      value: "virtualization",
+    }, {
+      name: "node",
+      value: "k8s-0",
+    }, {
+      name: "severity",
+      value: "warning",
+    }],
+  },
+}

@@ -12,7 +12,7 @@
       name: "gha-runner-scale-set",
     },
     values: {
-      githubConfigUrl: "https://github.com/d4rkfella/vm-container-disks",
+      githubConfigUrl: "https://github.com/d4rkfella",
       githubConfigSecret: "home-ops-runner-secret",
       namespaceOverride: "arc-runners",
       minRunners: 1,

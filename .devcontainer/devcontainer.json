@@ -21,8 +21,7 @@
             "GitHub.vscode-pull-request-github",
             "donjayamanne.githistory",
             "ms-python.python",
-            "ms-python.vscode-pylance",
-            "ms-kubernetes-tools.vscode-kubernetes-tools"
+            "ms-python.vscode-pylance"
         ],
         "settings": {
             "git.path": "/usr/bin/git",
@@ -51,7 +50,7 @@
             "sops.creationEnabled": true,
             "yaml.schemaStore.enable": true,
             "yaml.schemas": {
-                "kubernetes": "./kubernetes/**/*.yaml"
+                "https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json": "kubernetes/**/helmrelease.yaml"
             }
         }
       }

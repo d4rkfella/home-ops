@@ -23,7 +23,9 @@
       cmds: [{
         for: {
           var: "SECRETS",
-          split: " ",
+          split: "\
+             \n\
+            ",
         },
         cmd: "kubectl --namespace {{splitList \",\" .ITEM | first}} annotate externalsecret {{splitList \",\" .ITEM | last}} force-sync=\"{{now | unixEpoch}}\" --overwrite",
       }],
@@ -79,19 +81,6 @@
         "which kubectl",
         "which virtctl",
         "which home-ops-cli",
-      ],
-    },
-    start-pgadmin: {
-      desc: "Start pgAdmin server",
-      silent: true,
-      cmds: [
-        "\
-           kubectl port-forward svc/postgres-db-rw 5432:5432 -n database >/dev/null 2>&1 &\n\
-           pgadmin4\n\
-          ",
-      ],
-      preconditions: [
-        "which kubectl pgadmin4",
       ],
     },
   },

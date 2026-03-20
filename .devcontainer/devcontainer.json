@@ -7,8 +7,6 @@
     "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
     "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
     "mounts": [
-      "source=/var/lib/pgadmin,target=/var/lib/pgadmin,type=bind",
-      "source=/var/log/pgadmin,target=/var/log/pgadmin,type=bind",
       "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
     ],
     "customizations": {
@@ -24,7 +22,7 @@
             "donjayamanne.githistory",
             "ms-python.python",
             "ms-python.vscode-pylance",
-            "ms-kubernetes-tools.vscode-kubernetes-tools",
+            "ms-kubernetes-tools.vscode-kubernetes-tools"
         ],
         "settings": {
             "git.path": "/usr/bin/git",

@@ -93,8 +93,6 @@
     {
       description: "Kubernetes Group",
       groupName: "kubernetes",
-      matchDatasources: ["docker"],
-      matchManagers: ["docker", "kubernetes", "regex"],
       matchPackageNames: [
         "/kube-apiserver/",
         "/kube-controller-manager/",
@@ -104,7 +102,7 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      minimumGroupSize: 5,
+      minimumGroupSize: 4,
     },
     {
       description: "Talos Group",

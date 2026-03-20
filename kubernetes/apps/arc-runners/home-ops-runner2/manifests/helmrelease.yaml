@@ -34,6 +34,14 @@
       template: {
         spec: {
           hostUsers: false,
+          securityContext: {
+            runAsNonRoot: true,
+            seccompProfile: {
+              type: "Unconfined",
+            },
+            runAsUser: 1001,
+            fsGroup: 123,
+          },
           containers: [{
             name: "runner",
             image: "ghcr.io/actions/actions-runner:2.333.0@sha256:1ad983536759ceec39ed75a2c8f007ca8c37b66eee35ed86f13623b29a4db97d",
@@ -51,6 +59,10 @@
                 },
               },
             }],
+            securityContext: {
+              allowPrivilegeEscalation: false,
+              readOnlyRootFilesystem: false,
+            },
           }],
           serviceAccountName: "home-ops-runner2",
         },

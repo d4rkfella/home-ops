@@ -94,6 +94,7 @@
       description: "Kubernetes Group",
       groupName: "kubernetes",
       matchDatasources: ["docker"],
+      matchManagers: ["docker", "kubernetes", "regex"],
       matchPackageNames: [
         "/kube-apiserver/",
         "/kube-controller-manager/",

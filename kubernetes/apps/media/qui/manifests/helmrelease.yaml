@@ -25,6 +25,7 @@
                 tag: "v1.15.0@sha256:da33f8c850f7d6f1bfaee26b9553b21411e872639d54193906fa2cec51af1d0f",
               },
               env: {
+                QUI__CHECK_FOR_UPDATES: false,
                 QUI__HOST: "0.0.0.0",
                 QUI__PORT: 80,
                 QUI__DATABASE_ENGINE: "postgres",

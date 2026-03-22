@@ -38,6 +38,21 @@
       toolkit: {
         enabled: false,
       },
+      migManager: {
+        enabled: false,
+      },
+      operator: {
+        defaultRuntime: "containerd",
+      },
+      sandboxDevicePlugin: {
+        enabled: false,
+      },
+      vfioManager: {
+        enabled: false,
+      },
+      vgpuDeviceManager: {
+        enabled: false,
+      },
       hostPaths: {
         driverInstallDir: "/usr/local/glibc/usr/lib",
       },

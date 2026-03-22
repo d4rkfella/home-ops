@@ -41,9 +41,6 @@
       migManager: {
         enabled: false,
       },
-      operator: {
-        defaultRuntime: "containerd",
-      },
       sandboxDevicePlugin: {
         enabled: false,
       },
@@ -52,6 +49,12 @@
       },
       vgpuDeviceManager: {
         enabled: false,
+      },
+      ccManager: {
+        enabled: false,
+      },
+      operator: {
+        defaultRuntime: "containerd",
       },
       hostPaths: {
         driverInstallDir: "/usr/local/glibc/usr/lib",

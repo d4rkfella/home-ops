@@ -1,27 +1,79 @@
 ---
 {
-  apiVersion: "nfd.k8s-sigs.io/v1alpha1",
-  kind: "NodeFeatureRule",
+  # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
   metadata: {
-    name: "talos-os-version-fix",
+    name: "gpu-operator",
   },
   spec: {
-    rules: [{
-      name: "fix-talos-version-id",
-      labels: {
-        feature.node.kubernetes.io/system-os_release.VERSION_ID: "1.13",
-      },
-      matchFeatures: [{
-        feature: "system.osrelease",
-        matchExpressions: {
-          ID: {
-            op: "In",
-            value: [
-              "talos",
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "gpu-operator",
+    },
+    values: {
+      dcgmExporter: {
+        env: [{
+          name: "KUBERNETES_VIRTUAL_GPUS",
+          value: "true",
+        }],
+        serviceMonitor: {
+          enabled: true,
+          honorLabels: true,
+          relabelings: [{
+            sourceLabels: [
+              "__meta_kubernetes_pod_node_name",
             ],
+            regex: "(.*)",
+            targetLabel: "instance",
+            replacement: "$1",
+            action: "replace",
+          }],
+        },
+      },
+      driver: {
+        enabled: false,
+      },
+      toolkit: {
+        enabled: false,
+      },
+      migManager: {
+        enabled: false,
+      },
+      sandboxDevicePlugin: {
+        enabled: false,
+      },
+      vfioManager: {
+        enabled: false,
+      },
+      vgpuDeviceManager: {
+        enabled: false,
+      },
+      ccManager: {
+        enabled: false,
+      },
+      operator: {
+        defaultRuntime: "containerd",
+      },
+      hostPaths: {
+        driverInstallDir: "/usr/local/glibc/usr/lib",
+      },
+      devicePlugin: {
+        config: {
+          create: true,
+          name: "device-plugin-config",
+          default: "default",
+          data: {
+            default: "\
+               version: v1\n\
+               flags:\n\
+              \  plugin:\n\
+              \    nvidiaCTKPath: /usr/local/bin/nvidia-ctk\
+              ",
           },
         },
-      }],
-    }],
+      },
+    },
   },
 }

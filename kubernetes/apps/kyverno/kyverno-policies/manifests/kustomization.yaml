@@ -4,10 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./dns-config.yaml",
-    #- ./hostpath-readonly.yaml
     "./allow-only-vault-provider.yaml",
-    #- ./default-deny.yaml
-    #"./verify-images.yaml",
     "./mount-internal-ca.yaml",
   ],
 }

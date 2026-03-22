@@ -56,6 +56,31 @@
       hostPaths: {
         driverInstallDir: "/usr/local/glibc/usr/lib",
       },
+      node-feature-discovery: {
+        worker: {
+          config: {
+            sources: {
+              custom: [{
+                name: "talos-os-version-fix",
+                labels: {
+                  feature.node.kubernetes.io/system-os_release.VERSION_ID: "1.13",
+                },
+                matchFeatures: [{
+                  feature: "node.kubernetes.io/system-os_release",
+                  matchExpressions: {
+                    ID: {
+                      op: "In",
+                      value: [
+                        "talos",
+                      ],
+                    },
+                  },
+                }],
+              }],
+            },
+          },
+        },
+      },
     },
   },
 }

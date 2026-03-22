@@ -42,34 +42,5 @@
         driverInstallDir: "/usr/local/glibc/usr/lib",
       },
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          patch: "\
-             apiVersion: apps/v1\n\
-             kind: Deployment\n\
-             metadata:\n\
-            \  name: gpu-operator\n\
-            \  labels:\n\
-            \    app.kubernetes.io/component: \"gpu-operator\"\n\
-             spec:\n\
-            \  template:\n\
-            \    spec:\n\
-            \      containers:\n\
-            \        - name: gpu-operator\n\
-            \          securityContext:\n\
-            \            allowPrivilegeEscalation: false\n\
-            \            capabilities: { drop: [\"ALL\"] }\n\
-            \            readOnlyRootFilesystem: true\n\
-            \            runAsNonRoot: true\n\
-            \            runAsUser: 65532\n\
-            \            runAsGroup: 65532\n\
-            \      securityContext:\n\
-            \        fsGroup: 65532\n\
-            \        fsGroupChangePolicy: OnRootMismatch\
-            ",
-        }],
-      },
-    }],
   },
 }

@@ -60,6 +60,11 @@
         worker: {
           config: {
             sources: {
+              system: {
+                osReleaseFields: [
+                  "ID",
+                ],
+              },
               custom: [{
                 name: "talos-os-version-fix",
                 labels: {

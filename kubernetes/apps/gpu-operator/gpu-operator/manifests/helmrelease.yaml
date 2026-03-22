@@ -8,6 +8,10 @@
   },
   spec: {
     interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "gpu-operator",
+    },
     values: {
       dcgmExporter: {
         env: [{

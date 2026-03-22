@@ -4,7 +4,7 @@
   apiVersion: "source.toolkit.fluxcd.io/v1",
   kind: "OCIRepository",
   metadata: {
-    name: "nvidia-device-plugin",
+    name: "gpu-operator",
   },
   spec: {
     interval: "15m",
@@ -12,10 +12,10 @@
       mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip",
       operation: "copy",
     },
-    url: "oci://ghcr.io/d4rkfella/charts-mirror/nvidia-device-plugin",
     ref: {
-      tag: "0.19.0",
+      tag: "v26.3.0",
     },
+    url: "oci://ghcr.io/d4rkfella/charts-mirror/gpu-operator",
     verify: {
       provider: "cosign",
       matchOIDCIdentity: [{

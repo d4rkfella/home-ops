@@ -4,10 +4,10 @@
   apiVersion: "kustomize.toolkit.fluxcd.io/v1",
   kind: "Kustomization",
   metadata: {
-    name: "nvidia-device-plugin",
+    name: "gpu-operator",
   },
   spec: {
-    path: "./kubernetes/apps/kube-system/nvidia-device-plugin/manifests",
+    path: "./kubernetes/apps/gpu-operator/gpu-operator/manifests",
     prune: true,
     sourceRef: {
       kind: "GitRepository",

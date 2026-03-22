@@ -1,0 +1,27 @@
+---
+{
+  apiVersion: "nfd.k8s-sigs.io/v1alpha1",
+  kind: "NodeFeatureRule",
+  metadata: {
+    name: "talos-os-version-fix",
+  },
+  spec: {
+    rules: [{
+      name: "fix-talos-version-id",
+      labels: {
+        feature.node.kubernetes.io/system-os_release.VERSION_ID: "1.13",
+      },
+      matchFeatures: [{
+        feature: "node.kubernetes.io/system-os_release",
+        matchExpressions: {
+          ID: {
+            op: "In",
+            values: [
+              "talos",
+            ],
+          },
+        },
+      }],
+    }],
+  },
+}

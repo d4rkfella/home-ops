@@ -19,7 +19,7 @@
     postBuild: {
       substitute: {
         # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-        TALOS_VERSION: "v1.12.5",
+        TALOS_VERSION: "v1.13.0-beta.0",
       },
     },
   },

@@ -9,7 +9,7 @@
   spec: {
     talos: {
       # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
-      version: "v1.12.5",
+      version: "v1.13.0-beta.0",
     },
     policy: {
       rebootMode: "powercycle",

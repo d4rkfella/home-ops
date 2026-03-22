@@ -14,8 +14,8 @@
       name: "volsync",
       namespace: "volsync-system",
     }, {
-      name: "nvidia-device-plugin",
-      namespace: "kube-system",
+      name: "gpu-operator",
+      namespace: "gpu-operator",
     }],
     path: "./kubernetes/apps/media/plex/manifests",
     postBuild: {

@@ -37,6 +37,8 @@
       },
       injector: {
         enabled: true,
+        failurePolicy: "Fail",
+        logLevel: "debug",
       },
       csi: {
         enabled: false,

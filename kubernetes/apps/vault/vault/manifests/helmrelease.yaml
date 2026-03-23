@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/hashicorp/vault-helm/refs/heads/main/values.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -37,11 +37,13 @@
       },
       injector: {
         enabled: true,
-        failurePolicy: "Fail",
         logLevel: "debug",
         logFormat: "json",
         strategy: {
           type: "Recreate",
+        },
+        webhook: {
+          failurePolicy: "Fail",
         },
       },
       csi: {

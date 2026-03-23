@@ -39,6 +39,7 @@
         enabled: true,
         failurePolicy: "Fail",
         logLevel: "debug",
+        logFormat: "json",
         strategy: {
           type: "Recreate",
         },

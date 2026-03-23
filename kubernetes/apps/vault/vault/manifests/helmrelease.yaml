@@ -39,7 +39,7 @@
         enabled: true,
         image: {
           repository: "hashicorp/vault-k8s",
-          tag: "1.7.2",
+          tag: "1.7.3",
           pullPolicy: "IfNotPresent",
         },
         agentImage: {

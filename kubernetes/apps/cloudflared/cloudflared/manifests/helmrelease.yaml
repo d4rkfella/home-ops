@@ -58,19 +58,19 @@
                   },
                 },
                 readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/ready",
-                      port: 8080,
+                    enabled: true,
+                    custom: true,
+                    spec: {
+                      httpGet: {
+                        path: "/ready",
+                        port: 8080,
+                      },
+                      initialDelaySeconds: 0,
+                      periodSeconds: 10,
+                      timeoutSeconds: 1,
+                      failureThreshold: 3,
                     },
-                    initialDelaySeconds: 0,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
                   },
-                },
               },
               securityContext: {
                 allowPrivilegeEscalation: false,
@@ -98,11 +98,11 @@
         securityContext: {
           sysctls: [{
             name: "net.ipv4.ping_group_range",
-            value: "65534       65534",
+            value: "65532       65532",
           }],
           runAsNonRoot: true,
-          runAsUser: 65534,
-          runAsGroup: 65534,
+          runAsUser: 65532,
+          runAsGroup: 65532,
           seccompProfile: {
             type: "RuntimeDefault",
           },

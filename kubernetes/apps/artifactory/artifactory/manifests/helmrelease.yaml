@@ -12,22 +12,6 @@
       kind: "OCIRepository",
       name: "artifactory",
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "StatefulSet",
-            name: "artifactory",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/imagePullSecrets\n\
-            \  value:\n\
-            \    - name: artifactory-secret\
-            ",
-        }],
-      },
-    }],
     values: {
       mc: {
         enabled: true,

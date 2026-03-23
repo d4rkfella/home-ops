@@ -39,6 +39,9 @@
         enabled: true,
         failurePolicy: "Fail",
         logLevel: "debug",
+        strategy: {
+          type: "Recreate",
+        },
       },
       csi: {
         enabled: false,

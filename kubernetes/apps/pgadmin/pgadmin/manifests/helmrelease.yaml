@@ -29,7 +29,7 @@
                 GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0,
                 PGADMIN_CUSTOM_CONFIG_DISTRO_FILE: "/tmp/config_distro.py",
                 PGADMIN_DISABLE_POSTFIX: "true",
-                PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['oauth2', 'internal']",
+                PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['oauth2']",
                 PGADMIN_CONFIG_MASTER_PASSWORD: "True",
               },
               envFrom: [{

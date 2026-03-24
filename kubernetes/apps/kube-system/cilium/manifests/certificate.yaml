@@ -99,3 +99,29 @@
     ],
   },
 }
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "hubble-metrics-tls",
+  },
+  spec: {
+    secretName: "hubble-metrics-tls",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    dnsNames: [
+      "*.hubble-metrics.cilium.io",
+    ],
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "server auth",
+    ],
+    duration: "8760h",
+    renewBefore: "360h",
+  },
+}

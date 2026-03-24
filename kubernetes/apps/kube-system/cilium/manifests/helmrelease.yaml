@@ -68,6 +68,14 @@
         enabled: false,
       },
       localRedirectPolicy: true,
+      hubble: {
+        enabled: true,
+        metrics: {
+          enabled: [
+            "drop",
+          ],
+        },
+      },
       operator: {
         dashboards: {
           enabled: true,

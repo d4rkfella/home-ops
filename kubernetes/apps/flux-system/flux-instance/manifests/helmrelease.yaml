@@ -145,11 +145,11 @@
               },
             },
             {
-              # Disable chart digest tracking
+              # Default to retry on failure
               patch: "\
                  - op: add\n\
                 \  path: /spec/template/spec/containers/0/args/-\n\
-                \  value: --feature-gates=DisableChartDigestTracking=true\
+                \  value: --feature-gates=DefaultToRetryOnFailure=true\
                 ",
               target: {
                 kind: "Deployment",

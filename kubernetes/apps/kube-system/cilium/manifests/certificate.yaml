@@ -13,7 +13,7 @@
       group: "cert-manager.io",
     },
     dnsNames: [
-      "hubble-peer.main.hubble-grpc.cilium.io",
+      "*.main.hubble-grpc.cilium.io",
     ],
     usages: [
       "digital signature",

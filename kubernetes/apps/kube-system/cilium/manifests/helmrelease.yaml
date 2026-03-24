@@ -118,6 +118,25 @@
           },
           serviceMonitor: {
             enabled: true,
+            tlsConfig: {
+              serverName: "main.hubble-metrics.cilium.io",
+              ca: {
+                secret: {
+                  name: "hubble-metrics-prometheus-client-certs",
+                  key: "ca.crt",
+                },
+              },
+              cert: {
+                secret: {
+                  name: "hubble-metrics-prometheus-client-certs",
+                  key: "tls.crt",
+                },
+              },
+              keySecret: {
+                name: "hubble-metrics-prometheus-client-certs",
+                key: "tls.key",
+              },
+            },
           },
         },
       },

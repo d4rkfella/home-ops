@@ -3,6 +3,28 @@
   apiVersion: "cert-manager.io/v1",
   kind: "Certificate",
   metadata: {
+    name: "hubble-metrics-prometheus-client-certs",
+  },
+  spec: {
+    secretName: "hubble-metrics-prometheus-client-certs",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    commonName: "prometheus-client",
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "client auth",
+    ],
+  },
+}
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
     name: "hubble-server-certs",
   },
   spec: {

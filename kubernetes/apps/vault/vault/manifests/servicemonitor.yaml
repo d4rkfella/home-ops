@@ -8,7 +8,7 @@
   spec: {
     selector: {
       matchLabels: {
-        "app.kubernetes.io/name=vault": "vault",
+        app.kubernetes.io/name: "vault",
       },
     },
     namespaceSelector: {
@@ -24,7 +24,7 @@
           "prometheus",
         ],
       },
-      port: 8200,
+      port: "https",
       scheme: "https",
       scrapeTimeout: "30s",
       bearerTokenFile: "/vault/secrets/token",

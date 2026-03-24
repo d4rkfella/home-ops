@@ -1,0 +1,37 @@
+---
+{
+  apiVersion: "monitoring.coreos.com/v1",
+  kind: "PrometheusRule",
+  metadata: {
+    name: "cilium-network-policy-pod-alert",
+  },
+  spec: {
+    groups: [{
+      name: "cilium.rules",
+      rules: [{
+        alert: "CiliumNetworkPolicyBlocked",
+        expr: "\
+           sum by (\n\
+          \  source_namespace,\n\
+          \  source_workload,\n\
+          \  destination_namespace,\n\
+          \  destination_workload,\n\
+          \  reason\n\
+           ) (\n\
+          \  rate(hubble_drop_total{reason=\"POLICY_DENIED\"}[5m])\n\
+           ) > 0\n\
+          ",
+        for: "5m",
+        labels: {
+          severity: "warning",
+        },
+        annotations: {
+          summary: "Cilium blocked traffic due to NetworkPolicy",
+          description: "\
+             Traffic from {{ $labels.source_namespace }}/{{ $labels.source_workload }} to {{ $labels.destination_namespace }}/{{ $labels.destination_workload }} is being dropped due to {{ $labels.reason }}.\n\
+            ",
+        },
+      }],
+    }],
+  },
+}

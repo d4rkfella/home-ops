@@ -50,11 +50,11 @@
         watchSingleNamespace: "arc-runners",
       },
       namespaceOverride: "arc-system",
-      #image: {
-      #repository: "ghcr.io/d4rkfella/actions-runner-controller",
-      #pullPolicy: "IfNotPresent",
-      #tag: "0.13.1@sha256:c8e93266b6343b5ca2603fac765cfbb6d9696aab1fd1cd0b826bc1256c6732ba",
-      #},
+      image: {
+        repository: "ghcr.io/d4rkfella/actions-runner-controller",
+        pullPolicy: "IfNotPresent",
+        tag: "0.14.0@sha256:9b283fe5b4cbd3c71fe34f059a04b78b21893b225e744e81de640dc4c292ab29",
+      },
     },
   },
 }

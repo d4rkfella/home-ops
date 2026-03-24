@@ -152,27 +152,6 @@
               },
             },
           },
-          additionalScrapeConfigs: [{
-            job_name: "vault",
-            metrics_path: "/v1/sys/metrics",
-            params: {
-              format: [
-                "prometheus",
-              ],
-            },
-            scheme: "https",
-            authorization: {
-              credentials_file: "/vault/secrets/token",
-            },
-            tls_config: {
-              insecure_skip_verify: false,
-            },
-            static_configs: [{
-              targets: [
-                "vault.darkfellanetwork.com:8200",
-              ],
-            }],
-          }],
           securityContext: {
             runAsGroup: 65532,
             runAsNonRoot: true,

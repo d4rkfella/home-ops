@@ -76,8 +76,8 @@
         },
         metrics: {
           enabled: [
-            "drop:sourceContext=pod|namespace;destinationContext=pod|namespace",
-            "flow:sourceContext=pod|namespace;destinationContext=pod|namespace",
+            "drop:sourceContext=pod;destinationContext=pod",
+            "flow:sourceContext=pod;destinationContext=pod",
           ],
           enableOpenMetrics: true,
           serviceMonitor: {

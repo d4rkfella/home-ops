@@ -12,7 +12,9 @@
       kind: "ClusterIssuer",
       group: "cert-manager.io",
     },
-    commonName: "hubble-peer.main.hubble-grpc.cilium.io",
+    dnsNames: [
+      "hubble-peer.main.hubble-grpc.cilium.io",
+    ],
     usages: [
       "digital signature",
       "key encipherment",

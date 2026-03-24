@@ -78,6 +78,7 @@
           enabled: [
             "drop",
           ],
+          enableOpenMetrics: false,
           serviceMonitor: {
             enabled: true,
           },

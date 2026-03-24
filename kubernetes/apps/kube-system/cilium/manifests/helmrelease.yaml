@@ -70,10 +70,20 @@
       localRedirectPolicy: true,
       hubble: {
         enabled: true,
+        relay: {
+          enabled: true,
+        },
         metrics: {
           enabled: [
             "drop",
           ],
+        },
+        prometheus: {
+          enabled: true,
+          serviceMonitor: {
+            enabled: true,
+            trustCRDsExist: true,
+          },
         },
       },
       operator: {

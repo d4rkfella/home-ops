@@ -70,6 +70,7 @@
       localRedirectPolicy: true,
       hubble: {
         enabled: true,
+        hostUsers: false,
         relay: {
           enabled: true,
         },
@@ -77,12 +78,8 @@
           enabled: [
             "drop",
           ],
-        },
-        prometheus: {
-          enabled: true,
           serviceMonitor: {
             enabled: true,
-            trustCRDsExist: true,
           },
         },
       },

@@ -71,14 +71,51 @@
       hubble: {
         enabled: true,
         hostUsers: false,
+        tls: {
+          enabled: true,
+          auto: {
+            enabled: false,
+          },
+          server: {
+            existingSecret: "hubble-server-certs",
+          },
+        },
         relay: {
           enabled: true,
+          tls: {
+            client: {
+              existingSecret: "hubble-relay-client-certs",
+            },
+            server: {
+              enabled: true,
+              mtls: true,
+              existingSecret: "hubble-relay-server-certs",
+              relayName: "hubble-relay.kube-system.svc.cluster.local",
+            },
+          },
+        },
+        ui: {
+          enabled: true,
+          tls: {
+            client: {
+              existingSecret: "hubble-ui-client-certs",
+            },
+          },
         },
         metrics: {
           enabled: [
             "drop:labelsContext=source_namespace,source_workload,destination_namespace,destination_workload,traffic_direction",
           ],
           enableOpenMetrics: true,
+          tls: {
+            enabled: true,
+            server: {
+              existingSecret: "hubble-metrics-tls",
+              mtls: {
+                enabled: true,
+              },
+            },
+          },
           serviceMonitor: {
             enabled: true,
           },

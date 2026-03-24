@@ -1,0 +1,107 @@
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "hubble-server-certs",
+  },
+  spec: {
+    secretName: "hubble-server-certs",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    commonName: "hubble-peer.kube-system.svc.cluster.local",
+    dnsNames: [
+      "hubble-peer.kube-system.svc.cluster.local",
+      "hubble-peer.kube-system.svc",
+      "hubble-peer.kube-system",
+    ],
+    ipAddresses: [
+      "127.0.0.1",
+    ],
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "server auth",
+      "client auth",
+    ],
+    duration: "8760h",
+    renewBefore: "360h",
+  },
+}
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "hubble-relay-server-certs",
+  },
+  spec: {
+    secretName: "hubble-relay-server-certs",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    commonName: "hubble-relay.kube-system.svc.cluster.local",
+    dnsNames: [
+      "hubble-relay.kube-system.svc.cluster.local",
+      "hubble-relay.kube-system.svc",
+      "hubble-relay.kube-system",
+      "hubble-relay",
+    ],
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "server auth",
+    ],
+    duration: "8760h",
+    renewBefore: "360h",
+  },
+}
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "hubble-relay-client-certs",
+  },
+  spec: {
+    secretName: "hubble-relay-client-certs",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    commonName: "hubble-relay-client",
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "client auth",
+    ],
+  },
+}
+---
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "hubble-ui-client-certs",
+  },
+  spec: {
+    secretName: "hubble-ui-client-certs",
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+      group: "cert-manager.io",
+    },
+    commonName: "hubble-ui-client",
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "client auth",
+    ],
+  },
+}

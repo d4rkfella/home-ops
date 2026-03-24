@@ -12,15 +12,7 @@
       kind: "ClusterIssuer",
       group: "cert-manager.io",
     },
-    commonName: "hubble-peer.kube-system.svc.cluster.local",
-    dnsNames: [
-      "hubble-peer.kube-system.svc.cluster.local",
-      "hubble-peer.kube-system.svc",
-      "hubble-peer.kube-system",
-    ],
-    ipAddresses: [
-      "127.0.0.1",
-    ],
+    commonName: "hubble-peer.main.hubble-grpc.cilium.io",
     usages: [
       "digital signature",
       "key encipherment",

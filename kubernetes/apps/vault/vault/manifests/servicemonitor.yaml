@@ -1,0 +1,37 @@
+---
+{
+  apiVersion: "monitoring.coreos.com/v1",
+  kind: "ServiceMonitor",
+  metadata: {
+    name: "vault",
+  },
+  spec: {
+    selector: {
+      matchLabels: {
+        "app.kubernetes.io/name=vault": "vault",
+      },
+    },
+    namespaceSelector: {
+      matchNames: [
+        "vault",
+      ],
+    },
+    endpoints: [{
+      interval: "30s",
+      path: "/v1/sys/metrics",
+      params: {
+        format: [
+          "prometheus",
+        ],
+      },
+      port: 8200,
+      scheme: "https",
+      scrapeTimeout: "30s",
+      bearerTokenFile: "/vault/secrets/token",
+      tlsConfig: {
+        insecureSkipVerify: false,
+        serverName: "vault.darkfellanetwork.com",
+      },
+    }],
+  },
+}

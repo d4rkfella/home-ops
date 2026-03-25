@@ -22,7 +22,7 @@
     }, {
       apiVersion: "apps/v1",
       kind: "Deployment",
-      name: "virt-operatora",
+      name: "virt-operator",
       namespace: "kubevirt",
     }],
   },

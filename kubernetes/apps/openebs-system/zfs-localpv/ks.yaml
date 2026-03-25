@@ -29,27 +29,22 @@
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-1m",
-      namespace: "openebs-system",
     }, {
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-128k",
-      namespace: "openebs-system",
     }, {
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-32k",
-      namespace: "openebs-system",
     }, {
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-block-64k",
-      namespace: "openebs-system",
     }, {
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-block-16k",
-      namespace: "openebs-system",
     }],
     healthCheckExprs: [{
       apiVersion: "zfs.openebs.io/v1",

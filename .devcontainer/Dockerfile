@@ -107,12 +107,9 @@ RUN groupadd $USERNAME && \
 
 USER $USERNAME
 
-# renovate: datasource=pypi depName=pgadmin4
-ARG PGADMIN4_VERSION=9.13
 # renovate: datasource=pypi depName=home-ops-cli
 ARG HOME_OPS_CLI_VERSION=0.4.53
-RUN uv tool install pgadmin4==${PGADMIN4_VERSION} && \
-    uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
+RUN uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
     uv python update-shell && \
     uv cache clean
 

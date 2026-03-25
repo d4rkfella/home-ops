@@ -7,6 +7,7 @@
     name: "zfs-localpv",
   },
   spec: {
+    interval: "1h",
     path: "./kubernetes/apps/openebs-system/zfs-localpv/manifests",
     prune: false,
     sourceRef: {
@@ -14,6 +15,47 @@
       name: "flux-system",
       namespace: "flux-system",
     },
-    interval: "1h",
+    healthChecks: [{
+      apiVersion: "helm.toolkit.fluxcd.io/v2",
+      kind: "HelmRelease",
+      name: "zfs-localpv",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "zfs.openebs.io/v1",
+      kind: "ZFSNode",
+      name: "k8s-0",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "storage.k8s.io/v1",
+      kind: "StorageClass",
+      name: "openebs-zfs-1m",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "storage.k8s.io/v1",
+      kind: "StorageClass",
+      name: "openebs-zfs-128k",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "storage.k8s.io/v1",
+      kind: "StorageClass",
+      name: "openebs-zfs-32k",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "storage.k8s.io/v1",
+      kind: "StorageClass",
+      name: "openebs-zfs-block-64k",
+      namespace: "openebs-system",
+    }, {
+      apiVersion: "storage.k8s.io/v1",
+      kind: "StorageClass",
+      name: "openebs-zfs-block-16k",
+      namespace: "openebs-system",
+    }],
+    healthCheckExprs: [{
+      apiVersion: "zfs.openebs.io/v1",
+      kind: "ZFSNode",
+      current: "has(pools) && pools.exists(p, p.name == 'ssd_pool')",
+      failed: "has(pools) && !pools.exists(p, p.name == 'ssd_pool')",
+    }],
   },
 }

@@ -7,6 +7,10 @@
     name: "kubevirt-instance",
   },
   spec: {
+    dependsOn: [{
+      name: "kubevirt-operator",
+      namespace: "kubevirt",
+    }],
     path: "./kubernetes/apps/kubevirt/kubevirt-instance/manifests",
     prune: false,
     sourceRef: {

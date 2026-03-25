@@ -11,6 +11,7 @@
       apiVersion: "postgresql.cnpg.io/v1",
       kind: "Cluster",
       name: "postgres-db",
+      namespace: "database",
     }],
     healthCheckExprs: [{
       apiVersion: "postgresql.cnpg.io/v1",

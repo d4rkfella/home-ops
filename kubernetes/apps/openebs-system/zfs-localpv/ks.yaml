@@ -54,8 +54,8 @@
     healthCheckExprs: [{
       apiVersion: "zfs.openebs.io/v1",
       kind: "ZFSNode",
-      current: "has(pools) && pools.exists(p, p.name == 'ssd_pool')",
-      failed: "has(pools) && !pools.exists(p, p.name == 'ssd_pool')",
+      current: "pools != null && pools.exists(p, p.name == 'ssd_pool')",
+      failed: "pools != null && !pools.exists(p, p.name == 'ssd_pool')",
     }],
   },
 }

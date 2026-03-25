@@ -13,6 +13,11 @@
     }, {
       name: "keycloak-operator",
     }],
+    healthChecks: [{
+      kind: "Keycloak",
+      name: "keycloak",
+      namespace: "keycloak",
+    }],
     healthCheckExprs: [{
       apiVersion: "k8s.keycloak.org/v2alpha1",
       kind: "Keycloak",

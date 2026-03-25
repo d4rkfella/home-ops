@@ -30,7 +30,6 @@
     interval: "1h",
     path: "./kubernetes",
     prune: true,
-    wait: true,
     sourceRef: {
       kind: "GitRepository",
       name: "keycloak-k8s-resources",

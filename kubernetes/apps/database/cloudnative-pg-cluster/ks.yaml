@@ -7,6 +7,11 @@
     name: "cloudnative-pg-cluster",
   },
   spec: {
+    healthChecks: [{
+      apiVersion: "postgresql.cnpg.io/v1",
+      kind: "Cluster",
+      name: "postgres-db",
+    }],
     healthCheckExprs: [{
       apiVersion: "postgresql.cnpg.io/v1",
       kind: "Cluster",

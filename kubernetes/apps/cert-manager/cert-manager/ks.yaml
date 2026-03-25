@@ -12,6 +12,14 @@
       kind: "HelmRelease",
       name: "cert-manager",
       namespace: "cert-manager",
+    }, {
+      apiVersion: "cert-manager.io/v1",
+      kind: "ClusterIssuer",
+      name: "zerossl-prod",
+    }, {
+      apiVersion: "cert-manager.io/v1",
+      kind: "ClusterIssuer",
+      name: "vault-issuer",
     }],
     healthCheckExprs: [{
       apiVersion: "cert-manager.io/v1",

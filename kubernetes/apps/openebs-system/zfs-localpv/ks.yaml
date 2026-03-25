@@ -45,6 +45,10 @@
       apiVersion: "storage.k8s.io/v1",
       kind: "StorageClass",
       name: "openebs-zfs-block-16k",
+    }, {
+      apiVersion: "snapshot.storage.k8s.io/v1",
+      kind: "VolumeSnapshotClass",
+      name: "zfspv-snapclass",
     }],
     healthCheckExprs: [{
       apiVersion: "zfs.openebs.io/v1",

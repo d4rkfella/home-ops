@@ -18,12 +18,22 @@
       kind: "Keycloak",
       name: "keycloak",
       namespace: "keycloak",
+    }, {
+      apiVersion: "gateway.networking.k8s.io/v1",
+      kind: "HTTPRoute",
+      name: "keycloak",
+      namespace: "keycloak",
     }],
     healthCheckExprs: [{
       apiVersion: "k8s.keycloak.org/v2alpha1",
       kind: "Keycloak",
       failed: "status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')",
       current: "status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')",
+    }, {
+      apiVersion: "gateway.networking.k8s.io/v1",
+      kind: "HTTPRoute",
+      current: "status.parents.exists(p, p.conditions.exists(c, c.type == 'Accepted' && c.status == 'True')) && status.parents.exists(p, p.conditions.exists(c, c.type == 'ResolvedRefs' && c.status == 'True'))",
+      failed: "status.parents.exists(p, p.conditions.exists(c, c.type == 'Accepted' && c.status == 'False')) || status.parents.exists(p, p.conditions.exists(c, c.type == 'ResolvedRefs' && c.status == 'False'))",
     }],
     path: "./kubernetes/apps/keycloak/keycloak-instance/manifests",
     prune: true,

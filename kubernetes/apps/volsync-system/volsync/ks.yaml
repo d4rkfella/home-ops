@@ -7,6 +7,10 @@
     name: "volsync",
   },
   spec: {
+    dependsOn: [{
+      name: "zfs-localpv",
+      namespace: "openebs-system",
+    }],
     path: "./kubernetes/apps/volsync-system/volsync/manifests",
     prune: true,
     sourceRef: {

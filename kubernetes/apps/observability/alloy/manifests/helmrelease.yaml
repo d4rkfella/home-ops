@@ -12,21 +12,6 @@
       kind: "OCIRepository",
       name: "alloy",
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "DaemonSet",
-            name: "alloy",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\
-            ",
-        }],
-      },
-    }],
     values: {
       fullnameOverride: "alloy",
       serviceMonitor: {

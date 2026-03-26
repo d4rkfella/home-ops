@@ -154,30 +154,30 @@ prometheus.scrape "default" {
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
-  }
 
-  write_relabel_config {
-    rule {
-      action        = "replace"
-      source_labels = ["nodename"]
-      target_label  = "__tmp_pod_name"
-    }
+    write_relabel_config {
+      rule {
+        action        = "replace"
+        source_labels = ["nodename"]
+        target_label  = "__tmp_pod_name"
+      }
 
-    rule {
-      action        = "replace"
-      source_labels = ["instance"]
-      target_label  = "nodename"
-    }
+      rule {
+        action        = "replace"
+        source_labels = ["instance"]
+        target_label  = "nodename"
+      }
 
-    rule {
-      action        = "replace"
-      source_labels = ["__tmp_pod_name"]
-      target_label  = "instance"
-    }
+      rule {
+        action        = "replace"
+        source_labels = ["__tmp_pod_name"]
+        target_label  = "instance"
+      }
 
-    rule {
-      action = "labeldrop"
-      regex  = "__tmp_pod_name"
+      rule {
+        action = "labeldrop"
+        regex  = "__tmp_pod_name"
+      }
     }
   }
 }

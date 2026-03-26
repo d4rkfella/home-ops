@@ -60,9 +60,30 @@
         podAnnotations: {
           configmap.reloader.stakater.com/reload: "alloy-configmap",
         },
-        type: "statefulset",
+        type: "daemonset",
         replicas: 1,
         enableStatefulSetAutoDeletePVC: true,
+        volumes: {
+          extra: [{
+            name: "host-rootfs-path",
+            hostPath: {
+              path: "/",
+              type: "Directory",
+            },
+          }, {
+            name: "host-procfs-path",
+            hostPath: {
+              path: "/proc",
+              type: "Directory",
+            },
+          }, {
+            name: "host-sysfs-path",
+            hostPath: {
+              path: "/sys",
+              type: "Directory",
+            },
+          }],
+        },
         volumeClaimTemplates: [{
           metadata: {
             name: "alloy",

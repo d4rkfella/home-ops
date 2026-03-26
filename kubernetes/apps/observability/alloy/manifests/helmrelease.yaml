@@ -42,9 +42,6 @@
         enableReporting: false,
         mounts: {
           extra: [{
-            name: "alloy",
-            mountPath: "/var/lib/alloy",
-          }, {
             name: "host-rootfs-path",
             mountPath: "/host/root",
           }, {
@@ -83,22 +80,6 @@
             },
           }],
         },
-        volumeClaimTemplates: [{
-          metadata: {
-            name: "alloy",
-          },
-          spec: {
-            accessModes: [
-              "ReadWriteOnce",
-            ],
-            storageClassName: "openebs-zfs-128k",
-            resources: {
-              requests: {
-                storage: "5Gi",
-              },
-            },
-          },
-        }],
       },
     },
   },

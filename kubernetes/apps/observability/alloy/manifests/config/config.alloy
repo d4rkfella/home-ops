@@ -124,18 +124,6 @@ discovery.relabel "unix_relabel" {
   targets = prometheus.exporter.unix.default.targets
 
   rule {
-    action        = "replace"
-    source_labels = ["instance"]
-    target_label  = "nodename"
-  }
-
-  rule {
-    action       = "replace"
-    target_label = "instance"
-    replacement  = env("POD_NAME")
-  }
-
-  rule {
     action       = "replace"
     target_label = "job"
     replacement  = "node-exporter"
@@ -148,8 +136,8 @@ prometheus.scrape "default" {
     [{
       job         = "node-exporter",
       __address__ = "127.0.0.1:12345",
-      instance = env("POD_NAME"),
-      nodename = env("HOSTNAME"),
+      instance = env("HOSTNAME"),
+      nodename = env("POD_NAME"),
     }],
   )
 

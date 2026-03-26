@@ -133,13 +133,17 @@ loki.write "default" {
 }
 
 prometheus.exporter.unix "host_metrics" {
-  include_containers = true
-  include_host       = true
-  forward_to = [prometheus.write.default.receiver]
+  # optional tuning
+  # disable_collectors = ["xfs", "zfs"]
 }
 
-prometheus.write "default" {
-  remote_write {
+prometheus.scrape "host_metrics" {
+  targets    = prometheus.exporter.unix.host_metrics.targets
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+prometheus.remote_write "default" {
+  endpoint {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
   }
 }

@@ -142,7 +142,7 @@ discovery.relabel "unix_relabel" {
 }
 
 prometheus.scrape "default" {
-  targets = discovery.relabel.unix_relabel.output
+  targets = prometheus.exporter.unix.default.targets
 
   forward_to = [prometheus.remote_write.default.receiver]
 

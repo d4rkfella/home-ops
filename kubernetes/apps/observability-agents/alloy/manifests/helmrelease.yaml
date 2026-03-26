@@ -15,7 +15,7 @@
     values: {
       fullnameOverride: "alloy",
       serviceMonitor: {
-        enabled: true,
+        enabled: false,
       },
       alloy: {
         configMap: {

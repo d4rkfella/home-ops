@@ -16,7 +16,7 @@
       kustomize: {
         patches: [{
           target: {
-            kind: "StatefulSet",
+            kind: "DaemonSet",
             name: "alloy",
           },
           patch: "\

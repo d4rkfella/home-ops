@@ -136,7 +136,13 @@ discovery.relabel "unix_relabel" {
 }
 
 prometheus.scrape "default" {
-  targets = discovery.relabel.unix_relabel.output
+  targets = array.concat(
+    discovery.relabel.unix_relabel.output,
+    [{
+      job      = "node-exporter",
+      instance = env("HOSTNAME"),
+    }],
+  )
 
   forward_to = [prometheus.remote_write.default.receiver]
 }

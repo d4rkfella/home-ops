@@ -136,7 +136,7 @@ discovery.relabel "unix_relabel" {
 
   rule {
     action       = "replace"
-    target_label = "instance"
+    target_label = "nodename"
     replacement  = env("HOSTNAME")
   }
 }

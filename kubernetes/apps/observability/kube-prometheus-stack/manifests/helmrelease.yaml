@@ -109,6 +109,7 @@
         prometheusSpec: {
           serviceDiscoveryRole: "EndpointSlice",
           externalUrl: "https://prometheus.darkfellanetwork.com",
+          enableRemoteWriteReceiver: true,
           podMetadata: {
             annotations: {
               vault.hashicorp.com/agent-inject: "true",

@@ -4,8 +4,6 @@ logging {
 	write_to = [loki.write.default.receiver]
 }
 
-// discovery.kubernetes allows you to find scrape targets from Kubernetes resources.
-// It watches cluster state and ensures targets are continually synced with what is currently running in your cluster
 discovery.kubernetes "pod" {
 	role = "pod"
 }
@@ -14,33 +12,27 @@ discovery.kubernetes "service" {
 	role = "service"
 }
 
-// discovery.relabel rewrites the label set of the input targets by applying one or more relabeling rules.
-// If no rules are defined, then the input targets are exported as-is.
 discovery.relabel "pod_logs" {
   targets = discovery.kubernetes.pod.targets
 
-  // Label creation - "namespace" field from "__meta_kubernetes_namespace"
   rule {
     source_labels = ["__meta_kubernetes_namespace"]
     action = "replace"
     target_label = "namespace"
   }
 
-  // Label creation - "pod" field from "__meta_kubernetes_pod_node_name"
   rule {
     source_labels = ["__meta_kubernetes_pod_node_name"]
     action = "replace"
     target_label = "node"
   }
 
-  // Label creation - "pod" field from "__meta_kubernetes_pod_name"
   rule {
     source_labels = ["__meta_kubernetes_pod_name"]
     action = "replace"
     target_label = "pod"
   }
 
-  // Label creation - "container" field from "__meta_kubernetes_pod_container_name"
   rule {
     source_labels = ["__meta_kubernetes_pod_container_name"]
     action = "replace"
@@ -53,15 +45,12 @@ discovery.relabel "pod_logs" {
     target_label  = "app"
   }
 
-  // Label creation -  "app" field from "__meta_kubernetes_pod_label_app_kubernetes_io_name"
   rule {
     source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
     action = "replace"
     target_label = "app"
   }
 
-  // Label creation -  "job" field from "__meta_kubernetes_namespace" and "__meta_kubernetes_pod_container_name"
-  // Concatenate values __meta_kubernetes_namespace/__meta_kubernetes_pod_container_name
   rule {
     source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_container_name"]
     action = "replace"
@@ -70,7 +59,6 @@ discovery.relabel "pod_logs" {
     replacement = "$1"
   }
 
-  // Label creation -  "container_runtime" field from "__meta_kubernetes_pod_container_id"
   rule {
     source_labels = ["__meta_kubernetes_pod_container_id"]
     action = "replace"
@@ -80,14 +68,11 @@ discovery.relabel "pod_logs" {
   }
 }
 
-// loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
 loki.source.kubernetes "pod_logs" {
   targets    = discovery.relabel.pod_logs.output
   forward_to = [loki.process.pod_logs.receiver]
 }
 
-// loki.process receives log entries from other Loki components, applies one or more processing stages,
-// and forwards the results to the list of receivers in the component's arguments.
 loki.process "pod_logs" {
   stage.static_labels {
       values = {
@@ -98,8 +83,6 @@ loki.process "pod_logs" {
 	forward_to = [loki.write.default.receiver]
 }
 
-// loki.source.kubernetes_events tails events from the Kubernetes API and converts them
-// into log lines to forward to other Loki components.
 loki.source.kubernetes_events "cluster_events" {
   job_name   = "integrations/kubernetes/eventhandler"
   log_format = "logfmt"
@@ -108,8 +91,6 @@ loki.source.kubernetes_events "cluster_events" {
   ]
 }
 
-// loki.process receives log entries from other loki components, applies one or more processing stages,
-// and forwards the results to the list of receivers in the component's arguments.
 loki.process "cluster_events" {
   forward_to = [loki.write.default.receiver]
 
@@ -139,38 +120,30 @@ prometheus.exporter.unix "default" {
   sysfs_path  = "/host/sys"
 }
 
+discovery.relabel "unix_relabel" {
+  targets = prometheus.exporter.unix.default.targets
+
+  rule {
+    action       = "replace"
+    target_label = "nodename"
+    replacement  = env("HOSTNAME")
+  }
+}
+
 prometheus.scrape "default" {
   targets = array.concat(
-    prometheus.exporter.unix.default.targets,
+    discovery.relabel.unix_relabel.output,
     [{
-      // Self-collect metrics
       job         = "alloy",
       __address__ = "127.0.0.1:12345",
     }],
   )
+
   forward_to = [prometheus.remote_write.default.receiver]
 }
 
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
-
-    write_relabel_config {
-      action        = "replace"
-      source_labels = ["instance"]
-      target_label  = "__tmp_instance"
-    }
-
-    write_relabel_config {
-      action        = "replace"
-      source_labels = ["nodename"]
-      target_label  = "instance"
-    }
-
-    write_relabel_config {
-      action        = "replace"
-      source_labels = ["__tmp_instance"]
-      target_label  = "nodename"
-    }
   }
 }

@@ -7,7 +7,7 @@
     name: "alloy",
   },
   spec: {
-    path: "./kubernetes/apps/observability/alloy/manifests",
+    path: "./kubernetes/apps/observability-agents/alloy/manifests",
     prune: true,
     sourceRef: {
       kind: "GitRepository",

@@ -62,7 +62,6 @@
         },
         type: "daemonset",
         replicas: 1,
-        enableStatefulSetAutoDeletePVC: true,
         volumes: {
           extra: [{
             name: "host-rootfs-path",

@@ -130,18 +130,27 @@ discovery.relabel "unix_relabel" {
   }
 }
 
+prometheus.relabel "node_exporter_metrics" {
+  forward_to = [prometheus.remote_write.default.receiver]
+
+  rule {
+    action = "labeldrop"
+    regex  = "pod"
+  }
+}
+
 prometheus.scrape "default" {
   targets = array.concat(
     discovery.relabel.unix_relabel.output,
     [{
       job         = "node-exporter",
       __address__ = "127.0.0.1:12345",
-      instance = env("HOSTNAME"),
-      nodename = env("POD_NAME"),
+      instance    = env("HOSTNAME"),
+      nodename    = env("HOSTNAME"),
     }],
   )
 
-  forward_to = [prometheus.remote_write.default.receiver]
+  forward_to = [prometheus.relabel.node_exporter_metrics.receiver]
 }
 
 prometheus.remote_write "default" {

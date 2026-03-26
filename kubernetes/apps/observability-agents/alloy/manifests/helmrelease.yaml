@@ -25,15 +25,6 @@
         },
         storagePath: "/var/lib/alloy",
         enableReporting: false,
-        extraEnv: [{
-          name: "POD_NAME",
-          valueFrom: {
-            fieldRef: {
-              apiVersion: "v1",
-              fieldPath: "metadata.name",
-            },
-          },
-        }],
         mounts: {
           extra: [{
             name: "host-rootfs-path",

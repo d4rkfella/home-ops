@@ -132,7 +132,7 @@ discovery.relabel "unix_relabel" {
   rule {
     action       = "replace"
     target_label = "instance"
-    replacement  = env("HOSTNAME")
+    replacement  = env("POD_NAME")
   }
 }
 

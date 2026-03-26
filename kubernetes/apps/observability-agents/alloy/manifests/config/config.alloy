@@ -114,7 +114,7 @@ loki.write "default" {
 }
 
 prometheus.exporter.unix "default" {
-  include_exporter_metrics = true
+  include_exporter_metrics = false
   rootfs_path              = "/host/root"
   procfs_path              = "/host/proc"
   sysfs_path               = "/host/sys"

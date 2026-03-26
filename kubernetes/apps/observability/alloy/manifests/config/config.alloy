@@ -134,13 +134,13 @@ loki.write "default" {
 
 prometheus.exporter.unix "host_metrics" {
   set_collectors = [
-    "cpu"
-    "diskstats"
-    "filesystem"
-    "loadavg"
-    "memory"
-    "network"
-    "time"
+    "cpu",
+    "diskstats",
+    "filesystem",
+    "loadavg",
+    "memory",
+    "network",
+    "time",
   ]
 
   disable_collectors = [

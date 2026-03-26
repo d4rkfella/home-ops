@@ -148,16 +148,36 @@ prometheus.scrape "default" {
       __address__ = "127.0.0.1:12345",
     }],
   )
-  forward_to = [prometheus.relabel.default.receiver]
+  forward_to = [prometheus.remote_write.default.receiver]
 }
 
 prometheus.remote_write "default" {
   endpoint {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
   }
-}
 
-prometheus.relabel "default" {
-  forward_to = [prometheus.remote_write.default.receiver]
+  write_relabel_config {
+    rule {
+      action        = "replace"
+      source_labels = ["nodename"]
+      target_label  = "__tmp_pod_name"
+    }
 
+    rule {
+      action        = "replace"
+      source_labels = ["instance"]
+      target_label  = "nodename"
+    }
+
+    rule {
+      action        = "replace"
+      source_labels = ["__tmp_pod_name"]
+      target_label  = "instance"
+    }
+
+    rule {
+      action = "labeldrop"
+      regex  = "__tmp_pod_name"
+    }
+  }
 }

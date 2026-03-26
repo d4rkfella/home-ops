@@ -143,6 +143,7 @@ prometheus.scrape "default" {
       job         = "integrations/unix",
       __address__ = "127.0.0.1:12345",
       instance = env("POD_NAME"),
+      nodename = env("HOSTNAME"),
     }],
   )
 

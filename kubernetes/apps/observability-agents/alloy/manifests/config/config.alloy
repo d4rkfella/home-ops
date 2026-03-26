@@ -141,6 +141,7 @@ prometheus.scrape "default" {
     [{
       job      = "node-exporter",
       instance = env("HOSTNAME"),
+      __address__ = "127.0.0.1:12345",
       nodename = env("HOSTNAME"),
     }],
   )

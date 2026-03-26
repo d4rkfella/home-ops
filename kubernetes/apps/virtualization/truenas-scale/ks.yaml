@@ -23,8 +23,8 @@
     healthCheckExprs: [{
       apiVersion: "kubevirt.io/v1",
       kind: "VirtualMachine",
-      failed: "status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')",
-      current: "status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')",
+      failed: "status.conditions.filter(e, e.type == 'AgentConnected').all(e, e.status == 'False')",
+      current: "status.conditions.filter(e, e.type == 'AgentConnected').all(e, e.status == 'True')",
     }],
   },
 }

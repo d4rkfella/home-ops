@@ -156,19 +156,3 @@ prometheus.remote_write "default" {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
   }
 }
-
-prometheus.relabel "default" {
-  forward_to = [prometheus.remote_write.default.receiver]
-
-  rule {
-    action        = "replace"
-    source_labels = ["__address__"]
-    target_label  = "instance"
-  }
-
-  rule {
-    action        = "replace"
-    source_labels = ["host"]
-    target_label  = "nodename"
-  }
-}

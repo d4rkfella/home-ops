@@ -133,19 +133,6 @@ loki.write "default" {
 }
 
 prometheus.exporter.unix "host_metrics" {
-  set_collectors = [
-    "cpu",
-    "diskstats",
-    "filesystem",
-    "loadavg",
-    "memory",
-    "network",
-    "time",
-  ]
-
-  disable_collectors = [
-    "xfs",
-  ]
 
   rootfs_path = "/host/root"
   procfs_path = "/host/proc"

@@ -133,6 +133,12 @@ discovery.relabel "unix_relabel" {
     target_label = "nodename"
     replacement  = env("HOSTNAME")
   }
+
+  rule {
+    action       = "replace"
+    target_label = "job"
+    replacement  = "node-exporter"
+  }
 }
 
 prometheus.scrape "default" {

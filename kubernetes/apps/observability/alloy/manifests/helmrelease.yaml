@@ -42,8 +42,6 @@
         podAnnotations: {
           configmap.reloader.stakater.com/reload: "alloy-configmap",
         },
-        type: "daemonset",
-        replicas: 1,
         volumes: {
           extra: [{
             name: "host-rootfs-path",

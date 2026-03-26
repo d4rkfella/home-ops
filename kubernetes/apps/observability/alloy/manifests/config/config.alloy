@@ -149,3 +149,21 @@ prometheus.remote_write "default" {
     url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
   }
 }
+
+prometheus.relabel "fix_node_labels" {
+  forward_to = [prometheus.remote_write.default.receiver]
+
+  # Replace node label with the actual Kubernetes node name
+  rule {
+    action        = "replace"
+    source_labels = ["__meta_kubernetes_node_name"]
+    target_label  = "node"
+  }
+
+  # Replace instance label with the Alloy pod name (optional)
+  rule {
+    action        = "replace"
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "instance"
+  }
+}

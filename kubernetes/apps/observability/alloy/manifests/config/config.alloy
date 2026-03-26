@@ -124,8 +124,14 @@ discovery.relabel "unix_relabel" {
   targets = prometheus.exporter.unix.default.targets
 
   rule {
+    action        = "replace"
+    source_labels = ["instance"]
+    target_label  = "nodename"
+  }
+
+  rule {
     action       = "replace"
-    target_label = "nodename"
+    target_label = "instance"
     replacement  = env("HOSTNAME")
   }
 }

@@ -133,8 +133,8 @@ loki.write "default" {
 }
 
 prometheus.exporter.unix "host_metrics" {
-  # optional tuning
-  # disable_collectors = ["xfs", "zfs"]
+  // optional tuning
+  // disable_collectors = ["xfs", "zfs"]
 }
 
 prometheus.scrape "host_metrics" {

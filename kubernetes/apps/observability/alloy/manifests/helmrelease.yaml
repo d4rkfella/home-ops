@@ -44,6 +44,15 @@
           extra: [{
             name: "alloy",
             mountPath: "/var/lib/alloy",
+          }, {
+            name: "host-rootfs-path",
+            mountPath: "/host/root",
+          }, {
+            name: "host-procfs-path",
+            mountPath: "/host/proc",
+          }, {
+            name: "host-sysfs-path",
+            mountPath: "/host/sys",
           }],
         },
       },

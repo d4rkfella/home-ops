@@ -29,6 +29,7 @@
           name: "POD_NAME",
           valueFrom: {
             fieldRef: {
+              apiVersion: "v1",
               fieldPath: "metadata.name",
             },
           },

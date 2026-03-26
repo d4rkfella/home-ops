@@ -150,26 +150,19 @@ prometheus.remote_write "default" {
   }
 }
 
-prometheus.relabel "fix_node_labels" {
+prometheus.relabel "host_metrics" {
   forward_to = [prometheus.remote_write.default.receiver]
 
   rule {
-    source_labels = ["__meta_kubernetes_pod_node_name"]
-    action = "replace"
-    target_label = "node"
+    action        = "replace"
+    source_labels = ["__address__"]
+    target_label  = "instance"
   }
 
-  // Label creation - "pod" field from "__meta_kubernetes_pod_name"
+  # 2. Copy host label (k8s node name) to nodename
   rule {
-    source_labels = ["__meta_kubernetes_pod_name"]
-    action = "replace"
-    target_label = "pod"
-  }
-
-  // Label creation - "container" field from "__meta_kubernetes_pod_container_name"
-  rule {
-    source_labels = ["__meta_kubernetes_pod_container_name"]
-    action = "replace"
-    target_label = "container"
+    action        = "replace"
+    source_labels = ["host"]
+    target_label  = "nodename"
   }
 }

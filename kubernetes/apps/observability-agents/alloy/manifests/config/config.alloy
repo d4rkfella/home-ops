@@ -145,3 +145,9 @@ prometheus.scrape "default" {
 
   forward_to = [prometheus.remote_write.default.receiver]
 }
+
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
+  }
+}

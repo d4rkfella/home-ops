@@ -132,15 +132,22 @@ loki.write "default" {
   }
 }
 
-prometheus.exporter.unix "host_metrics" {
-
+prometheus.exporter.unix "default" {
+  include_exporter_metrics = true
   rootfs_path = "/host/root"
   procfs_path = "/host/proc"
   sysfs_path  = "/host/sys"
 }
 
-prometheus.scrape "host_metrics" {
-  targets    = prometheus.exporter.unix.host_metrics.targets
+prometheus.scrape "default" {
+  targets = array.concat(
+    prometheus.exporter.unix.default.targets,
+    [{
+      // Self-collect metrics
+      job         = "alloy",
+      __address__ = "127.0.0.1:12345",
+    }],
+  )
   forward_to = [prometheus.remote_write.default.receiver]
 }
 
@@ -150,7 +157,7 @@ prometheus.remote_write "default" {
   }
 }
 
-prometheus.relabel "host_metrics" {
+prometheus.relabel "default" {
   forward_to = [prometheus.remote_write.default.receiver]
 
   rule {

@@ -160,7 +160,14 @@ prometheus.remote_write "default" {
 prometheus.relabel "default" {
   forward_to = [prometheus.remote_write.default.receiver]
   rule {
-        action = "labeldrop"
-        regex  = "instance"
-    }
+    action        = "replace"
+    source_labels = ["__meta_kubernetes_pod_node_name"]
+    target_label  = "node"
+  }
+
+  rule {
+    action        = "replace"
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "instance"
+  }
 }

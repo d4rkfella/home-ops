@@ -133,8 +133,23 @@ loki.write "default" {
 }
 
 prometheus.exporter.unix "host_metrics" {
-  // optional tuning
-  // disable_collectors = ["xfs", "zfs"]
+  set_collectors = [
+    "cpu",
+    "diskstats",
+    "filesystem",
+    "loadavg",
+    "memory",
+    "network",
+    "time"
+  ]
+
+  disable_collectors = [
+    "xfs",
+  ]
+
+  rootfs_path = "/host/root"
+  procfs_path = "/host/proc"
+  sysfs_path  = "/host/sys"
 }
 
 prometheus.scrape "host_metrics" {

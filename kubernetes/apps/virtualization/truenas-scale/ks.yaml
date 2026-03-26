@@ -5,6 +5,7 @@
   kind: "Kustomization",
   metadata: {
     name: "truenas-scale",
+    namespace: "virtualization",
   },
   spec: {
     path: "./kubernetes/apps/virtualization/truenas-scale/manifests",
@@ -24,9 +25,9 @@
     healthCheckExprs: [{
       apiVersion: "kubevirt.io/v1",
       kind: "VirtualMachine",
-      inProgress: "status.printableStatus != 'Running'",
-      failed: "status.conditions.filter(e, e.type == 'Ready').any(e, e.status == 'False') || status.conditions.filter(e, e.type == 'AgentConnected').any(e, e.status == 'False')",
-      current: "status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True') && status.conditions.filter(e, e.type == 'AgentConnected').all(e, e.status == 'True')",
+      inProgress: "status.printableStatus != \"Running\"",
+      current: "status.conditions.filter(e, e.type == \"Ready\").all(e, e.status == \"True\") && status.conditions.filter(e, e.type == \"AgentConnected\").all(e, e.status == \"True\") && status.conditions.filter(e, e.type == \"DataVolumesReady\").all(e, e.status == \"True\")",
+      failed: "status.conditions.filter(e, e.type == \"Ready\").any(e, e.status == \"False\") || status.conditions.filter(e, e.type == \"AgentConnected\").any(e, e.status == \"False\") || status.conditions.filter(e, e.type == \"DataVolumesReady\").any(e, e.status == \"False\")",
     }],
   },
 }

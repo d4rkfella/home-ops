@@ -141,7 +141,7 @@ prometheus.scrape "default" {
     [{
       job      = "node-exporter",
       instance = env("HOSTNAME"),
-      __address__ = "alloy.internal:12345"
+      __address__ = "alloy.internal:12345",
     }],
   )
 

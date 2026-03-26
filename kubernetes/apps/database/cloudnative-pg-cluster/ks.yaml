@@ -22,7 +22,7 @@
     dependsOn: [{
       name: "cloudnative-pg-operator",
     }, {
-      name: "cloudnative-pg-barman-cloud",
+      name: "plugin-barman-cloud",
     }],
     path: "./kubernetes/apps/database/cloudnative-pg-cluster/manifests",
     prune: true,

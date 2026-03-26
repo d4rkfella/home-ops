@@ -130,12 +130,6 @@ discovery.relabel "unix_relabel" {
 
   rule {
     action       = "replace"
-    target_label = "job"
-    replacement  = "node-exporter"
-  }
-
-  rule {
-    action       = "replace"
     target_label = "nodename"
     replacement  = env("HOSTNAME")
   }
@@ -152,6 +146,8 @@ prometheus.scrape "default" {
   )
 
   forward_to = [prometheus.remote_write.default.receiver]
+
+  job_name = "node-exporter"
 }
 
 prometheus.remote_write "default" {

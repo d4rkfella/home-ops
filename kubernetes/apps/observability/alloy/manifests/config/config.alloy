@@ -131,3 +131,15 @@ loki.write "default" {
     url = "http://loki-headless.observability.svc.cluster.local:3100/loki/api/v1/push"
   }
 }
+
+prometheus.exporter.unix "host_metrics" {
+  include_containers = true
+  include_host       = true
+  forward_to = [prometheus.write.default.receiver]
+}
+
+prometheus.write "default" {
+  remote_write {
+    url = "http://prometheus-operated.observability.svc.cluster.local:9090/api/v1/write"
+  }
+}

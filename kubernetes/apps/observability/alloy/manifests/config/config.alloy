@@ -134,13 +134,19 @@ discovery.relabel "unix_relabel" {
     target_label = "instance"
     replacement  = env("POD_NAME")
   }
+
+  rule {
+    action       = "replace"
+    target_label = "job"
+    replacement  = "node-exporter"
+  }
 }
 
 prometheus.scrape "default" {
   targets = array.concat(
     discovery.relabel.unix_relabel.output,
     [{
-      job         = "integrations/unix",
+      job         = "node-exporter",
       __address__ = "127.0.0.1:12345",
       instance = env("POD_NAME"),
       nodename = env("HOSTNAME"),

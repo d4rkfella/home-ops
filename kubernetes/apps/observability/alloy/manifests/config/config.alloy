@@ -158,13 +158,19 @@ prometheus.remote_write "default" {
     write_relabel_config {
       action        = "replace"
       source_labels = ["instance"]
-      target_label  = "nodename"
+      target_label  = "__tmp_instance"
     }
 
     write_relabel_config {
       action        = "replace"
       source_labels = ["nodename"]
       target_label  = "instance"
+    }
+
+    write_relabel_config {
+      action        = "replace"
+      source_labels = ["__tmp_instance"]
+      target_label  = "nodename"
     }
   }
 }

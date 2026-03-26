@@ -5,7 +5,7 @@
   resources: [
     "./namespace.yaml",
     "./cloudnative-pg-operator/ks.yaml",
-    "./barman-cloud/ks.yaml",
+    "./plugin-barman-cloud/ks.yaml",
     "./cloudnative-pg-cluster/ks.yaml",
   ],
   components: [

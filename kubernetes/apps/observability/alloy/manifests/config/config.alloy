@@ -159,7 +159,6 @@ prometheus.relabel "host_metrics" {
     target_label  = "instance"
   }
 
-  # 2. Copy host label (k8s node name) to nodename
   rule {
     action        = "replace"
     source_labels = ["host"]

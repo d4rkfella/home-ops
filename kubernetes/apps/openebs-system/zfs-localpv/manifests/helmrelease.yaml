@@ -22,6 +22,7 @@
       },
       zfsNode: {
         encrKeysDir: "/var/openebs/keys",
+        allowedTopologyKeys: "kubernetes.io/hostname",
         driverRegistrar: {
           image: {
             registry: "registry.k8s.io/",

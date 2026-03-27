@@ -54,3 +54,59 @@
     }],
   },
 }
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
+{
+  apiVersion: "kyverno.io/v1",
+  kind: "ClusterPolicy",
+  metadata: {
+    name: "mount-postgres-ca",
+  },
+  spec: {
+    rules: [{
+      name: "mount-postgres-ca",
+      match: {
+        any: [{
+          resources: {
+            kinds: [
+              "Pod",
+            ],
+            annotations: {
+              security.darkfellanetwork.com/mount-postgres-ca: "true",
+            },
+          },
+        }],
+      },
+      mutate: {
+        patchStrategicMerge: {
+          spec: {
+            volumes: [{
+              name: "postgres-ca",
+              secret: {
+                secretName: "postgres-ca-secret",
+              },
+            }],
+            initContainers: [{
+              "(name)": "*",
+              volumeMounts: [{
+                name: "postgres-ca",
+                mountPath: "/etc/ssl/certs/postgres-ca.crt",
+                subPath: "ca.crt",
+                readOnly: true,
+              }],
+            }],
+            containers: [{
+              "(name)": "*",
+              volumeMounts: [{
+                name: "postgres-ca",
+                mountPath: "/etc/ssl/certs/postgres-ca.crt",
+                subPath: "ca.crt",
+                readOnly: true,
+              }],
+            }],
+          },
+        },
+      },
+    }],
+  },
+}

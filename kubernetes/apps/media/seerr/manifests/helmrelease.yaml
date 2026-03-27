@@ -35,27 +35,14 @@
                 DB_TYPE: "postgres",
                 DB_HOST: "postgres-db-rw.database.svc.cluster.local",
                 DB_NAME: "seerr",
-                DB_USER: {
-                  valueFrom: {
-                    secretKeyRef: {
-                      name: "seerr-secret",
-                      key: "POSTGRES_USERNAME",
-                    },
-                  },
-                },
-                DB_PASS: {
-                  valueFrom: {
-                    secretKeyRef: {
-                      name: "seerr-secret",
-                      key: "POSTGRES_PASSWORD",
-                    },
-                  },
-                },
                 DB_USE_SSL: "true",
                 DB_SSL_CA_FILE: "/etc/ssl/certs/postgres-ca.crt",
-                DB_LOG_QUERIES: "false",
-                DB_SSL_REJECT_UNAUTHORIZED: "true",
               },
+              envFrom: [{
+                secretRef: {
+                  name: "{{ .Release.Name }}-secret",
+                },
+              }],
               probes: {
                 liveness: {
                   enabled: true,
@@ -181,15 +168,6 @@
           type: "emptyDir",
           globalMounts: [{
             path: "/usr/lib/seerr/config/logs",
-          }],
-        },
-        postgres-ca: {
-          type: "secret",
-          name: "seerr-secret",
-          globalMounts: [{
-            path: "/etc/ssl/certs/postgres-ca.crt",
-            subPath: "ca.crt",
-            readOnly: true,
           }],
         },
       },

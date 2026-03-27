@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
 {
-  apiVersion: "kyverno.io/v1",
+  apiVersion: "kyverno.io/v2beta1",
   kind: "ClusterPolicy",
   metadata: {
     name: "mount-internal-ca",
@@ -57,7 +57,7 @@
 ---
 # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
 {
-  apiVersion: "kyverno.io/v1",
+  apiVersion: "kyverno.io/v2beta1",
   kind: "ClusterPolicy",
   metadata: {
     name: "mount-postgres-ca",

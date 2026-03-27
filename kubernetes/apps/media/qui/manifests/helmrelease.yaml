@@ -93,6 +93,9 @@
         },
       },
       defaultPodOptions: {
+        annotations: {
+          security.darkfellanetwork.com/mount-postgres-ca: "true",
+        },
         securityContext: {
           runAsNonRoot: true,
           runAsUser: 65532,
@@ -131,15 +134,6 @@
           path: "/mnt/exos20/data",
           globalMounts: [{
             path: "/data",
-          }],
-        },
-        postgres-ca: {
-          type: "secret",
-          name: "{{ .Release.Name }}-secret",
-          globalMounts: [{
-            path: "/etc/ssl/certs/postgres-ca.crt",
-            subPath: "ca.crt",
-            readOnly: true,
           }],
         },
       },

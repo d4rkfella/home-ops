@@ -22,8 +22,8 @@
       },
       multus: {
         image: {
-          repository: "ghcr.io/d4rkfella/multus-cni",
-          tag: "@sha256:73097411eb9792c13dec159160b8b10b09fd11056dde9c50d525ac897dbbf379",
+          repository: "ghcr.io/d4rkfella/multus-cni@sha256:73097411eb9792c13dec159160b8b10b09fd11056dde9c50d525ac897dbbf379",
+          tag: "",
         },
         resources: {
           requests: {

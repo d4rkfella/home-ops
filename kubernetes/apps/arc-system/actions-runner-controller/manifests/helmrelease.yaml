@@ -4,56 +4,57 @@
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
   metadata: {
-    name: "actions-runner-controller",
+    name: "multus",
   },
   spec: {
     interval: "1h",
     chartRef: {
       kind: "OCIRepository",
-      name: "gha-runner-scale-set-controller",
+      name: "multus",
     },
     postRenderers: [{
       kustomize: {
         patches: [{
           target: {
-            kind: "Deployment",
+            kind: "DaemonSet",
+            name: "multus",
           },
           patch: "\
              - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\n\
+            \  path: /spec/template/spec/containers/0/args\n\
+            \  value:\n\
+            \    - \"--cleanup-config-on-exit\"\n\
+            \    - \"--multus-cni-conf-dir=/host/etc/cni/multus/net.d\"\n\
+            \    - \"--multus-bin-file=/usr/src/multus-cni/bin/multus\"\n\
             ",
         }],
       },
     }],
     values: {
-      fullnameOverride: "actions-runner-controller",
-      replicaCount: 1,
-      podSecurityContext: {
-        runAsNonRoot: true,
-        runAsUser: 65532,
-        runAsGroup: 65532,
-        seccompProfile: {
-          type: "RuntimeDefault",
+      cni-plugins: {
+        image: {
+          repository: "ghcr.io/d4rkfella/cni-plugins",
+          tag: "1.9.1@sha256:f5cee672685eb69e684fd98f17c216b7e73551fb11d283cc24e7773362c4e2b5",
+        },
+        resources: {},
+      },
+      multus: {
+        image: {
+          repository: "ghcr.io/d4rkfella/multus-cni",
+          tag: "4.2.4@sha256:1f342b2a126682bf97bfa9fa76bbc6ddd389a6780512496f43804137a372b140",
+        },
+        resources: {
+          requests: {
+            cpu: "10m",
+          },
+          limits: {
+            memory: "512Mi",
+          },
         },
       },
-      securityContext: {
-        allowPrivilegeEscalation: false,
-        readOnlyRootFilesystem: true,
-        capabilities: {
-          drop: [
-            "ALL",
-          ],
-        },
-      },
-      flags: {
-        watchSingleNamespace: "arc-runners",
-      },
-      namespaceOverride: "arc-system",
-      image: {
-        repository: "ghcr.io/d4rkfella/actions-runner-controller",
-        pullPolicy: "IfNotPresent",
-        tag: "0.14.0@sha256:9417dde0e840e19370b8b92309ad57f0e87902074b3d1dc6d7617d60010b2dba",
+      cni: {
+        netPath: "/etc/cni/net.d",
+        binPath: "/opt/cni/bin",
       },
     },
   },

@@ -1,0 +1,63 @@
+---
+{
+  apiVersion: "v1",
+  kind: "ConfigMap",
+  metadata: {
+    name: "pgadmin4-config",
+  },
+  data: {
+    config_distro.py: "\
+       CA_FILE = '/etc/ssl/certs/ca-certificates.crt'\n\
+       LOG_FILE = '/dev/null'\n\
+       HELP_PATH = '../../docs'\n\
+       DEFAULT_BINARY_PATHS = {\n\
+      \    'pg': '/usr/local/pgsql-18',\n\
+      \    'pg-18': '/usr/local/pgsql-18',\n\
+      \    'pg-17': '/usr/local/pgsql-17',\n\
+      \    'pg-16': '/usr/local/pgsql-16',\n\
+      \    'pg-15': '/usr/local/pgsql-15',\n\
+      \    'pg-14': '/usr/local/pgsql-14',\n\
+      \    'pg-13': '/usr/local/pgsql-13'\n\
+       }\n\
+       \n\
+       SERVER_MODE = True\n\
+       CHECK_EMAIL_DELIVERABILITY = False\n\
+       ALLOW_SPECIAL_EMAIL_DOMAINS = []\n\
+       GLOBALLY_DELIVERABLE = True\n\
+       SESSION_EXPIRATION_TIME = 7\n\
+      ",
+    gunicorn_config.py: "\
+       import os\n\
+       import gunicorn\n\
+       from config import JSON_LOGGER, CONSOLE_LOG_LEVEL, CONSOLE_LOG_FORMAT_JSON\n\
+       \n\
+       gunicorn.SERVER_SOFTWARE = \"Python\"\n\
+       \n\
+       if JSON_LOGGER:\n\
+      \    logconfig_dict = {\n\
+      \        \"version\": 1,\n\
+      \        \"disable_existing_loggers\": False,\n\
+      \        \"root\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": []},\n\
+      \        \"loggers\": {\n\
+      \            \"gunicorn.error\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": [\"error_console\"], \"propagate\": True, \"qualname\": \"gunicorn.error\"},\n\
+      \            \"gunicorn.access\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": [\"console\"], \"propagate\": True, \"qualname\": \"gunicorn.access\"},\n\
+      \        },\n\
+      \        \"handlers\": {\n\
+      \            \"console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"json\", \"stream\": \"ext://sys.stdout\"},\n\
+      \            \"error_console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"json\", \"stream\": \"ext://sys.stderr\"},\n\
+      \        },\n\
+      \        \"formatters\": {\n\
+      \            \"json\": {\"class\": \"jsonformatter.JsonFormatter\", \"format\": CONSOLE_LOG_FORMAT_JSON},\n\
+      \        },\n\
+      \    }\n\
+       \n\
+       bind = os.environ.get(\"GUNICORN_BIND\", \"0.0.0.0:80\")\n\
+       workers = int(os.environ.get(\"GUNICORN_WORKERS\", \"1\"))\n\
+       threads = int(os.environ.get(\"GUNICORN_THREADS\", \"25\"))\n\
+       timeout = int(os.environ.get(\"GUNICORN_TIMEOUT\", \"120\"))\n\
+       limit_request_line = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_LINE\", \"8190\"))\n\
+       limit_request_fields = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELDS\", \"100\"))\n\
+       limit_request_field_size = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELD_SIZE\", \"8190\"))\n\
+      ",
+  },
+}

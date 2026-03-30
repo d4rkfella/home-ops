@@ -67,7 +67,10 @@
       \        },\n\
       \    }\n\
        \n\
-       bind = os.environ.get(\"GUNICORN_BIND\", \"0.0.0.0:80\")\n\
+       bind = \"{}:{}\".format(os.environ.get(\"PGADMIN_LISTEN_ADDRESS\", \"0.0.0.0\"), os.environ.get(\"PGADMIN_LISTEN_PORT\", \"443\" if os.environ.get(\"PGADMIN_ENABLE_TLS\") else \"80\"))\n\
+       if os.environ.get(\"PGADMIN_ENABLE_TLS\"):\n\
+      \    keyfile = os.environ.get(\"PGADMIN_TLS_KEYFILE\", \"/certs/server.key\")\n\
+      \    certfile = os.environ.get(\"PGADMIN_TLS_CERTFILE\", \"/certs/server.cert\")\n\
        workers = int(os.environ.get(\"GUNICORN_WORKERS\", \"1\"))\n\
        threads = int(os.environ.get(\"GUNICORN_THREADS\", \"25\"))\n\
        timeout = SESSION_EXPIRATION_TIME * 60 * 60 * 24\n\

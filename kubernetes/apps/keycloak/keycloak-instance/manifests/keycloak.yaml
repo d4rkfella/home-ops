@@ -30,7 +30,7 @@
             }],
             volumeMounts: [{
               name: "data",
-              mountPath: "/opt/keycloak/data",
+              mountPath: "/usr/share/java/keycloak/data",
             }, {
               name: "tmpfs",
               mountPath: "/tmp",

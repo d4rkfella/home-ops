@@ -7,6 +7,7 @@
   },
   data: {
     config_distro.py: "\
+       import os\n\
        CA_FILE = os.environ.get('SSL_CERT_FILE')\n\
        LOG_FILE = '/dev/null'\n\
        HELP_PATH = '../../docs'\n\

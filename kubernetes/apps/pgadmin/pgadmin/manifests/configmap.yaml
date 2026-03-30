@@ -45,7 +45,7 @@
     gunicorn_config.py: "\
        import os\n\
        import gunicorn\n\
-       from config import JSON_LOGGER, CONSOLE_LOG_LEVEL, CONSOLE_LOG_FORMAT_JSON\n\
+       from config import JSON_LOGGER, CONSOLE_LOG_LEVEL, CONSOLE_LOG_FORMAT_JSON, SESSION_EXPIRATION_TIME\n\
        \n\
        gunicorn.SERVER_SOFTWARE = \"Python\"\n\
        \n\
@@ -70,7 +70,7 @@
        bind = os.environ.get(\"GUNICORN_BIND\", \"0.0.0.0:80\")\n\
        workers = int(os.environ.get(\"GUNICORN_WORKERS\", \"1\"))\n\
        threads = int(os.environ.get(\"GUNICORN_THREADS\", \"25\"))\n\
-       timeout = int(os.environ.get(\"GUNICORN_TIMEOUT\", \"120\"))\n\
+       timeout = SESSION_EXPIRATION_TIME * 60 * 60 * 24\n\
        limit_request_line = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_LINE\", \"8190\"))\n\
        limit_request_fields = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELDS\", \"100\"))\n\
        limit_request_field_size = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELD_SIZE\", \"8190\"))\n\

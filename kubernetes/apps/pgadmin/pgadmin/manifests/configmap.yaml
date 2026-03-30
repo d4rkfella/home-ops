@@ -74,6 +74,7 @@
        limit_request_line = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_LINE\", \"8190\"))\n\
        limit_request_fields = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELDS\", \"100\"))\n\
        limit_request_field_size = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELD_SIZE\", \"8190\"))\n\
+       accesslog = os.environ.get(\"GUNICORN_ACCESS_LOGFILE\", \"-\")\n\
       ",
   },
 }

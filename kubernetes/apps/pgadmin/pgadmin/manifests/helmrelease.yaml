@@ -78,7 +78,7 @@
             readOnly: true,
           }],
         },
-        gunicorn_config: {
+        gunicorn-config: {
           type: "configMap",
           name: "pgadmin4-config",
           globalMounts: [{

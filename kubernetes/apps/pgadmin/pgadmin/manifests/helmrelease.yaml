@@ -30,6 +30,7 @@
                 PGADMIN_DISABLE_POSTFIX: "true",
                 PGADMIN_CONFIG_AUTHENTICATION_SOURCES: "['oauth2']",
                 PGADMIN_CONFIG_MASTER_PASSWORD: "True",
+                PYTHONPATH: "/usr/lib/pgadmin4/venv/lib/python3.13/site-packages:/usr/share/pgadmin4",
               },
               envFrom: [{
                 secretRef: {

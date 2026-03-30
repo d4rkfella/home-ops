@@ -22,6 +22,10 @@
              - op: add\n\
             \  path: /spec/template/spec/hostUsers\n\
             \  value: false\n\
+             - op: replace\n\
+            \  path: /spec/template/spec/containers/0/command\n\
+            \  value:\n\
+            \    - /usr/bin/manager\n\
             ",
         }],
       },

@@ -21,8 +21,8 @@
           containers: {
             pgadmin: {
               image: {
-                repository: "docker.io/dpage/pgadmin4",
-                tag: "9.13@sha256:d243a4bcc02d2ee6b447c601692813531d2d0fbca18b583d9f7f9658da835d81",
+                repository: "ghcr.io/d4rkfella/pgadmin4",
+                tag: "9.13@sha256:1e979cc65cd12ebec572c4cf19519231e83199d618a72a711b82a21d9237a8e4",
               },
               env: {
                 GUNICORN_LIMIT_REQUEST_LINE: 0,

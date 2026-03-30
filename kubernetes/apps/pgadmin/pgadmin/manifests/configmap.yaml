@@ -7,7 +7,7 @@
   },
   data: {
     config_distro.py: "\
-       CA_FILE = '/etc/ssl/certs/ca-certificates.crt'\n\
+       CA_FILE = os.environ.get('SSL_CERT_FILE')\n\
        LOG_FILE = '/dev/null'\n\
        HELP_PATH = '../../docs'\n\
        DEFAULT_BINARY_PATHS = {\n\
@@ -25,6 +25,26 @@
        ALLOW_SPECIAL_EMAIL_DOMAINS = []\n\
        GLOBALLY_DELIVERABLE = True\n\
        SESSION_EXPIRATION_TIME = 7\n\
+       AUTHENTICATION_SOURCES = [os.environ.get('AUTHENTICATION_SOURCES', 'oauth2')]\n\
+       MASTER_PASSWORD = os.environ.get('MASTER_PASSWORD', 'True') == 'True'\n\
+       OAUTH2_CONFIG = [{\n\
+      \    'OAUTH2_NAME': os.environ.get('OAUTH2_NAME'),\n\
+      \    'OAUTH2_DISPLAY_NAME': os.environ.get('OAUTH2_DISPLAY_NAME'),\n\
+      \    'OAUTH2_CLIENT_ID': os.environ.get('OAUTH2_CLIENT_ID'),\n\
+      \    'OAUTH2_CLIENT_SECRET': os.environ.get('OAUTH2_CLIENT_SECRET'),\n\
+      \    'OAUTH2_TOKEN_URL': os.environ.get('OAUTH2_TOKEN_URL'),\n\
+      \    'OAUTH2_AUTHORIZATION_URL': os.environ.get('OAUTH2_AUTHORIZATION_URL'),\n\
+      \    'OAUTH2_USERINFO_ENDPOINT': os.environ.get('OAUTH2_USERINFO_ENDPOINT'),\n\
+      \    'OAUTH2_SERVER_METADATA_URL': os.environ.get('OAUTH2_SERVER_METADATA_URL'),\n\
+      \    'OAUTH2_SCOPE': os.environ.get('OAUTH2_SCOPE'),\n\
+      \    'OAUTH2_USERNAME_CLAIM': os.environ.get('OAUTH2_USERNAME_CLAIM'),\n\
+      \    'OAUTH2_ICON': os.environ.get('OAUTH2_ICON'),\n\
+      \    'OAUTH2_BUTTON_COLOR': os.environ.get('OAUTH2_BUTTON_COLOR'),\n\
+      \    'OAUTH2_REDIRECT_URL': os.environ.get('OAUTH2_REDIRECT_URL'),\n\
+      \    'OAUTH2_AUTO_CREATE_USER': os.environ.get('OAUTH2_AUTO_CREATE_USER', 'True') == 'True',\n\
+      \    'OAUTH2_CHALLENGE_METHOD': os.environ.get('OAUTH2_CHALLENGE_METHOD', 'S256'),\n\
+      \    'OAUTH2_RESPONSE_TYPE': os.environ.get('OAUTH2_RESPONSE_TYPE', 'code'),\n\
+       }]\n\
       ",
     gunicorn_config.py: "\
        import os\n\

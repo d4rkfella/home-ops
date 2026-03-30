@@ -12,6 +12,24 @@
       kind: "OCIRepository",
       name: "multus",
     },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "DaemonSet",
+            name: "multus",
+          },
+          patch: "\
+             - op: add\n\
+            \  path: /spec/template/spec/containers/0/args\n\
+            \  value:\n\
+            \    - \"--cleanup-config-on-exit\"\n\
+            \    - \"--multus-cni-conf-dir=/host/etc/cni/multus/net.d\"\n\
+            \    - \"--multus-bin-file=/usr/bin/multus\"\n\
+            ",
+        }],
+      },
+    }],
     values: {
       cni-plugins: {
         image: {

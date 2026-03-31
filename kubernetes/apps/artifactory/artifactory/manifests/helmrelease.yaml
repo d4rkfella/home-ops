@@ -70,6 +70,12 @@
               dir: "/var/opt/jfrog/artifactory/backup/nfs",
             },
           },
+          shared: {
+            extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
+          },
+          access: {
+            extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
+          },
         },
         masterKeySecretName: "artifactory-secret",
         joinKeySecretName: "artifactory-secret",

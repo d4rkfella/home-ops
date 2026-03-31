@@ -53,11 +53,11 @@
           ",
         customVolumeMounts: "\
            - name: nfs-backup-volume\n\
-          \  mountPath: /var/opt/jfrog/artifactory/backup/nfs\n\
+          \  mountPath: /mnt/artifactory-backup\n\
           ",
         haBackupDir: {
           enabled: true,
-          path: "/var/opt/jfrog/artifactory/backup/nfs",
+          path: "/mnt/artifactory-backup",
         },
         extraSystemYaml: {
           artifactory: {
@@ -65,9 +65,6 @@
               httpsConnector: {
                 enabled: true,
               },
-            },
-            backup: {
-              dir: "/var/opt/jfrog/artifactory/backup/nfs",
             },
           },
           shared: {

@@ -35,7 +35,7 @@
       \    'OAUTH2_SERVER_METADATA_URL': os.environ.get('OAUTH2_SERVER_METADATA_URL'),\n\
       \    'OAUTH2_SCOPE': os.environ.get('OAUTH2_SCOPE', 'openid email profile'),\n\
       \    'OAUTH2_USERNAME_CLAIM': os.environ.get('OAUTH2_USERNAME_CLAIM'),\n\
-      \    'OAUTH2_ICON': os.environ.get('OAUTH2_ICON', 'fa-github'),\n\
+      \    'OAUTH2_ICON': os.environ.get('OAUTH2_ICON', 'test'),\n\
       \    'OAUTH2_BUTTON_COLOR': os.environ.get('OAUTH2_BUTTON_COLOR'),\n\
       \    'OAUTH2_REDIRECT_URL': os.environ.get('OAUTH2_REDIRECT_URL'),\n\
       \    'OAUTH2_CHALLENGE_METHOD': os.environ.get('OAUTH2_CHALLENGE_METHOD', 'S256'),\n\

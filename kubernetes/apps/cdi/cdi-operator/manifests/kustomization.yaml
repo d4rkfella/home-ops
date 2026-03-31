@@ -4,6 +4,6 @@
   kind: "Kustomization",
   resources: [
     # renovate: datasource=github-releases depName=kubevirt/containerized-data-importer
-    "https://github.com/kubevirt/containerized-data-importer/releases/download/v1.64.0/cdi-operator.yaml",
+    "https://github.com/kubevirt/containerized-data-importer/releases/download/v1.65.0/cdi-operator.yaml",
   ],
 }

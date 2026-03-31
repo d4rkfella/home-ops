@@ -28,7 +28,7 @@
                 GUNICORN_LIMIT_REQUEST_LINE: 0,
                 GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0,
                 AUTHENTICATION_SOURCES: "['oauth2']",
-                MASTER_PASSWORD_REQUIRED: "True",
+                MASTER_PASSWORD_REQUIRED: "False",
                 PYTHONPATH: "/usr/lib/pgadmin4",
               },
               envFrom: [{

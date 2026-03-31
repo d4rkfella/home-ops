@@ -21,8 +21,8 @@
        ALLOW_SPECIAL_EMAIL_DOMAINS = []\n\
        GLOBALLY_DELIVERABLE = True\n\
        SESSION_EXPIRATION_TIME = 7\n\
-       AUTHENTICATION_SOURCES = [os.environ.get('AUTHENTICATION_SOURCES', 'oauth2')]\n\
-       MASTER_PASSWORD = os.environ.get('MASTER_PASSWORD', 'True') == 'True'\n\
+       AUTHENTICATION_SOURCES = ['oauth2']\n\
+       MASTER_PASSWORD_REQUIRED = os.environ.get('MASTER_PASSWORD_REQUIRED', 'True') == 'True'\n\
        OAUTH2_CONFIG = [{\n\
       \    'OAUTH2_NAME': os.environ.get('OAUTH2_NAME'),\n\
       \    'OAUTH2_DISPLAY_NAME': os.environ.get('OAUTH2_DISPLAY_NAME'),\n\

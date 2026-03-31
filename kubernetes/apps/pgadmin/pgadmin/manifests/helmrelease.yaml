@@ -28,7 +28,7 @@
                 GUNICORN_LIMIT_REQUEST_LINE: 0,
                 GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0,
                 AUTHENTICATION_SOURCES: "['oauth2']",
-                MASTER_PASSWORD: "True",
+                MASTER_PASSWORD_REQUIRED: "True",
                 PYTHONPATH: "/usr/lib/pgadmin4",
                 CONFIG_DISTRO_FILE_PATH: "/usr/lib/pgadmin4/config_distro.py",
               },

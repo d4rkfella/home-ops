@@ -22,7 +22,7 @@
             pgadmin: {
               image: {
                 repository: "ghcr.io/d4rkfella/pgadmin4",
-                tag: "9.13@sha256:858f2c1e9a48faf93f16d78f9fb1e8640fdf86fc646a64be87977721ccc20ea0",
+                tag: "9.13@sha256:035fb7f3d2c216f4fdcb90c62cdf05d9d42fbb881c8fd9425be72b25a28e080a",
               },
               env: {
                 GUNICORN_LIMIT_REQUEST_LINE: 0,
@@ -30,7 +30,6 @@
                 AUTHENTICATION_SOURCES: "['oauth2']",
                 MASTER_PASSWORD_REQUIRED: "True",
                 PYTHONPATH: "/usr/lib/pgadmin4",
-                CONFIG_DISTRO_FILE_PATH: "/usr/lib/pgadmin4/config_distro.py",
               },
               envFrom: [{
                 secretRef: {

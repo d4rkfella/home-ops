@@ -38,7 +38,6 @@
       \    'OAUTH2_ICON': os.environ.get('OAUTH2_ICON'),\n\
       \    'OAUTH2_BUTTON_COLOR': os.environ.get('OAUTH2_BUTTON_COLOR'),\n\
       \    'OAUTH2_REDIRECT_URL': os.environ.get('OAUTH2_REDIRECT_URL'),\n\
-      \    'OAUTH2_AUTO_CREATE_USER': os.environ.get('OAUTH2_AUTO_CREATE_USER', 'True') == 'True',\n\
       \    'OAUTH2_CHALLENGE_METHOD': os.environ.get('OAUTH2_CHALLENGE_METHOD', 'S256'),\n\
       \    'OAUTH2_RESPONSE_TYPE': os.environ.get('OAUTH2_RESPONSE_TYPE', 'code'),\n\
        }]\n\

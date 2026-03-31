@@ -30,6 +30,7 @@
                 AUTHENTICATION_SOURCES: "['oauth2']",
                 MASTER_PASSWORD: "True",
                 PYTHONPATH: "/usr/lib/pgadmin4",
+                CONFIG_DISTRO_FILE_PATH: "/usr/lib/pgadmin4/config_distro.py",
               },
               envFrom: [{
                 secretRef: {

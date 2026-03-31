@@ -30,6 +30,7 @@
                 AUTHENTICATION_SOURCES: "['oauth2']",
                 MASTER_PASSWORD_REQUIRED: "True",
                 PYTHONPATH: "/usr/lib/pgadmin4",
+                TMPDIR: "/tmp",
               },
               envFrom: [{
                 secretRef: {

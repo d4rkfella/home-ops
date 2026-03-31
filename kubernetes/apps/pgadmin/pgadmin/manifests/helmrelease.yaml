@@ -72,7 +72,7 @@
           type: "configMap",
           name: "pgadmin4-config",
           globalMounts: [{
-            path: "/usr/share/pgadmin4/config_distro.py",
+            path: "/usr/lib/pgadmin4/config_distro.py",
             subPath: "config_distro.py",
             readOnly: true,
           }],
@@ -81,7 +81,7 @@
           type: "configMap",
           name: "pgadmin4-config",
           globalMounts: [{
-            path: "/usr/share/pgadmin4/gunicorn_config.py",
+            path: "/usr/lib/pgadmin4/gunicorn_config.py",
             subPath: "gunicorn_config.py",
             readOnly: true,
           }],

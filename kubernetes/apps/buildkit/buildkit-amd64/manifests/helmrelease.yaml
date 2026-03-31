@@ -20,7 +20,7 @@
             buildkitd: {
               image: {
                 repository: "moby/buildkit",
-                tag: "v0.28.1@sha256:a82d1ab899cda51aade6fe818d71e4b58c4079e047a0cf29dbb93b2b0465ea69",
+                tag: "v0.29.0@sha256:0039c1d47e8748b5afea56f4e85f14febaf34452bd99d9552d2daa82262b5cc5",
               },
               args: [
                 "--addr",

@@ -8,6 +8,7 @@
   data: {
     config_distro.py: "\
        import os\n\
+       import ast\n\
        CA_FILE = os.environ.get('SSL_CERT_FILE')\n\
        LOG_FILE = '/dev/null'\n\
        HELP_PATH = '../../docs'\n\
@@ -21,7 +22,7 @@
        ALLOW_SPECIAL_EMAIL_DOMAINS = []\n\
        GLOBALLY_DELIVERABLE = True\n\
        SESSION_EXPIRATION_TIME = 7\n\
-       AUTHENTICATION_SOURCES = ['oauth2']\n\
+       AUTHENTICATION_SOURCES = ast.literal_eval(os.environ.get('AUTHENTICATION_SOURCES', \"['oauth2']\"))\n\
        MASTER_PASSWORD_REQUIRED = os.environ.get('MASTER_PASSWORD_REQUIRED', 'True') == 'True'\n\
        OAUTH2_CONFIG = [{\n\
       \    'OAUTH2_NAME': os.environ.get('OAUTH2_NAME'),\n\

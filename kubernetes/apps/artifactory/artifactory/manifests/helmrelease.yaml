@@ -28,6 +28,7 @@
         enabled: false,
       },
       access: {
+        javaOpts: "-javaagent:/opt/jfrog/access/app/access/jfrog-access-license-patcher-1.0.jar",
         accessConfig: {
           security: {
             tls: true,
@@ -105,9 +106,6 @@
             },
           },
           shared: {
-            extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
-          },
-          access: {
             extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
           },
         },

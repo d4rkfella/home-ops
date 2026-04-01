@@ -55,7 +55,7 @@
         },
         customSidecarContainers: "\
            - name: \"artifactory-fluentd-sidecar\"\n\
-          \  image: \"ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:825649183f0104db964a967780f1e02e6bdcd1fceaabb3be9a89ee2db8271545\"\n\
+          \  image: \"ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:446101b5be1b36b7c35efa49b2bab9a3fa600f94de0ac7e04ae0a5381e698572\"\n\
           \  imagePullPolicy: \"IfNotPresent\"\n\
           \  command:\n\
           \    - sh\n\

@@ -66,6 +66,7 @@
           \      cp /tmp/fluentd_metrics.conf /tmp/fluent.tmp.conf;\n\
           \      sed -i s#LOKI_URL#{{ .Values.global.prometheus.loki_url }}#g /tmp/fluent.tmp.conf;\n\
           \      mv /tmp/fluent.tmp.conf /tmp/fluentd.conf;\n\
+          \      cat /tmp/fluentd.conf;\n\
           \      fluentd -v -c /tmp/fluentd.conf\n\
           \  volumeMounts:\n\
           \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\

@@ -73,51 +73,6 @@
           \    - name: LOKI_URL\n\
           \      value: {{ .Values.global.prometheus.loki_url }}\n\
           ",
-        additionalResources: "\
-           apiVersion: v1\n\
-           kind: Service\n\
-           metadata:\n\
-          \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
-          \  annotations:\n\
-          \    prometheus.io/path: \"/metrics\"\n\
-          \    prometheus.io/scheme: \"http\"\n\
-          \    prometheus.io/port: \"24231\"\n\
-          \    prometheus.io/scrape: \"true\"\n\
-          \  labels:\n\
-          \    app: {{ template \"artifactory.name\" . }}\n\
-          \    component: {{ template \"artifactory.name\" . }}\n\
-          \    chart: {{ template \"artifactory.chart\" . }}\n\
-          \    heritage: {{ .Release.Service }}\n\
-          \    release: {{ .Values.global.prometheus.release_name }}\n\
-           spec:\n\
-          \  type: ClusterIP\n\
-          \  ports:\n\
-          \  - name: metrics\n\
-          \    port: 24231\n\
-          \    protocol: TCP\n\
-          \  selector:\n\
-          \    app: {{ template \"artifactory.name\" . }}\n\
-          \    component: {{ template \"artifactory.name\" . }}\n\
-           ---\n\
-           apiVersion: monitoring.coreos.com/v1\n\
-           kind: ServiceMonitor\n\
-           metadata:\n\
-          \  name: servicemonitor-{{ template \"artifactory.name\" . }}\n\
-          \  labels:\n\
-          \    metrics: jfrog\n\
-          \    app: {{ template \"artifactory.name\" . }}\n\
-          \    chart: {{ template \"artifactory.chart\" . }}\n\
-          \    heritage: {{ .Release.Service }}\n\
-          \    release: {{ .Values.global.prometheus.release_name }}\n\
-           spec:\n\
-          \  selector:\n\
-          \    matchLabels:\n\
-          \      app: {{ template \"artifactory.name\" . }}\n\
-          \      component: {{ template \"artifactory.name\" . }}\n\
-          \  endpoints:\n\
-          \  - port: metrics\n\
-          \    interval: 15s\n\
-          ",
         image: {
           registry: "ghcr.io",
           repository: "d4rkfella/artifactory-pro",
@@ -187,6 +142,51 @@
       nginx: {
         enabled: false,
       },
+      additionalResources: "\
+         apiVersion: v1\n\
+         kind: Service\n\
+         metadata:\n\
+        \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
+        \  annotations:\n\
+        \    prometheus.io/path: \"/metrics\"\n\
+        \    prometheus.io/scheme: \"http\"\n\
+        \    prometheus.io/port: \"24231\"\n\
+        \    prometheus.io/scrape: \"true\"\n\
+        \  labels:\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    component: {{ template \"artifactory.name\" . }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  type: ClusterIP\n\
+        \  ports:\n\
+        \  - name: metrics\n\
+        \    port: 24231\n\
+        \    protocol: TCP\n\
+        \  selector:\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    component: {{ template \"artifactory.name\" . }}\n\
+         ---\n\
+         apiVersion: monitoring.coreos.com/v1\n\
+         kind: ServiceMonitor\n\
+         metadata:\n\
+        \  name: servicemonitor-{{ template \"artifactory.name\" . }}\n\
+        \  labels:\n\
+        \    metrics: jfrog\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  selector:\n\
+        \    matchLabels:\n\
+        \      app: {{ template \"artifactory.name\" . }}\n\
+        \      component: {{ template \"artifactory.name\" . }}\n\
+        \  endpoints:\n\
+        \  - port: metrics\n\
+        \    interval: 15s\n\
+        ",
     },
   },
 }

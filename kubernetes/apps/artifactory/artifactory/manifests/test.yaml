@@ -1,0 +1,176 @@
+---
+{
+  global: {
+    jfrog: {
+      observability: {
+        branch: "master",
+      },
+    },
+    prometheus: {
+      loki_url: "http:\\/\\/loki.jfrog-plg:3100",
+      release_name: "prometheus",
+    },
+  },
+  installerInfo: "{ \"productId\": \"Helm_prometheus_artifactory/{{ .Chart.Version }}\", \"features\": [ { \"featureId\": \"ArtifactoryVersion/{{ default .Chart.AppVersion .Values.artifactory.image.version }}\" }, { \"featureId\": \"{{ if .Values.postgresql.enabled }}postgresql{{ else }}{{ .Values.database.type }}{{ end }}/0.0.0\" }, { \"featureId\": \"Platform/{{ default \"kubernetes\" .Values.installer.platform }}\" },  { \"featureId\": \"Channel/Helm_prometheus_artifactory\" } ] }",
+  artifactory: {
+    openMetrics: {
+      enabled: true,
+    },
+    customSidecarContainers: "\
+       - name: \"artifactory-fluentd-sidecar\"\n\
+      \  image: \"partnership-public-images.jfrog.io/fluentd/fluentd:1.18.0\"\n\
+      \  imagePullPolicy: \"IfNotPresent\"\n\
+      \  command:\n\
+      \    - 'sh'\n\
+      \    - '-c'\n\
+      \    - >\n\
+      \      gem install fluent-plugin-prometheus --no-doc;\n\
+      \      curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o fluentd_metrics.conf;\n\
+      \      cp fluentd_metrics.conf fluent.tmp.conf;\n\
+      \      sed -i -e 's/LOKI_URL/{{ .Values.global.prometheus.loki_url }}/g' fluent.tmp.conf;\n\
+      \      mv fluent.tmp.conf fluentd.conf;\n\
+      \      fluentd -v -c fluentd.conf\n\
+      \  volumeMounts:\n\
+      \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
+      \      name: artifactory-volume\n\
+      \  env:\n\
+      \    - name: JF_PRODUCT_DATA_INTERNAL\n\
+      \      value: {{ .Values.artifactory.persistence.mountPath }}\n\
+      ",
+    replicaCount: 2,
+    masterKeySecretName: "my-masterkey-secret",
+    joinKeySecretName: "my-joinkey-secret",
+    license: {
+      secret: "artifactory-cluster-license",
+      dataKey: "art.lic",
+    },
+  },
+  databaseUpgradeReady: true,
+  additionalResources: "\
+     apiVersion: v1\n\
+     kind: Service\n\
+     metadata:\n\
+    \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
+    \  annotations:\n\
+    \    prometheus.io/path: \"/metrics\"\n\
+    \    prometheus.io/scheme: \"http\"\n\
+    \    prometheus.io/port: \"24231\"\n\
+    \    prometheus.io/scrape: \"true\"\n\
+    \  labels:\n\
+    \    app: {{ template \"artifactory.name\" . }}\n\
+    \    component: {{ template \"artifactory.name\" . }}\n\
+    \    chart: {{ template \"artifactory.chart\" . }}\n\
+    \    heritage: {{ .Release.Service }}\n\
+    \    release: {{ .Values.global.prometheus.release_name }}\n\
+    \    {{- with .Values.artifactory.labels }}\n\
+     {{ toYaml . | indent 4 }}\n\
+    \    {{- end }}\n\
+     spec:\n\
+    \  type: ClusterIP\n\
+    \  ports:\n\
+    \  - name: metrics\n\
+    \    port: 24231\n\
+    \    protocol: TCP\n\
+    \  selector:\n\
+    \    app: {{ template \"artifactory.name\" . }}\n\
+    \    component: {{ template \"artifactory.name\" . }}\n\
+     ---\n\
+     apiVersion: monitoring.coreos.com/v1\n\
+     kind: ServiceMonitor\n\
+     metadata:\n\
+    \  name: servicemonitor-{{ template \"artifactory.name\" . }}\n\
+    \  labels:\n\
+    \    metrics: jfrog\n\
+    \    app: {{ template \"artifactory.name\" . }}\n\
+    \    chart: {{ template \"artifactory.chart\" . }}\n\
+    \    heritage: {{ .Release.Service }}\n\
+    \    release: {{ .Values.global.prometheus.release_name }}\n\
+     spec:\n\
+    \  selector:\n\
+    \    matchLabels:\n\
+    \      app: {{ template \"artifactory.name\" . }}\n\
+    \      component: {{ template \"artifactory.name\" . }}\n\
+    \  endpoints:\n\
+    \      - port: metrics\n\
+    \        interval: 15s\n\
+    ",
+  mc: {
+    enabled: true,
+  },
+  nginx: {
+    enabled: true,
+    artifactoryConf: "\
+       {{- if .Values.nginx.https.enabled }}\n\
+       ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;\n\
+       ssl_certificate  {{ .Values.nginx.persistence.mountPath }}/ssl/tls.crt;\n\
+       ssl_certificate_key  {{ .Values.nginx.persistence.mountPath }}/ssl/tls.key;\n\
+       ssl_session_cache shared:SSL:1m;\n\
+       ssl_prefer_server_ciphers   on;\n\
+       {{- end }}\n\
+       ## server configuration\n\
+       server {\n\
+      \  {{- if .Values.nginx.internalPortHttps }}\n\
+      \  listen {{ .Values.nginx.internalPortHttps }} ssl;\n\
+      \  {{- else -}}\n\
+      \  {{- if .Values.nginx.https.enabled }}\n\
+      \  listen {{ .Values.nginx.https.internalPort }} ssl;\n\
+      \  {{- end }}\n\
+      \  {{- end }}\n\
+      \  {{- if .Values.nginx.internalPortHttp }}\n\
+      \  listen {{ .Values.nginx.internalPortHttp }};\n\
+      \  {{- else -}}\n\
+      \  {{- if .Values.nginx.http.enabled }}\n\
+      \  listen {{ .Values.nginx.http.internalPort }};\n\
+      \  {{- end }}\n\
+      \  {{- end }}\n\
+      \  server_name ~(?<repo>.+)\\.vigneshs.support-testlab.com vigneshs.support-testlab.com\n\
+      \  {{- range .Values.ingress.hosts -}}\n\
+      \    {{- if contains \".\" . -}}\n\
+      \      {{ \"\" | indent 0 }} ~(?<repo>.+)\\.{{ . }}\n\
+      \    {{- end -}}\n\
+      \  {{- end -}};\n\
+      \  if ($http_x_forwarded_proto = '') {\n\
+      \    set $http_x_forwarded_proto  $scheme;\n\
+      \  }\n\
+      \  ## Application specific logs\n\
+      \  ## access_log /var/log/nginx/artifactory-access.log timing;\n\
+      \  ## error_log /var/log/nginx/artifactory-error.log;\n\
+      \  rewrite ^/artifactory/?$ / redirect;\n\
+      \  if ( $repo != \"\" ) {\n\
+      \    rewrite ^/(v1|v2)/(.*) /artifactory/api/docker/$repo/$1/$2 break;\n\
+      \  }\n\
+      \  chunked_transfer_encoding on;\n\
+      \  client_max_body_size 0;\n\
+      \  location / {\n\
+      \    proxy_ssl_server_name on;\n\
+      \    proxy_read_timeout  2400;\n\
+      \    proxy_send_timeout 2400;\n\
+      \    proxy_pass_header   Server;\n\
+      \    proxy_request_buffering off;\n\
+      \    proxy_http_version 1.1;\n\
+      \    proxy_buffering off;\n\
+      \    proxy_cookie_path   ~*^/.* /;\n\
+      \    proxy_pass          {{ include \"artifactory.scheme\" . }}://{{ include \"artifactory.fullname\" . }}:{{ .Values.artifactory.externalPort }}/;\n\
+      \    {{- if .Values.nginx.service.ssloffload}}\n\
+      \    proxy_set_header    X-JFrog-Override-Base-Url https://vigneshs.support-testlab.com;\n\
+      \    {{- else }}\n\
+      \    proxy_set_header    X-JFrog-Override-Base-Url $http_x_forwarded_proto://$host:$server_port;\n\
+      \    proxy_set_header    X-Forwarded-Port  $server_port;\n\
+      \    {{- end }}\n\
+      \    proxy_set_header    X-Forwarded-Port  443;\n\
+      \    proxy_set_header    X-Forwarded-Proto https;\n\
+      \    proxy_set_header    Host              $http_host;\n\
+      \    proxy_set_header    X-Forwarded-For   $proxy_add_x_forwarded_for;\n\
+      \    add_header Strict-Transport-Security always;\n\
+      \    location /artifactory/ {\n\
+      \      if ( $request_uri ~ ^/artifactory/(.*)$ ) {\n\
+      \        proxy_pass       http://{{ include \"artifactory.fullname\" . }}:{{ .Values.artifactory.externalArtifactoryPort }}/artifactory/$1;\n\
+      \      }\n\
+      \      proxy_pass         http://{{ include \"artifactory.fullname\" . }}:{{ .Values.artifactory.externalArtifactoryPort }}/artifactory/;\n\
+      \    }\n\
+      \  }\n\
+       }\n\
+      ",
+  },
+  unifiedUpgradeAllowed: true,
+}

@@ -190,7 +190,7 @@
         \      component: {{ template \"artifactory.name\" . }}\n\
         \  endpoints:\n\
         \  - port: metrics\n\
-        \    sheme: http\n\
+        \    scheme: http\n\
         \    path: /artifactory/api/v1/metrics\n\
         \    interval: 15s\n\
         \    bearerTokenSecret:\n\
@@ -240,7 +240,7 @@
         \      component: {{ .Values.observability.name }}\n\
         \  endpoints:\n\
         \  - port: metricsob\n\
-        \    sheme: http\n\
+        \    scheme: http\n\
         \    path: /observability/api/v1/metrics\n\
         \    interval: 15s\n\
         \    bearerTokenSecret:\n\

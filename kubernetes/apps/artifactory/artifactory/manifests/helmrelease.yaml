@@ -29,7 +29,7 @@
       },
       access: {
         javaOpts: {
-          other: "-XX:InitialRAMPercentage=20 -XX:MaxRAMPercentage=70 -javaagent:/opt/jfrog/access/app/access/jfrog-access-license-patcher-1.0.jar",
+          other: "-XX:InitialRAMPercentage=20 -XX:MaxRAMPercentage=70 -javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
         },
         accessConfig: {
           security: {

@@ -57,6 +57,7 @@
            - name: \"artifactory-fluentd-sidecar\"\n\
           \  image: \"ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:983503365e39378c5e892b0e6ea297f20c34a2187124d2d2d8bdb7912a27840d\"\n\
           \  imagePullPolicy: \"IfNotPresent\"\n\
+          \  workingDir: \"/fluentd/etc\"\n\
           \  command:\n\
           \    - sh\n\
           \    - '-c'\n\

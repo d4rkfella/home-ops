@@ -56,20 +56,22 @@
             reloader.stakater.com/auto: "true",
           },
         },
-        openMetrics: {
+        metrics: {
           enabled: true,
         },
+        customInitContainersBegin: "\
+           - name: \"prepare-fluentd-conf-on-persistent-volume\"\n\
+          \  image: \"{{ include \"artifactory.getImageInfoByValue\" (list . \"initContainers\") }}\"\n\
+          \  imagePullPolicy: \"{{ .Values.artifactory.image.pullPolicy }}\"\n\
+          \  command: [\"/bin/sh\", \"-c\", \"mkdir -p {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/; curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf\"]\n\
+          \  volumeMounts:\n\
+          \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
+          \      name: artifactory-volume\n\
+          ",
         customSidecarContainers: "\
            - name: \"artifactory-fluentd-sidecar\"\n\
-          \  image: \"ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:446101b5be1b36b7c35efa49b2bab9a3fa600f94de0ac7e04ae0a5381e698572\"\n\
+          \  image: \"releases-docker.jfrog.io/fluentd:4.17@sha256:9a806aca316f8cd2bfd5b09f9b24ad3c3d53f8f31802c6b7e36dffac1f0719ed\"\n\
           \  imagePullPolicy: \"IfNotPresent\"\n\
-          \  command:\n\
-          \    - sh\n\
-          \    - '-c'\n\
-          \  args:\n\
-          \    - >\n\
-          \      curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o /tmp/fluentd_metrics.conf;\n\
-          \      fluentd -v -c /tmp/fluentd_metrics.conf\n\
           \  volumeMounts:\n\
           \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
           \      name: artifactory-volume\n\
@@ -78,6 +80,8 @@
           \      value: {{ .Values.artifactory.persistence.mountPath }}\n\
           \    - name: LOKI_URL\n\
           \      value: {{ .Values.global.prometheus.loki_url }}\n\
+          \    - name: FLUENTD_CONF\n\
+          \      value: ../../../..{{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf\n\
           ",
         image: {
           registry: "ghcr.io",

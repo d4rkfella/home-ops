@@ -28,9 +28,6 @@
         enabled: false,
       },
       access: {
-        javaOpts: {
-          other: "-javaagent:/opt/jfrog/access/app/access/jfrog-access-license-patcher-1.0.jar",
-        },
         accessConfig: {
           security: {
             tls: true,

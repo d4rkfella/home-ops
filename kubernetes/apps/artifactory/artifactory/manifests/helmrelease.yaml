@@ -151,11 +151,6 @@
          kind: Service\n\
          metadata:\n\
         \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
-        \  annotations:\n\
-        \    prometheus.io/path: \"/artifactory/api/v1/metrics\"\n\
-        \    prometheus.io/scheme: \"https\"\n\
-        \    prometheus.io/port: \"24231\"\n\
-        \    prometheus.io/scrape: \"true\"\n\
         \  labels:\n\
         \    app: {{ template \"artifactory.name\" . }}\n\
         \    component: {{ template \"artifactory.name\" . }}\n\
@@ -203,11 +198,6 @@
          kind: Service\n\
          metadata:\n\
         \  name: {{ .Values.observability.name }}-metrics\n\
-        \  annotations:\n\
-        \    prometheus.io/path: \"/observability/api/v1/metrics\"\n\
-        \    prometheus.io/scheme: \"https\"\n\
-        \    prometheus.io/port: \"24232\"\n\
-        \    prometheus.io/scrape: \"true\"\n\
         \  labels:\n\
         \    app: {{ .Values.observability.name }}\n\
         \    component: {{ .Values.observability.name }}\n\

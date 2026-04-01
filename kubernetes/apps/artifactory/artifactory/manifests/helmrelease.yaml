@@ -28,6 +28,9 @@
         enabled: false,
       },
       access: {
+        javaOpts: {
+          other: "-XX:InitialRAMPercentage=20 -XX:MaxRAMPercentage=70 -javaagent:/opt/jfrog/access/app/access/jfrog-access-license-patcher-1.0.jar",
+        },
         accessConfig: {
           security: {
             tls: true,
@@ -103,9 +106,6 @@
                 enabled: true,
               },
             },
-          },
-          shared: {
-            extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
           },
         },
         masterKeySecretName: "artifactory-secret",

@@ -63,7 +63,6 @@
           \  args:\n\
           \    - >\n\
           \      curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o /tmp/fluentd_metrics.conf;\n\
-          \      cat /tmp/fluentd.conf;\n\
           \      fluentd -v -c /tmp/fluentd_metrics.conf\n\
           \  volumeMounts:\n\
           \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\

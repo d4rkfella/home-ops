@@ -1,0 +1,25 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
+{
+  apiVersion: "grafana.integreatly.org/v1beta1",
+  kind: "GrafanaDashboard",
+  metadata: {
+    name: "artifactory-log-analytics-and-system-metrics",
+  },
+  spec: {
+    allowCrossNamespaceImport: true,
+    instanceSelector: {
+      matchLabels: {
+        grafana.internal/instance: "grafana",
+      },
+    },
+    datasources: [{
+      datasourceName: "prometheus",
+      inputName: "DS_PROMETHEUS",
+    }, {
+      datasourceName: "loki",
+      inputName: "DS_LOKI",
+    }],
+    url: "https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/refs/heads/master/grafana/ArtifactoryLogAnalyticsAndSystemMetrics.json",
+  },
+}

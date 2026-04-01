@@ -57,17 +57,16 @@
            - name: \"artifactory-fluentd-sidecar\"\n\
           \  image: \"ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:983503365e39378c5e892b0e6ea297f20c34a2187124d2d2d8bdb7912a27840d\"\n\
           \  imagePullPolicy: \"IfNotPresent\"\n\
-          \  workingDir: \"/fluentd/etc\"\n\
           \  command:\n\
           \    - sh\n\
           \    - '-c'\n\
           \  args:\n\
           \    - >\n\
-          \      curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o fluentd_metrics.conf;\n\
-          \      cp fluentd_metrics.conf fluent.tmp.conf;\n\
-          \      sed -i s#LOKI_URL#{{ .Values.global.prometheus.loki_url }}#g fluent.tmp.conf;\n\
-          \      mv fluent.tmp.conf fluentd.conf;\n\
-          \      fluentd -v -c fluentd.conf\n\
+          \      curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o /tmp/fluentd_metrics.conf;\n\
+          \      cp /tmp/fluentd_metrics.conf /tmp/fluent.tmp.conf;\n\
+          \      sed -i s#LOKI_URL#{{ .Values.global.prometheus.loki_url }}#g /tmp/fluent.tmp.conf;\n\
+          \      mv /tmp/fluent.tmp.conf /tmp/fluentd.conf;\n\
+          \      fluentd -v -c /tmp/fluentd.conf\n\
           \  volumeMounts:\n\
           \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
           \      name: artifactory-volume\n\

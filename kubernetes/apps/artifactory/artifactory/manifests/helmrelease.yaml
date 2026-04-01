@@ -152,7 +152,7 @@
          metadata:\n\
         \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
         \  annotations:\n\
-        \    prometheus.io/path: \"/metrics\"\n\
+        \    prometheus.io/path: \"/artifactory/api/v1/metrics\"\n\
         \    prometheus.io/scheme: \"http\"\n\
         \    prometheus.io/port: \"24231\"\n\
         \    prometheus.io/scrape: \"true\"\n\
@@ -167,6 +167,7 @@
         \  ports:\n\
         \  - name: metrics\n\
         \    port: 24231\n\
+        \    targetPort: 8082\n\
         \    protocol: TCP\n\
         \  selector:\n\
         \    app: {{ template \"artifactory.name\" . }}\n\
@@ -189,7 +190,62 @@
         \      component: {{ template \"artifactory.name\" . }}\n\
         \  endpoints:\n\
         \  - port: metrics\n\
+        \    sheme: http\n\
+        \    path: /artifactory/api/v1/metrics\n\
         \    interval: 15s\n\
+        \    bearerTokenSecret:\n\
+        \      name: artifactory-secret\n\
+        \      key: jfrog-metrics-token\n\
+         ---\n\
+         apiVersion: v1\n\
+         kind: Service\n\
+         metadata:\n\
+        \  name: {{ .Values.observability.name }}-metrics\n\
+        \  annotations:\n\
+        \    prometheus.io/path: \"/observability/api/v1/metrics\"\n\
+        \    prometheus.io/scheme: \"http\"\n\
+        \    prometheus.io/port: \"24232\"\n\
+        \    prometheus.io/scrape: \"true\"\n\
+        \  labels:\n\
+        \    app: {{ .Values.observability.name }}\n\
+        \    component: {{ .Values.observability.name }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  type: ClusterIP\n\
+        \  ports:\n\
+        \  - name: metricsob\n\
+        \    port: 24232\n\
+        \    targetPort: 8082\n\
+        \    protocol: TCP\n\
+        \  selector:\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    component: {{ template \"artifactory.name\" . }}\n\
+         ---\n\
+         apiVersion: monitoring.coreos.com/v1\n\
+         kind: ServiceMonitor\n\
+         metadata:\n\
+        \  name: servicemonitor-{{ .Values.observability.name }}\n\
+        \  labels:\n\
+        \    metrics: jfrog\n\
+        \    app: {{ .Values.observability.name }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  selector:\n\
+        \    matchLabels:\n\
+        \      app: {{ .Values.observability.name }}\n\
+        \      component: {{ .Values.observability.name }}\n\
+        \  endpoints:\n\
+        \  - port: metricsob\n\
+        \    sheme: http\n\
+        \    path: /observability/api/v1/metrics\n\
+        \    interval: 15s\n\
+        \    bearerTokenSecret:\n\
+        \      name: artifactory-secret\n\
+        \      key: jfrog-metrics-token\n\
         ",
     },
   },

@@ -41,6 +41,9 @@
       jfconnect: {
         enabled: false,
       },
+      jfbus: {
+        enabled: true,
+      },
       onemodel: {
         enabled: true,
       },
@@ -102,10 +105,6 @@
            - name: nfs-backup-volume\n\
           \  mountPath: /mnt/artifactory-backup\n\
           ",
-        haBackupDir: {
-          enabled: true,
-          path: "/mnt/artifactory-backup",
-        },
         extraSystemYaml: {
           artifactory: {
             tomcat: {

@@ -167,7 +167,7 @@
         \  ports:\n\
         \  - name: metrics\n\
         \    port: 24231\n\
-        \    targetPort: 8081\n\
+        \    targetPort: 8082\n\
         \    protocol: TCP\n\
         \  selector:\n\
         \    app: {{ template \"artifactory.name\" . }}\n\
@@ -193,6 +193,8 @@
         \    scheme: https\n\
         \    path: /artifactory/api/v1/metrics\n\
         \    interval: 15s\n\
+        \    tlsConfig:\n\
+        \      insecureSkipVerify: true\n\
         \    bearerTokenSecret:\n\
         \      name: artifactory-secret\n\
         \      key: jfrog-metrics-token\n\
@@ -217,7 +219,7 @@
         \  ports:\n\
         \  - name: metricsob\n\
         \    port: 24232\n\
-        \    targetPort: 8081\n\
+        \    targetPort: 8082\n\
         \    protocol: TCP\n\
         \  selector:\n\
         \    app: {{ template \"artifactory.name\" . }}\n\
@@ -243,6 +245,8 @@
         \    scheme: https\n\
         \    path: /observability/api/v1/metrics\n\
         \    interval: 15s\n\
+        \    tlsConfig:\n\
+        \      insecureSkipVerify: true\n\
         \    bearerTokenSecret:\n\
         \      name: artifactory-secret\n\
         \      key: jfrog-metrics-token\n\

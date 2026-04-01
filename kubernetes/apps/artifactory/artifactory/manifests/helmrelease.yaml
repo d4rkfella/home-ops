@@ -13,6 +13,17 @@
       name: "artifactory",
     },
     values: {
+      global: {
+        jfrog: {
+          observability: {
+            branch: "master",
+          },
+        },
+        prometheus: {
+          loki_url: "http://loki-headless.observability.svc.cluster.local:3100",
+          release_name: "prometheus",
+        },
+      },
       mc: {
         enabled: false,
       },
@@ -36,6 +47,32 @@
             reloader.stakater.com/auto: "true",
           },
         },
+        openMetrics: {
+          enabled: true,
+        },
+        tags: {
+          disableAnalytics: true,
+        },
+        customSidecarContainers: [{
+          name: "fluent-plugin-prometheus",
+          image: "ghcr.io/d4rkfella/fluent-plugin-prometheus:2.2.1@sha256:983503365e39378c5e892b0e6ea297f20c34a2187124d2d2d8bdb7912a27840d",
+          imagePullPolicy: "IfNotPresent",
+          command: [
+            "sh",
+            "-c",
+          ],
+          args: [
+            "curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o fluentd_metrics.conf; cp fluentd_metrics.conf fluent.tmp.conf; sed -i s|LOKI_URL|{{ .Values.global.prometheus.loki_url }}|g fluent.tmp.conf; mv fluent.tmp.conf fluentd.conf; fluentd -v -c fluentd.conf",
+          ],
+          env: [{
+            name: "JF_PRODUCT_DATA_INTERNAL",
+            value: "{{ .Values.artifactory.persistence.mountPath }}",
+          }],
+          volumeMounts: [{
+            name: "artifactory-volume",
+            mountPath: "{{ .Values.artifactory.persistence.mountPath }}",
+          }],
+        }],
         image: {
           registry: "ghcr.io",
           repository: "d4rkfella/artifactory-pro",
@@ -70,9 +107,6 @@
           shared: {
             extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
           },
-          access: {
-            extraJavaOpts: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
-          },
         },
         masterKeySecretName: "artifactory-secret",
         joinKeySecretName: "artifactory-secret",
@@ -105,6 +139,51 @@
       nginx: {
         enabled: false,
       },
+      additionalResources: "\
+         apiVersion: v1\n\
+         kind: Service\n\
+         metadata:\n\
+        \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
+        \  annotations:\n\
+        \    prometheus.io/path: \"/metrics\"\n\
+        \    prometheus.io/scheme: \"http\"\n\
+        \    prometheus.io/port: \"24231\"\n\
+        \    prometheus.io/scrape: \"true\"\n\
+        \  labels:\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    component: {{ template \"artifactory.name\" . }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  type: ClusterIP\n\
+        \  ports:\n\
+        \  - name: metrics\n\
+        \    port: 24231\n\
+        \    protocol: TCP\n\
+        \  selector:\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    component: {{ template \"artifactory.name\" . }}\n\
+         ---\n\
+         apiVersion: monitoring.coreos.com/v1\n\
+         kind: ServiceMonitor\n\
+         metadata:\n\
+        \  name: servicemonitor-{{ template \"artifactory.name\" . }}\n\
+        \  labels:\n\
+        \    metrics: jfrog\n\
+        \    app: {{ template \"artifactory.name\" . }}\n\
+        \    chart: {{ template \"artifactory.chart\" . }}\n\
+        \    heritage: {{ .Release.Service }}\n\
+        \    release: {{ .Values.global.prometheus.release_name }}\n\
+         spec:\n\
+        \  selector:\n\
+        \    matchLabels:\n\
+        \      app: {{ template \"artifactory.name\" . }}\n\
+        \      component: {{ template \"artifactory.name\" . }}\n\
+        \  endpoints:\n\
+        \  - port: metrics\n\
+        \    interval: 15s\n\
+        ",
     },
   },
 }

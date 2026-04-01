@@ -21,7 +21,7 @@
         },
         prometheus: {
           loki_url: "http://loki-headless.observability.svc.cluster.local:3100",
-          release_name: "kube-prometheus-stack",
+          release_name: "prometheus",
         },
       },
       mc: {

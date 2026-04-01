@@ -153,7 +153,7 @@
         \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
         \  annotations:\n\
         \    prometheus.io/path: \"/artifactory/api/v1/metrics\"\n\
-        \    prometheus.io/scheme: \"http\"\n\
+        \    prometheus.io/scheme: \"https\"\n\
         \    prometheus.io/port: \"24231\"\n\
         \    prometheus.io/scrape: \"true\"\n\
         \  labels:\n\
@@ -190,7 +190,7 @@
         \      component: {{ template \"artifactory.name\" . }}\n\
         \  endpoints:\n\
         \  - port: metrics\n\
-        \    scheme: http\n\
+        \    scheme: https\n\
         \    path: /artifactory/api/v1/metrics\n\
         \    interval: 15s\n\
         \    bearerTokenSecret:\n\
@@ -203,7 +203,7 @@
         \  name: {{ .Values.observability.name }}-metrics\n\
         \  annotations:\n\
         \    prometheus.io/path: \"/observability/api/v1/metrics\"\n\
-        \    prometheus.io/scheme: \"http\"\n\
+        \    prometheus.io/scheme: \"https\"\n\
         \    prometheus.io/port: \"24232\"\n\
         \    prometheus.io/scrape: \"true\"\n\
         \  labels:\n\
@@ -240,7 +240,7 @@
         \      component: {{ .Values.observability.name }}\n\
         \  endpoints:\n\
         \  - port: metricsob\n\
-        \    scheme: http\n\
+        \    scheme: https\n\
         \    path: /observability/api/v1/metrics\n\
         \    interval: 15s\n\
         \    bearerTokenSecret:\n\

@@ -45,11 +45,10 @@
         enabled: true,
       },
       evidence: {
-        enabled: true,
-        extraEnvironmentVariables: [{
-          name: "EXTRA_JAVA_OPTIONS",
-          value: "/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
-        }],
+        enabled: false,
+      },
+      event: {
+        enabled: false,
       },
       artifactory: {
         statefulset: {
@@ -59,9 +58,6 @@
         },
         openMetrics: {
           enabled: true,
-        },
-        tags: {
-          disableAnalytics: true,
         },
         customSidecarContainers: "\
            - name: \"artifactory-fluentd-sidecar\"\n\

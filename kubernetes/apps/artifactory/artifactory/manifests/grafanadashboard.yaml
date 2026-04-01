@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 {
   apiVersion: "grafana.integreatly.org/v1beta1",
   kind: "GrafanaDashboard",
@@ -18,8 +17,2611 @@
       inputName: "DS_PROMETHEUS",
     }, {
       datasourceName: "loki",
-      inputName: "cdvj8bzzu2hogd",
+      inputName: "DS_LOKI",
     }],
-    url: "https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/refs/heads/master/grafana/ArtifactoryLogAnalyticsAndSystemMetrics.json",
+    json: "\
+       {\n\
+      \  \"annotations\": {\n\
+      \    \"list\": [\n\
+      \      {\n\
+      \        \"$$hashKey\": \"object:525\",\n\
+      \        \"builtIn\": 1,\n\
+      \        \"datasource\": {\n\
+      \          \"type\": \"datasource\",\n\
+      \          \"uid\": \"grafana\"\n\
+      \        },\n\
+      \        \"enable\": true,\n\
+      \        \"hide\": true,\n\
+      \        \"iconColor\": \"rgba(0, 211, 255, 1)\",\n\
+      \        \"name\": \"Annotations & Alerts\",\n\
+      \        \"target\": {\n\
+      \          \"limit\": 100,\n\
+      \          \"matchAny\": false,\n\
+      \          \"tags\": [],\n\
+      \          \"type\": \"dashboard\"\n\
+      \        },\n\
+      \        \"type\": \"dashboard\"\n\
+      \      }\n\
+      \    ]\n\
+      \  },\n\
+      \  \"editable\": true,\n\
+      \  \"fiscalYearStartMonth\": 0,\n\
+      \  \"graphTooltip\": 0,\n\
+      \  \"id\": 59,\n\
+      \  \"links\": [],\n\
+      \  \"liveNow\": false,\n\
+      \  \"panels\": [\n\
+      \    {\n\
+      \      \"collapsed\": false,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 1,\n\
+      \        \"w\": 24,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 0\n\
+      \      },\n\
+      \      \"id\": 68,\n\
+      \      \"panels\": [],\n\
+      \      \"title\": \"System Metrics\",\n\
+      \      \"type\": \"row\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"area\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"percentage\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 1\n\
+      \      },\n\
+      \      \"id\": 70,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"jfob_sys_cpu_ratio{}\",\n\
+      \          \"legendFormat\": \"System CPU Usage (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"CPU Usage (Avg)\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"continuous-BlYlRd\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"area\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"percentage\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": [\n\
+      \          {\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byFrameRefID\",\n\
+      \              \"options\": \"A\"\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"unit\",\n\
+      \                \"value\": \"decbytes\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          {\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byFrameRefID\",\n\
+      \              \"options\": \"B\"\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"unit\",\n\
+      \                \"value\": \"decbytes\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        ]\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 1\n\
+      \      },\n\
+      \      \"id\": 72,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfob_sys_memory_used_bytes{service=\\\"observability-metrics\\\"}) \",\n\
+      \          \"legendFormat\": \"System Memory Used (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfob_sys_memory_free_bytes{service=\\\"observability-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"System Memory Free (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"B\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"System Memory\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"area\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"percentage\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 9\n\
+      \      },\n\
+      \      \"id\": 74,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(app_disk_free_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"legendFormat\": \"Storage Free Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(app_disk_used_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"Storage Used Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"B\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_storage_current_total_size_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"Storage Total Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"C\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Disk Usage\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineStyle\": {\n\
+      \              \"fill\": \"solid\"\n\
+      \            },\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"area\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"percentage\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": [\n\
+      \          {\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byFrameRefID\",\n\
+      \              \"options\": \"B\"\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"unit\",\n\
+      \                \"value\": \"decbytes\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          {\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byFrameRefID\",\n\
+      \              \"options\": \"C\"\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"unit\",\n\
+      \                \"value\": \"decbytes\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          {\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byFrameRefID\",\n\
+      \              \"options\": \"D\"\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"unit\",\n\
+      \                \"value\": \"decbytes\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          {\n\
+      \            \"__systemRef\": \"hideSeriesFrom\",\n\
+      \            \"matcher\": {\n\
+      \              \"id\": \"byNames\",\n\
+      \              \"options\": {\n\
+      \                \"mode\": \"exclude\",\n\
+      \                \"names\": [\n\
+      \                  \"Heap Max Bytes (Avg)\"\n\
+      \                ],\n\
+      \                \"prefix\": \"All except:\",\n\
+      \                \"readOnly\": true\n\
+      \              }\n\
+      \            },\n\
+      \            \"properties\": [\n\
+      \              {\n\
+      \                \"id\": \"custom.hideFrom\",\n\
+      \                \"value\": {\n\
+      \                  \"legend\": false,\n\
+      \                  \"tooltip\": false,\n\
+      \                  \"viz\": true\n\
+      \                }\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        ]\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 9\n\
+      \      },\n\
+      \      \"id\": 76,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_runtime_heap_processors_total{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"legendFormat\": \"Total Heap Processors (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_runtime_heap_freememory_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"Heap Free Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"B\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_runtime_heap_maxmemory_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"Heap Max Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"C\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_runtime_heap_totalmemory_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"Heap Total Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"D\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Heap Usage\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"off\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 17\n\
+      \      },\n\
+      \      \"id\": 78,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_artifacts_gc_duration_seconds{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"legendFormat\": \"GC Duration Seconds (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_artifacts_gc_binaries_total{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"GC Binaries Total (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"B\"\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfrt_artifacts_gc_size_cleaned_bytes{service=\\\"artifactory-metrics\\\"})\",\n\
+      \          \"hide\": false,\n\
+      \          \"legendFormat\": \"GC Size Cleaned Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"C\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Garbage Collection\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"description\": \"\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 0,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"auto\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"off\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 17\n\
+      \      },\n\
+      \      \"id\": 79,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": true\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"single\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"disableTextWrap\": false,\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfob_app_io_counters_read_bytes{service=\\\"observability-metrics\\\"})\",\n\
+      \          \"fullMetaSearch\": false,\n\
+      \          \"includeNullMetadata\": true,\n\
+      \          \"instant\": false,\n\
+      \          \"legendFormat\": \"IO Read Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"A\",\n\
+      \          \"useBackend\": false\n\
+      \        },\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"disableTextWrap\": false,\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"avg(jfob_app_io_counters_write_bytes{service=\\\"observability-metrics\\\"})\",\n\
+      \          \"fullMetaSearch\": false,\n\
+      \          \"hide\": false,\n\
+      \          \"includeNullMetadata\": true,\n\
+      \          \"instant\": false,\n\
+      \          \"legendFormat\": \"IO Write Bytes (Avg)\",\n\
+      \          \"range\": true,\n\
+      \          \"refId\": \"B\",\n\
+      \          \"useBackend\": false\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"IO Usage \",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"collapsed\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 1,\n\
+      \        \"w\": 24,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 25\n\
+      \      },\n\
+      \      \"id\": 52,\n\
+      \      \"panels\": [],\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Docker\",\n\
+      \      \"type\": \"row\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows Dockerhub pull requests over rolling 1H average.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 10,\n\
+      \            \"gradientMode\": \"none\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"never\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"off\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"links\": [],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              },\n\
+      \              {\n\
+      \                \"color\": \"red\",\n\
+      \                \"value\": 80\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"short\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 26\n\
+      \      },\n\
+      \      \"id\": 66,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": false\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"multi\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"avg(count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\".*/api/docker/.*/blobs/.*\\\", repo!=\\\"\\\", artifact!=\\\"\\\", (request_method=\\\"HEAD\\\" or request_method=\\\"GET\\\"))[1h]))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Dockerhub Pull Requests Rolling 1H Average\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows Dockerhub pull requests over the time period.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"color\": {\n\
+      \            \"mode\": \"palette-classic\"\n\
+      \          },\n\
+      \          \"custom\": {\n\
+      \            \"axisBorderShow\": false,\n\
+      \            \"axisCenteredZero\": false,\n\
+      \            \"axisColorMode\": \"text\",\n\
+      \            \"axisLabel\": \"\",\n\
+      \            \"axisPlacement\": \"auto\",\n\
+      \            \"barAlignment\": 0,\n\
+      \            \"drawStyle\": \"line\",\n\
+      \            \"fillOpacity\": 10,\n\
+      \            \"gradientMode\": \"hue\",\n\
+      \            \"hideFrom\": {\n\
+      \              \"legend\": false,\n\
+      \              \"tooltip\": false,\n\
+      \              \"viz\": false\n\
+      \            },\n\
+      \            \"insertNulls\": false,\n\
+      \            \"lineInterpolation\": \"linear\",\n\
+      \            \"lineWidth\": 1,\n\
+      \            \"pointSize\": 5,\n\
+      \            \"scaleDistribution\": {\n\
+      \              \"type\": \"linear\"\n\
+      \            },\n\
+      \            \"showPoints\": \"never\",\n\
+      \            \"spanNulls\": false,\n\
+      \            \"stacking\": {\n\
+      \              \"group\": \"A\",\n\
+      \              \"mode\": \"none\"\n\
+      \            },\n\
+      \            \"thresholdsStyle\": {\n\
+      \              \"mode\": \"line+area\"\n\
+      \            }\n\
+      \          },\n\
+      \          \"links\": [],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"transparent\",\n\
+      \                \"value\": null\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"short\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 26\n\
+      \      },\n\
+      \      \"id\": 54,\n\
+      \      \"options\": {\n\
+      \        \"legend\": {\n\
+      \          \"calcs\": [],\n\
+      \          \"displayMode\": \"list\",\n\
+      \          \"placement\": \"bottom\",\n\
+      \          \"showLegend\": false\n\
+      \        },\n\
+      \        \"tooltip\": {\n\
+      \          \"mode\": \"multi\",\n\
+      \          \"sort\": \"none\"\n\
+      \        }\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"sum(count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\".*/api/docker/.*/blobs/.*\\\", repo!=\\\"\\\", artifact!=\\\"\\\", (request_method=\\\"HEAD\\\" or request_method=\\\"GET\\\"))[1h]))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Dockerhub Pull Requests\",\n\
+      \      \"type\": \"timeseries\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top users making docker pull requests.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"decimals\": 0,\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=10&orgId=1&var-docker_image=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 34\n\
+      \      },\n\
+      \      \"id\": 58,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"maxVizHeight\": 300,\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"namePlacement\": \"auto\",\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true,\n\
+      \        \"sizing\": \"auto\",\n\
+      \        \"valueMode\": \"color\"\n\
+      \      },\n\
+      \      \"pluginVersion\": \"11.1.4\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10,sum by (username) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.access\\\", action_response = \\\"ACCEPTED DEPLOY\\\", repo_path=~\\\".*_uploads.*\\\") [1h])))\",\n\
+      \          \"legendFormat\": \"{{username}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Top 10 Users Performing Docker Pull Requests\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top users making docker pull requests.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"decimals\": 0,\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=10&orgId=1&var-docker_image=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\",\n\
+      \                \"value\": null\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 34\n\
+      \      },\n\
+      \      \"id\": 60,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"maxVizHeight\": 300,\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"namePlacement\": \"auto\",\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true,\n\
+      \        \"sizing\": \"auto\",\n\
+      \        \"valueMode\": \"color\"\n\
+      \      },\n\
+      \      \"pluginVersion\": \"11.1.4\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10,sum by (ip) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.access\\\", action_response = \\\"ACCEPTED DEPLOY\\\", repo_path=~\\\".*_uploads.*\\\") [1h])))\",\n\
+      \          \"legendFormat\": \"{{ip}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Top 10 IPs Performing Docker Pull Requests\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top images that have been requested.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"decimals\": 0,\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=10&orgId=1&var-docker_image=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 42\n\
+      \      },\n\
+      \      \"id\": 44,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10,sum by (artifact) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*/manifests/.*\\\", request_method=~\\\"PUT|HEAD\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\") [$__range])))\",\n\
+      \          \"legendFormat\": \"{{artifact}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Accessed Images\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top docker repos that have been requested.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"decimals\": 0,\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=8&orgId=1&var-docker_repo=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 42\n\
+      \      },\n\
+      \      \"id\": 46,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10,sum by (repo) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\",  request_url=~\\\"/api/docker/.*/manifests/.*\\\", request_method=~\\\"PUT|HEAD\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\") [$__range])))\",\n\
+      \          \"legendFormat\": \"{{repo}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Accessed Docker Repos\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"collapsed\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 1,\n\
+      \        \"w\": 24,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 50\n\
+      \      },\n\
+      \      \"id\": 38,\n\
+      \      \"panels\": [],\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Requests\",\n\
+      \      \"type\": \"row\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"aliasColors\": {},\n\
+      \      \"autoMigrateFrom\": \"graph\",\n\
+      \      \"bars\": false,\n\
+      \      \"dashLength\": 10,\n\
+      \      \"dashes\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows HTTP 5XX errors.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"links\": []\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"fill\": 1,\n\
+      \      \"fillGradient\": 0,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 51\n\
+      \      },\n\
+      \      \"hiddenSeries\": false,\n\
+      \      \"id\": 10,\n\
+      \      \"legend\": {\n\
+      \        \"avg\": false,\n\
+      \        \"current\": false,\n\
+      \        \"max\": false,\n\
+      \        \"min\": false,\n\
+      \        \"show\": false,\n\
+      \        \"total\": false,\n\
+      \        \"values\": false\n\
+      \      },\n\
+      \      \"lines\": true,\n\
+      \      \"linewidth\": 1,\n\
+      \      \"nullPointMode\": \"null\",\n\
+      \      \"options\": {\n\
+      \        \"alertThreshold\": true\n\
+      \      },\n\
+      \      \"percentage\": false,\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"pointradius\": 2,\n\
+      \      \"points\": false,\n\
+      \      \"renderer\": \"flot\",\n\
+      \      \"seriesOverrides\": [],\n\
+      \      \"spaceLength\": 10,\n\
+      \      \"stack\": false,\n\
+      \      \"steppedLine\": false,\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"sum(count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\",return_status=~\\\"5.*\\\") [$__range]))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"thresholds\": [],\n\
+      \      \"timeRegions\": [],\n\
+      \      \"title\": \"HTTP 500 Errors\",\n\
+      \      \"tooltip\": {\n\
+      \        \"shared\": true,\n\
+      \        \"sort\": 0,\n\
+      \        \"value_type\": \"individual\"\n\
+      \      },\n\
+      \      \"type\": \"timeseries\",\n\
+      \      \"xaxis\": {\n\
+      \        \"mode\": \"time\",\n\
+      \        \"show\": true,\n\
+      \        \"values\": []\n\
+      \      },\n\
+      \      \"yaxes\": [\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:2099\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        },\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:2100\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        }\n\
+      \      ],\n\
+      \      \"yaxis\": {\n\
+      \        \"align\": false\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"aliasColors\": {},\n\
+      \      \"autoMigrateFrom\": \"graph\",\n\
+      \      \"bars\": false,\n\
+      \      \"dashLength\": 10,\n\
+      \      \"dashes\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows Artifactory log errors.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"links\": []\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"fill\": 1,\n\
+      \      \"fillGradient\": 0,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 51\n\
+      \      },\n\
+      \      \"hiddenSeries\": false,\n\
+      \      \"id\": 6,\n\
+      \      \"legend\": {\n\
+      \        \"avg\": false,\n\
+      \        \"current\": false,\n\
+      \        \"max\": false,\n\
+      \        \"min\": false,\n\
+      \        \"show\": false,\n\
+      \        \"total\": false,\n\
+      \        \"values\": false\n\
+      \      },\n\
+      \      \"lines\": true,\n\
+      \      \"linewidth\": 1,\n\
+      \      \"nullPointMode\": \"null\",\n\
+      \      \"options\": {\n\
+      \        \"alertThreshold\": true\n\
+      \      },\n\
+      \      \"percentage\": false,\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"pointradius\": 2,\n\
+      \      \"points\": false,\n\
+      \      \"renderer\": \"flot\",\n\
+      \      \"seriesOverrides\": [],\n\
+      \      \"spaceLength\": 10,\n\
+      \      \"stack\": false,\n\
+      \      \"steppedLine\": false,\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"sum(count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.service\\\", log_level=\\\"ERROR\\\") [$__range]))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"thresholds\": [],\n\
+      \      \"timeRegions\": [],\n\
+      \      \"title\": \"Log Errors\",\n\
+      \      \"tooltip\": {\n\
+      \        \"shared\": true,\n\
+      \        \"sort\": 0,\n\
+      \        \"value_type\": \"individual\"\n\
+      \      },\n\
+      \      \"type\": \"timeseries\",\n\
+      \      \"xaxis\": {\n\
+      \        \"mode\": \"time\",\n\
+      \        \"show\": true,\n\
+      \        \"values\": []\n\
+      \      },\n\
+      \      \"yaxes\": [\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:1947\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        },\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:1948\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        }\n\
+      \      ],\n\
+      \      \"yaxis\": {\n\
+      \        \"align\": false\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"aliasColors\": {},\n\
+      \      \"autoMigrateFrom\": \"graph\",\n\
+      \      \"bars\": false,\n\
+      \      \"dashLength\": 10,\n\
+      \      \"dashes\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the upload data transfers from this Artifactory.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"links\": []\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"fill\": 1,\n\
+      \      \"fillGradient\": 0,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 59\n\
+      \      },\n\
+      \      \"hiddenSeries\": false,\n\
+      \      \"id\": 4,\n\
+      \      \"legend\": {\n\
+      \        \"avg\": false,\n\
+      \        \"current\": false,\n\
+      \        \"max\": false,\n\
+      \        \"min\": false,\n\
+      \        \"show\": false,\n\
+      \        \"total\": false,\n\
+      \        \"values\": false\n\
+      \      },\n\
+      \      \"lines\": true,\n\
+      \      \"linewidth\": 1,\n\
+      \      \"nullPointMode\": \"null\",\n\
+      \      \"options\": {\n\
+      \        \"alertThreshold\": true\n\
+      \      },\n\
+      \      \"percentage\": false,\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"pointradius\": 2,\n\
+      \      \"points\": false,\n\
+      \      \"renderer\": \"flot\",\n\
+      \      \"seriesOverrides\": [],\n\
+      \      \"spaceLength\": 10,\n\
+      \      \"stack\": false,\n\
+      \      \"steppedLine\": false,\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"sum((sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_content_length>0) | unwrap request_content_length [1h])))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"B\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"thresholds\": [],\n\
+      \      \"timeRegions\": [],\n\
+      \      \"title\": \"Upload Data Transfers\",\n\
+      \      \"tooltip\": {\n\
+      \        \"shared\": true,\n\
+      \        \"sort\": 0,\n\
+      \        \"value_type\": \"individual\"\n\
+      \      },\n\
+      \      \"type\": \"timeseries\",\n\
+      \      \"xaxis\": {\n\
+      \        \"mode\": \"time\",\n\
+      \        \"show\": true,\n\
+      \        \"values\": []\n\
+      \      },\n\
+      \      \"yaxes\": [\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:1312\",\n\
+      \          \"format\": \"decbytes\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"min\": \"0\",\n\
+      \          \"show\": true\n\
+      \        },\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:1313\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        }\n\
+      \      ],\n\
+      \      \"yaxis\": {\n\
+      \        \"align\": false\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"aliasColors\": {},\n\
+      \      \"autoMigrateFrom\": \"graph\",\n\
+      \      \"bars\": false,\n\
+      \      \"dashLength\": 10,\n\
+      \      \"dashes\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the download data transfers from this Artifactory.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"links\": [],\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"fill\": 1,\n\
+      \      \"fillGradient\": 0,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 59\n\
+      \      },\n\
+      \      \"hiddenSeries\": false,\n\
+      \      \"id\": 2,\n\
+      \      \"legend\": {\n\
+      \        \"alignAsTable\": false,\n\
+      \        \"avg\": false,\n\
+      \        \"current\": false,\n\
+      \        \"max\": false,\n\
+      \        \"min\": false,\n\
+      \        \"show\": false,\n\
+      \        \"total\": false,\n\
+      \        \"values\": false\n\
+      \      },\n\
+      \      \"lines\": true,\n\
+      \      \"linewidth\": 1,\n\
+      \      \"nullPointMode\": \"null\",\n\
+      \      \"options\": {\n\
+      \        \"alertThreshold\": true\n\
+      \      },\n\
+      \      \"percentage\": false,\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"pointradius\": 1,\n\
+      \      \"points\": false,\n\
+      \      \"renderer\": \"flot\",\n\
+      \      \"seriesOverrides\": [],\n\
+      \      \"spaceLength\": 10,\n\
+      \      \"stack\": false,\n\
+      \      \"steppedLine\": false,\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"expr\": \"sum((sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", response_content_length>0) | unwrap response_content_length [1h])))\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"thresholds\": [],\n\
+      \      \"timeRegions\": [],\n\
+      \      \"title\": \"Download Data Transfers\",\n\
+      \      \"tooltip\": {\n\
+      \        \"shared\": true,\n\
+      \        \"sort\": 0,\n\
+      \        \"value_type\": \"individual\"\n\
+      \      },\n\
+      \      \"type\": \"timeseries\",\n\
+      \      \"xaxis\": {\n\
+      \        \"mode\": \"time\",\n\
+      \        \"show\": true,\n\
+      \        \"values\": []\n\
+      \      },\n\
+      \      \"yaxes\": [\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:576\",\n\
+      \          \"format\": \"decbytes\",\n\
+      \          \"label\": \"\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"min\": \"0\",\n\
+      \          \"show\": true\n\
+      \        },\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:577\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"label\": \"\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": false\n\
+      \        }\n\
+      \      ],\n\
+      \      \"yaxis\": {\n\
+      \        \"align\": false\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top artifacts that have been requested.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"decimals\": 0,\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=6&orgId=1&var-artifact=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 67\n\
+      \      },\n\
+      \      \"id\": 16,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"sum by (artifact) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\") [$__range]))\",\n\
+      \          \"legendFormat\": \"{{artifact}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Accessed Artifacts\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top repositories by requests.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"http://35.188.36.129/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=4&orgId=1&var-repo=${__series.name}\"\n\
+      \            }\n\
+      \          ],\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"none\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 67\n\
+      \      },\n\
+      \      \"id\": 14,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"mean\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": true\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"sum by (repo) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\") [$__range]))\",\n\
+      \          \"legendFormat\": \"{{repo}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Accessed Repos\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Top active repositories by data transfers downloads.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 75\n\
+      \      },\n\
+      \      \"id\": 36,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (repo) (sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\", response_content_length > 0) | unwrap response_content_length [1h])))\",\n\
+      \          \"legendFormat\": \"{{repo}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Data Transfers Downloads by Repo\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Top active repositories by data transfers uploads.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 75\n\
+      \      },\n\
+      \      \"id\": 48,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (repo) (sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\", request_content_length > 0) | unwrap request_content_length [1h])))\",\n\
+      \          \"legendFormat\": \"{{repo}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Data Transfers Uploads by Repo\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top downloading remote IPs.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 83\n\
+      \      },\n\
+      \      \"id\": 18,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (remote_address) (sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\", response_content_length > 0) | unwrap response_content_length [1h])))\",\n\
+      \          \"legendFormat\": \"{{remote_address}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Top IPs by Downloads\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top uploading IPs.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"decbytes\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 83\n\
+      \      },\n\
+      \      \"id\": 20,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (remote_address) (sum_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\", request_url=~\\\"/api/docker/.*\\\", repo!=\\\"\\\", repo!=\\\"NULL\\\", repo!=\\\"latest\\\", artifact!=\\\"\\\", artifact!=\\\"NULL\\\", artifact!=\\\"latest\\\", request_content_length > 0) | unwrap request_content_length [1h])))\",\n\
+      \          \"legendFormat\": \"{{remote_address}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Top IPs by Uploads\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"aliasColors\": {},\n\
+      \      \"autoMigrateFrom\": \"graph\",\n\
+      \      \"bars\": false,\n\
+      \      \"dashLength\": 10,\n\
+      \      \"dashes\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows HTTP response codes over time.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"links\": [\n\
+      \            {\n\
+      \              \"title\": \"Filter\",\n\
+      \              \"url\": \"/d/zU2MF1FGk/artifactory-drill-downs?viewPanel=2&orgId=1&var-return_status=${__series.name}\"\n\
+      \            }\n\
+      \          ]\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"fill\": 1,\n\
+      \      \"fillGradient\": 0,\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 91\n\
+      \      },\n\
+      \      \"hiddenSeries\": false,\n\
+      \      \"id\": 42,\n\
+      \      \"legend\": {\n\
+      \        \"avg\": false,\n\
+      \        \"current\": false,\n\
+      \        \"max\": false,\n\
+      \        \"min\": false,\n\
+      \        \"rightSide\": true,\n\
+      \        \"show\": true,\n\
+      \        \"total\": false,\n\
+      \        \"values\": false\n\
+      \      },\n\
+      \      \"lines\": true,\n\
+      \      \"linewidth\": 1,\n\
+      \      \"nullPointMode\": \"null\",\n\
+      \      \"options\": {\n\
+      \        \"alertThreshold\": true\n\
+      \      },\n\
+      \      \"percentage\": false,\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"pointradius\": 2,\n\
+      \      \"points\": false,\n\
+      \      \"renderer\": \"flot\",\n\
+      \      \"seriesOverrides\": [],\n\
+      \      \"spaceLength\": 10,\n\
+      \      \"stack\": false,\n\
+      \      \"steppedLine\": false,\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"sum by (return_status) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | (log_source=\\\"jfrog.rt.artifactory.request\\\") [$__interval]))\",\n\
+      \          \"legendFormat\": \"{{value}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"thresholds\": [],\n\
+      \      \"timeRegions\": [],\n\
+      \      \"title\": \"HTTP Response Codes\",\n\
+      \      \"tooltip\": {\n\
+      \        \"shared\": true,\n\
+      \        \"sort\": 0,\n\
+      \        \"value_type\": \"individual\"\n\
+      \      },\n\
+      \      \"type\": \"timeseries\",\n\
+      \      \"xaxis\": {\n\
+      \        \"mode\": \"time\",\n\
+      \        \"show\": true,\n\
+      \        \"values\": []\n\
+      \      },\n\
+      \      \"yaxes\": [\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:2099\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        },\n\
+      \        {\n\
+      \          \"$$hashKey\": \"object:2100\",\n\
+      \          \"format\": \"short\",\n\
+      \          \"logBase\": 1,\n\
+      \          \"show\": true\n\
+      \        }\n\
+      \      ],\n\
+      \      \"yaxis\": {\n\
+      \        \"align\": false\n\
+      \      }\n\
+      \    },\n\
+      \    {\n\
+      \      \"collapsed\": false,\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"prometheus\",\n\
+      \        \"uid\": \"prometheus\"\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 1,\n\
+      \        \"w\": 24,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 99\n\
+      \      },\n\
+      \      \"id\": 40,\n\
+      \      \"panels\": [],\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"prometheus\",\n\
+      \            \"uid\": \"prometheus\"\n\
+      \          },\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Audit\",\n\
+      \      \"type\": \"row\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the top users by actions.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 100\n\
+      \      },\n\
+      \      \"id\": 34,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (username) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", username != \\\"NA \\\", username !~ \\\"token.*\\\", username != \\\"_system_\\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{username}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Audit Actions by Users\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows accepted deploys by user.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          },\n\
+      \          \"unit\": \"short\"\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 100\n\
+      \      },\n\
+      \      \"id\": 26,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (username) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", action_response=\\\"ACCEPTED DEPLOY\\\", username != \\\"NA \\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{username}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Accepted Deploys by User\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the denied login attempts.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 108\n\
+      \      },\n\
+      \      \"id\": 50,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (ip) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", action_response=\\\"DENIED LOGIN\\\", username != \\\"NA \\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{ip}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Denied Login by IP\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows denied actions by user.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 108\n\
+      \      },\n\
+      \      \"id\": 28,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (username) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", action_response=~\\\"DENIED.*\\\", username != \\\"NA \\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{username}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Denied Actions by User\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows the denied login attempts.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 0,\n\
+      \        \"y\": 116\n\
+      \      },\n\
+      \      \"id\": 32,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (ip, username) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", action_response=\\\"DENIED LOGIN\\\", username != \\\"NA \\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{ip}} / {{username}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Denied Login by User and IP\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    },\n\
+      \    {\n\
+      \      \"datasource\": {\n\
+      \        \"type\": \"loki\",\n\
+      \        \"uid\": \"$DS_LOKI\"\n\
+      \      },\n\
+      \      \"description\": \"Shows denied actions by IP address.\",\n\
+      \      \"fieldConfig\": {\n\
+      \        \"defaults\": {\n\
+      \          \"displayName\": \"${__series.name}\",\n\
+      \          \"mappings\": [],\n\
+      \          \"thresholds\": {\n\
+      \            \"mode\": \"absolute\",\n\
+      \            \"steps\": [\n\
+      \              {\n\
+      \                \"color\": \"green\"\n\
+      \              }\n\
+      \            ]\n\
+      \          }\n\
+      \        },\n\
+      \        \"overrides\": []\n\
+      \      },\n\
+      \      \"gridPos\": {\n\
+      \        \"h\": 8,\n\
+      \        \"w\": 12,\n\
+      \        \"x\": 12,\n\
+      \        \"y\": 116\n\
+      \      },\n\
+      \      \"id\": 30,\n\
+      \      \"options\": {\n\
+      \        \"displayMode\": \"basic\",\n\
+      \        \"minVizHeight\": 10,\n\
+      \        \"minVizWidth\": 0,\n\
+      \        \"orientation\": \"horizontal\",\n\
+      \        \"reduceOptions\": {\n\
+      \          \"calcs\": [\n\
+      \            \"max\"\n\
+      \          ],\n\
+      \          \"fields\": \"\",\n\
+      \          \"values\": false\n\
+      \        },\n\
+      \        \"showUnfilled\": false,\n\
+      \        \"text\": {}\n\
+      \      },\n\
+      \      \"pluginVersion\": \"9.0.1\",\n\
+      \      \"targets\": [\n\
+      \        {\n\
+      \          \"datasource\": {\n\
+      \            \"type\": \"loki\",\n\
+      \            \"uid\": \"$DS_LOKI\"\n\
+      \          },\n\
+      \          \"editorMode\": \"code\",\n\
+      \          \"expr\": \"topk(10, sum by (ip) (count_over_time({agent=\\\"fluentd\\\",service=\\\"artifactory\\\"} | json | log_source = \\\"jfrog.rt.artifactory.access\\\", action_response=~\\\"DENIED.*\\\", username != \\\"NA \\\" [$__range])))\",\n\
+      \          \"legendFormat\": \"{{ip}}\",\n\
+      \          \"queryType\": \"range\",\n\
+      \          \"refId\": \"A\"\n\
+      \        }\n\
+      \      ],\n\
+      \      \"title\": \"Denied Actions by IP\",\n\
+      \      \"type\": \"bargauge\"\n\
+      \    }\n\
+      \  ],\n\
+      \  \"refresh\": false,\n\
+      \  \"schemaVersion\": 39,\n\
+      \  \"tags\": [],\n\
+      \  \"templating\": {\n\
+      \    \"list\": []\n\
+      \  },\n\
+      \  \"time\": {\n\
+      \    \"from\": \"now-2d\",\n\
+      \    \"to\": \"now\"\n\
+      \  },\n\
+      \  \"timepicker\": {\n\
+      \    \"refresh_intervals\": [\n\
+      \      \"5s\",\n\
+      \      \"10s\",\n\
+      \      \"30s\",\n\
+      \      \"1m\",\n\
+      \      \"5m\",\n\
+      \      \"15m\",\n\
+      \      \"30m\",\n\
+      \      \"1h\",\n\
+      \      \"2h\",\n\
+      \      \"1d\"\n\
+      \    ]\n\
+      \  },\n\
+      \  \"timezone\": \"\",\n\
+      \  \"title\": \"Artifactory (New)\",\n\
+      \  \"uid\": \"ddw151ojmy1vkb\",\n\
+      \  \"version\": 1,\n\
+      \  \"weekStart\": \"\"\n\
+       }\n\
+      ",
   },
 }

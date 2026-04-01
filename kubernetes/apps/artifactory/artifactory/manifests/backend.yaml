@@ -4,27 +4,7 @@
   apiVersion: "gateway.envoyproxy.io/v1alpha1",
   kind: "Backend",
   metadata: {
-    name: "artifactory-router-backend",
-  },
-  spec: {
-    endpoints: [{
-      fqdn: {
-        hostname: "artifactory.artifactory.svc.cluster.local",
-        port: 8081,
-      },
-    }],
-    tls: {
-      insecureSkipVerify: true,
-    },
-  },
-}
----
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/backend_v1alpha1.json
-{
-  apiVersion: "gateway.envoyproxy.io/v1alpha1",
-  kind: "Backend",
-  metadata: {
-    name: "artifactory-default-backend",
+    name: "artifactory-backend",
   },
   spec: {
     endpoints: [{

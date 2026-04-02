@@ -12,29 +12,6 @@
       kind: "OCIRepository",
       name: "kube-prometheus-stack",
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "StatefulSet",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\
-            ",
-        }, {
-          target: {
-            kind: "Deployment",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\
-            ",
-        }],
-      },
-    }],
     values: {
       crds: {
         enabled: false,
@@ -58,6 +35,7 @@
           },
         },
         alertmanagerSpec: {
+          hostUsers: false,
           externalUrl: "https://alertmanager.darkfellanetwork.com",
           alertmanagerConfiguration: {
             name: "alertmanager",
@@ -110,6 +88,7 @@
           serviceDiscoveryRole: "EndpointSlice",
           externalUrl: "https://prometheus.darkfellanetwork.com",
           enableRemoteWriteReceiver: true,
+          hostUsers: false,
           podMetadata: {
             annotations: {
               vault.hashicorp.com/agent-inject: "true",
@@ -1038,6 +1017,7 @@
         serviceAccount: {
           name: "prometheus-operator",
         },
+        hostUsers: false,
         kubeletEndpointsEnabled: false,
         kubeletEndpointSliceEnabled: true,
         admissionWebhooks: {

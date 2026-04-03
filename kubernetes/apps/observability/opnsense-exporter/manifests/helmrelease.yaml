@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/opnsense-exporter",
-                tag: "0.0.14@sha256:a66c2da1aca0961c38addfcc3bf28e894a693786bc29ee851f7370c101d52663",
+                tag: "0.0.14@sha256:a900849755db4ceee6ae5c0b4109dd9d790f705bdf8f967e0a6a29306abf7adc",
                 pullPolicy: "IfNotPresent",
               },
               args: [

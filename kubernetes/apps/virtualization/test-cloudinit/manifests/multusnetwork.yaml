@@ -1,0 +1,53 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/k8s.cni.cncf.io/networkattachmentdefinition_v1.json
+{
+  apiVersion: "k8s.cni.cncf.io/v1",
+  kind: "NetworkAttachmentDefinition",
+  metadata: {
+    name: "nas",
+  },
+  spec: {
+    config: "\
+       {\n\
+      \      \"cniVersion\": \"0.3.1\",\n\
+      \      \"name\": \"nas\",\n\
+      \      \"plugins\": [\n\
+      \        {\n\
+      \          \"type\": \"bridge\",\n\
+      \          \"bridge\": \"br0\",\n\
+      \          \"ipam\": {\n\
+      \            \"type\": \"static\",\n\
+      \            \"addresses\": [\n\
+      \              {\n\
+      \                \"address\": \"192.168.91.41/24\"\n\
+      \              }\n\
+      \            ],\n\
+      \            \"routes\": [\n\
+      \              {\n\
+      \                \"dst\": \"0.0.0.0/0\",\n\
+      \                \"gw\": \"192.168.91.1\"\n\
+      \              },\n\
+      \              {\n\
+      \                \"dst\": \"172.16.0.0/16\",\n\
+      \                \"gw\": \"192.168.91.9\"\n\
+      \              }\n\
+      \            ],\n\
+      \            \"dns\": {\n\
+      \              \"nameservers\": [\n\
+      \                \"192.168.91.1\"\n\
+      \              ]\n\
+      \            }\n\
+      \          }\n\
+      \        },\n\
+      \        {\n\
+      \          \"type\": \"tuning\",\n\
+      \          \"capabilities\": {\n\
+      \            \"mac\": true\n\
+      \          },\n\
+      \          \"mac\": \"0d:4e:c9:bf:86:00\"\n\
+      \        }\n\
+      \      ]\n\
+      \    }\
+      ",
+  },
+}

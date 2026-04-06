@@ -6,6 +6,7 @@
     "./namespace.yaml",
     "./rbac.yaml",
     "./truenas-scale/ks.yaml",
+    "./test-cloudinit/ks.yaml",
   ],
   components: [
     "../../components/alerts",

@@ -1,0 +1,179 @@
+---
+{
+  # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kubevirt.io/virtualmachine_v1alpha3.json
+  apiVersion: "kubevirt.io/v1",
+  kind: "VirtualMachine",
+  metadata: {
+    name: "nas-test",
+  },
+  spec: {
+    runStrategy: "Always",
+    template: {
+      metadata: {
+        labels: {
+          kubevirt.io/domain: "nas-test",
+        },
+      },
+      spec: {
+        priorityClassName: "system-node-critical",
+        networks: [{
+          name: "bridge",
+          multus: {
+            default: true,
+            networkName: "virtualization/nas",
+          },
+        }],
+        domain: {
+          clock: {
+            utc: {},
+          },
+          cpu: {
+            model: "host-passthrough",
+            dedicatedCpuPlacement: true,
+            isolateEmulatorThread: true,
+            cores: 4,
+          },
+          ioThreadsPolicy: "auto",
+          features: {
+            acpi: {},
+            apic: {},
+            smm: {
+              enabled: false,
+            },
+          },
+          firmware: {
+            bootloader: {
+              efi: {
+                secureBoot: false,
+              },
+            },
+          },
+          devices: {
+            clientPassthrough: {},
+            autoattachVSOCK: true,
+            autoattachInputDevice: false,
+            autoattachMemBalloon: false,
+            interfaces: [{
+              name: "bridge",
+              bridge: {},
+              model: "virtio",
+            }],
+            disks: [{
+              name: "os-disk",
+              bootOrder: 1,
+              disk: {
+                bus: "virtio",
+              },
+            }, {
+              name: "cloudinit",
+              disk: {
+                bus: "virtio",
+              },
+            }],
+          },
+          machine: {
+            type: "q35",
+          },
+          resources: {
+            requests: {
+              cpu: 4,
+              memory: "4Gi",
+            },
+            limits: {
+              cpu: 4,
+              memory: "4Gi",
+            },
+          },
+        },
+        volumes: [{
+          name: "os-disk",
+          dataVolume: {
+            name: "nas-os-disk",
+          },
+        }, {
+          name: "cloudinit",
+          cloudInitNoCloud: {
+            userData: "\
+               #cloud-config\n\
+               hostname: nas\n\
+               fqdn: nas.local\n\
+               \n\
+               users:\n\
+              \  - name: admin\n\
+              \    groups: [sudo, users, admin]\n\
+              \    sudo: ALL=(ALL) NOPASSWD:ALL\n\
+              \    shell: /bin/bash\n\
+              \    lock_passwd: false\n\
+              \    passwd: test\n\
+               \n\
+               package_update: true\n\
+               package_upgrade: true\n\
+               \n\
+               packages:\n\
+              \  - cockpit\n\
+              \  - cockpit-storaged\n\
+              \  - cockpit-networkmanager\n\
+              \  - nfs-kernel-server\n\
+              \  - nfs-common\n\
+              \  - zfsutils-linux\n\
+              \  - acl\n\
+              \  - attr\n\
+              \  - nfs4-acl-tools\n\
+               \n\
+               write_files:\n\
+              \  - path: /etc/systemd/system/nfs-kernel-server.service.d/zfs-dep.conf\n\
+              \    content: |\n\
+              \      [Unit]\n\
+              \      After=zfs.target zfs-mount.service\n\
+              \      Requires=zfs.target\n\
+               \n\
+              \  - path: /etc/nfs.conf.d/local.conf\n\
+              \    content: |\n\
+              \      [nfsd]\n\
+              \      vers3=n\n\
+              \      vers4=y\n\
+              \      vers4.1=y\n\
+              \      vers4.2=y\n\
+               \n\
+               runcmd:\n\
+              \  - systemctl enable zfs-import-cache.service\n\
+              \  - systemctl enable zfs-import.target\n\
+              \  - systemctl enable zfs-mount.service\n\
+              \  - systemctl enable zfs.target\n\
+               \n\
+              \  - systemctl enable --now nfs-kernel-server\n\
+              \  - systemctl enable --now cockpit.socket\n\
+               \n\
+              \  - ufw allow 2049/tcp || true\n\
+              \  - ufw allow 111/tcp || true\n\
+              \  - ufw allow 9090/tcp || true\n\
+              ",
+          },
+        }],
+      },
+    },
+    dataVolumeTemplates: [{
+      metadata: {
+        name: "nas-os-disk",
+      },
+      spec: {
+        storage: {
+          storageClassName: "openebs-zfs-block-16k",
+          accessModes: [
+            "ReadWriteOnce",
+          ],
+          resources: {
+            requests: {
+              storage: "20Gi",
+            },
+          },
+        },
+        source: {
+          http: {
+            url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+          },
+        },
+      },
+    }],
+  },
+}

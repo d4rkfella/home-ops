@@ -99,7 +99,7 @@
                fqdn: nas.local\n\
                \n\
                users:\n\
-              \  - name: admin\n\
+              \  - name: nas-admin\n\
               \    groups: [sudo, users, admin]\n\
               \    sudo: ALL=(ALL) NOPASSWD:ALL\n\
               \    shell: /bin/bash\n\

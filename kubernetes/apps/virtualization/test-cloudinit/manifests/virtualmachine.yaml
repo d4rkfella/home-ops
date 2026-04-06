@@ -104,7 +104,7 @@
               \    sudo: ALL=(ALL) NOPASSWD:ALL\n\
               \    shell: /bin/bash\n\
               \    lock_passwd: false\n\
-              \    passwd: test\n\
+              \    passwd: $6$zpRwJBbaKaxoQHOj$I711TkV7HhhY7mZmjnR3t.3zyWBcG8PNXvgCnsbQpCnCEGybJCn2IH9zg72IOaBsd4zQBt66Puc91ylwWp/83/\n\
                \n\
                package_update: true\n\
                package_upgrade: true\n\

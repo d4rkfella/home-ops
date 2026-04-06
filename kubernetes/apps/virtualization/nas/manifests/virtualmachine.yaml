@@ -1,153 +1,146 @@
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kubevirt.io/virtualmachine_v1alpha3.json
 {
-  # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/external-secrets.io/externalsecret_v1beta1.json
-  apiVersion: "external-secrets.io/v1",
-  kind: "ExternalSecret",
+  apiVersion: "kubevirt.io/v1",
+  kind: "VirtualMachine",
   metadata: {
-    name: "nas-cloudinit",
+    name: "nas",
   },
   spec: {
-    secretStoreRef: {
-      kind: "ClusterSecretStore",
-      name: "hashicorp-vault",
-    },
-    target: {
-      name: "nas-cloudinit",
-      template: {
-        data: {
-          userdata: "\
-             #cloud-config\n\
-             hostname: nas\n\
-             fqdn: nas.darkfellanetwork.com\n\
-             timezone: Europe/Sofia\n\
-             \n\
-             users:\n\
-            \  - name: nas_admin\n\
-            \    groups: [sudo, users, systemd-journal, adm]\n\
-            \    sudo: ALL=(ALL) NOPASSWD:ALL\n\
-            \    shell: /bin/bash\n\
-            \    lock_passwd: false\n\
-            \    passwd: {{ .NAS_ADMIN_PASSWORD }}\n\
-             \n\
-            \  - name: darkfella\n\
-            \    shell: /usr/sbin/nologin\n\
-            \    lock_passwd: true\n\
-            \    no_create_home: true\n\
-            \    sudo: null\n\
-             \n\
-            \  - name: kubernetes_workloads\n\
-            \    uid: 65532\n\
-            \    shell: /usr/sbin/nologin\n\
-            \    lock_passwd: true\n\
-            \    no_create_home: true\n\
-            \    sudo: null\n\
-             \n\
-            \  - name: artifactory-system\n\
-            \    uid: 1030\n\
-            \    shell: /usr/sbin/nologin\n\
-            \    lock_passwd: true\n\
-            \    no_create_home: true\n\
-            \    sudo: null\n\
-             \n\
-             package_update: true\n\
-             package_upgrade: true\n\
-             \n\
-             packages:\n\
-            \  - nfs-kernel-server\n\
-            \  - nfs-common\n\
-            \  - zfsutils-linux\n\
-            \  - acl\n\
-            \  - attr\n\
-            \  - samba\n\
-             \n\
-             write_files:\n\
-            \  - path: /etc/nfs.conf.d/local.conf\n\
-            \    content: |\n\
-            \      [nfsd]\n\
-            \      vers3=n\n\
-            \      vers4=y\n\
-            \      vers4.1=y\n\
-            \      vers4.2=y\n\
-             \n\
-            \  - path: /etc/exports\n\
-            \    content: |\n\
-            \      /mnt/exos20/data *(sec=sys,rw,insecure,no_subtree_check)\n\
-            \      /mnt/exos20/data/media *(sec=sys,rw,insecure,subtree_check)\n\
-            \      /mnt/exos20/data/downloads/torrents *(sec=sys,rw,insecure,subtree_check)\n\
-            \      /mnt/exos20/SMB/LaunchBox *(sec=sys,rw,insecure,subtree_check)\n\
-            \      /mnt/exos20/artifactory-backup *(sec=sys,rw,insecure,no_subtree_check)\n\
-             \n\
-            \  - path: /etc/samba/smb.conf\n\
-            \    content: |\n\
-            \      [global]\n\
-            \        workgroup = WORKGROUP\n\
-            \        server string = NAS\n\
-            \        server role = standalone server\n\
-            \        ntlm auth = ntlmv2-only\n\
-            \        server min protocol = SMB3\n\
-            \        server max protocol = SMB3\n\
-            \        security = user\n\
-            \        passdb backend = tdbsam\n\
-            \        map to guest = never\n\
-            \        guest ok = no\n\
-            \        inherit acls = yes\n\
-            \        map acl inherit = yes\n\
-            \        acl group control = yes\n\
-            \        store dos attributes = yes\n\
-            \        vfs objects = acl_xattr\n\
-            \        logging = systemd\n\
-            \        log level = 1\n\
-            \        aio read size = 1\n\
-            \        aio write size = 1\n\
-            \        min receivefile size = 16384\n\
-             \n\
-            \      [data]\n\
-            \        comment = Data\n\
-            \        path = /mnt/exos20/data\n\
-            \        browseable = yes\n\
-            \        read only = no\n\
-            \        valid users = darkfella\n\
-            \        inherit acls = yes\n\
-            \        inherit permissions = no\n\
-             \n\
-            \      [SMB]\n\
-            \        comment = SMB\n\
-            \        path = /mnt/exos20/SMB\n\
-            \        browseable = yes\n\
-            \        read only = no\n\
-            \        valid users = darkfella\n\
-            \        inherit acls = yes\n\
-            \        inherit permissions = no\n\
-             \n\
-             runcmd:\n\
-            \  - systemctl enable zfs-import-cache.service\n\
-            \  - systemctl enable zfs-import.target\n\
-            \  - systemctl enable zfs-mount.service\n\
-            \  - systemctl enable zfs.target\n\
-            \  - ufw allow 2049/tcp || true\n\
-            \  - ufw allow 445/tcp || true\n\
-            \  - zpool import -f exos20 || true\n\
-            \  - zfs set acltype=nfsv4 exos20/data || true\n\
-            \  - zfs set aclinherit=passthrough exos20/data || true\n\
-            \  - zfs set aclmode=passthrough exos20/data || true\n\
-            \  - zfs set xattr=sa exos20/data || true\n\
-            \  - zfs set acltype=nfsv4 exos20/SMB || true\n\
-            \  - zfs set aclinherit=passthrough exos20/SMB || true\n\
-            \  - zfs set aclmode=passthrough exos20/SMB || true\n\
-            \  - zfs set xattr=sa exos20/SMB || true\n\
-            \  - exportfs -ra\n\
-            \  - systemctl enable --now nfs-kernel-server\n\
-            \  - printf '%s\\n%s\\n' '{{ .DARKFELLA_SMB_PASSWORD }}' '{{ .DARKFELLA_SMB_PASSWORD }}' | smbpasswd -a -s darkfella\n\
-            \  - smbpasswd -e darkfella\n\
-            \  - systemctl enable --now smbd\n\
-            \  - systemctl enable --now nmbd\n\
-            ",
+    runStrategy: "Always",
+    template: {
+      metadata: {
+        labels: {
+          kubevirt.io/domain: "nas",
         },
       },
+      spec: {
+        priorityClassName: "system-node-critical",
+        networks: [{
+          name: "bridge",
+          multus: {
+            default: true,
+            networkName: "virtualization/nas",
+          },
+        }],
+        dnsPolicy: "None",
+        dnsConfig: {
+          nameservers: [
+            "192.168.91.1",
+          ],
+          searches: [
+            "darkfellanetwork.com",
+          ],
+        },
+        domain: {
+          clock: {
+            utc: {},
+          },
+          cpu: {
+            model: "host-passthrough",
+            dedicatedCpuPlacement: true,
+            isolateEmulatorThread: true,
+          },
+          ioThreadsPolicy: "auto",
+          features: {
+            acpi: {},
+            apic: {},
+            smm: {
+              enabled: false,
+            },
+          },
+          firmware: {
+            bootloader: {
+              efi: {
+                secureBoot: false,
+              },
+            },
+          },
+          devices: {
+            clientPassthrough: {},
+            autoattachVSOCK: true,
+            autoattachInputDevice: false,
+            autoattachMemBalloon: false,
+            hostDevices: [{
+              deviceName: "devices.kubevirt.io/nvme",
+              name: "intel-optane",
+            }, {
+              deviceName: "devices.kubevirt.io/sas",
+              name: "sas",
+            }],
+            interfaces: [{
+              name: "bridge",
+              bridge: {},
+              model: "virtio",
+            }],
+            disks: [{
+              name: "os-disk",
+              bootOrder: 1,
+              disk: {
+                bus: "virtio",
+              },
+            }, {
+              name: "cloudinit",
+              disk: {
+                bus: "virtio",
+              },
+            }],
+          },
+          machine: {
+            type: "q35",
+          },
+          resources: {
+            requests: {
+              cpu: 4,
+              memory: "52Gi",
+            },
+            limits: {
+              cpu: 4,
+              memory: "52Gi",
+            },
+          },
+          memory: {
+            hugepages: {
+              pageSize: "2Mi",
+            },
+          },
+        },
+        volumes: [{
+          name: "os-disk",
+          dataVolume: {
+            name: "nas-os-disk",
+          },
+        }, {
+          name: "cloudinit",
+          cloudInitNoCloud: {
+            secretRef: {
+              name: "nas-cloudinit",
+            },
+          },
+        }],
+      },
     },
-    dataFrom: [{
-      extract: {
-        key: "secrets/nas-admin",
+    dataVolumeTemplates: [{
+      metadata: {
+        name: "nas-os-disk",
+      },
+      spec: {
+        storage: {
+          storageClassName: "openebs-zfs-block-16k",
+          accessModes: [
+            "ReadWriteOnce",
+          ],
+          resources: {
+            requests: {
+              storage: "20Gi",
+            },
+          },
+        },
+        source: {
+          http: {
+            url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+          },
+        },
       },
     }],
   },

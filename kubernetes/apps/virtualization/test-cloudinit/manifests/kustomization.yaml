@@ -4,6 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./multusnetwork.yaml",
+    "./certificate.yaml",
     "./virtualmachine.yaml",
   ],
 }

@@ -26,7 +26,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.8.3@sha256:1fe5c39881c0c1f857f0462f0692e365bea768228b33d31c209610f389775eb6 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.5@sha256:be924970ba7438c22e18067dec5637946d6566eac711f5bedd1584e7137008fb /ko-app/cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.6@sha256:de9c65609e6bde17e6b48de485ee788407c9502fa08b8f4459f595b21f56cd00 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.4.3@sha256:d91dcefabbcfd2ed58be28ada594738eb96319d35c5e63e1fd4fee58e40211a5 /usr/local/bin/helmfile /usr/local/bin/

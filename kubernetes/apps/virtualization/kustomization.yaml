@@ -5,8 +5,8 @@
   resources: [
     "./namespace.yaml",
     "./rbac.yaml",
-    "./truenas-scale/ks.yaml",
-    #"./test-cloudinit/ks.yaml",
+    #"./truenas-scale/ks.yaml",
+    "./nas/ks.yaml",
   ],
   components: [
     "../../components/alerts",

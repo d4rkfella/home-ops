@@ -4,15 +4,14 @@
   apiVersion: "kubevirt.io/v1",
   kind: "VirtualMachine",
   metadata: {
-    name: "nas-test",
-    namespace: "virtualization",
+    name: "nas",
   },
   spec: {
     runStrategy: "Always",
     template: {
       metadata: {
         labels: {
-          kubevirt.io/domain: "nas-test",
+          kubevirt.io/domain: "nas",
         },
       },
       spec: {
@@ -32,7 +31,6 @@
             model: "host-passthrough",
             dedicatedCpuPlacement: true,
             isolateEmulatorThread: true,
-            cores: 4,
           },
           ioThreadsPolicy: "auto",
           features: {
@@ -54,6 +52,13 @@
             autoattachVSOCK: true,
             autoattachInputDevice: false,
             autoattachMemBalloon: false,
+            hostDevices: [{
+              deviceName: "devices.kubevirt.io/nvme",
+              name: "intel-optane",
+            }, {
+              deviceName: "devices.kubevirt.io/sas",
+              name: "sas",
+            }],
             filesystems: [{
               name: "tls-secret-fs",
               virtiofs: {},
@@ -82,11 +87,16 @@
           resources: {
             requests: {
               cpu: 4,
-              memory: "4Gi",
+              memory: "52Gi",
             },
             limits: {
               cpu: 4,
-              memory: "4Gi",
+              memory: "52Gi",
+            },
+          },
+          memory: {
+            hugepages: {
+              pageSize: "2Mi",
             },
           },
         },
@@ -128,7 +138,7 @@
         },
         source: {
           http: {
-            url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+            url: "https://cloud-images.ubuntu.com/resolute/current/resolute-server-cloudimg-amd64v3.img",
           },
         },
       },

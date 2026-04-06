@@ -103,7 +103,7 @@
         }, {
           name: "cloudinit",
           cloudInitNoCloud: {
-            userDataSecretRef: {
+            secretRef: {
               name: "nas-cloudinit",
             },
           },

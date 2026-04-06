@@ -1,6 +1,6 @@
 ---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kubevirt.io/virtualmachine_v1alpha3.json
 {
-  # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kubevirt.io/virtualmachine_v1alpha3.json
   apiVersion: "kubevirt.io/v1",
   kind: "VirtualMachine",
   metadata: {
@@ -103,127 +103,9 @@
         }, {
           name: "cloudinit",
           cloudInitNoCloud: {
-            userData: "\
-               #cloud-config\n\
-               hostname: nas\n\
-               fqdn: nas.darkfellanetwork.com\n\
-               \n\
-               users:\n\
-              \  - name: nas-admin\n\
-              \    groups: [sudo, users]\n\
-              \    sudo: ALL=(ALL) NOPASSWD:ALL\n\
-              \    shell: /bin/bash\n\
-              \    lock_passwd: false\n\
-              \    passwd: $6$zpRwJBbaKaxoQHOj$I711TkV7HhhY7mZmjnR3t.3zyWBcG8PNXvgCnsbQpCnCEGybJCn2IH9zg72IOaBsd4zQBt66Puc91ylwWp/83/\n\
-               \n\
-               package_update: true\n\
-               package_upgrade: true\n\
-               \n\
-               packages:\n\
-              \  - cockpit\n\
-              \  - cockpit-storaged\n\
-              \  - cockpit-networkmanager\n\
-              \  - nfs-kernel-server\n\
-              \  - nfs-common\n\
-              \  - zfsutils-linux\n\
-              \  - acl\n\
-              \  - attr\n\
-               \n\
-               write_files:\n\
-              \  - path: /etc/systemd/resolved.conf.d/dns-override.conf\n\
-              \    content: |\n\
-              \      [Resolve]\n\
-              \      DNS=192.168.91.1\n\
-              \      Domains=darkfellanetwork.com\n\
-               \n\
-              \  - path: /etc/systemd/system/nfs-kernel-server.service.d/zfs-dep.conf\n\
-              \    content: |\n\
-              \      [Unit]\n\
-              \      After=zfs.target zfs-mount.service\n\
-              \      Requires=zfs.target\n\
-               \n\
-              \  - path: /etc/nfs.conf.d/local.conf\n\
-              \    content: |\n\
-              \      [nfsd]\n\
-              \      vers3=n\n\
-              \      vers4=y\n\
-              \      vers4.1=y\n\
-              \      vers4.2=y\n\
-               \n\
-              \  - path: /etc/systemd/system/cockpit-cert-sync.service\n\
-              \    content: |\n\
-              \      [Unit]\n\
-              \      Description=Sync Cockpit TLS cert from secret volume\n\
-              \      After=mnt-tls.mount\n\
-               \n\
-              \      [Service]\n\
-              \      Type=oneshot\n\
-              \      ExecStart=/bin/bash -c '\\\n\
-              \        cp /mnt/tls/tls.crt /etc/cockpit/ws-certs.d/1-nas.cert && \\\n\
-              \        cp /mnt/tls/tls.key /etc/cockpit/ws-certs.d/1-nas.key && \\\n\
-              \        chmod 640 /etc/cockpit/ws-certs.d/1-nas.key && \\\n\
-              \        chown root:cockpit-ws /etc/cockpit/ws-certs.d/1-nas.key'\n\
-              \      ExecStartPost=systemctl restart cockpit\n\
-               \n\
-              \  - path: /etc/systemd/system/cockpit-cert-sync.path\n\
-              \    content: |\n\
-              \      [Unit]\n\
-              \      Description=Watch for TLS cert changes in secret volume\n\
-              \      After=mnt-tls.mount\n\
-               \n\
-              \      [Path]\n\
-              \      PathChanged=/mnt/tls/tls.crt\n\
-               \n\
-              \      [Install]\n\
-              \      WantedBy=multi-user.target\n\
-               \n\
-              \  - path: /etc/systemd/system/mnt-tls.mount\n\
-              \    content: |\n\
-              \      [Unit]\n\
-              \      Description=Mount TLS secret virtiofs\n\
-              \      After=local-fs.target\n\
-               \n\
-              \      [Mount]\n\
-              \      What=tls-secret-fs\n\
-              \      Where=/mnt/tls\n\
-              \      Type=virtiofs\n\
-               \n\
-              \      [Install]\n\
-              \      WantedBy=multi-user.target\n\
-               \n\
-               runcmd:\n\
-              \  # DNS\n\
-              \  - mkdir -p /etc/systemd/resolved.conf.d\n\
-              \  - systemctl restart systemd-resolved\n\
-               \n\
-              \  # ZFS services\n\
-              \  - systemctl enable zfs-import-cache.service\n\
-              \  - systemctl enable zfs-import.target\n\
-              \  - systemctl enable zfs-mount.service\n\
-              \  - systemctl enable zfs.target\n\
-               \n\
-              \  # Mount virtiofs TLS secret\n\
-              \  - systemctl enable --now mnt-tls.mount\n\
-               \n\
-              \  # Initial cert copy\n\
-              \  - mkdir -p /etc/cockpit/ws-certs.d\n\
-              \  - cp /mnt/tls/tls.crt /etc/cockpit/ws-certs.d/1-nas.cert\n\
-              \  - cp /mnt/tls/tls.key /etc/cockpit/ws-certs.d/1-nas.key\n\
-              \  - chmod 640 /etc/cockpit/ws-certs.d/1-nas.key\n\
-              \  - chown root:cockpit-ws /etc/cockpit/ws-certs.d/1-nas.key\n\
-               \n\
-              \  # Enable cert watcher for automatic rotation\n\
-              \  - systemctl enable --now cockpit-cert-sync.path\n\
-               \n\
-              \  # Enable services\n\
-              \  - systemctl enable --now nfs-kernel-server\n\
-              \  - systemctl enable --now cockpit.socket\n\
-               \n\
-              \  # Firewall\n\
-              \  - ufw allow 2049/tcp || true\n\
-              \  - ufw allow 111/tcp || true\n\
-              \  - ufw allow 9090/tcp || true\n\
-              ",
+            userDataSecretRef: {
+              name: "nas-cloudinit",
+            },
           },
         }],
       },

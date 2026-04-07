@@ -68,6 +68,10 @@
               deviceName: "devices.kubevirt.io/sas",
               name: "sas",
             }],
+            filesystems: [{
+              name: "tls-secret-fs",
+              virtiofs: {},
+            }],
             interfaces: [{
               name: "bridge",
               bridge: {},
@@ -106,6 +110,11 @@
           },
         },
         volumes: [{
+          name: "tls-secret-fs",
+          secret: {
+            secretName: "nas-tls",
+          },
+        }, {
           name: "os-disk",
           dataVolume: {
             name: "nas-os-disk",
@@ -138,7 +147,7 @@
         },
         source: {
           http: {
-            url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img",
+            url: "https://cloud-images.ubuntu.com/releases/questing/release/ubuntu-25.10-server-cloudimg-amd64.img",
           },
         },
       },

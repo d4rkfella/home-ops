@@ -22,13 +22,5 @@
     scrapeInterval: "15s",
     scrapeTimeout: "10s",
     metricsPath: "/metrics",
-    metricRelabelings: [{
-      sourceLabels: [
-        "name",
-      ],
-      regex: "[^/]+/(.*)",
-      targetLabel: "name",
-      replacement: "$1",
-    }],
   },
 }

@@ -1,0 +1,26 @@
+---
+{
+  apiVersion: "monitoring.coreos.com/v1alpha1",
+  kind: "ScrapeConfig",
+  metadata: {
+    name: "nas-exos20-zfs-metrics",
+    labels: {
+      release: "kube-prometheus-stack",
+    },
+  },
+  spec: {
+    staticConfigs: [{
+      targets: [
+        "192.168.91.40:9134",
+      ],
+      labels: {
+        instance: "NAS",
+        pool: "exos20",
+      },
+    }],
+    jobName: "nas-zfs-metrics",
+    scrapeInterval: "15s",
+    scrapeTimeout: "10s",
+    metricsPath: "/metrics",
+  },
+}

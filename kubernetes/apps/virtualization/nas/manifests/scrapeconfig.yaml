@@ -23,8 +23,10 @@
     scrapeTimeout: "10s",
     metricsPath: "/metrics",
     metricRelabelings: [{
-      sourceLabels: "[name]",
-      regex: "exos20/(.*)",
+      sourceLabels: [
+        "name",
+      ],
+      regex: "[^/]+/(.*)",
       targetLabel: "name",
       replacement: "$1",
     }],

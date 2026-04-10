@@ -34,11 +34,6 @@
           type: "Localhost",
           localhostProfile: "cool-seccomp-profile.json",
         },
-        capabilities: {
-          drop: [
-            "ALL",
-          ],
-        },
       },
       installCOOLSeccompProfile: false,
       route: {

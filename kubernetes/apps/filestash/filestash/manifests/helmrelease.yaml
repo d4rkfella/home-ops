@@ -47,7 +47,7 @@
             },
           },
           containers: {
-            app: {
+            filestash: {
               image: {
                 repository: "machines/filestash",
                 tag: "latest",
@@ -71,7 +71,7 @@
                 },
               },
             },
-            wopi: {
+            collabora: {
               image: {
                 repository: "collabora/code",
                 tag: "24.04.10.2.1",
@@ -110,7 +110,7 @@
         },
       },
       service: {
-        app: {
+        filestash: {
           controller: "filestash",
           ports: {
             http: {
@@ -118,9 +118,17 @@
             },
           },
         },
+        collabora: {
+          controller: "filestash",
+          ports: {
+            http: {
+              port: 9980,
+            },
+          },
+        },
       },
       route: {
-        app: {
+        filestash: {
           hostnames: [
             "filestash.darkfellanetwork.com",
           ],
@@ -133,6 +141,22 @@
             backendRefs: [{
               name: "filestash",
               port: 8334,
+            }],
+          }],
+        },
+        collabora: {
+          hostnames: [
+            "office.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "collabora",
+              port: 9980,
             }],
           }],
         },

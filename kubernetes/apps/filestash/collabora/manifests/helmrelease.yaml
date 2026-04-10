@@ -66,6 +66,17 @@
           },
         }],
       },
+      extraVolumes: [{
+        name: "custom-css",
+        configMap: {
+          name: "collabora-custom-css",
+        },
+      }],
+      extraVolumeMounts: [{
+        name: "custom-css",
+        mountPath: "/usr/share/coolwsd/browser/dist/branding-desktop.css",
+        subPath: "branding-desktop.css",
+      }],
     },
   },
 }

@@ -122,6 +122,7 @@
       persistence: {
         state: {
           type: "persistentVolumeClaim",
+          suffix: "state",
           size: "15Gi",
           accessMode: "ReadWriteOnce",
           storageClass: "openebs-zfs-128k",

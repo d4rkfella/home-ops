@@ -26,7 +26,21 @@
         proofKeysSecretRef: "collabora-proof-key",
       },
       podSecurityContext: {},
-      installCOOLSeccompProfile: true,
+      securityContext: {
+        privileged: false,
+        runAsNonRoot: true,
+        allowPrivilegeEscalation: false,
+        seccompProfile: {
+          type: "RuntimeDefault",
+          localhostProfile: "cool-seccomp-profile.json",
+        },
+        capabilities: {
+          drop: [
+            "ALL",
+          ],
+        },
+      },
+      installCOOLSeccompProfile: false,
       route: {
         enabled: true,
         apiVersion: "gateway.networking.k8s.io/v1",

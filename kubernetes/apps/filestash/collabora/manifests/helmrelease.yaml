@@ -39,9 +39,7 @@
             "ALL",
           ],
           add: [
-            "SYS_CHROOT",
-            "FOWNER",
-            "CHOWN",
+            "CAP_SYS_ADMIN",
           ],
         },
       },

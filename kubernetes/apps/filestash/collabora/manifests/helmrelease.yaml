@@ -38,6 +38,13 @@
           drop: [
             "ALL",
           ],
+          add: [
+            "SYS_CHROOT",
+            "FOWNER",
+            "CHOWN",
+            "SETUID",
+            "SETGID",
+          ],
         },
       },
       installCOOLSeccompProfile: false,

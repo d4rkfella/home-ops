@@ -27,9 +27,6 @@
               env: {
                 APPLICATION_URL: "filestash.darkfellanetwork.com",
                 CANARY: "true",
-                OFFICE_URL: "http://collabora.filestash.svc.cluster.local:9980",
-                OFFICE_FILESTASH_URL: "https://filestash.darkfellanetwork.com",
-                OFFICE_REWRITE_URL: "https://office.darkfellanetwork.com",
               },
               securityContext: {
                 allowPrivilegeEscalation: false,

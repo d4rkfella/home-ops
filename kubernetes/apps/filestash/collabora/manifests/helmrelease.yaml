@@ -17,7 +17,7 @@
         aliasgroups: [{
           host: "https://filestash.darkfellanetwork.com:443",
         }],
-        extra_params: "--o:ssl.enable=false",
+        extra_params: "--o:ssl.enable=false --o:ssl.termination=true",
         server_name: "office.darkfellanetwork.com",
         existingSecret: {
           enabled: true,

@@ -170,7 +170,7 @@
           storageClass: "openebs-zfs-128k",
           advancedMounts: {
             filestash: {
-              app: [{
+              filestash: [{
                 path: "/app/data/state/",
               }],
             },
@@ -183,7 +183,7 @@
               init-branding: [{
                 path: "/branding",
               }],
-              wopi: [{
+              collabora: [{
                 path: "/usr/share/coolwsd/browser/dist/branding-desktop.css",
                 subPath: "branding-desktop.css",
               }],
@@ -194,10 +194,10 @@
           type: "emptyDir",
           advancedMounts: {
             filestash: {
-              app: [{
+              filestash: [{
                 path: "/tmp",
               }],
-              wopi: [{
+              collabora: [{
                 path: "/tmp",
               }, {
                 path: "/opt/collaboraoffice/var/cache",

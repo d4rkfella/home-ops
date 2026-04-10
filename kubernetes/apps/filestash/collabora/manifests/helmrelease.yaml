@@ -1,0 +1,51 @@
+---
+{
+  # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "collabora",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "collabora",
+    },
+    values: {
+      collabora: {
+        aliasgroups: [{
+          host: "https://filestash.darkfellanetwork.com:443",
+        }],
+        extra_params: "--o:ssl.enable=false",
+        server_name: "office.darkfellanetwork.com",
+        existingSecret: {
+          enabled: true,
+          secretName: "collabora-credentials",
+        },
+        proofKeysSecretRef: "collabora-proof-key",
+      },
+      podSecurityContext: {},
+      installCOOLSeccompProfile: true,
+      route: {
+        enabled: true,
+        apiVersion: "gateway.networking.k8s.io/v1",
+        kind: "HTTPRoute",
+        hostnames: [
+          "office.darkfellanetwork.com",
+        ],
+        parentRefs: [{
+          name: "internal",
+          namespace: "envoy-gateway-system",
+          sectionName: "https",
+        }],
+        matches: [{
+          path: {
+            type: "PathPrefix",
+            value: "/",
+          },
+        }],
+      },
+    },
+  },
+}

@@ -16,8 +16,5 @@
       tag: "1.1.60",
     },
     url: "oci://ghcr.io/collaboraonline/charts/collabora-online",
-    verify: {
-      provider: "cosign",
-    },
   },
 }

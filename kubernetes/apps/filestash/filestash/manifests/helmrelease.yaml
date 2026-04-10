@@ -78,8 +78,7 @@
               },
               env: {
                 extra_params: "--o:ssl.enable=false --o:ssl.termination=true --o:security.capabilities=false",
-                aliasgroup1: "https://.*:443",
-                DONT_GEN_SSL_CERT: "true",
+                aliasgroup1: "https://filestash.darkfellanetwork.com:443,https://office.darkfellanetwork.com:443",
               },
               securityContext: {
                 "<<": {

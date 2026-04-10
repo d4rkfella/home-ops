@@ -1,0 +1,165 @@
+---
+{
+  # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "filestash",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "filestash",
+    },
+    values: {
+      controllers: {
+        filestash: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          initContainers: {
+            init-branding: {
+              image: {
+                repository: "alpine",
+                tag: 3.19,
+              },
+              command: [
+                "sh",
+                "-c",
+              ],
+              args: [
+                "\
+                   wget -O /branding/branding-desktop.css https://gist.githubusercontent.com/mickael-kerjean/bc1f57cd312cf04731d30185cc4e7ba2/raw/d706dcdf23c21441e5af289d871b33defc2770ea/destop.css\n\
+                  ",
+              ],
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                runAsNonRoot: true,
+                runAsUser: 65532,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+            },
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "machines/filestash",
+                tag: "latest",
+              },
+              env: {
+                APPLICATION_URL: "https://filestash.darkfellanetwork.com.com",
+                CANARY: "true",
+                OFFICE_URL: "http://127.0.0.1:9980",
+                OFFICE_FILESTASH_URL: "http://127.0.0.1:8334",
+                OFFICE_REWRITE_URL: "http://127.0.0.1:9980",
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                runAsNonRoot: true,
+                runAsUser: 1000,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+            },
+            wopi: {
+              image: {
+                repository: "collabora/code",
+                tag: "24.04.10.2.1",
+              },
+              env: {
+                extra_params: "--o:ssl.enable=false --o:home_view=true",
+                aliasgroup1: "https://.*:443",
+                DONT_GEN_SSL_CERT: "true",
+              },
+              securityContext: {
+                "<<": {
+                    allowPrivilegeEscalation: false,
+                    readOnlyRootFilesystem: true,
+                    runAsNonRoot: true,
+                    runAsUser: 1000,
+                    capabilities: {
+                      drop: [
+                        "ALL",
+                      ],
+                    },
+                  },
+                runAsUser: 100,
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          fsGroup: 100,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "filestash",
+          ports: {
+            http: {
+              port: 8334,
+            },
+          },
+        },
+      },
+      persistence: {
+        state: {
+          existingClaim: "filestash-config",
+          advancedMounts: {
+            filestash: {
+              app: [{
+                path: "/app/data/state/",
+              }],
+            },
+          },
+        },
+        branding: {
+          type: "emptyDir",
+          advancedMounts: {
+            filestash: {
+              init-branding: [{
+                path: "/branding",
+              }],
+              wopi: [{
+                path: "/usr/share/coolwsd/browser/dist/branding-desktop.css",
+                subPath: "branding-desktop.css",
+              }],
+            },
+          },
+        },
+        tmp: {
+          type: "emptyDir",
+          advancedMounts: {
+            filestash: {
+              app: [{
+                path: "/tmp",
+              }],
+              wopi: [{
+                path: "/tmp",
+              }, {
+                path: "/opt/collaboraoffice/var/cache",
+              }],
+            },
+          },
+        },
+      },
+    },
+  },
+}

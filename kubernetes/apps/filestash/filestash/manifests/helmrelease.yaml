@@ -77,7 +77,7 @@
                 tag: "25.04.9.4.1",
               },
               env: {
-                extra_params: "--o:ssl.enable=false --o:ssl.termination=true --o:security.capabilities=false",
+                extra_params: "–o:ssl.enable=false --o:ssl.termination=true",
                 aliasgroup1: "https://filestash.darkfellanetwork.com:443,https://office.darkfellanetwork.com:443",
               },
               securityContext: {

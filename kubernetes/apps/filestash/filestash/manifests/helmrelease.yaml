@@ -77,7 +77,7 @@
                 tag: "24.04.10.2.1",
               },
               env: {
-                extra_params: "--o:ssl.enable=false --o:home_view=true --o:security.capabilities=false",
+                extra_params: "--o:ssl.enable=false --o:ssl.termination=true --o:security.capabilities=false",
                 aliasgroup1: "https://.*:443",
                 DONT_GEN_SSL_CERT: "true",
               },

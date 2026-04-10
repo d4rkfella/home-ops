@@ -119,6 +119,24 @@
           },
         },
       },
+      route: {
+        app: {
+          hostnames: [
+            "filestash.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "bazarr",
+              port: 8334,
+            }],
+          }],
+        },
+      },
       persistence: {
         state: {
           type: "persistentVolumeClaim",

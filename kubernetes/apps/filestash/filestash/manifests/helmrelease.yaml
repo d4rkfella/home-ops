@@ -55,7 +55,7 @@
               env: {
                 APPLICATION_URL: "filestash.darkfellanetwork.com",
                 CANARY: "true",
-                OFFICE_URL: "http://127.0.0.1:9980",
+                OFFICE_URL: "https://office.darkfellanetwork.com",
                 OFFICE_FILESTASH_URL: "https://filestash.darkfellanetwork.com",
                 OFFICE_REWRITE_URL: "https://office.darkfellanetwork.com",
               },
@@ -78,7 +78,7 @@
               },
               env: {
                 extra_params: "--o:ssl.enable=false --o:ssl.termination=true --o:server_name=office.darkfellanetwork.com --o:security.capabilities=false",
-                aliasgroup1: "https://.*:443",
+                aliasgroup1: "https://filestash.darkfellanetwork.com:443,https://office.darkfellanetwork.com:443",
               },
               securityContext: {
                 "<<": {

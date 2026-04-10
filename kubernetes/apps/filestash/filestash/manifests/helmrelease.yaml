@@ -56,8 +56,8 @@
                 APPLICATION_URL: "filestash.darkfellanetwork.com",
                 CANARY: "true",
                 OFFICE_URL: "http://127.0.0.1:9980",
-                OFFICE_FILESTASH_URL: "http://127.0.0.1:8334",
-                OFFICE_REWRITE_URL: "http://127.0.0.1:9980",
+                OFFICE_FILESTASH_URL: "https://filestash.darkfellanetwork.com",
+                OFFICE_REWRITE_URL: "https://office.darkfellanetwork.com",
               },
               securityContext: {
                 allowPrivilegeEscalation: false,

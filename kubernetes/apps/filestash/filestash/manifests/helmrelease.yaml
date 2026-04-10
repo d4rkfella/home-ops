@@ -83,16 +83,16 @@
               },
               securityContext: {
                 "<<": {
-                    allowPrivilegeEscalation: false,
-                    readOnlyRootFilesystem: true,
-                    runAsNonRoot: true,
-                    runAsUser: 1000,
-                    capabilities: {
-                      drop: [
-                        "ALL",
-                      ],
-                    },
+                  allowPrivilegeEscalation: false,
+                  readOnlyRootFilesystem: true,
+                  runAsNonRoot: true,
+                  runAsUser: 1000,
+                  capabilities: {
+                    drop: [
+                      "ALL",
+                    ],
                   },
+                },
                 runAsUser: 100,
               },
             },
@@ -121,7 +121,10 @@
       },
       persistence: {
         state: {
-          existingClaim: "filestash-config",
+          type: "persistentVolumeClaim",
+          size: "15Gi",
+          accessMode: "ReadWriteOnce",
+          storageClass: "openebs-zfs-128k",
           advancedMounts: {
             filestash: {
               app: [{

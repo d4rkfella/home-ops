@@ -28,7 +28,7 @@
         "Service",
       ],
       fallthrough: {
-        enabled: false,
+        enabled: true,
       },
       extraZonePlugins: [{
         name: "log",

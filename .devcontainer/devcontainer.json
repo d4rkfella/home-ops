@@ -1,12 +1,9 @@
 {
   "name": "Dev",
   "dockerFile": "Dockerfile",
-  "workspaceFolder": "/project",
-  "postStartCommand": "/usr/bin/direnv allow /project/.envrc",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/project,type=bind",
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
+  "workspaceFolder": "/workspace",
+  "postStartCommand": "/usr/bin/direnv allow /workspace/.envrc",
+  "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -15,22 +12,10 @@
         "redhat.vscode-yaml",
         "albert.TabOut",
         "editorconfig.editorconfig",
-        "ms-azuretools.vscode-containers",
         "GitHub.vscode-pull-request-github",
-        "donjayamanne.githistory",
-        "ms-python.python",
-        "ms-python.vscode-pylance"
+        "donjayamanne.githistory"
       ],
       "settings": {
-        "git.path": "/usr/bin/git",
-        "git.enableCommitSigning": true,
-        "docker.dockerPath": "/usr/bin/docker",
-        "terminal.integrated.defaultProfile.linux": "bash",
-        "terminal.integrated.profiles.linux": {
-          "bash": {
-            "path": "/bin/bash"
-          }
-        },
         "editor.bracketPairColorization.enabled": true,
         "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
         "editor.fontLigatures": true,

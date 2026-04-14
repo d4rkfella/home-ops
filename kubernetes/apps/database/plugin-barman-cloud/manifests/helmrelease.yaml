@@ -13,16 +13,6 @@
       name: "plugin-barman-cloud",
     },
     values: {
-      image: {
-        registry: "ghcr.io",
-        repository: "cloudnative-pg/plugin-barman-cloud",
-        tag: "v0.11.0",
-      },
-      sidecarImage: {
-        registry: "ghcr.io",
-        repository: "cloudnative-pg/plugin-barman-cloud-sidecar",
-        tag: "v0.11.0",
-      },
     },
   },
 }

@@ -44,7 +44,7 @@
         },
         agentImage: {
           repository: "hashicorp/vault",
-          tag: "1.21.4",
+          tag: "2.0.0",
         },
         logLevel: "debug",
         logFormat: "json",
@@ -59,7 +59,7 @@
         enabled: true,
         image: {
           repository: "hashicorp/vault",
-          tag: "1.21.4",
+          tag: "2.0.0",
           pullPolicy: "IfNotPresent",
         },
         updateStrategyType: "RollingUpdate",

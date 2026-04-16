@@ -72,6 +72,7 @@
         'github-tags',
         'docker',
       ],
+      "matchUpdateTypes": ["major", "minor", "patch"],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },

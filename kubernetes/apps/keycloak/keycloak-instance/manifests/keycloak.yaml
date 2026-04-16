@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/k8s.keycloak.org/keycloak_v2alpha1.json
 {
-  apiVersion: "k8s.keycloak.org/v2alpha1",
+  apiVersion: "k8s.keycloak.org/v2beta1",
   kind: "Keycloak",
   metadata: {
     name: "keycloak",
@@ -75,9 +75,8 @@
     instances: 1,
     image: "ghcr.io/d4rkfella/keycloak:26.6.1@sha256:3e70b4d59d10d21a64071e0165597af4fa42414a343eb9d589f228aa6cc5f3a1",
     startOptimized: true,
-    #bootstrapAdmin:
-    #user:
-    #secret: *secret
+    bootstrapAdmin:
+      secret: keycloak-secret
     proxy: {
       headers: "xforwarded",
     },

@@ -105,6 +105,9 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
+      "matchManagers": [
+        "helm-values"
+      ],
       minimumGroupSize: 5,
     },
     {

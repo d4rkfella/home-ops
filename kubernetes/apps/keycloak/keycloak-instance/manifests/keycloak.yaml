@@ -75,8 +75,6 @@
     instances: 1,
     image: "ghcr.io/d4rkfella/keycloak:26.6.1@sha256:3e70b4d59d10d21a64071e0165597af4fa42414a343eb9d589f228aa6cc5f3a1",
     startOptimized: true,
-    bootstrapAdmin:
-      secret: keycloak-secret
     proxy: {
       headers: "xforwarded",
     },

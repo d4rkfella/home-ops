@@ -105,10 +105,7 @@
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
-      "matchManagers": [
-        "helm-values"
-      ],
-      minimumGroupSize: 5,
+      minimumGroupSize: 6,
     },
     {
       description: "Talos Group",

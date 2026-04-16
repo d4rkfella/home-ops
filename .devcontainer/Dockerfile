@@ -70,7 +70,7 @@ RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.si
 RUN curl -fsSL -o /usr/local/bin/kubectl-node_shell "https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell"
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
-ARG LEFTHOOK_VERSION=v2.1.5
+ARG LEFTHOOK_VERSION=v2.1.6
 RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
     dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
     rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb

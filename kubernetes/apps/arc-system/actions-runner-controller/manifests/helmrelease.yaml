@@ -22,10 +22,6 @@
              - op: add\n\
             \  path: /spec/template/spec/hostUsers\n\
             \  value: false\n\
-             - op: replace\n\
-            \  path: /spec/template/spec/containers/0/command\n\
-            \  value:\n\
-            \    - /usr/bin/manager\n\
             ",
         }],
       },
@@ -54,11 +50,6 @@
         watchSingleNamespace: "arc-runners",
       },
       namespaceOverride: "arc-system",
-      image: {
-        repository: "ghcr.io/d4rkfella/actions-runner-controller",
-        pullPolicy: "IfNotPresent",
-        tag: "0.14.1@sha256:f4a0f00c87fa213c7463f806bf844d9e81cb4675f5c5b84b2bc7096c32c33dd1",
-      },
     },
   },
 }

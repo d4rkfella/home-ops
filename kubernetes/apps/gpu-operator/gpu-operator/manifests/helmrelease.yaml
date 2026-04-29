@@ -57,22 +57,7 @@
         defaultRuntime: "containerd",
       },
       hostPaths: {
-        driverInstallDir: "/usr/local/glibc/usr/lib",
-      },
-      devicePlugin: {
-        config: {
-          create: true,
-          name: "device-plugin-config",
-          default: "default",
-          data: {
-            default: "\
-               version: v1\n\
-               flags:\n\
-              \  plugin:\n\
-              \    nvidiaCTKPath: /usr/local/bin/nvidia-ctk\
-              ",
-          },
-        },
+        driverInstallDir: "/usr/local",
       },
     },
   },

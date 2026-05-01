@@ -19,7 +19,7 @@
       backendRefs: [{
         name: "keycloak-service",
         namespace: "keycloak",
-        port: 80,
+        port: 8080,
       }],
     }],
   },

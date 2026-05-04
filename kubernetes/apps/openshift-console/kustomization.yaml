@@ -4,6 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
+    "./openshift-console/ks-console-crd.yaml",
     "./openshift-console/ks.yaml",
   ],
   components: [

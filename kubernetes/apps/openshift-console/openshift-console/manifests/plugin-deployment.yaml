@@ -51,6 +51,32 @@
               ],
             },
           },
+          volumeMounts: [{
+            name: "app-root-etc",
+            mountPath: "/opt/app-root/etc",
+          }, {
+            name: "nginx-logs",
+            mountPath: "/var/log/nginx",
+          }, {
+            name: "nginx-cache",
+            mountPath: "/var/cache/nginx",
+          }, {
+            name: "nginx-run",
+            mountPath: "/var/run",
+          }],
+        }],
+        volumes: [{
+          name: "app-root-etc",
+          emptyDir: {},
+        }, {
+          name: "nginx-logs",
+          emptyDir: {},
+        }, {
+          name: "nginx-cache",
+          emptyDir: {},
+        }, {
+          name: "nginx-run",
+          emptyDir: {},
         }],
       },
     },

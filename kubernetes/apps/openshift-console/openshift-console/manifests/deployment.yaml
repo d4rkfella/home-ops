@@ -31,6 +31,9 @@
             containerPort: 9000,
             protocol: "TCP",
           }],
+          command: [
+            "/opt/bridge/bin/bridge",
+          ],
           args: [
             "-cookie-authentication-key-file=/etc/oidc/cookieAuthKey",
             "-cookie-encryption-key-file=/etc/oidc/cookieEncryptKey",

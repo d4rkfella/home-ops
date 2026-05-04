@@ -6,7 +6,7 @@
     name: "kubevirt-operator",
   },
   spec: {
-    interval: "2h",
+    interval: "1h",
     path: "./kubernetes/apps/kubevirt-hyperconverged/kubevirt-operator/manifests",
     prune: false,
     sourceRef: {

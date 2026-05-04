@@ -90,6 +90,9 @@
           }, {
             name: "nginx-lib",
             mountPath: "/var/lib/nginx",
+          }, {
+            name: "serving-cert",
+            mountPath: "/var/serving-cert",
           }],
         }],
         volumes: [{
@@ -107,6 +110,11 @@
         }, {
           name: "nginx-lib",
           emptyDir: {},
+        }, {
+          name: "serving-cert",
+          secret: {
+            secretName: "kubevirt-plugin-serving-cert",
+          },
         }],
       },
     },

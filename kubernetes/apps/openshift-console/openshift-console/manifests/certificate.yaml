@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/cert-manager.io/certificate_v1.json
+{
+  apiVersion: "cert-manager.io/v1",
+  kind: "Certificate",
+  metadata: {
+    name: "kubevirt-plugin-serving-cert",
+  },
+  spec: {
+    secretName: "kubevirt-plugin-serving-cert",
+    commonName: "kubevirt-plugin.openshift-console.svc.cluster.local",
+    dnsNames: [
+      "kubevirt-plugin.openshift-console.svc.cluster.local",
+      "kubevirt-plugin.openshift-console.svc",
+      "kubevirt-plugin.openshift-console",
+      "kubevirt-plugin",
+    ],
+    issuerRef: {
+      name: "vault-issuer",
+      kind: "ClusterIssuer",
+    },
+    usages: [
+      "digital signature",
+      "key encipherment",
+      "server auth",
+    ],
+  },
+}

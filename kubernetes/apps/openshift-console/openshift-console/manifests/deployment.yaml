@@ -67,7 +67,7 @@
             value: "okd",
           }, {
             name: "BRIDGE_PLUGINS",
-            value: "kubevirt-plugin=http://kubevirt-plugin.openshift-console.svc.cluster.local:80/",
+            value: "kubevirt-plugin=http://kubevirt-plugin.openshift-console.svc.cluster.local:8080/",
           }, {
             name: "BRIDGE_I18N_NAMESPACES",
             value: "plugin__kubevirt-plugin",

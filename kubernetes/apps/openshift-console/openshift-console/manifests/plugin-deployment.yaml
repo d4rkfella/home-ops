@@ -30,7 +30,7 @@
             "-c",
           ],
           args: [
-            "cp -r /opt/app-root/etc/* /tmp/app-root-etc/ && cp -r /var/lib/nginx/* /tmp/nginx-lib/",
+            "cp -r /opt/app-root/etc/* /tmp/app-root-etc/ && cp -r /var/lib/nginx/* /tmp/nginx-lib/ && cp -r /usr/share/nginx/html/* /tmp/src/",
           ],
           volumeMounts: [{
             name: "app-root-etc",
@@ -38,6 +38,9 @@
           }, {
             name: "nginx-lib",
             mountPath: "/tmp/nginx-lib",
+          }, {
+            name: "src",
+            mountPath: "/tmp/src",
           }],
           securityContext: {
             allowPrivilegeEscalation: false,
@@ -93,6 +96,9 @@
           }, {
             name: "serving-cert",
             mountPath: "/var/serving-cert",
+          }, {
+            name: "src",
+            mountPath: "/opt/app-root/src",
           }],
         }],
         volumes: [{
@@ -109,6 +115,9 @@
           emptyDir: {},
         }, {
           name: "nginx-lib",
+          emptyDir: {},
+        }, {
+          name: "src",
           emptyDir: {},
         }, {
           name: "serving-cert",

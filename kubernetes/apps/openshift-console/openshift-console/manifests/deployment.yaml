@@ -37,6 +37,7 @@
           args: [
             "-cookie-authentication-key-file=/etc/oidc/cookieAuthKey",
             "-cookie-encryption-key-file=/etc/oidc/cookieEncryptKey",
+            "-user-auth-oidc-token-scopes=openid,profile,email",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",

@@ -1,0 +1,27 @@
+---
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "kubevirt-instance",
+  },
+  spec: {
+    interval: "1h",
+    path: "./kubernetes/apps/kubevirt-hyperconverged/kubevirt-instance/manifests",
+    prune: false,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+    healthChecks: [{
+      apiVersion: "kubevirt.io/v1",
+      kind: "KubeVirt",
+      name: "kubevirt-kubevirt-hyperconverged",
+      namespace: "kubevirt-hyperconverged",
+    }],
+    dependsOn: [{
+      name: "kubevirt-operator",
+    }],
+  },
+}

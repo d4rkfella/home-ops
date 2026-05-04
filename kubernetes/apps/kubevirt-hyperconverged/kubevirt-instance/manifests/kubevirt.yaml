@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kubevirt.io/kubevirt_v1alpha3.json
+{
+  apiVersion: "kubevirt.io/v1",
+  kind: "KubeVirt",
+  metadata: {
+    name: "kubevirt-kubevirt-hyperconverged",
+    annotations: {
+      alpha.kubevirt.io/EmulatorThreadCompleteToEvenParity: "",
+    },
+  },
+  spec: {
+    monitorNamespace: "observability",
+    monitorAccount: "prometheus-operator",
+    serviceMonitorNamespace: "observability",
+    configuration: {
+      ksmConfiguration: {
+        nodeLabelSelector: {},
+      },
+      vmStateStorageClass: "openebs-zfs-32k",
+      developerConfiguration: {
+        useEmulation: false,
+        featureGates: [
+          "HostDevices",
+          "DataVolumes",
+          "VMPersistentState",
+          "ExpandDisks",
+          "Snapshot",
+          "CPUNodeDiscovery",
+          "VSOCK",
+          "CPUManager",
+          "AlignCPUs",
+          "EnableVirtioFsConfigVolumes",
+          "VMExport",
+        ],
+      },
+      smbios: {
+        sku: "TalosCloud",
+        version: "v0.1.0",
+        manufacturer: "Talos Virtualization",
+        product: "talosvm",
+        family: "ccio",
+      },
+      permittedHostDevices: {
+        pciHostDevices: [{
+          pciVendorSelector: "1000:0097",
+          resourceName: "devices.kubevirt.io/sas",
+        }, {
+          pciVendorSelector: "8086:2701",
+          resourceName: "devices.kubevirt.io/nvme",
+        }],
+      },
+    },
+  },
+}

@@ -58,6 +58,7 @@
           args: [
             "-cookie-authentication-key-file=/etc/console-cookie/auth",
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
+            "-user-settings-location=localstorage",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",

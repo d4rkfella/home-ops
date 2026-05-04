@@ -26,6 +26,13 @@
         containers: [{
           name: "console",
           image: "quay.io/openshift/origin-console:latest",
+          command: [
+            "/opt/bridge/bin/bridge",
+          ],
+          args: [
+            "-cookie-authentication-key-file=/etc/oidc/auth",
+            "-cookie-encryption-key-file=/etc/oidc/encrypt",
+          ],
           ports: [{
             name: "http",
             containerPort: 9000,

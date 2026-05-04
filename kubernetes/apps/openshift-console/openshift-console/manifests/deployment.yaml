@@ -1,0 +1,81 @@
+---
+{
+  apiVersion: "apps/v1",
+  kind: "Deployment",
+  metadata: {
+    name: "openshift-console",
+    labels: {
+      app: "openshift-console",
+    },
+  },
+  spec: {
+    replicas: 1,
+    selector: {
+      matchLabels: {
+        app: "openshift-console",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          app: "openshift-console",
+        },
+      },
+      spec: {
+        serviceAccountName: "openshift-console",
+        containers: [{
+          name: "console",
+          image: "quay.io/openshift/origin-console:latest",
+          ports: [{
+            name: "http",
+            containerPort: 9000,
+            protocol: "TCP",
+          }],
+          env: [{
+            name: "BRIDGE_USER_AUTH",
+            value: "disabled",
+          }, {
+            name: "BRIDGE_K8S_MODE",
+            value: "in-cluster",
+          }, {
+            name: "BRIDGE_BASE_ADDRESS",
+            value: "https://console.darkfellanetwork.com",
+          }, {
+            name: "BRIDGE_BRANDING",
+            value: "okd",
+          }, {
+            name: "BRIDGE_PLUGINS",
+            value: "kubevirt-plugin=http://kubevirt-plugin.openshift-console.svc.cluster.local:80/",
+          }, {
+            name: "BRIDGE_I18N_NAMESPACES",
+            value: "plugin__kubevirt-plugin",
+          }, {
+            name: "BRIDGE_PUBLIC_DIR",
+            value: "/opt/bridge/static",
+          }],
+          resources: {
+            requests: {
+              cpu: "100m",
+              memory: "256Mi",
+            },
+            limits: {
+              cpu: "500m",
+              memory: "512Mi",
+            },
+          },
+          securityContext: {
+            allowPrivilegeEscalation: false,
+            readOnlyRootFilesystem: false,
+            runAsNonRoot: true,
+            runAsUser: 1000,
+            capabilities: {
+              drop: [
+                "ALL",
+              ],
+            },
+          },
+        }],
+      },
+    },
+  },
+}

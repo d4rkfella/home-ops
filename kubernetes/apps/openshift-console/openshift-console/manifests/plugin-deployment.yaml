@@ -1,0 +1,58 @@
+---
+{
+  apiVersion: "apps/v1",
+  kind: "Deployment",
+  metadata: {
+    name: "kubevirt-plugin",
+    labels: {
+      app: "kubevirt-plugin",
+    },
+  },
+  spec: {
+    replicas: 1,
+    selector: {
+      matchLabels: {
+        app: "kubevirt-plugin",
+      },
+    },
+    template: {
+      metadata: {
+        labels: {
+          app: "kubevirt-plugin",
+        },
+      },
+      spec: {
+        containers: [{
+          name: "plugin",
+          image: "quay.io/kubevirt-ui/kubevirt-plugin:latest",
+          ports: [{
+            name: "http",
+            containerPort: 80,
+            protocol: "TCP",
+          }],
+          resources: {
+            requests: {
+              cpu: "50m",
+              memory: "128Mi",
+            },
+            limits: {
+              cpu: "200m",
+              memory: "256Mi",
+            },
+          },
+          securityContext: {
+            allowPrivilegeEscalation: false,
+            readOnlyRootFilesystem: true,
+            runAsNonRoot: true,
+            runAsUser: 1000,
+            capabilities: {
+              drop: [
+                "ALL",
+              ],
+            },
+          },
+        }],
+      },
+    },
+  },
+}

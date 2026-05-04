@@ -56,8 +56,8 @@
             "/opt/bridge/bin/bridge",
           ],
           args: [
-            "--user-auth-oidc-cookie-authentication-key-file=/etc/console-cookie/auth",
-            "--user-auth-oidc-cookie-encryption-key-file=/etc/console-cookie/encrypt",
+            "-user-auth-oidc-cookie-authentication-key-file=/etc/console-cookie/auth",
+            "-user-auth-oidc-cookie-encryption-key-file=/etc/console-cookie/encrypt",
             "-user-auth-oidc-token-scopes=openid,profile,email",
           ],
           env: [{

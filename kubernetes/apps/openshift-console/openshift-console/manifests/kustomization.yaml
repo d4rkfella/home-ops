@@ -4,8 +4,10 @@
   kind: "Kustomization",
   resources: [
     "./consoleplugin-crd.yaml",
+    "./namespace.yaml",
     "./serviceaccount.yaml",
     "./clusterrolebinding.yaml",
+    "./kubevirt-rbac.yaml",
     "./deployment.yaml",
     "./service.yaml",
     "./plugin-deployment.yaml",

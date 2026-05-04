@@ -4,7 +4,7 @@
   apiVersion: "kubevirt.io/v1",
   kind: "KubeVirt",
   metadata: {
-    name: "kubevirt-kubevirt-hyperconverged",
+    name: "kubevirt",
     annotations: {
       alpha.kubevirt.io/EmulatorThreadCompleteToEvenParity: "",
     },

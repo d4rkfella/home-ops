@@ -7,27 +7,27 @@
   },
   spec: {
     displayName: "KubeVirt Plugin",
-    description: "KubeVirt management plugin for OpenShift Console",
     backend: {
       type: "Service",
       service: {
         name: "kubevirt-plugin",
         namespace: "openshift-console",
         port: 8080,
+        basePath: "/",
       },
-      proxy: [{
-        type: "Service",
-        alias: "kubevirt-plugin",
-        endpoint: {
-          type: "Service",
-          service: {
-            name: "kubevirt-plugin",
-            namespace: "openshift-console",
-            port: 8080,
-          },
-        },
-      }],
     },
+    proxy: [{
+      alias: "kubevirt-plugin",
+      authorization: "None",
+      endpoint: {
+        type: "Service",
+        service: {
+          name: "kubevirt-plugin",
+          namespace: "openshift-console",
+          port: 8080,
+        },
+      },
+    }],
     i18n: {
       loadType: "Preload",
     },

@@ -59,6 +59,7 @@
             "-cookie-authentication-key-file=/etc/console-cookie/auth",
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
             "-user-settings-location=localstorage",
+            "-ca-file=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",

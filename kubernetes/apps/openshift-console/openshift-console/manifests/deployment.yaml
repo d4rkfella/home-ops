@@ -33,7 +33,21 @@
           }],
           env: [{
             name: "BRIDGE_USER_AUTH",
-            value: "disabled",
+            value: "oidc",
+          }, {
+            name: "BRIDGE_USER_AUTH_OIDC_ISSUER_URL",
+            value: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
+          }, {
+            name: "BRIDGE_USER_AUTH_OIDC_CLIENT_ID",
+            value: "openshift-console",
+          }, {
+            name: "BRIDGE_USER_AUTH_OIDC_CLIENT_SECRET",
+            valueFrom: {
+              secretKeyRef: {
+                name: "openshift-console-secret",
+                key: "clientSecret",
+              },
+            },
           }, {
             name: "BRIDGE_K8S_MODE",
             value: "in-cluster",

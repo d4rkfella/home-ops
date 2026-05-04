@@ -22,6 +22,30 @@
         },
       },
       spec: {
+        initContainers: [{
+          name: "setup",
+          image: "quay.io/kubevirt-ui/kubevirt-plugin:latest",
+          command: [
+            "sh",
+            "-c",
+          ],
+          args: [
+            "cp -r /opt/app-root/etc/* /tmp/app-root-etc/ && cp -r /var/lib/nginx/* /tmp/nginx-lib/",
+          ],
+          volumeMounts: [{
+            name: "app-root-etc",
+            mountPath: "/tmp/app-root-etc",
+          }, {
+            name: "nginx-lib",
+            mountPath: "/tmp/nginx-lib",
+          }],
+          securityContext: {
+            allowPrivilegeEscalation: false,
+            readOnlyRootFilesystem: true,
+            runAsNonRoot: true,
+            runAsUser: 1000,
+          },
+        }],
         containers: [{
           name: "plugin",
           image: "quay.io/kubevirt-ui/kubevirt-plugin:latest",
@@ -63,6 +87,9 @@
           }, {
             name: "nginx-run",
             mountPath: "/var/run",
+          }, {
+            name: "nginx-lib",
+            mountPath: "/var/lib/nginx",
           }],
         }],
         volumes: [{
@@ -76,6 +103,9 @@
           emptyDir: {},
         }, {
           name: "nginx-run",
+          emptyDir: {},
+        }, {
+          name: "nginx-lib",
           emptyDir: {},
         }],
       },

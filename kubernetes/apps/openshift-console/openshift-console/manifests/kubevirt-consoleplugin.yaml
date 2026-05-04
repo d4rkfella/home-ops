@@ -13,7 +13,6 @@
         name: "kubevirt-plugin",
         namespace: "openshift-console",
         port: 8080,
-        basePath: "/",
       },
     },
     proxy: [{

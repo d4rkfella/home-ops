@@ -35,8 +35,8 @@
             "/opt/bridge/bin/bridge",
           ],
           args: [
-            "--user-auth-oidc-cookie-authentication-key-file=/etc/oidc/auth",
-            "--user-auth-oidc-cookie-encryption-key-file=/etc/oidc/encrypt",
+            "-user-auth-oidc-cookie-authentication-key-file=/etc/oidc/auth",
+            "-user-auth-oidc-cookie-encryption-key-file=/etc/oidc/encrypt",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",

@@ -31,6 +31,10 @@
             containerPort: 9000,
             protocol: "TCP",
           }],
+          args: [
+            "-cookie-authentication-key-file=/etc/oidc/cookieAuthKey",
+            "-cookie-encryption-key-file=/etc/oidc/cookieEncryptKey",
+          ],
           env: [{
             name: "BRIDGE_USER_AUTH",
             value: "oidc",
@@ -46,22 +50,6 @@
               secretKeyRef: {
                 name: "openshift-console-secret",
                 key: "clientSecret",
-              },
-            },
-          }, {
-            name: "BRIDGE_COOKIE_AUTHENTICATION_KEY",
-            valueFrom: {
-              secretKeyRef: {
-                name: "openshift-console-secret",
-                key: "cookieAuthKey",
-              },
-            },
-          }, {
-            name: "BRIDGE_COOKIE_ENCRYPTION_KEY",
-            valueFrom: {
-              secretKeyRef: {
-                name: "openshift-console-secret",
-                key: "cookieEncryptKey",
               },
             },
           }, {
@@ -103,6 +91,17 @@
                 "ALL",
               ],
             },
+          },
+          volumeMounts: [{
+            name: "oidc-secret",
+            mountPath: "/etc/oidc",
+            readOnly: true,
+          }],
+        }],
+        volumes: [{
+          name: "oidc-secret",
+          secret: {
+            secretName: "openshift-console-secret",
           },
         }],
       },

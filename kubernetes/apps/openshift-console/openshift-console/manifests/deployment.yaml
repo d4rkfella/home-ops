@@ -31,6 +31,10 @@
             containerPort: 9000,
             protocol: "TCP",
           }],
+          args: [
+            "--user-auth-oidc-cookie-authentication-key-file=/etc/oidc/auth",
+            "--user-auth-oidc-cookie-encryption-key-file=/etc/oidc/encrypt",
+          ],
           env: [{
             name: "BRIDGE_USER_AUTH",
             value: "oidc",
@@ -48,12 +52,6 @@
                 key: "clientSecret",
               },
             },
-          }, {
-            name: "BRIDGE_USER_AUTH_OIDC_COOKIE_AUTHENTICATION_KEY_FILE",
-            value: "/etc/oidc/auth",
-          }, {
-            name: "BRIDGE_USER_AUTH_OIDC_COOKIE_ENCRYPTION_KEY_FILE",
-            value: "/etc/oidc/encrypt",
           }, {
             name: "BRIDGE_K8S_MODE",
             value: "in-cluster",

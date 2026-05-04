@@ -20,9 +20,6 @@
         labels: {
           app: "openshift-console",
         },
-        annotations: {
-          checksum/consoleplugin-crd: "v1",
-        },
       },
       spec: {
         serviceAccountName: "openshift-console",

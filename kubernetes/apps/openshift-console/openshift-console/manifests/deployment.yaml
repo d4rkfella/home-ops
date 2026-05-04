@@ -25,7 +25,7 @@
         serviceAccountName: "openshift-console",
         initContainers: [{
           name: "generate-cookie-keys",
-          image: "busybox:1.36",
+          image: "busybox:1.37",
           command: [
             "sh",
             "-c",

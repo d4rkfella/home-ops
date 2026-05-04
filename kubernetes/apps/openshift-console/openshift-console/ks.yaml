@@ -17,7 +17,6 @@
     interval: "1h",
     dependsOn: [{
       name: "openshift-console-crds",
-      namespace: "flux-system",
     }],
   },
 }

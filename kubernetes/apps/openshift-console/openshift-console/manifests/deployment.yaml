@@ -94,6 +94,9 @@
           }, {
             name: "BRIDGE_PUBLIC_DIR",
             value: "/opt/bridge/static",
+          }, {
+            name: "BRIDGE_USER_SETTINGS_LOCATION",
+            value: "localstorage",
           }],
           resources: {
             requests: {

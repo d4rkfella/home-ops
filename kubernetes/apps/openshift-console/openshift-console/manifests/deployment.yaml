@@ -26,13 +26,6 @@
         containers: [{
           name: "console",
           image: "quay.io/openshift/origin-console:latest",
-          command: [
-            "/opt/bridge/bin/bridge",
-          ],
-          args: [
-            "-cookie-authentication-key-file=/etc/oidc/auth",
-            "-cookie-encryption-key-file=/etc/oidc/encrypt",
-          ],
           ports: [{
             name: "http",
             containerPort: 9000,
@@ -53,6 +46,22 @@
               secretKeyRef: {
                 name: "openshift-console-secret",
                 key: "clientSecret",
+              },
+            },
+          }, {
+            name: "BRIDGE_COOKIE_AUTHENTICATION_KEY",
+            valueFrom: {
+              secretKeyRef: {
+                name: "openshift-console-secret",
+                key: "cookieAuthKey",
+              },
+            },
+          }, {
+            name: "BRIDGE_COOKIE_ENCRYPTION_KEY",
+            valueFrom: {
+              secretKeyRef: {
+                name: "openshift-console-secret",
+                key: "cookieEncryptKey",
               },
             },
           }, {

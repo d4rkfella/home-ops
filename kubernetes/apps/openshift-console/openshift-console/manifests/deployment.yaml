@@ -104,17 +104,6 @@
               ],
             },
           },
-          volumeMounts: [{
-            name: "oidc-secret",
-            mountPath: "/etc/oidc",
-            readOnly: true,
-          }],
-        }],
-        volumes: [{
-          name: "oidc-secret",
-          secret: {
-            secretName: "openshift-console-secret",
-          },
         }],
       },
     },

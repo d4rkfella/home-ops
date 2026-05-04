@@ -59,7 +59,6 @@
             "-cookie-authentication-key-file=/etc/console-cookie/auth",
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
             "-user-settings-location=localstorage",
-            "-ca-file=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",
@@ -80,16 +79,7 @@
             },
           }, {
             name: "BRIDGE_K8S_MODE",
-            value: "off-cluster",
-          }, {
-            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_ENDPOINT",
-            value: "https://kubernetes.default.svc.cluster.local",
-          }, {
-            name: "BRIDGE_CA_FILE",
-            value: "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
-          }, {
-            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_SKIP_VERIFY_TLS",
-            value: "true",
+            value: "in-cluster",
           }, {
             name: "BRIDGE_BASE_ADDRESS",
             value: "https://console.darkfellanetwork.com",

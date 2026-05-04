@@ -4,7 +4,6 @@
   kind: "Kustomization",
   resources: [
     "./serviceaccount.yaml",
-    "./clusterrolebinding.yaml",
     "./user-cluster-admin.yaml",
     "./deployment.yaml",
     "./service.yaml",

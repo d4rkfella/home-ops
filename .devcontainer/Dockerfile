@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260413@sha256:5e275723f82c67e387ba9e3c24baa0abdcb268917f276a0561c97bef9450d0b4
+FROM ubuntu:resolute-20260421@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]

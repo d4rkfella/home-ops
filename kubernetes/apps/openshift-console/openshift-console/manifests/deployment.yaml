@@ -59,6 +59,9 @@
             "-cookie-authentication-key-file=/etc/console-cookie/auth",
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
             "-user-settings-location=localstorage",
+            "-k8s-mode-in-cluster-prometheus=http://prometheus-operated.observability.svc.cluster.local:9090",
+            "-k8s-mode-in-cluster-alertmanager=http://alertmanager-operated.observability.svc.cluster.local:9093",
+            "-k8s-mode-in-cluster-thanos=http://prometheus-operated.observability.svc.cluster.local:9090",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",

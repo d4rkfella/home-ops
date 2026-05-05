@@ -58,10 +58,6 @@
           args: [
             "-cookie-authentication-key-file=/etc/console-cookie/auth",
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
-            "-user-settings-location=localstorage",
-            "-k8s-mode-in-cluster-prometheus=http://prometheus-operated.observability.svc.cluster.local:9090",
-            "-k8s-mode-in-cluster-alertmanager=http://alertmanager-operated.observability.svc.cluster.local:9093",
-            "-k8s-mode-in-cluster-thanos=http://prometheus-operated.observability.svc.cluster.local:9090",
           ],
           env: [{
             name: "BRIDGE_USER_AUTH",
@@ -82,7 +78,13 @@
             },
           }, {
             name: "BRIDGE_K8S_MODE",
-            value: "in-cluster",
+            value: "off-cluster",
+          }, {
+            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_ENDPOINT",
+            value: "https://kubernetes.default.svc.cluster.local",
+          }, {
+            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_SKIP_VERIFY_TLS",
+            value: "true",
           }, {
             name: "BRIDGE_BASE_ADDRESS",
             value: "https://console.darkfellanetwork.com",
@@ -102,10 +104,10 @@
             name: "BRIDGE_USER_SETTINGS_LOCATION",
             value: "localstorage",
           }, {
-            name: "BRIDGE_PROMETHEUS_SERVICE_PROXY",
+            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_THANOS",
             value: "http://prometheus-operated.observability.svc.cluster.local:9090",
           }, {
-            name: "BRIDGE_ALERTMANAGER_SERVICE_PROXY",
+            name: "BRIDGE_K8S_MODE_OFF_CLUSTER_ALERTMANAGER",
             value: "http://alertmanager-operated.observability.svc.cluster.local:9093",
           }],
           resources: {

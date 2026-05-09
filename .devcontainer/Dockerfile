@@ -27,10 +27,10 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.5.0@sha256:a3f4defcdd26f2e30ca32576ea742c9881954605e3f9642b91bfc9d44951a31e /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.11-trixie@sha256:844e7975a1d54305c09ffcffabedab251807ef1473ef92e9538d016a15c6fdcd /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.12-trixie@sha256:0cec2841dfb3abfd47c046bef0e235da33037a224bdfe4d57ad269d3ffa0e331 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
-COPY --from=ghcr.io/getsops/sops:v3.12.2@sha256:96589a5e4c746809d50cda1d6c3f8f292818eb014a97322da03bad024ddefaba /usr/local/bin/sops /usr/local/bin/
+COPY --from=ghcr.io/getsops/sops:v3.13.0@sha256:6faa9be0d3bf6e46e29af5e2a3383ae6ce9fd2db904a489ad9fdf394b66f990d /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
 COPY --from=mikefarah/yq:4.53.2@sha256:0cb4a78491b6e62ee8a9bf4fbeacbd15b5013d19bc420591b05383a696315e60 /usr/bin/yq /usr/local/bin/

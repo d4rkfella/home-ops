@@ -18,7 +18,7 @@ RUN apt-get update && \
 COPY --from=ghcr.io/siderolabs/talosctl:v1.13.0@sha256:cf5be4c584572787eda0f5818404d2380f041b1022ce85454b25d4e01334fba6 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
-COPY --from=ghcr.io/fluxcd/flux-cli:v2.8.6@sha256:8dac34106b9d684ce07b13c9762b5132813c3d477cfd724e9e13cc5944ad771e /usr/local/bin/flux /usr/local/bin/
+COPY --from=ghcr.io/fluxcd/flux-cli:v2.8.7@sha256:4bd0394705637ad5dfd63d70893a56c980d2e438def0b8a4579d54fad9be9593 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.0.6@sha256:de9c65609e6bde17e6b48de485ee788407c9502fa08b8f4459f595b21f56cd00 /ko-app/cosign /usr/local/bin/
@@ -27,7 +27,7 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.5.1@sha256:84c586486ded237affdd7aed3892e481bc0d72042e5dc123e0f94598c6eedf53 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.13-trixie@sha256:93e0aec9da8a717ba49ec082f20cce13fc776b215e24b36a13524cd2abfc7698 /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.14-trixie@sha256:8df6cb35dff54665f6c930975d4edee00e6b7038f496476735a0bb000e95afaa /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.0@sha256:6faa9be0d3bf6e46e29af5e2a3383ae6ce9fd2db904a489ad9fdf394b66f990d /usr/local/bin/sops /usr/local/bin/

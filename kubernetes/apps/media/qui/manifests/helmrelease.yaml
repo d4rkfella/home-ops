@@ -21,8 +21,8 @@
           containers: {
             app: {
               image: {
-                repository: "ghcr.io/autobrr/qui",
-                tag: "v1.18.0@sha256:2e768c8509831afd1f606d27d9aa8e5f3fc722fac4ea88acfdc4fa3b0e9b13ae",
+                repository: "ghcr.io/d4rkfella/qui",
+                tag: "1.18.0@sha256:d711e3dccba6f547d800e4cf475f91048790a6f5229903c6bbc333ec2718086d",
               },
               env: {
                 QUI__CHECK_FOR_UPDATES: false,

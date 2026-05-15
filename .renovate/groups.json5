@@ -108,16 +108,6 @@
       minimumGroupSize: 5,
     },
     {
-      description: "Talos Group",
-      groupName: "Talos",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["/installer-secureboot/", "/talosctl/", "/installer/"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
-      minimumGroupSize: 3,
-    },
-    {
       description: "Barman Cloud Group",
       group: "Barman Cloud",
       matchDatasources: ["docker"],

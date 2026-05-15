@@ -18,7 +18,7 @@
     interval: "1h",
     postBuild: {
       substitute: {
-        # renovate: datasource=docker depName=ghcr.io/siderolabs/installer
+        # renovate: datasource=custom.talos-factory depName=siderolabs/talos
         TALOS_VERSION: "v1.13.2",
       },
     },

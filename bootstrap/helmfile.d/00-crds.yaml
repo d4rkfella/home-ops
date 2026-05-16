@@ -15,7 +15,7 @@
     name: "kube-prometheus-stack",
     namespace: "observability",
     chart: "oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack",
-    version: "85.1.1",
+    version: "85.1.2",
   }, {
     name: "grafana-operator",
     namespace: "observability",

@@ -30,14 +30,14 @@ RUN helmfile --version
 COPY --from=ghcr.io/astral-sh/uv:0.11.14-trixie@sha256:8df6cb35dff54665f6c930975d4edee00e6b7038f496476735a0bb000e95afaa /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
-COPY --from=ghcr.io/getsops/sops:v3.13.0@sha256:6faa9be0d3bf6e46e29af5e2a3383ae6ce9fd2db904a489ad9fdf394b66f990d /usr/local/bin/sops /usr/local/bin/
+COPY --from=ghcr.io/getsops/sops:v3.13.1@sha256:320f253aced1393537b1e90c77eb48295204d805d4c68933264cd1285192465d /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
 COPY --from=mikefarah/yq:4.53.2@sha256:0cb4a78491b6e62ee8a9bf4fbeacbd15b5013d19bc420591b05383a696315e60 /usr/bin/yq /usr/local/bin/
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.50.0
+ARG TASK_VERSION=v3.51.1
 RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && \

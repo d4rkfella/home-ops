@@ -94,7 +94,7 @@
     name: "zfs-localpv",
     namespace: "openebs-system",
     chart: "oci://ghcr.io/openebs/charts/zfs-localpv",
-    version: "2.9.1",
+    version: "2.10.0",
     values: [
       "./templates/values.yaml.gotmpl",
     ],

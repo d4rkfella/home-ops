@@ -22,7 +22,7 @@
             pgadmin: {
               image: {
                 repository: "ghcr.io/d4rkfella/pgadmin4",
-                tag: "9.15@sha256:adbf12e2913faf844b2a228691f2ddac40cc1dd0113aad574ed5cca3e53226f5",
+                tag: "9.15@sha256:ac56ec1ac9c8a69de51f4f4d45e6d3c2940c5aede646e1ddcad78522022e2383",
               },
               env: {
                 GUNICORN_LIMIT_REQUEST_LINE: 0,

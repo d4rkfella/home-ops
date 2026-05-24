@@ -89,6 +89,9 @@
             name: "BRIDGE_BASE_ADDRESS",
             value: "https://console.darkfellanetwork.com",
           }, {
+            name: "BRIDGE_PLUGIN_PROXY",
+            value: '{"services":[{"consoleAPIPath":"/api/proxy/plugin/kubevirt-plugin/kubevirt-apiserver-proxy/","endpoint":"http://kubevirt-apiserver-proxy.kubevirt-hyperconverged.svc:8080","authorize":true}]}',
+          }, {
             name: "BRIDGE_BRANDING",
             value: "okd",
           }, {

@@ -93,7 +93,10 @@
             value: "okd",
           }, {
             name: "BRIDGE_PLUGINS",
-            value: "kubevirt-plugin=http://kubevirt-plugin.openshift-console.svc.cluster.local:8080/",
+            value: "kubevirt-plugin=https://kubevirt-plugin.openshift-console.svc.cluster.local:9443/",
+          }, {
+            name: "BRIDGE_PLUGIN_PROXY_SKIP_VERIFY_TLS",
+            value: "true""
           }, {
             name: "BRIDGE_I18N_NAMESPACES",
             value: "plugin__kubevirt-plugin",

@@ -46,7 +46,7 @@
         }],
         containers: [{
           name: "console",
-          image: "ghcr.io/d4rkfella/console:dev@sha256:bf7185d7bed5c67f0f58a0438ac5efaba85434aa981f5d29794f562659d48887",
+          image: "ghcr.io/d4rkfella/console:dev@sha256:c332f74616dbbb4310b237780216c8221889fca006407fc10f5411202af4dc3f",
           ports: [{
             name: "http",
             containerPort: 9000,
@@ -97,6 +97,9 @@
           }, {
             name: "BRIDGE_PLUGIN_PROXY_SKIP_VERIFY_TLS",
             value: "true",
+          }, {
+            name: "BRIDGE_KUBEVIRT_DEFAULT_NAMESPACE",
+            value: "kubevirt-hyperconverged",
           }, {
             name: "BRIDGE_I18N_NAMESPACES",
             value: "plugin__kubevirt-plugin",

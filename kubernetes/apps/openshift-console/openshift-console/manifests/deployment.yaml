@@ -46,7 +46,7 @@
         }],
         containers: [{
           name: "console",
-          image: "ghcr.io/d4rkfella/console:dev@sha256:d74d54ae4a58f27a90d93d6c0ee5cd6f4c7f757b1add312db33db31e26a88d0d",
+          image: "ghcr.io/d4rkfella/console:dev@sha256:0aa43cb8281ae72312095434051b6c99e8ae74a992618f9e144a1f4f13c2d138",
           ports: [{
             name: "http",
             containerPort: 9000,

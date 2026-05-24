@@ -46,7 +46,7 @@
         }],
         containers: [{
           name: "console",
-          image: "quay.io/openshift/origin-console:latest",
+          image: "ghcr.io/d4rkfella/console:dev",
           ports: [{
             name: "http",
             containerPort: 9000,

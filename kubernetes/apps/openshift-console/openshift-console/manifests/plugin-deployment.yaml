@@ -24,7 +24,7 @@
       spec: {
         initContainers: [{
           name: "setup",
-          image: "quay.io/kubevirt-ui/kubevirt-plugin:latest",
+          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev",
           command: [
             "sh",
             "-c",

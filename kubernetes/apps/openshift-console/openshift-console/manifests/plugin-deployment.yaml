@@ -24,7 +24,7 @@
       spec: {
         initContainers: [{
           name: "setup",
-          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:adc0532ed1d7fee6d7bca1293572c91f1e3def4f1afb9e09d3360964f824328d",
+          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:507f60eafeb92e7d1faf849e4958f8811b41a47f63c43e0105ee78ad10984e8a",
           command: [
             "sh",
             "-c",
@@ -51,7 +51,7 @@
         }],
         containers: [{
           name: "plugin",
-          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:adc0532ed1d7fee6d7bca1293572c91f1e3def4f1afb9e09d3360964f824328d",
+          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:507f60eafeb92e7d1faf849e4958f8811b41a47f63c43e0105ee78ad10984e8a",
           ports: [{
             name: "http",
             containerPort: 8080,

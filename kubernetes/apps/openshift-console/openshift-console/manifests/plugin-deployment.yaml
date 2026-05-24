@@ -24,7 +24,7 @@
       spec: {
         containers: [{
           name: "plugin",
-          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:dc7816974eb9ed85c4e0a6d6b3322e7d8e058f29edb899c2eaf57fa56b2261ae",
+          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:08a11f7afa47813e0db3c0d9d584cddff5c04d2fa01efc17c1f8855e376489ae",
           ports: [{
             name: "https",
             containerPort: 9443,

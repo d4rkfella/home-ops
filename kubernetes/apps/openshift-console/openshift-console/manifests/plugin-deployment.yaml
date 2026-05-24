@@ -22,39 +22,12 @@
         },
       },
       spec: {
-        initContainers: [{
-          name: "setup",
-          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:507f60eafeb92e7d1faf849e4958f8811b41a47f63c43e0105ee78ad10984e8a",
-          command: [
-            "sh",
-            "-c",
-          ],
-          args: [
-            "cp -r /opt/app-root/etc/* /tmp/app-root-etc/ && cp -r /var/lib/nginx/* /tmp/nginx-lib/ && cp -r /usr/share/nginx/html/* /tmp/src/",
-          ],
-          volumeMounts: [{
-            name: "app-root-etc",
-            mountPath: "/tmp/app-root-etc",
-          }, {
-            name: "nginx-lib",
-            mountPath: "/tmp/nginx-lib",
-          }, {
-            name: "src",
-            mountPath: "/tmp/src",
-          }],
-          securityContext: {
-            allowPrivilegeEscalation: false,
-            readOnlyRootFilesystem: true,
-            runAsNonRoot: true,
-            runAsUser: 1000,
-          },
-        }],
         containers: [{
           name: "plugin",
-          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:507f60eafeb92e7d1faf849e4958f8811b41a47f63c43e0105ee78ad10984e8a",
+          image: "ghcr.io/d4rkfella/kubevirt-plugin:dev@sha256:dc7816974eb9ed85c4e0a6d6b3322e7d8e058f29edb899c2eaf57fa56b2261ae",
           ports: [{
-            name: "http",
-            containerPort: 8080,
+            name: "https",
+            containerPort: 9443,
             protocol: "TCP",
           }],
           resources: {
@@ -79,9 +52,6 @@
             },
           },
           volumeMounts: [{
-            name: "app-root-etc",
-            mountPath: "/opt/app-root/etc",
-          }, {
             name: "nginx-logs",
             mountPath: "/var/log/nginx",
           }, {
@@ -91,20 +61,11 @@
             name: "nginx-run",
             mountPath: "/var/run",
           }, {
-            name: "nginx-lib",
-            mountPath: "/var/lib/nginx",
-          }, {
             name: "serving-cert",
             mountPath: "/var/serving-cert",
-          }, {
-            name: "src",
-            mountPath: "/opt/app-root/src",
           }],
         }],
         volumes: [{
-          name: "app-root-etc",
-          emptyDir: {},
-        }, {
           name: "nginx-logs",
           emptyDir: {},
         }, {
@@ -112,9 +73,6 @@
           emptyDir: {},
         }, {
           name: "nginx-run",
-          emptyDir: {},
-        }, {
-          name: "nginx-lib",
           emptyDir: {},
         }, {
           name: "src",

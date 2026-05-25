@@ -7,9 +7,6 @@
     labels: {
       app: "openshift-console",
     },
-    annotations: {
-      security.darkfellanetwork.com/mount-internal-ca: "true",
-    },
   },
   spec: {
     replicas: 1,
@@ -20,6 +17,9 @@
     },
     template: {
       metadata: {
+        annotations: {
+          security.darkfellanetwork.com/mount-internal-ca: "true",
+        },
         labels: {
           app: "openshift-console",
         },

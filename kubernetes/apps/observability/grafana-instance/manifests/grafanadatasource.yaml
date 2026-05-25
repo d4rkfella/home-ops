@@ -59,9 +59,19 @@
         timeInterval: "60s",
         manageAlerts: true,
         alertmanagerUid: "alertmanager",
+        tlsAuthWithCACert: true,
         serverName: "kube-prometheus-stack-prometheus.observability.svc.cluster.local",
       },
     },
+    valuesFrom: [{
+      targetPath: "datasource.secureJsonData.tlsCaCert",
+      valueFrom: {
+        secretKeyRef: {
+          name: "internal-ca-secret",
+          key: "ca.crt",
+        },
+      },
+    }],
     uid: "prometheus",
   },
 }

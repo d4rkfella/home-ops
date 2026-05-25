@@ -20,6 +20,10 @@
       alertmanager: {
         serviceMonitor: {
           selfMonitor: true,
+          scheme: "https",
+          tlsConfig: {
+            insecureSkipVerify: true,
+          },
         },
         route: {
           main: {
@@ -37,6 +41,15 @@
         alertmanagerSpec: {
           hostUsers: false,
           externalUrl: "https://alertmanager.darkfellanetwork.com",
+          secrets: [
+            "alertmanager-tls",
+          ],
+          web: {
+            tlsConfig: {
+              certFile: "/etc/alertmanager/secrets/alertmanager-tls/tls.crt",
+              keyFile: "/etc/alertmanager/secrets/alertmanager-tls/tls.key",
+            },
+          },
           alertmanagerConfiguration: {
             name: "alertmanager",
             global: {
@@ -70,6 +83,10 @@
       prometheus: {
         serviceMonitor: {
           selfMonitor: true,
+          scheme: "https",
+          tlsConfig: {
+            insecureSkipVerify: true,
+          },
         },
         route: {
           main: {
@@ -89,6 +106,15 @@
           externalUrl: "https://prometheus.darkfellanetwork.com",
           enableRemoteWriteReceiver: true,
           hostUsers: false,
+          secrets: [
+            "prometheus-tls",
+          ],
+          web: {
+            tlsConfig: {
+              certFile: "/etc/prometheus/secrets/prometheus-tls/tls.crt",
+              keyFile: "/etc/prometheus/secrets/prometheus-tls/tls.key",
+            },
+          },
           podMetadata: {
             annotations: {
               vault.hashicorp.com/agent-inject: "true",

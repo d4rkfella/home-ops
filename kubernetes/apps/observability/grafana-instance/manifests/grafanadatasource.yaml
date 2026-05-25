@@ -21,9 +21,12 @@
         implementation: "prometheus",
         serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
       },
+      secureJsonData: {
+        tlsCACert: "${ca.crt}",
+      },
     },
     valuesFrom: [{
-      targetPath: "datasource.secureJsonData.tlsCACert",
+      targetPath: "secureJsonData.tlsCACert",
       valueFrom: {
         secretKeyRef: {
           name: "internal-ca-secret",
@@ -62,9 +65,12 @@
         tlsAuthWithCACert: true,
         serverName: "kube-prometheus-stack-prometheus.observability.svc.cluster.local",
       },
+      secureJsonData: {
+        tlsCACert: "${ca.crt}",
+      },
     },
     valuesFrom: [{
-      targetPath: "datasource.secureJsonData.tlsCaCert",
+      targetPath: "secureJsonData.tlsCACert",
       valueFrom: {
         secretKeyRef: {
           name: "internal-ca-secret",

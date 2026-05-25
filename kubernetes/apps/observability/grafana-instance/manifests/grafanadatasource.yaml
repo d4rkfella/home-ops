@@ -19,10 +19,10 @@
       url: "https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
       jsonData: {
         implementation: "prometheus",
+        tlsAuthWithCACert: true,
         serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
       },
       secureJsonData: {
-        tlsAuthWithCACert: true,
         tlsCACert: "${ca.crt}",
       },
     },

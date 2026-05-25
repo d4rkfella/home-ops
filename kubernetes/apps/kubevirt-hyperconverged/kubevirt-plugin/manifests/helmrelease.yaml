@@ -24,35 +24,9 @@
                 repository: "ghcr.io/d4rkfella/kubevirt-plugin",
                 tag: "dev@sha256:9840fe6d9a599bb20bbc6235a80a5eb5ba998c1ef1dcae75279e8fd3dae283c2",
               },
-              probes: {
-                liveness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/health",
-                      port: 9443,
-                    },
-                    initialDelaySeconds: 10,
-                    periodSeconds: 30,
-                  },
-                },
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/health",
-                      port: 9443,
-                    },
-                    initialDelaySeconds: 10,
-                    periodSeconds: 30,
-                  },
-                },
-              },
               securityContext: {
                 allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: false,
+                readOnlyRootFilesystem: true,
                 capabilities: {
                   drop: [
                     "ALL",

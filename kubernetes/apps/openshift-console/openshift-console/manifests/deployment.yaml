@@ -90,13 +90,13 @@
             value: "https://console.darkfellanetwork.com",
           }, {
             name: "BRIDGE_PLUGIN_PROXY",
-            value: '{"services":[{"consoleAPIPath":"/api/proxy/plugin/kubevirt-plugin/kubevirt-apiserver-proxy/","endpoint":"http://kubevirt-apiserver-proxy.kubevirt-hyperconverged.svc:8080","authorize":true}]}',
+            value: "{\"services\":[{\"consoleAPIPath\":\"/api/proxy/plugin/kubevirt-plugin/kubevirt-apiserver-proxy/\",\"endpoint\":\"http://kubevirt-apiserver-proxy.kubevirt-hyperconverged.svc:8080\",\"authorize\":true}]}",
           }, {
             name: "BRIDGE_BRANDING",
             value: "okd",
           }, {
             name: "BRIDGE_PLUGINS",
-            value: "kubevirt-plugin=https://kubevirt-plugin.openshift-console.svc.cluster.local:9443/, monitoring-plugin=http://monitoring-plugin.observability.svc.cluster.local:9443",
+            value: "kubevirt-plugin=https://kubevirt-plugin.kubevirt-hyperconverged.svc.cluster.local:9443/, monitoring-plugin=http://openshift-monitoring-plugin.observability.svc.cluster.local:9443",
           }, {
             name: "BRIDGE_PLUGIN_PROXY_SKIP_VERIFY_TLS",
             value: "true",

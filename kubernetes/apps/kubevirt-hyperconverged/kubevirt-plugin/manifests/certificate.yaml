@@ -8,11 +8,11 @@
   },
   spec: {
     secretName: "kubevirt-plugin-serving-cert",
-    commonName: "kubevirt-plugin.openshift-console.svc.cluster.local",
+    commonName: "kubevirt-plugin.kubevirt-hyperconverged.svc.cluster.local",
     dnsNames: [
-      "kubevirt-plugin.openshift-console.svc.cluster.local",
-      "kubevirt-plugin.openshift-console.svc",
-      "kubevirt-plugin.openshift-console",
+      "kubevirt-plugin.kubevirt-hyperconverged.svc.cluster.local",
+      "kubevirt-plugin.kubevirt-hyperconverged.svc",
+      "kubevirt-plugin.kubevirt-hyperconverged",
       "kubevirt-plugin",
     ],
     issuerRef: {

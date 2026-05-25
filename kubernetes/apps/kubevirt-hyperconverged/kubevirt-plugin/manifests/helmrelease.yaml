@@ -1,0 +1,127 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "kubevirt-plugin",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "kubevirt-plugin",
+    },
+    values: {
+      controllers: {
+        kubevirt-plugin: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "ghcr.io/d4rkfella/kubevirt-plugin",
+                tag: "dev@sha256:9840fe6d9a599bb20bbc6235a80a5eb5ba998c1ef1dcae75279e8fd3dae283c2",
+              },
+              probes: {
+                liveness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/health",
+                      port: 9443,
+                    },
+                    initialDelaySeconds: 10,
+                    periodSeconds: 30,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/health",
+                      port: 9443,
+                    },
+                    initialDelaySeconds: 10,
+                    periodSeconds: 30,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "100m",
+                  memory: "128Mi",
+                },
+                limits: {
+                  cpu: "500m",
+                  memory: "512Mi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "kubevirt-plugin",
+          ports: {
+            http: {
+              port: 9443,
+            },
+          },
+        },
+      },
+      persistence: {
+        cert: {
+          type: "secret",
+          name: "kubevirt-plugin-serving-cert",
+          globalMounts: [{
+            path: "/var/serving-cert",
+          }],
+        },
+        logs: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/var/log/nginx",
+          }],
+        },
+        cache: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/var/cache/nginx",
+          }],
+        },
+        run: {
+          type: "emptyDir",
+          globalMounts: [{
+            path: "/var/run",
+          }],
+        },
+      },
+    },
+  },
+}

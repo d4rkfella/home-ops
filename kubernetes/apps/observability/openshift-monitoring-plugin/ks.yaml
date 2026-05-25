@@ -1,0 +1,18 @@
+---
+{
+  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
+  kind: "Kustomization",
+  metadata: {
+    name: "openshift-monitoring-plugin",
+  },
+  spec: {
+    interval: "1h",
+    path: "./kubernetes/apps/observability/openshift-monitoring-plugin/manifests",
+    prune: false,
+    sourceRef: {
+      kind: "GitRepository",
+      name: "flux-system",
+      namespace: "flux-system",
+    },
+  },
+}

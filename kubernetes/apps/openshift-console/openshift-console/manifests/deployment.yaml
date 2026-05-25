@@ -105,22 +105,22 @@
             value: "/etc/ssl/certs/internal-ca.crt",
           }, {
             name: "BRIDGE_THANOS_HOST",
-            value: "https://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
+            value: "kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
           }, {
             name: "BRIDGE_THANOS_TENANCY_HOST",
-            value: "https://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
+            value: "kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
           }, {
             name: "BRIDGE_THANOS_TENANCY_RULES_HOST",
-            value: "https://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
+            value: "kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
           }, {
             name: "BRIDGE_ALERTMANAGER_HOST",
-            value: "https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
+            value: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
           }, {
             name: "BRIDGE_ALERTMANAGER_TENANCY_HOST",
-            value: "https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
+            value: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
           }, {
             name: "BRIDGE_ALERTMANAGER_USER_WORKLOAD_HOST",
-            value: "https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
+            value: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
           }],
           resources: {
             requests: {

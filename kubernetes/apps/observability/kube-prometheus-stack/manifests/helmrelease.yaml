@@ -22,7 +22,7 @@
           selfMonitor: true,
           scheme: "https",
           tlsConfig: {
-            insecureSkipVerify: true,
+            caFile: "/etc/ssl/certs/internal-ca.crt",
           },
         },
         route: {
@@ -53,6 +53,11 @@
                 name: "alertmanager-tls",
                 key: "tls.key",
               },
+            },
+          },
+          podMetadata: {
+            annotations: {
+              security.darkfellanetwork.com/mount-internal-ca: "true",
             },
           },
           alertmanagerConfiguration: {
@@ -90,7 +95,7 @@
           selfMonitor: true,
           scheme: "https",
           tlsConfig: {
-            insecureSkipVerify: true,
+            caFile: "/etc/ssl/certs/internal-ca.crt",
           },
         },
         route: {
@@ -125,8 +130,21 @@
               },
             },
           },
+          alerting: {
+            alertmanagers: [{
+              apiVersion: "v2",
+              namespace: "observability",
+              name: "kube-prometheus-stack-alertmanager",
+              port: "http-web",
+              scheme: "https",
+              tlsConfig: {
+                caFile: "/etc/ssl/certs/internal-ca.crt",
+              },
+            }],
+          },
           podMetadata: {
             annotations: {
+              security.darkfellanetwork.com/mount-internal-ca: "true",
               vault.hashicorp.com/agent-inject: "true",
               vault.hashicorp.com/agent-init-first: "true",
               vault.hashicorp.com/agent-inject-token: "true",

@@ -105,7 +105,7 @@
             value: "kubevirt-hyperconverged",
           }, {
             name: "BRIDGE_I18N_NAMESPACES",
-            value: "plugin__kubevirt-plugin",
+            value: "plugin__kubevirt-plugin, plugin__monitoring-plugin",
           }, {
             name: "BRIDGE_PUBLIC_DIR",
             value: "/opt/bridge/static",

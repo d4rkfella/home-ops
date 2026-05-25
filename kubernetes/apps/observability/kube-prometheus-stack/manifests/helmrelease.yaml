@@ -46,8 +46,16 @@
           ],
           web: {
             tlsConfig: {
-              certFile: "/etc/alertmanager/secrets/alertmanager-tls/tls.crt",
-              keyFile: "/etc/alertmanager/secrets/alertmanager-tls/tls.key",
+              cert: {
+                secret: {
+                  name: "alertmanager-tls",
+                  key: "tls.crt",
+                },
+              },
+              keySecret: {
+                name: "alertmanager-tls",
+                key: "tls.key",
+              },
             },
           },
           alertmanagerConfiguration: {
@@ -111,8 +119,16 @@
           ],
           web: {
             tlsConfig: {
-              certFile: "/etc/prometheus/secrets/prometheus-tls/tls.crt",
-              keyFile: "/etc/prometheus/secrets/prometheus-tls/tls.key",
+              cert: {
+                secret: {
+                  name: "prometheus-tls",
+                  key: "tls.crt",
+                },
+              },
+              keySecret: {
+                name: "prometheus-tls",
+                key: "tls.key",
+              },
             },
           },
           podMetadata: {

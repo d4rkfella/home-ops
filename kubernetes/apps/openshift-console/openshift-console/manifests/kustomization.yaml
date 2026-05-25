@@ -5,6 +5,7 @@
   resources: [
     "./serviceaccount.yaml",
     "./user-cluster-admin.yaml",
+    "./rbac.yaml",
     "./deployment.yaml",
     "./service.yaml",
     "./kubevirt-consoleplugin.yaml",

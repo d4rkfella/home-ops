@@ -41,9 +41,6 @@
         alertmanagerSpec: {
           hostUsers: false,
           externalUrl: "https://alertmanager.darkfellanetwork.com",
-          secrets: [
-            "alertmanager-tls",
-          ],
           web: {
             tlsConfig: {
               cert: {
@@ -114,9 +111,6 @@
           externalUrl: "https://prometheus.darkfellanetwork.com",
           enableRemoteWriteReceiver: true,
           hostUsers: false,
-          secrets: [
-            "prometheus-tls",
-          ],
           web: {
             tlsConfig: {
               cert: {

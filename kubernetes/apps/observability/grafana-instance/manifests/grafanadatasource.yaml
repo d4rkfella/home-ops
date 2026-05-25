@@ -16,11 +16,21 @@
       type: "alertmanager",
       name: "alertmanager",
       access: "proxy",
+      url: "https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093",
       jsonData: {
         implementation: "prometheus",
+        serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
       },
-      url: "http://alertmanager-operated.observability.svc.cluster.local:9093",
     },
+    valuesFrom: [{
+      targetPath: "datasource.secureJsonData.tlsCACert",
+      valueFrom: {
+        secretKeyRef: {
+          name: "internal-ca-secret",
+          key: "ca.crt",
+        },
+      },
+    }],
     uid: "alertmanager",
   },
 }
@@ -43,12 +53,24 @@
       name: "prometheus",
       access: "proxy",
       isDefault: true,
+      url: "https://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090",
       jsonData: {
         prometheusType: "Prometheus",
         timeInterval: "60s",
+        manageAlerts: true,
+        alertmanagerUid: "alertmanager",
+        serverName: "kube-prometheus-stack-prometheus.observability.svc.cluster.local",
       },
-      url: "http://prometheus-operated.observability.svc.cluster.local:9090",
     },
+    valuesFrom: [{
+      targetPath: "datasource.secureJsonData.tlsCACert",
+      valueFrom: {
+        secretKeyRef: {
+          name: "internal-ca-secret",
+          key: "ca.crt",
+        },
+      },
+    }],
     uid: "prometheus",
   },
 }

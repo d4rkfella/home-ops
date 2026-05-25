@@ -139,12 +139,7 @@
             port: "http-web",
             scheme: "https",
             tlsConfig: {
-              ca: {
-                secret: {
-                  name: "internal-ca-secret",
-                  key: "ca.crt",
-                },
-              },
+              caFile: "/etc/ssl/certs/internal-ca.crt",
               serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
             },
           }],

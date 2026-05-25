@@ -132,19 +132,22 @@
               },
             },
           },
-          alerting: {
-            alertmanagers: [{
-              apiVersion: "v2",
-              namespace: "observability",
-              name: "kube-prometheus-stack-alertmanager",
-              port: "http-web",
-              scheme: "https",
-              tlsConfig: {
-                serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
-                caFile: "/etc/ssl/certs/internal-ca.crt",
+          alertingEndpoints: [{
+            apiVersion: "v2",
+            namespace: "observability",
+            name: "kube-prometheus-stack-alertmanager",
+            port: "http-web",
+            scheme: "https",
+            tlsConfig: {
+              ca: {
+                secret: {
+                  name: "internal-ca-secret",
+                  key: "ca.crt",
+                },
               },
-            }],
-          },
+              serverName: "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
+            },
+          }],
           podMetadata: {
             annotations: {
               security.darkfellanetwork.com/mount-internal-ca: "true",

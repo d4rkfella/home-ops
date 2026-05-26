@@ -8,11 +8,11 @@
   },
   spec: {
     secretName: "kubevirt-plugin-serving-cert",
-    commonName: "kubevirt-plugin.kubevirt-hyperconverged.svc.cluster.local",
+    commonName: "kubevirt-plugin.kubevirt.svc.cluster.local",
     dnsNames: [
-      "kubevirt-plugin.kubevirt-hyperconverged.svc.cluster.local",
-      "kubevirt-plugin.kubevirt-hyperconverged.svc",
-      "kubevirt-plugin.kubevirt-hyperconverged",
+      "kubevirt-plugin.kubevirt.svc.cluster.local",
+      "kubevirt-plugin.kubevirt.svc",
+      "kubevirt-plugin.kubevirt",
       "kubevirt-plugin",
     ],
     issuerRef: {

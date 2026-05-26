@@ -3,11 +3,11 @@
   apiVersion: "kustomize.toolkit.fluxcd.io/v1",
   kind: "Kustomization",
   metadata: {
-    name: "kubevirt-apiserver-proxy",
+    name: "kubevirt-plugin",
   },
   spec: {
     interval: "1h",
-    path: "./kubernetes/apps/kubevirt-hyperconverged/kubevirt-apiserver-proxy/manifests",
+    path: "./kubernetes/apps/kubevirt/kubevirt-plugin/manifests",
     prune: false,
     sourceRef: {
       kind: "GitRepository",

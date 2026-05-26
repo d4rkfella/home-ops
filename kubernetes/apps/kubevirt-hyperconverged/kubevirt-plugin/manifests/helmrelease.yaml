@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/kubevirt-plugin",
-                tag: "dev@sha256:a56fd19d608d9fe3e42de51185a5f564ab09add31e86ea732008e313883231ed",
+                tag: "dev@sha256:eabaf50d848849ca487a084b2f9cb8ec42a2108b95cb0a6052a796e0ceafb4a2",
               },
               securityContext: {
                 allowPrivilegeEscalation: false,

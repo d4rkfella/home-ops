@@ -4,8 +4,8 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
-    #"./kyverno/ks.yaml",
-    #"./kyverno-policies/ks.yaml",
+    "./kyverno/ks.yaml",
+    "./kyverno-policies/ks.yaml",
   ],
   components: [
     "../../components/alerts",

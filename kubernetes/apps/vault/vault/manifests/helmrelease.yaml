@@ -37,15 +37,6 @@
       },
       injector: {
         enabled: true,
-        image: {
-          repository: "hashicorp/vault-k8s",
-          tag: "1.7.4",
-          pullPolicy: "IfNotPresent",
-        },
-        agentImage: {
-          repository: "hashicorp/vault",
-          tag: "2.0.1",
-        },
         logLevel: "debug",
         logFormat: "json",
         strategy: {
@@ -57,11 +48,6 @@
       },
       server: {
         enabled: true,
-        image: {
-          repository: "hashicorp/vault",
-          tag: "2.0.1",
-          pullPolicy: "IfNotPresent",
-        },
         updateStrategyType: "RollingUpdate",
         logLevel: "info",
         logFormat: "json",

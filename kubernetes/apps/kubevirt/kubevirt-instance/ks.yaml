@@ -17,7 +17,7 @@
     healthChecks: [{
       apiVersion: "kubevirt.io/v1",
       kind: "KubeVirt",
-      name: "kubevirt-kubevirt",
+      name: "kubevirt",
       namespace: "kubevirt",
     }],
     dependsOn: [{

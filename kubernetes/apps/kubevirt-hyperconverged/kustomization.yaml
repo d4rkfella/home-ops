@@ -4,7 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
-    "./kubevirt-operator/ks.yaml",
+    #"./kubevirt-operator/ks.yaml",
     "./kubevirt-instance/ks.yaml",
     "./kubevirt-plugin/ks.yaml",
     "./kubevirt-apiserver-proxy/ks.yaml",

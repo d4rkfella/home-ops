@@ -63,9 +63,6 @@
             "-cookie-encryption-key-file=/etc/console-cookie/encrypt",
           ],
           env: [{
-            name: "BRIDGE_TECH_PREVIEW",
-            value: "true",
-          }, {
             name: "BRIDGE_USER_AUTH",
             value: "oidc",
           }, {

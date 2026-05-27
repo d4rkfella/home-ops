@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/httproute_v1beta1.json
+{
+  apiVersion: "gateway.networking.k8s.io/v1",
+  kind: "HTTPRoute",
+  metadata: {
+    name: "prometheus",
+  },
+  spec: {
+    hostnames: [
+      "prometheus.darkfellanetwork.com",
+    ],
+    parentRefs: [{
+      name: "internal",
+      namespace: "envoy-gateway-system",
+      sectionName: "https",
+    }],
+    rules: [{
+      matches: [{
+        path: {
+          type: "PathPrefix",
+          value: "/",
+        },
+      }],
+      backendRefs: [{
+        group: "gateway.envoyproxy.io",
+        kind: "Backend",
+        name: "prometheus",
+      }],
+    }],
+  },
+}
+---
+# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/httproute_v1beta1.json
+{
+  apiVersion: "gateway.networking.k8s.io/v1",
+  kind: "HTTPRoute",
+  metadata: {
+    name: "alertmanager",
+  },
+  spec: {
+    hostnames: [
+      "alertmanager.darkfellanetwork.com",
+    ],
+    parentRefs: [{
+      name: "internal",
+      namespace: "envoy-gateway-system",
+      sectionName: "https",
+    }],
+    rules: [{
+      matches: [{
+        path: {
+          type: "PathPrefix",
+          value: "/",
+        },
+      }],
+      backendRefs: [{
+        group: "gateway.envoyproxy.io",
+        kind: "Backend",
+        name: "alertmanager",
+      }],
+    }],
+  },
+}

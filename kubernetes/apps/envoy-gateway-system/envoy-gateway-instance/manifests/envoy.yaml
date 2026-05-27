@@ -76,6 +76,11 @@
     name: "external",
     annotations: {
       external-dns.alpha.kubernetes.io/target: "external.darkfellanetwork.com",
+      gatus.home-operations.com/endpoint: "\
+         client:\n\
+        \  dns-resolver: tcp://1.1.1.1:53\n\
+         group: external\n\
+        ",
     },
   },
   spec: {
@@ -88,11 +93,6 @@
       annotations: {
         external-dns.alpha.kubernetes.io/hostname: "external.darkfellanetwork.com",
         lbipam.cilium.io/ips: "192.168.91.51",
-        gatus.home-operations.com/endpoint: "\
-           client:\n\
-          \  dns-resolver: tcp://1.1.1.1:53\n\
-           group: external\n\
-          ",
       },
     },
     listeners: [{
@@ -133,6 +133,13 @@
     name: "internal",
     annotations: {
       external-dns.alpha.kubernetes.io/target: "internal.darkfellanetwork.com",
+      gatus.home-operations.com/endpoint: "\
+         group: internal\n\
+         guarded: true\n\
+         ui:\n\
+        \  hide-hostname: true\n\
+        \  hide-url: true\
+        ",
     },
   },
   spec: {
@@ -145,13 +152,6 @@
       annotations: {
         external-dns.alpha.kubernetes.io/hostname: "internal.darkfellanetwork.com",
         lbipam.cilium.io/ips: "192.168.91.52",
-        gatus.home-operations.com/endpoint: "\
-           group: internal\n\
-           guarded: true\n\
-           ui:\n\
-          \  hide-hostname: true\n\
-          \  hide-url: true\
-          ",
       },
     },
     listeners: [{
@@ -191,6 +191,13 @@
   kind: "Gateway",
   metadata: {
     name: "artifactory",
+    annotations: {
+      gatus.home-operations.com/endpoint: "\
+         client:\n\
+        \  dns-resolver: tcp://1.1.1.1:53\n\
+         group: external\n\
+        ",
+    },
   },
   spec: {
     gatewayClassName: "envoy",
@@ -201,11 +208,6 @@
     infrastructure: {
       annotations: {
         lbipam.cilium.io/ips: "192.168.91.50",
-        gatus.home-operations.com/endpoint: "\
-           client:\n\
-          \  dns-resolver: tcp://1.1.1.1:53\n\
-           group: external\n\
-          ",
       },
     },
     listeners: [{
@@ -245,6 +247,13 @@
   kind: "Gateway",
   metadata: {
     name: "plex",
+    annotations: {
+      gatus.home-operations.com/endpoint: "\
+         client:\n\
+        \  dns-resolver: tcp://1.1.1.1:53\n\
+         group: external\n\
+        ",
+    },
   },
   spec: {
     gatewayClassName: "envoy",

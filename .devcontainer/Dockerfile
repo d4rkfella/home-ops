@@ -15,7 +15,7 @@ RUN apt-get update && \
         libusb-1.0-0 usbredirect fontconfig fonts-dejavu && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.13.2@sha256:6382e6f6f8b08ab7c5cc9f77446cfd79975fe0055c0a6d73455a9dc6a6c4b98d /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.13.3@sha256:f1094cdda232932d93f558efe7f587b0479efeeea5b7d679d28bc8308937833d /talosctl /usr/local/bin/
 RUN talosctl version --client
 
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.8.8@sha256:3113a880461938a47ab2ec877aecbf19c570e4df9848d20228d1b4d2c7f8a764 /usr/local/bin/flux /usr/local/bin/

@@ -246,7 +246,7 @@
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
   metadata: {
-    name: "envoy-plex",
+    name: "plex",
     annotations: {
       gatus.home-operations.com/endpoint: "\
          client:\n\
@@ -264,11 +264,6 @@
     infrastructure: {
       annotations: {
         lbipam.cilium.io/ips: "192.168.91.60",
-        gatus.home-operations.com/endpoint: "\
-           client:\n\
-          \  dns-resolver: tcp://1.1.1.1:53\n\
-           group: external\n\
-          ",
       },
     },
     listeners: [{

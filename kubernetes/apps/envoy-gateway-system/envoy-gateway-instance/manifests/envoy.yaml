@@ -246,7 +246,7 @@
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
   metadata: {
-    name: "plex",
+    name: "envoy-plex",
     annotations: {
       gatus.home-operations.com/endpoint: "\
          client:\n\

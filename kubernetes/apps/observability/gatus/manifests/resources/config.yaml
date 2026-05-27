@@ -7,7 +7,7 @@
       client-secret: "${OIDC_CLIENT_SECRET}",
       redirect-url: "https://status.darkfellanetwork.com/authorization-code/callback",
       scopes: [
-        "openid",
+        "openid profile email",
       ],
     },
   },
@@ -39,11 +39,13 @@
       application-token: "${PUSHOVER_TOKEN}",
       user-key: "${PUSHOVER_USER_KEY}",
       priority: 1,
+      resolved-priority: 0,
       default-alert: {
         description: "health-check failed",
         send-on-resolved: true,
         failure-threshold: 3,
-        success-threshold: 3,
+        success-threshold: 2,
+        minimum-reminder-interval: "1h",
       },
     },
   },

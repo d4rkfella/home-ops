@@ -12,7 +12,7 @@
       rules: [{
         alert: "GatusEndpointDown",
         expr: "\
-           gatus_results_endpoint_success{group=\"external|services\"} == 0\n\
+           gatus_results_endpoint_success{group=~\"external|services\"} == 0\n\
           ",
         for: "5m",
         annotations: {

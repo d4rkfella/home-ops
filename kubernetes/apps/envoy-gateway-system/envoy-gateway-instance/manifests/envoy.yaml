@@ -247,7 +247,7 @@
     annotations: {
       gatus.home-operations.com/endpoint: "\
          client:\n\
-        \  dns-resolver: tcp://1.1.1.1:53\n\
+        \  dns-resolver: tcp://k8s-gateway.k8s-gateway.svc.cluster.local:53\n\
          group: plex\n\
         ",
     },

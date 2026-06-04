@@ -8,6 +8,13 @@
   },
   spec: {
     secretName: "buildkit-amd64-tls",
+    duration: "2160h",
+    privateKey: {
+      algorithm: "ECDSA",
+      encoding: "PKCS8",
+      rotationPolicy: "Always",
+      size: 256,
+    },
     issuerRef: {
       name: "vault-issuer",
       kind: "ClusterIssuer",
@@ -20,8 +27,6 @@
       "buildkit-amd64.buildkit.svc.cluster.local",
     ],
     usages: [
-      "digital signature",
-      "key encipherment",
       "server auth",
     ],
   },

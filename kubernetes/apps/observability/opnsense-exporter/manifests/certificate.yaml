@@ -10,18 +10,20 @@
   spec: {
     secretName: "opnsense-exporter-tls",
     duration: "2160h",
-    renewBefore: "360h",
     privateKey: {
       algorithm: "ECDSA",
       encoding: "PKCS8",
       rotationPolicy: "Always",
-      size: 384,
+      size: 256,
     },
     dnsNames: [
       "opnsense-exporter",
       "opnsense-exporter.observability",
       "opnsense-exporter.observability.svc",
       "opnsense-exporter.observability.svc.cluster.local",
+    ],
+    usages: [
+      "server auth",
     ],
     issuerRef: {
       name: "vault-issuer",

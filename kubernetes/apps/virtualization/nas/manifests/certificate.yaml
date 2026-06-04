@@ -10,6 +10,7 @@
     dnsNames: [
       "nas.darkfellanetwork.com",
     ],
+    duration: "2160h",
     issuerRef: {
       group: "cert-manager.io",
       kind: "ClusterIssuer",
@@ -18,12 +19,12 @@
     privateKey: {
       algorithm: "ECDSA",
       rotationPolicy: "Always",
-      size: 384,
+      size: 256,
       encoding: "PKCS8",
     },
     secretName: "nas-tls",
     usages: [
-      "digital signature",
+      "server auth",
     ],
   },
 }

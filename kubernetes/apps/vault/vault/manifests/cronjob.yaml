@@ -22,7 +22,7 @@
                 "backup-raft-snapshot",
               ],
               env: [{
-                name: "ADDR",
+                name: "VAULT_ADDR",
                 value: "https://vault.darkfellanetwork.com:8200",
               }, {
                 name: "K8S_ROLE",

@@ -25,7 +25,7 @@
                 name: "VAULT_ADDR",
                 value: "https://vault.darkfellanetwork.com:8200",
               }, {
-                name: "K8S_ROLE",
+                name: "VAULT_K8S_ROLE",
                 value: "vault",
               }, {
                 name: "AWS_ENDPOINT_URL",

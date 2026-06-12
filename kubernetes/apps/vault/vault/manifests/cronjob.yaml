@@ -16,10 +16,12 @@
             serviceAccountName: "vault",
             containers: [{
               name: "vaultctl",
-              image: "ghcr.io/d4rkfella/vaultctl:0.1.2@sha256:8c91ea0b19276efd0c9f16c8bcf06268b07a9c24c90f5111d9ee169bd7665e4f",
+              image: "ghcr.io/d4rkfella/vaultctl:0.2.1@sha256:9c70f49f96001fffa42ca39d3e4998d97b2d42dc56c5c65fb2b7043a8dddf5ae",
               imagePullPolicy: "IfNotPresent",
               args: [
                 "backup-raft-snapshot",
+                "--to",
+                "s3://hashicorp-vault-backup/"
               ],
               env: [{
                 name: "VAULT_ADDR",
@@ -30,9 +32,6 @@
               }, {
                 name: "AWS_ENDPOINT_URL",
                 value: "https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com",
-              }, {
-                name: "S3_BUCKET_NAME",
-                value: "hashicorp-vault-backup",
               }],
               envFrom: [{
                 secretRef: {

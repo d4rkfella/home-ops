@@ -16,6 +16,10 @@
     components: [
       "../../../../components/volsync",
     ],
+    dependsOn: [{
+      name: "nas",
+      namespace: "virtualization",
+    }],
     path: "./kubernetes/apps/media/qbittorrent/manifests",
     postBuild: {
       substitute: {

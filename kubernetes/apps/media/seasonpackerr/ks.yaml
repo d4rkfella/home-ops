@@ -7,6 +7,10 @@
     name: "seasonpackerr",
   },
   spec: {
+    dependsOn: [{
+      name: "nas",
+      namespace: "virtualization",
+    }],
     interval: "1h",
     path: "./kubernetes/apps/media/seasonpackerr/manifests",
     prune: true,

@@ -19,6 +19,9 @@
     }, {
       name: "keycloak-instance",
       namespace: "keycloak",
+    }, {
+      name: "nas",
+      namespace: "virtualization",
     }],
     path: "./kubernetes/apps/media/sonarr/manifests",
     prune: true,

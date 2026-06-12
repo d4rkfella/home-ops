@@ -16,6 +16,9 @@
     }, {
       name: "gpu-operator",
       namespace: "gpu-operator",
+    }, {
+      name: "nas",
+      namespace: "virtualization",
     }],
     path: "./kubernetes/apps/media/plex/manifests",
     postBuild: {

@@ -10,6 +10,10 @@
     components: [
       "../../../../components/volsync",
     ],
+    dependsOn: [{
+      name: "nas",
+      namespace: "virtualization",
+    }],
     interval: "1h",
     path: "./kubernetes/apps/media/agregarr/manifests",
     postBuild: {

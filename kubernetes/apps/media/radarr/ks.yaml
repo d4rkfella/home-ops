@@ -13,13 +13,15 @@
       name: "radarr",
       namespace: "media",
     }],
-    components: ,
     dependsOn: [{
       name: "cloudnative-pg-cluster",
       namespace: "database",
     }, {
       name: "keycloak-instance",
       namespace: "keycloak",
+    }, {
+      name: "nas",
+      namespace: "virtualization",
     }],
     path: "./kubernetes/apps/media/radarr/manifests",
     prune: true,

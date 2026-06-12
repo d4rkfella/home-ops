@@ -13,6 +13,9 @@
     }, {
       name: "keycloak-instance",
       namespace: "keycloak",
+    }, {
+      name: "nas",
+      namespace: "virtualization",
     }],
     path: "./kubernetes/apps/artifactory/artifactory/manifests",
     prune: true,

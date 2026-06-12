@@ -10,9 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg xz-utils unzip \
-        jq nano bash bash-completion git \
-        direnv tigervnc-viewer \
-        libusb-1.0-0 usbredirect fontconfig fonts-dejavu && \
+        jq nano bash bash-completion git direnv && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/siderolabs/talosctl:v1.13.4@sha256:22101c9dc8b4dcab5534a9ce0192a6d40245183324f19785cd4e36f9a9ed5e7a /talosctl /usr/local/bin/
@@ -88,8 +86,8 @@ RUN echo 'alias k=kubectl' >> ~/.bashrc && \
     kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
-# renovate: datasource=pypi depName=home-ops-cli
-ARG HOME_OPS_CLI_VERSION=0.4.53
-RUN uv tool install home-ops-cli==${HOME_OPS_CLI_VERSION} && \
+# renovate: datasource=pypi depName=vaultctl
+ARG VAULTCTL_VERSION=0.2.2
+RUN uv tool install vaultctl==${VAULTCTL_VERSION} && \
     uv python update-shell && \
     uv cache clean

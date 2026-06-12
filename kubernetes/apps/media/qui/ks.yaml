@@ -16,6 +16,9 @@
     }, {
       name: "keycloak-instance",
       namespace: "keycloak",
+    }, {
+      name: "nas",
+      namespace: "virtualization",
     }],
     postBuild: {
       substitute: {

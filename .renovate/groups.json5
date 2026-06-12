@@ -23,7 +23,6 @@
       groupName: 'devcontainer',
       matchFileNames: [
         '.devcontainer/Dockerfile',
-        '**/pyproject.toml',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
@@ -83,8 +82,10 @@
         'OpenEBS Group',
       ],
       groupName: 'OpenEBS',
-      matchFileNames: [
-        'kubernetes/apps/openebs-system/zfs-localpv/manifests/helmrelease.yaml',
+      matchPackageNames: ["/zfs-localpv/", "/csi-node-driver-registrar/", "/csi-resizer/", "/csi-snapshotter/", "/snapshot-controller/", "/csi-provisioner/"],
+      matchDatasources: [
+        'github-tags',
+        'docker',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',

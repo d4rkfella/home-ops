@@ -16,7 +16,7 @@
             serviceAccountName: "vault",
             containers: [{
               name: "vaultctl",
-              image: "ghcr.io/d4rkfella/vaultctl:0.2.1@sha256:9c70f49f96001fffa42ca39d3e4998d97b2d42dc56c5c65fb2b7043a8dddf5ae",
+              image: "ghcr.io/d4rkfella/vaultctl:0.2.2@sha256:7d474f53053e8306995e36d6fb49bd5b2f8e7f9d2bd6a24b2315fb9c0c9e165c",
               imagePullPolicy: "IfNotPresent",
               args: [
                 "backup-raft-snapshot",

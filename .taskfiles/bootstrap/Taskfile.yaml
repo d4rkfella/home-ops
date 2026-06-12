@@ -47,7 +47,7 @@
         "test -f {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml",
         "test -f {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml",
         "test -f {{.BOOTSTRAP_DIR}}/resources.yaml",
-        "which helmfile helm jq yq kubectl talosctl",
+        "which helmfile helm jq yq kubectl talosctl vaultctl",
       ],
     },
   },

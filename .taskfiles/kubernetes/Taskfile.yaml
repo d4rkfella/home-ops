@@ -70,18 +70,5 @@
         "which flux helm",
       ],
     },
-    kubevirt-manager: {
-      desc: "Manage KubeVirt VMs",
-      interactive: true,
-      silent: true,
-      cmds: [
-        "home-ops-cli kubevirt manager",
-      ],
-      preconditions: [
-        "which kubectl",
-        "which virtctl",
-        "which home-ops-cli",
-      ],
-    },
   },
 }

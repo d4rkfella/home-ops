@@ -183,6 +183,7 @@
             value: "ssd_pool",
           }, {
             name: "TALOS_VERSION",
+            # renovate: datasource=custom.talos-factory depName=siderolabs/talos
             value: "v1.12.0",
           }],
           resources: {

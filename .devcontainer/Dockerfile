@@ -80,10 +80,11 @@ RUN curl -fsSLO "https://github.com/google/yamlfmt/releases/download/${YAMLFMT_V
     mv yamlfmt /usr/local/bin/ && \
     rm -rf /tmp/*
 
-RUN echo 'alias k=kubectl' >> ~/.bashrc && \
+RUN echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc && \
+    echo 'source <(kubectl completion bash)' >> ~/.bashrc && \
+    echo 'alias k=kubectl' >> ~/.bashrc && \
     echo 'complete -o default -F __start_kubectl k' >> ~/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> ~/.bashrc && \
-    kubectl completion bash | tee /etc/bash_completion.d/kubectl > /dev/null && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
 # renovate: datasource=pypi depName=vaultctl

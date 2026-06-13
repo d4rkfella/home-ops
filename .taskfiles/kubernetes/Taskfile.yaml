@@ -3,21 +3,6 @@
   # yaml-language-server: $schema=https://taskfile.dev/schema.json
   version: "3",
   tasks: {
-    node-shell: {
-      desc: "Open a shell to a node [NODE=required]",
-      interactive: true,
-      cmd: "kubectl node-shell -n kube-system -x {{.NODE}}",
-      requires: {
-        vars: [
-          "NODE",
-        ],
-      },
-      preconditions: [
-        "kubectl get nodes {{.NODE}}",
-        "kubectl node-shell --version",
-        "which kubectl",
-      ],
-    },
     sync-secrets: {
       desc: "Sync all ExternalSecrets",
       cmds: [{
@@ -68,6 +53,25 @@
       ],
       preconditions: [
         "which flux helm",
+      ],
+    },
+    vnc: {
+      desc: "Open a VNC session to a VM [VM=required, NS=virtualization]",
+      interactive: true,
+      vars: {
+        NS: "{{.NS | default \"virtualization\"}}",
+      },
+      cmd: "virtctl vnc --vnc-type=tiger --vnc-path=/usr/bin/vncviewer --namespace {{.NS}} {{.VM}}",
+      requires: {
+        vars: [
+          "VM",
+        ],
+      },
+      preconditions: [
+        "which kubectl",
+        "which virtctl",
+        "which vncviewer",
+        "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
       ],
     },
   },

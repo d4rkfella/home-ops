@@ -21,6 +21,24 @@
         "test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml",
       ],
     },
+    node-debug: {
+      desc: "Run a debug container on a node [NODE=required, IMAGE=optional]",
+      interactive: true,
+      vars: {
+        IMAGE: "{{.IMAGE | default \"docker.io/library/alpine:latest\"}}",
+      },
+      cmd: "talosctl -n {{.NODE}} debug {{.IMAGE}} --args /bin/sh",
+      requires: {
+        vars: [
+          "NODE",
+        ],
+      },
+      preconditions: [
+        "which talosctl",
+        "which kubectl",
+        "kubectl get nodes {{.NODE}}",
+      ],
+    },
     regenerate-talosconfig: {
       desc: "Creates new talosconfig key pair using the root Talos API CA from the control plane machine configuration.",
       interactive: true,

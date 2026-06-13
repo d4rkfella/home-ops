@@ -10,7 +10,7 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg xz-utils unzip \
-        jq nano bash bash-completion git direnv && \
+        jq nano bash bash-completion git direnv tigervnc-viewer && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/siderolabs/talosctl:v1.13.4@sha256:22101c9dc8b4dcab5534a9ce0192a6d40245183324f19785cd4e36f9a9ed5e7a /talosctl /usr/local/bin/
@@ -44,7 +44,7 @@ RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.8.3
-RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64
+RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && chmod +x /usr/local/bin/virtctl
 
 # renovate: datasource=github-releases depName=helm/helm
 ARG HELM_VERSION=v4.2.1
@@ -64,8 +64,6 @@ RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.si
       --certificate-oidc-issuer https://accounts.google.com && \
     chmod +x kubectl && mv kubectl /usr/local/bin/ && \
     rm -rf /tmp/*
-
-RUN curl -fsSL -o /usr/local/bin/kubectl-node_shell "https://github.com/kvaps/kubectl-node-shell/raw/master/kubectl-node_shell"
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
 ARG LEFTHOOK_VERSION=v2.1.9

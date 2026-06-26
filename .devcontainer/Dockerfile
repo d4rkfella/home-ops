@@ -13,7 +13,7 @@ RUN apt-get update && \
         jq nano bash bash-completion git direnv tigervnc-viewer && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.13.4@sha256:22101c9dc8b4dcab5534a9ce0192a6d40245183324f19785cd4e36f9a9ed5e7a /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.13.5@sha256:260889d79299fc935eb80cc56ef04d8b609d31674b882dfdbc204374ee6a90e4 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.8.8@sha256:3113a880461938a47ab2ec877aecbf19c570e4df9848d20228d1b4d2c7f8a764 /usr/local/bin/flux /usr/local/bin/
@@ -22,10 +22,10 @@ RUN flux --version
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.1@sha256:6bbe0d281d955c79f85b325f0f7e651c1bcab5a4fa4ad4903d74955178a3b2eb /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.5.5@sha256:64c4d0ead4e19e1368fb04980ed3859d466dc80c5738d91cafb1fc45473242f2 /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.6.0@sha256:b01ea12b69cbf2b63a391b55d18c1a237f92c662ab23115ed5d1551e5acd61f0 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.23-trixie@sha256:38c48d55324590b732433c71bd71b250f0e6c8dc0ccb2a45c81d29e6d1c159ac /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.25-trixie@sha256:46621bf60ce26a9d82087df4a8f502655b848f70e60fca2a416b26e8f3f23b23 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.1@sha256:320f253aced1393537b1e90c77eb48295204d805d4c68933264cd1285192465d /usr/local/bin/sops /usr/local/bin/
@@ -86,7 +86,7 @@ RUN echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
 # renovate: datasource=pypi depName=vaultctl
-ARG VAULTCTL_VERSION=0.2.3
+ARG VAULTCTL_VERSION=0.2.4
 RUN uv tool install vaultctl==${VAULTCTL_VERSION} && \
     uv python update-shell && \
     uv cache clean

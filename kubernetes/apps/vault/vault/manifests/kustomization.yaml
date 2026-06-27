@@ -5,7 +5,6 @@
   resources: [
     "./networkpolicy.yaml",
     "./externalsecret.yaml",
-    "./vault.secret.sops.yaml",
     "./certificate.yaml",
     "./ocirepository.yaml",
     "./helmrelease.yaml",

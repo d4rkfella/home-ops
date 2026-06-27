@@ -4,7 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./namespace.yaml",
-    "./vault/ks.yaml",
+    #"./vault/ks.yaml",
   ],
   components: [
     "../../components/alerts",

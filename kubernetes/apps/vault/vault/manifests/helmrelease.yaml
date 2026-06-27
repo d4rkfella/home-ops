@@ -51,15 +51,6 @@
         updateStrategyType: "RollingUpdate",
         logLevel: "info",
         logFormat: "json",
-        extraSecretEnvironmentVars: [{
-          envName: "AWS_ACCESS_KEY_ID",
-          secretName: "vault-eks-secret",
-          secretKey: "AWS_ACCESS_KEY_ID",
-        }, {
-          envName: "AWS_SECRET_ACCESS_KEY",
-          secretName: "vault-eks-secret",
-          secretKey: "AWS_SECRET_ACCESS_KEY",
-        }],
         volumes: [{
           name: "vault-tls",
           secret: {
@@ -111,11 +102,6 @@
             config: "\
                ui = true\n\
                api_addr = \"https://vault.darkfellanetwork.com:8200\"\n\
-               \n\
-               seal \"awskms\" {\n\
-              \  region = \"us-east-1\"\n\
-              \  kms_key_id = \"arn:aws:kms:us-east-1:905418366675:key/6e4bfe89-d22a-41d7-8705-2729d0f3b099\"\n\
-               }\n\
                \n\
                listener \"tcp\" {\n\
               \  tls_disable = 0\n\

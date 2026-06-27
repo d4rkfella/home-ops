@@ -308,11 +308,9 @@
         },
       },
       kubeEtcd: {
-        service: {
-          selector: {
-            component: "apiserver",
-          },
-        },
+        endpoints: [
+          "192.168.91.9",
+        ],
       },
       kubeScheduler: {
         endpoints: [

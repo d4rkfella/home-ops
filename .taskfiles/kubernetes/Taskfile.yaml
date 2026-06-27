@@ -56,22 +56,48 @@
       ],
     },
     vnc: {
-      desc: "Open a VNC session to a VM [VM=required, NS=virtualization]",
+      desc: "Open a VNC session to a VM",
       interactive: true,
       vars: {
-        NS: "{{.NS | default \"virtualization\"}}",
+        VM: {
+          sh: "gum input --placeholder \"VM name\"",
+        },
+        NS: {
+          sh: "gum input --placeholder \"Namespace\" --value \"virtualization\"",
+        },
       },
       cmd: "virtctl vnc --vnc-type=tiger --vnc-path=/usr/bin/vncviewer --namespace {{.NS}} {{.VM}}",
-      requires: {
-        vars: [
-          "VM",
-        ],
-      },
       preconditions: [
         "which kubectl",
         "which virtctl",
         "which vncviewer",
+        "which gum",
         "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
+      ],
+    },
+    browse-pvc: {
+      desc: "Browse files on a PVC using filebrowser [PVC=required, NS=required]",
+      interactive: true,
+      vars: {
+        PVC: {
+          sh: "gum input --placeholder \"PVC name\"",
+        },
+        NS: {
+          sh: "gum input --placeholder \"Namespace\"",
+        },
+      },
+      cmds: [
+        "kubectl run filebrowser-{{.PVC}} --image=filebrowser/filebrowser:latest --restart=Never --namespace={{.NS}} --overrides='{\"spec\":{\"containers\":[{\"name\":\"filebrowser\",\"image\":\"filebrowser/filebrowser:latest\",\"args\":[\"--noauth\",\"--root\",\"/data\"],\"ports\":[{\"containerPort\":80}],\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data\"}]}],\"volumes\":[{\"name\":\"data\",\"persistentVolumeClaim\":{\"claimName\":\"{{.PVC}}\"}}]}}'",
+        "kubectl wait pod/filebrowser-{{.PVC}} --for=condition=Ready --namespace={{.NS}} --timeout=60s",
+        "xdg-open http://localhost:8080",
+        "kubectl port-forward pod/filebrowser-{{.PVC}} 8080:80 --namespace={{.NS}}",
+        {
+          defer: "kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NS}} --ignore-not-found",
+        },
+      ],
+      preconditions: [
+        "which kubectl",
+        "which gum",
       ],
     },
   },

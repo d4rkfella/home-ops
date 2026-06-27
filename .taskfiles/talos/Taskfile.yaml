@@ -6,44 +6,51 @@
     apply-config: {
       desc: "Apply configuration file to a talos node",
       prompt: "Apply configuration file ... continue?",
+      vars: {
+        IP: {
+          sh: "gum input --placeholder \"Node IP\"",
+        },
+      },
       cmd: "\
          sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \\\n\
         \        talosctl apply-config --nodes {{.IP}} --file /dev/stdin\n\
         ",
-      requires: {
-        vars: [
-          "IP",
-        ],
-      },
       preconditions: [
+        "which gum",
         "test -f {{.ROOT_DIR}}/talosconfig",
         "test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml",
       ],
     },
     node-debug: {
-      desc: "Run a debug container on a node [NODE=required, IMAGE=optional]",
+      desc: "Run a debug container on a node",
       interactive: true,
       vars: {
-        IMAGE: "{{.IMAGE | default \"docker.io/library/alpine:latest\"}}",
+        NODE: {
+          sh: "gum input --placeholder \"Node name\"",
+        },
+        IMAGE: {
+          sh: "gum input --placeholder \"Image\" --value \"docker.io/library/alpine:latest\"",
+        },
       },
       cmd: "talosctl -n {{.NODE}} debug {{.IMAGE}} --args /bin/sh",
-      requires: {
-        vars: [
-          "NODE",
-        ],
-      },
       preconditions: [
         "which talosctl",
         "which kubectl",
+        "which gum",
         "kubectl get nodes {{.NODE}}",
       ],
     },
     regenerate-talosconfig: {
-      desc: "Regenerate talosconfig from control plane machine config [IP=required]",
+      desc: "Regenerate talosconfig from control plane machine config",
       interactive: true,
       prompt: "Regenerate talosconfig ... continue?",
       vars: {
-        OUTPUT: "{{.OUTPUT | default \"talosconfig\"}}",
+        IP: {
+          sh: "gum input --placeholder \"Node IP\"",
+        },
+        OUTPUT: {
+          sh: "gum input --placeholder \"Output file\" --value \"talosconfig\"",
+        },
       },
       cmds: [
         "sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | yq eval .machine.ca.crt | base64 -d > /tmp/ca.crt",
@@ -55,15 +62,11 @@
         "sed -i \"s|key:.*|key: $(base64 -w0 admin.key)|\" {{.ROOT_DIR}}/{{.OUTPUT}}",
         "rm -f /tmp/ca.crt /tmp/ca.key admin.key admin.csr admin.crt",
       ],
-      requires: {
-        vars: [
-          "IP",
-        ],
-      },
       preconditions: [
         "which talosctl",
         "which sops",
         "which yq",
+        "which gum",
         "test -f {{.TALOS_DIR}}/{{.IP}}.sops.yaml",
         "test -f {{.ROOT_DIR}}/talosconfig",
       ],

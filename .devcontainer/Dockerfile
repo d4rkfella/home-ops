@@ -10,7 +10,8 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl ca-certificates gnupg xz-utils unzip \
-        jq nano bash bash-completion git direnv tigervnc-viewer && \
+        jq nano bash bash-completion git direnv tigervnc-viewer \
+        xdg-utils gum && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/siderolabs/talosctl:v1.13.5@sha256:260889d79299fc935eb80cc56ef04d8b609d31674b882dfdbc204374ee6a90e4 /talosctl /usr/local/bin/

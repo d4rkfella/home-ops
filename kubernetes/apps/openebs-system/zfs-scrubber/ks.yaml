@@ -19,7 +19,7 @@
     postBuild: {
       substitute: {
         # renovate: datasource=custom.talos-factory depName=siderolabs/talos
-        TALOS_VERSION: "v1.13.4",
+        TALOS_VERSION: "v1.13.5",
       },
     },
   },

@@ -148,14 +148,20 @@
             path: "/config/Library/Application Support/Plex Media Server",
           }],
         },
-        config-cache: {
-          suffix: "cache",
+        config-data: {
+          suffix: "data",
           type: "persistentVolumeClaim",
           size: "75Gi",
-          storageClass: "openebs-zfs-1m",
-          accessMode: "ReadWriteOnce",
+          storageClass: "openebs-zfs-128k",
           globalMounts: [{
             path: "/config/Library/Application Support/Plex Media Server/Cache",
+            subPath: "Cache",
+          }, {
+            path: "/config/Library/Application Support/Plex Media Server/Metadata",
+            subPath: "Metadata",
+          }, {
+            path: "/config/Library/Application Support/Plex Media Server/Media",
+            subPath: "Media",
           }],
         },
         media: {

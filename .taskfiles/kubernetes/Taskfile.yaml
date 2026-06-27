@@ -76,7 +76,7 @@
       ],
     },
     browse-pvc: {
-      desc: "Browse files on a PVC using filebrowser [PVC=required, NS=required]",
+      desc: "Browse files on a PVC using filebrowser",
       interactive: true,
       vars: {
         PVC: {
@@ -85,12 +85,15 @@
         NS: {
           sh: "gum input --placeholder \"Namespace\"",
         },
+        USER: {
+          sh: "gum input --placeholder \"User ID\" --value \"65532\"",
+        },
       },
       cmds: [
-        "kubectl run filebrowser-{{.PVC}} --image=filebrowser/filebrowser:latest --restart=Never --namespace={{.NS}} --overrides='{\"spec\":{\"containers\":[{\"name\":\"filebrowser\",\"image\":\"filebrowser/filebrowser:latest\",\"args\":[\"--noauth\",\"--root\",\"/data\"],\"ports\":[{\"containerPort\":80}],\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data\"}]}],\"volumes\":[{\"name\":\"data\",\"persistentVolumeClaim\":{\"claimName\":\"{{.PVC}}\"}}]}}'",
+        "kubectl run filebrowser-{{.PVC}} --image=filebrowser/filebrowser:latest --restart=Never --namespace={{.NS}} --overrides='{\"spec\":{\"securityContext\":{\"fsGroup\":{{.USER}}},\"containers\":[{\"name\":\"filebrowser\",\"image\":\"filebrowser/filebrowser:latest\",\"args\":[\"--noauth\",\"--root\",\"/data\",\"--config\",\"/tmp/settings.json\",\"--database\",\"/tmp/filebrowser.db\"],\"ports\":[{\"containerPort\":80}],\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data\"}]}],\"volumes\":[{\"name\":\"data\",\"persistentVolumeClaim\":{\"claimName\":\"{{.PVC}}\"}}]}}'",
         "kubectl wait pod/filebrowser-{{.PVC}} --for=condition=Ready --namespace={{.NS}} --timeout=60s",
-        "xdg-open http://localhost:8080",
-        "kubectl port-forward pod/filebrowser-{{.PVC}} 8080:80 --namespace={{.NS}}",
+        "xdg-open http://localhost:8080 &",
+        "kubectl port-forward pod/filebrowser-{{.PVC}} 8080:8080 --namespace={{.NS}}",
         {
           defer: "kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NS}} --ignore-not-found",
         },
@@ -98,6 +101,7 @@
       preconditions: [
         "which kubectl",
         "which gum",
+        "which xdg-open",
       ],
     },
   },

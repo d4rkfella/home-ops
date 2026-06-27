@@ -8,7 +8,6 @@
       prompt: "Apply configuration file ... continue?",
       cmd: "\
          sops --decrypt {{.TALOS_DIR}}/{{.IP}}.sops.yaml | \\\n\
-        \    /usr/local/bin/envsubst | \\\n\
         \        talosctl apply-config --nodes {{.IP}} --file /dev/stdin\n\
         ",
       requires: {

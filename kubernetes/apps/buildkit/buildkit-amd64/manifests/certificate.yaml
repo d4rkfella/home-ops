@@ -21,9 +21,6 @@
       group: "cert-manager.io",
     },
     dnsNames: [
-      "buildkit-amd64",
-      "buildkit-amd64.buildkit",
-      "buildkit-amd64.buildkit.svc",
       "buildkit-amd64.buildkit.svc.cluster.local",
     ],
     usages: [

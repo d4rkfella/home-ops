@@ -47,7 +47,7 @@
   },
   spec: {
     vault: {
-      path: "pki_intermediate/sign/web-servers",
+      path: "pki_intermediate/sign/kubernetes",
       server: "https://vault.darkfellanetwork.com:8200",
       auth: {
         kubernetes: {

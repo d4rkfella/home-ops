@@ -8,6 +8,13 @@
   },
   spec: {
     secretName: "buildkit-client-tls",
+    duration: "24h",
+    privateKey: {
+      algorithm: "ECDSA",
+      encoding: "PKCS8",
+      rotationPolicy: "Always",
+      size: 256,
+    },
     issuerRef: {
       name: "vault-issuer",
       kind: "ClusterIssuer",
@@ -15,8 +22,6 @@
     },
     commonName: "buildkit-client",
     usages: [
-      "digital signature",
-      "key encipherment",
       "client auth",
     ],
   },

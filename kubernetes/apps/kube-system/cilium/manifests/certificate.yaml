@@ -14,8 +14,6 @@
     },
     commonName: "prometheus-client",
     usages: [
-      "digital signature",
-      "key encipherment",
       "client auth",
     ],
   },
@@ -38,8 +36,6 @@
       "*.main.hubble-grpc.cilium.io",
     ],
     usages: [
-      "digital signature",
-      "key encipherment",
       "server auth",
     ],
     duration: "8760h",
@@ -68,8 +64,6 @@
       "hubble-relay",
     ],
     usages: [
-      "digital signature",
-      "key encipherment",
       "server auth",
     ],
     duration: "8760h",
@@ -92,8 +86,6 @@
     },
     commonName: "hubble-relay-client",
     usages: [
-      "digital signature",
-      "key encipherment",
       "client auth",
     ],
   },
@@ -114,8 +106,6 @@
     },
     commonName: "hubble-ui-client",
     usages: [
-      "digital signature",
-      "key encipherment",
       "client auth",
     ],
   },
@@ -138,8 +128,6 @@
       "*.hubble-metrics.cilium.io",
     ],
     usages: [
-      "digital signature",
-      "key encipherment",
       "server auth",
     ],
     duration: "8760h",

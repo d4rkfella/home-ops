@@ -24,7 +24,7 @@
     },
     dataFrom: [{
       extract: {
-        key: "secrets/volsync/${APP}",
+        key: "kv/volsync/${APP}",
       },
     }],
   },

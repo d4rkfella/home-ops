@@ -23,7 +23,7 @@ RUN flux --version
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.1@sha256:6bbe0d281d955c79f85b325f0f7e651c1bcab5a4fa4ad4903d74955178a3b2eb /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.6.0@sha256:b01ea12b69cbf2b63a391b55d18c1a237f92c662ab23115ed5d1551e5acd61f0 /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.7.0@sha256:f016653a0f7c47613fe2a6577d5059c2744a86a051e50f1e5e80a3424536f0bb /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.26-trixie@sha256:2fcd9bffd6eebf7976bf8bbc9e5e1e558cd902076638d72fcba6dce08592f7fb /usr/local/bin/uv* /usr/local/bin/

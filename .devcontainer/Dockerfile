@@ -87,7 +87,7 @@ RUN echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
 # renovate: datasource=pypi depName=vaultctl
-ARG VAULTCTL_VERSION=0.2.4
+ARG VAULTCTL_VERSION=0.2.5
 RUN uv tool install vaultctl==${VAULTCTL_VERSION} && \
     uv python update-shell && \
     uv cache clean

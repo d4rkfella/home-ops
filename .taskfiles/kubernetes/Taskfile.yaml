@@ -75,6 +75,25 @@
         "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
       ],
     },
+    console: {
+      desc: "Connect to a VM console",
+      interactive: true,
+      vars: {
+        VM: {
+          sh: "gum input --placeholder \"VM name\"",
+        },
+        NS: {
+          sh: "gum input --placeholder \"Namespace\" --value \"virtualization\"",
+        },
+      },
+      cmd: "virtctl console --namespace {{.NS}} {{.VM}}",
+      preconditions: [
+        "which kubectl",
+        "which virtctl",
+        "which gum",
+        "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
+      ],
+    },
     browse-pvc: {
       desc: "Browse files on a PVC using filebrowser",
       interactive: true,

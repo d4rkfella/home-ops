@@ -123,5 +123,58 @@
         "which xdg-open",
       ],
     },
+    unseal-vault: {
+      interactive: true,
+      vars: {
+        NS: {
+          sh: "gum input --placeholder \"Namespace\" --value \"vault\"",
+        },
+        LABEL: {
+          sh: "gum input --placeholder \"Pod label selector\" --value \"app.kubernetes.io/name=vault\"",
+        },
+        UNSEAL_KEY: {
+          sh: "gum input --placeholder \"Unseal key\" --password",
+        },
+        VAULT_PODS: {
+          sh: "kubectl get pods --namespace {{.NS}} -l {{.LABEL}} --no-headers --output=jsonpath='{.items[*].metadata.name}'",
+        },
+      },
+      cmds: [{
+        for: {
+          var: "VAULT_PODS",
+          split: " ",
+        },
+        cmd: "echo \"=== {{.ITEM}} ===\"; kubectl --namespace {{.NS}} exec {{.ITEM}} -- env VAULT_SKIP_VERIFY=true VAULT_ADDR=https://127.0.0.1:8200 vault operator unseal {{.UNSEAL_KEY}} || true",
+      }],
+      preconditions: [
+        "which kubectl",
+        "which gum",
+      ],
+    },
+    vault-status: {
+      interactive: true,
+      vars: {
+        NS: {
+          sh: "gum input --placeholder \"Namespace\" --value \"vault\"",
+        },
+        LABEL: {
+          sh: "gum input --placeholder \"Pod label selector\" --value \"app.kubernetes.io/name=vault\"",
+        },
+        VAULT_PODS: {
+          sh: "kubectl get pods --namespace {{.NS}} -l {{.LABEL}} --no-headers --output=jsonpath='{.items[*].metadata.name}'",
+        },
+      },
+      cmds: [{
+        for: {
+          var: "VAULT_PODS",
+          split: " ",
+        },
+        cmd: "echo \"=== {{.ITEM}} ===\"; kubectl --namespace {{.NS}} exec {{.ITEM}} -- env VAULT_SKIP_VERIFY=true VAULT_ADDR=https://127.0.0.1:8200 vault status || true",
+      }],
+      preconditions: [
+        "which kubectl",
+        "which gum",
+      ],
+    },
   },
 }

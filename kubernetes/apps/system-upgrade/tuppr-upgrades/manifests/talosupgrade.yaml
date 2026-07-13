@@ -12,7 +12,8 @@
       version: "v1.13.5",
     },
     policy: {
-      rebootMode: "powercycle",
+      rebootMode: "default",
+      nodrain: true,
     },
     healthChecks: [{
       apiVersion: "volsync.backube/v1alpha1",

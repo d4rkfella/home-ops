@@ -10,7 +10,7 @@
     targetRefs: [{
       group: "gateway.networking.k8s.io",
       kind: "HTTPRoute",
-      name: "kube-prometheus-stack-prometheus",
+      name: "prometheus",
     }],
     oidc: {
       provider: {
@@ -83,7 +83,7 @@
     targetRefs: [{
       group: "gateway.networking.k8s.io",
       kind: "HTTPRoute",
-      name: "kube-prometheus-stack-alertmanager",
+      name: "alertmanager",
     }],
     oidc: {
       provider: {

@@ -37,6 +37,7 @@
           authentication: {
             type: "OAuth2",
             oauth2: {
+              autoLogin: "true",
               provider: "OIDC",
               issuerURL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
             },

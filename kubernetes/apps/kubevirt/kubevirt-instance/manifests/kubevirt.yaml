@@ -33,6 +33,8 @@
           "AlignCPUs",
           "EnableVirtioFsConfigVolumes",
           "VMExport",
+          "HypervStrictCheck",
+          "KubevirtSeccompProfile",
         ],
       },
       smbios: {

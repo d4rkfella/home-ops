@@ -41,8 +41,8 @@
             dedicatedCpuPlacement: true,
             isolateEmulatorThread: true,
             sockets: 1,
-            cores: 4,
-            threads: 1,
+            cores: 2,
+            threads: 2,
           },
           ioThreadsPolicy: "auto",
           features: {

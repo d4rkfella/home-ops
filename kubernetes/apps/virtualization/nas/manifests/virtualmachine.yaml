@@ -40,6 +40,9 @@
             model: "host-passthrough",
             dedicatedCpuPlacement: true,
             isolateEmulatorThread: true,
+            sockets: 1,
+            cores: 4,
+            threads: 1,
           },
           ioThreadsPolicy: "auto",
           features: {
@@ -95,11 +98,9 @@
           },
           resources: {
             requests: {
-              cpu: 4,
               memory: "52Gi",
             },
             limits: {
-              cpu: 4,
               memory: "52Gi",
             },
           },

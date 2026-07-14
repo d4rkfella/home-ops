@@ -1,0 +1,25 @@
+---
+{
+  apiVersion: "monitoring.coreos.com/v1",
+  kind: "PrometheusRule",
+  metadata: {
+    name: "nas-zfs-pool-health",
+  },
+  spec: {
+    groups: [{
+      name: "zfs-pool-health",
+      rules: [{
+        alert: "ZfsPoolUnhealthy",
+        expr: "zfs_pool_health{pool=\"exos20\"} > 0",
+        for: "5m",
+        labels: {
+          severity: "critical",
+        },
+        annotations: {
+          summary: "ZFS pool {{ $labels.pool }} on {{ $labels.instance }} is unhealthy",
+          description: "Pool {{ $labels.pool }} health state is {{ $value }} (0=ONLINE, 1=DEGRADED, 2=FAULTED, 3=OFFLINE, 4=UNAVAIL, 5=REMOVED, 6=SUSPENDED). Check `zpool status {{ $labels.pool }}` on the NAS VM.",
+        },
+      }],
+    }],
+  },
+}

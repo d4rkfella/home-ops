@@ -9,6 +9,7 @@
   spec: {
     interval: "1h",
     timeout: "15m",
+    retryInterval: "2m",
     path: "./kubernetes/apps/virtualization/nas/manifests",
     prune: true,
     sourceRef: {

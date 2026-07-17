@@ -42,81 +42,67 @@ trap 'rm -rf "${TMP}" "${CONVERSION_TMP}"' EXIT
 mkdir -p "${OUTPUT_DIR}"
 
 
-fetch_crd() {
-    local crd="$1"
+echo "Fetching CRDs..."
 
-    echo "Fetching CRD: ${crd}"
-
-    if "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
-        > "${TMP}/${crd}.yaml"; then
-
-        return 0
-
-    fi
-
-    echo "Warning: Failed to fetch CRD: ${crd}" >&2
-
-    echo "kubectl error:" >&2
-
-    "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
-        >/dev/null 2>&1 || true
-
-    rm -f "${TMP}/${crd}.yaml"
-
-    return 0
-}
+"${KUBECTL_ARGS[@]}" get crds -o yaml > "${TMP}/crds.yaml"
 
 
-echo "Fetching list of CRDs..."
-
-
-mapfile -t CRD_LIST < <(
-    "${KUBECTL_ARGS[@]}" get crds -o name |
-    sed 's#customresourcedefinition.apiextensions.k8s.io/##'
-)
-
-
-if [ "${#CRD_LIST[@]}" -eq 0 ]; then
-    echo "No CRDs found"
-    exit 0
+if [ ! -s "${TMP}/crds.yaml" ]; then
+    echo "No CRDs returned"
+    exit 1
 fi
 
 
 if [ -n "${CRD_FILTER:-}" ]; then
 
-    mapfile -t CRD_LIST < <(
-        printf '%s\n' "${CRD_LIST[@]}" |
-        grep -E "${CRD_FILTER}" || true
-    )
+    echo "Filtering CRDs using: ${CRD_FILTER}"
+
+    python3 - "${TMP}/crds.yaml" "${TMP}/filtered.yaml" "${CRD_FILTER}" <<'PY'
+import sys
+import re
+import yaml
+
+source = sys.argv[1]
+dest = sys.argv[2]
+pattern = sys.argv[3]
+
+with open(source) as f:
+    data = yaml.safe_load(f)
+
+items = [
+    item for item in data.get("items", [])
+    if re.search(pattern, item["metadata"]["name"])
+]
+
+data["items"] = items
+
+with open(dest, "w") as f:
+    yaml.safe_dump(data, f)
+PY
+
+    mv "${TMP}/filtered.yaml" "${TMP}/crds.yaml"
 
 fi
 
 
-echo "Found ${#CRD_LIST[@]} CRDs"
+CRD_COUNT=$(python3 - "${TMP}/crds.yaml" <<'PY'
+import sys
+import yaml
+
+with open(sys.argv[1]) as f:
+    data = yaml.safe_load(f)
+
+print(len(data.get("items", [])))
+PY
+)
 
 
-PARALLELISM="${PARALLELISM:-10}"
+echo "Found ${CRD_COUNT} CRDs"
 
 
-for crd in "${CRD_LIST[@]}"; do
-
-    fetch_crd "${crd}" &
-
-    while [ "$(jobs -r | wc -l)" -ge "${PARALLELISM}" ]; do
-        sleep 1
-    done
-
-done
-
-
-wait || true
-
-
-if ! compgen -G "${TMP}/*.yaml" >/dev/null; then
-
-    echo "No CRD YAML files were fetched"
-    exit 1
-
+if [ "${CRD_COUNT}" -eq 0 ]; then
+    echo "No CRDs to convert"
+    exit 0
 fi
 
 
@@ -131,8 +117,9 @@ export FILENAME_FORMAT="{fullgroup}_{kind}_{version}"
 
     python3 \
         "${SCRIPT_DIR}/openapi2jsonschema.py" \
-        "${TMP}"/*.yaml
+        "${TMP}/crds.yaml"
 )
+
 
 
 echo "Copying schemas..."
@@ -221,10 +208,8 @@ cat >> "${OUTPUT_DIR}/index.html" <<'EOF'
 EOF
 
 
-
 echo
 echo "====================================="
 echo "Generated schemas: ${SCHEMA_COUNT}"
 echo "Output directory: ${OUTPUT_DIR}"
 echo "====================================="
-

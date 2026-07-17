@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-import yaml
 import json
-import sys
 import os
+import sys
 import urllib.request
+
+import yaml
 
 
 if "DISABLE_SSL_CERT_VALIDATION" in os.environ:
@@ -12,103 +13,172 @@ if "DISABLE_SSL_CERT_VALIDATION" in os.environ:
     ssl._create_default_https_context = ssl._create_unverified_context
 
 
-def additional_properties(data, skip=False):
 
-    if isinstance(data, dict):
-
-        if "properties" in data and not skip:
-            if "additionalProperties" not in data:
-                data["additionalProperties"] = False
-
-        for value in data.values():
-            additional_properties(value)
-
-    return data
+QUIET = os.getenv(
+    "QUIET",
+    "0"
+).lower() in (
+    "1",
+    "true",
+    "yes"
+)
 
 
 
-def replace_int_or_string(data):
+DENY_ROOT_ADDITIONAL_PROPERTIES = (
+    "DENY_ROOT_ADDITIONAL_PROPERTIES"
+    in os.environ
+)
 
-    if isinstance(data, dict):
 
-        new = {}
 
-        for key, value in data.items():
+FILENAME_FORMAT = os.getenv(
+    "FILENAME_FORMAT",
+    "{kind}_{version}"
+)
 
-            if isinstance(value, dict):
 
-                if value.get("format") == "int-or-string":
 
-                    new[key] = {
-                        "oneOf": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "integer"
-                            }
-                        ]
-                    }
+INT_OR_STRING_SCHEMA = {
+    "oneOf": [
+        {
+            "type": "string"
+        },
+        {
+            "type": "integer"
+        }
+    ]
+}
 
-                else:
-                    new[key] = replace_int_or_string(value)
 
-            elif isinstance(value, list):
 
-                new[key] = [
-                    replace_int_or_string(item)
-                    for item in value
-                ]
 
-            else:
-                new[key] = value
+def optimize_schema(node, is_root=False):
+    """
+    Single-pass schema optimizer.
 
-        return new
+    Performs:
+    - additionalProperties injection
+    - int-or-string conversion
 
-    return data
+    Mutates objects in-place.
+    """
+
+
+    if isinstance(node, dict):
+
+        # replace int-or-string marker
+
+        if node.get("format") == "int-or-string":
+
+            node.clear()
+
+            node.update(
+                {
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ]
+                }
+            )
+
+            return node
+
+
+
+        # add additionalProperties only where needed
+
+        if (
+            "properties" in node
+            and "additionalProperties" not in node
+            and (
+                not is_root
+                or DENY_ROOT_ADDITIONAL_PROPERTIES
+            )
+        ):
+
+            node["additionalProperties"] = False
+
+
+
+        for key, value in list(node.items()):
+
+            node[key] = optimize_schema(
+                value,
+                False
+            )
+
+
+
+    elif isinstance(node, list):
+
+        for index, item in enumerate(node):
+
+            node[index] = optimize_schema(
+                item,
+                False
+            )
+
+
+
+    return node
+
+
 
 
 
 def write_schema_file(schema, filename):
 
-    schema = additional_properties(
+    optimize_schema(
         schema,
-        skip=not os.getenv(
-            "DENY_ROOT_ADDITIONAL_PROPERTIES"
-        )
-    )
-
-    schema = replace_int_or_string(schema)
-
-
-    schema_json = json.dumps(
-        schema,
-        indent=2,
-        ensure_ascii=False
+        True
     )
 
 
-    filename = os.path.basename(filename)
+    filename = os.path.basename(
+        filename
+    )
 
 
     with open(
         filename,
         "w",
-        encoding="utf-8"
+        encoding="utf-8",
+        buffering=1024 * 1024
     ) as f:
 
-        f.write(schema_json)
+        json.dump(
+            schema,
+            f,
+            ensure_ascii=False,
+            separators=(
+                ",",
+                ":"
+            )
+        )
 
 
-    print(
-        f"JSON schema written to {filename}"
-    )
+
+    if not QUIET:
+
+        print(
+            f"JSON schema written to {filename}"
+        )
+
+
 
 
 
 def construct_value(loader, node):
 
-    if not isinstance(node, yaml.ScalarNode):
+    if not isinstance(
+        node,
+        yaml.ScalarNode
+    ):
 
         raise yaml.constructor.ConstructorError(
             "while constructing a value",
@@ -117,159 +187,222 @@ def construct_value(loader, node):
             node.start_mark
         )
 
-    yield str(node.value)
+
+    yield str(
+        node.value
+    )
+
+
+
+
+
+
+def load_source(path):
+
+    if path.startswith(
+        "http"
+    ):
+
+        return urllib.request.urlopen(
+            path
+        )
+
+
+    return open(
+        path,
+        "r",
+        encoding="utf-8"
+    )
+
+
+
+
+
+
+def process_crd(crd):
+
+    results = []
+
+
+    if (
+        "spec" not in crd
+    ):
+
+        return results
+
+
+
+    spec = crd["spec"]
+
+
+
+    versions = spec.get(
+        "versions"
+    )
+
+
+
+    if versions:
+
+        for version in versions:
+
+            schema = None
+
+
+            if (
+                "schema" in version
+                and
+                "openAPIV3Schema"
+                in version["schema"]
+            ):
+
+                schema = (
+                    version["schema"]
+                    ["openAPIV3Schema"]
+                )
+
+
+            if schema is not None:
+
+                filename = (
+                    FILENAME_FORMAT.format(
+                        kind=spec["names"]["kind"],
+                        group=spec["group"].split(".")[0],
+                        fullgroup=spec["group"],
+                        version=version["name"]
+                    )
+                    .lower()
+                    + ".json"
+                )
+
+
+                results.append(
+                    (
+                        schema,
+                        filename
+                    )
+                )
+
+
+    else:
+
+        schema = (
+            spec
+            .get("validation", {})
+            .get("openAPIV3Schema")
+        )
+
+
+        if schema is not None:
+
+            filename = (
+                FILENAME_FORMAT.format(
+                    kind=spec["names"]["kind"],
+                    group=spec["group"].split(".")[0],
+                    fullgroup=spec["group"],
+                    version=spec.get("version")
+                )
+                .lower()
+                + ".json"
+            )
+
+
+            results.append(
+                (
+                    schema,
+                    filename
+                )
+            )
+
+
+    return results
+
+
+
+
+
+
+def main():
+
+    if len(sys.argv) < 2:
+
+        print(
+            f"Usage: {sys.argv[0]} FILE"
+        )
+
+        return 1
+
+
+
+    yaml.SafeLoader.add_constructor(
+        "tag:yaml.org,2002:value",
+        construct_value
+    )
+
+
+
+    for source in sys.argv[1:]:
+
+        with load_source(source) as stream:
+
+
+            documents = yaml.load_all(
+                stream,
+                Loader=yaml.SafeLoader
+            )
+
+
+            for document in documents:
+
+
+                if not document:
+
+                    continue
+
+
+
+                crds = []
+
+
+
+                if "items" in document:
+
+                    crds.extend(
+                        document["items"]
+                    )
+
+
+                if (
+                    document.get("kind")
+                    ==
+                    "CustomResourceDefinition"
+                ):
+
+                    crds.append(
+                        document
+                    )
+
+
+
+                for crd in crds:
+
+                    for schema, filename in process_crd(crd):
+
+                        write_schema_file(
+                            schema,
+                            filename
+                        )
+
+
+    return 0
+
+
+
 
 
 
 if __name__ == "__main__":
 
-
-    if len(sys.argv) < 2:
-
-        print(
-            f"Missing FILE parameter.\nUsage: {sys.argv[0]} [FILE]"
-        )
-
-        sys.exit(1)
-
-
-
-    for crd_file in sys.argv[1:]:
-
-
-        if crd_file.startswith("http"):
-
-            f = urllib.request.urlopen(crd_file)
-
-        else:
-
-            f = open(crd_file)
-
-
-
-        with f:
-
-
-            defs = []
-
-
-            yaml.SafeLoader.add_constructor(
-                "tag:yaml.org,2002:value",
-                construct_value
-            )
-
-
-
-            for document in yaml.load_all(
-                f,
-                Loader=yaml.SafeLoader
-            ):
-
-
-                if document is None:
-                    continue
-
-
-                if "items" in document:
-                    defs.extend(document["items"])
-
-
-                if document.get("kind") == "CustomResourceDefinition":
-
-                    defs.append(document)
-
-
-
-            for crd in defs:
-
-
-                filename_format = os.getenv(
-                    "FILENAME_FORMAT",
-                    "{kind}_{version}"
-                )
-
-
-
-                if (
-                    "spec" in crd
-                    and "versions" in crd["spec"]
-                    and crd["spec"]["versions"]
-                ):
-
-
-                    for version in crd["spec"]["versions"]:
-
-
-                        schema = None
-
-
-                        if (
-                            "schema" in version
-                            and "openAPIV3Schema"
-                            in version["schema"]
-                        ):
-
-                            schema = (
-                                version["schema"]["openAPIV3Schema"]
-                            )
-
-
-                        elif (
-                            "validation" in crd["spec"]
-                            and "openAPIV3Schema"
-                            in crd["spec"]["validation"]
-                        ):
-
-                            schema = (
-                                crd["spec"]["validation"]["openAPIV3Schema"]
-                            )
-
-
-
-                        if schema is not None:
-
-
-                            filename = (
-                                filename_format.format(
-                                    kind=crd["spec"]["names"]["kind"],
-                                    group=crd["spec"]["group"].split(".")[0],
-                                    fullgroup=crd["spec"]["group"],
-                                    version=version["name"],
-                                ).lower()
-                                + ".json"
-                            )
-
-
-                            write_schema_file(
-                                schema,
-                                filename
-                            )
-
-
-
-                elif (
-                    "spec" in crd
-                    and "validation" in crd["spec"]
-                    and "openAPIV3Schema"
-                    in crd["spec"]["validation"]
-                ):
-
-
-                    filename = (
-                        filename_format.format(
-                            kind=crd["spec"]["names"]["kind"],
-                            group=crd["spec"]["group"].split(".")[0],
-                            fullgroup=crd["spec"]["group"],
-                            version=crd["spec"]["version"],
-                        ).lower()
-                        + ".json"
-                    )
-
-
-                    write_schema_file(
-                        crd["spec"]["validation"]["openAPIV3Schema"],
-                        filename
-                    )
-
-
-    sys.exit(0)
+    sys.exit(
+        main()
+    )

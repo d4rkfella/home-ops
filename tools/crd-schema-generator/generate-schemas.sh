@@ -75,8 +75,9 @@ shopt -s nullglob
 
 SCHEMA_COUNT=0
 
-
 for schema in "${CONVERSION_TMP}"/*.json; do
+
+    [ -f "$schema" ] || continue
 
     filename="$(basename "${schema}")"
 
@@ -92,10 +93,9 @@ for schema in "${CONVERSION_TMP}"/*.json; do
        "${OUTPUT_DIR}/${group}/${output_name}"
 
 
-    ((SCHEMA_COUNT++))
+    SCHEMA_COUNT=$((SCHEMA_COUNT + 1))
 
 done
-
 
 shopt -u nullglob
 

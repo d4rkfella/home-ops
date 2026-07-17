@@ -138,11 +138,7 @@ def write_schema_file(schema, filename):
         True
     )
 
-
-    filename = os.path.basename(
-        filename
-    )
-
+    filename = os.path.basename(filename)
 
     with open(
         filename,
@@ -158,15 +154,13 @@ def write_schema_file(schema, filename):
             indent=2
         )
 
+        f.write("\n")
 
 
     if not QUIET:
-
         print(
             f"JSON schema written to {filename}"
         )
-
-
 
 
 

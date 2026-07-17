@@ -4,7 +4,6 @@
   kind: "ConfigMap",
   metadata: {
     name: "nfs-quiesce-scripts",
-    namespace: "system-upgrade",
   },
   data: {
     pre.sh: "\

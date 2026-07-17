@@ -33,8 +33,13 @@
       \    DaemonSet)\n\
       \      echo \"$ns $owner_name\" >> /tmp/daemonsets.list ;;\n\
       \    ReplicaSet)\n\
-      \      dep=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].name}')\n\
-      \      echo \"$ns $dep\" >> /tmp/deployments.list ;;\n\
+      \      rs_kind=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].kind}')\n\
+      \      rs_name=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].name}')\n\
+      \      if [ \"$rs_kind\" = \"Deployment\" ]; then\n\
+      \        echo \"$ns $rs_name\" >> /tmp/deployments.list\n\
+      \      else\n\
+      \        echo \"Skipping ReplicaSet $ns/$owner_name owned by $rs_kind\" >&2\n\
+      \      fi ;;\n\
       \    Job)\n\
       \      echo \"Skipping Job-owned pod $ns/$pod\" ;;\n\
       \    none)\n\
@@ -78,17 +83,14 @@
       \  --from-file=/tmp/bare-pods \\\n\
       \  --dry-run=client -o yaml | kubectl apply -f -\n\
        \n\
-       for i in $(seq 1 60); do\n\
-      \  remaining=$(kubectl get pods -A -l \"$LABEL\" --no-headers 2>/dev/null | wc -l)\n\
-      \  [ \"$remaining\" -eq 0 ] && break\n\
-      \  sleep 5\n\
-       done\n\
+       echo \"Waiting for all NFS consumer pods to terminate...\"\n\
+       kubectl wait \\\n\
+      \  --for=delete pods \\\n\
+      \  --all-namespaces \\\n\
+      \  -l \"$LABEL\" \\\n\
+      \  --timeout=5m\n\
        \n\
-       remaining=$(kubectl get pods -A -l \"$LABEL\" --no-headers 2>/dev/null | wc -l)\n\
-       if [ \"$remaining\" -ne 0 ]; then\n\
-      \  echo \"NFS consumers still present, aborting upgrade\"\n\
-      \  exit 1\n\
-       fi\
+       echo \"All NFS consumers terminated.\"\n\
       ",
     post.sh: "\
        set -euo pipefail\n\
@@ -116,7 +118,7 @@
       \  jq -r \".data[\\\"$key\\\"]\" /tmp/state.json | kubectl apply -f -\n\
        done\n\
        \n\
-       kubectl -n system-upgrade delete configmap nfs-hook-state\
+       kubectl -n system-upgrade delete configmap nfs-hook-state\n\
       ",
   },
 }

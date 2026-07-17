@@ -52,48 +52,16 @@ jobs:
       - name: Install Python Dependencies
         run: uv pip install pyyaml
 
-      - name: Download extractor utilities
+      - name: Generate schemas
+        env:
+          OUTPUT_DIR: ${{ runner.temp }}/crdSchemas
         run: |
-          mkdir -p /tmp/crd-utils
-          curl -fsSL \
-            https://raw.githubusercontent.com/datreeio/CRDs-catalog/34cef0fc2698bbb611f475515e555a2d7ca85b6c/Utilities/crd-extractor.sh \
-            -o /tmp/crd-utils/crd-extractor.sh
-      
-          curl -fsSL \
-            https://raw.githubusercontent.com/datreeio/CRDs-catalog/34cef0fc2698bbb611f475515e555a2d7ca85b6c/Utilities/openapi2jsonschema.py \
-            -o /tmp/crd-utils/openapi2jsonschema.py
-      
-          chmod +x /tmp/crd-utils/crd-extractor.sh
-
-      - name: Run crd-extractor
-        run: |
-          cd /tmp/crd-utils
-          ./crd-extractor.sh
-
-      - name: Generate Index
-        run: |
-          cd /home/runner/.datree/crdSchemas
-          cat > index.html << 'EOF'
-          <!DOCTYPE html>
-          <html>
-          <head><title>CRD Schemas</title></head>
-          <body>
-          <h1>CRD Schemas</h1>
-          <ul>
-          EOF
-          find . -name "*.json" | sort | sed 's|./||' | while read f; do
-            echo "<li><a href=\"$f\">$f</a></li>" >> index.html
-          done
-          cat >> index.html << 'EOF'
-          </ul>
-          </body>
-          </html>
-          EOF
+          tools/crd-schema-generator/generate-schemas.sh
 
       - name: Publish Schemas
-        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: /home/runner/.datree/crdSchemas
+          workingDirectory: ${{ runner.temp }}/crdSchemas
           command: pages deploy --project-name=kubernetes-schemas --branch main .

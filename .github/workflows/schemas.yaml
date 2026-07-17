@@ -52,8 +52,23 @@ jobs:
       - name: Install Python Dependencies
         run: uv pip install pyyaml
 
+      - name: Download extractor utilities
+        run: |
+          mkdir -p /tmp/crd-utils
+          curl -fsSL \
+            https://raw.githubusercontent.com/datreeio/CRDs-catalog/34cef0fc2698bbb611f475515e555a2d7ca85b6c/Utilities/crd-extractor.sh \
+            -o /tmp/crd-utils/crd-extractor.sh
+      
+          curl -fsSL \
+            https://raw.githubusercontent.com/datreeio/CRDs-catalog/34cef0fc2698bbb611f475515e555a2d7ca85b6c/Utilities/openapi2jsonschema.py \
+            -o /tmp/crd-utils/openapi2jsonschema.py
+      
+          chmod +x /tmp/crd-utils/crd-extractor.sh
+
       - name: Run crd-extractor
-        run: curl -fsSL https://raw.githubusercontent.com/datreeio/CRDs-catalog/34cef0fc2698bbb611f475515e555a2d7ca85b6c/Utilities/crd-extractor.sh | bash
+        run: |
+          cd /tmp/crd-utils
+          ./crd-extractor.sh
 
       - name: Generate Index
         run: |

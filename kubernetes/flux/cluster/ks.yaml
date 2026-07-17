@@ -1,7 +1,7 @@
 ---
 
 ---
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 {
   apiVersion: "kustomize.toolkit.fluxcd.io/v1",
   kind: "Kustomization",
@@ -69,7 +69,7 @@
   },
 }
 ---
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
 {
   apiVersion: "kustomize.toolkit.fluxcd.io/v1",
   kind: "Kustomization",

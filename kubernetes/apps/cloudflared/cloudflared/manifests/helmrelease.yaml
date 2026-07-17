@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://51f35e2d.kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -58,19 +58,19 @@
                   },
                 },
                 readiness: {
-                    enabled: true,
-                    custom: true,
-                    spec: {
-                      httpGet: {
-                        path: "/ready",
-                        port: 8080,
-                      },
-                      initialDelaySeconds: 0,
-                      periodSeconds: 10,
-                      timeoutSeconds: 1,
-                      failureThreshold: 3,
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/ready",
+                      port: 8080,
                     },
+                    initialDelaySeconds: 0,
+                    periodSeconds: 10,
+                    timeoutSeconds: 1,
+                    failureThreshold: 3,
                   },
+                },
               },
               securityContext: {
                 allowPrivilegeEscalation: false,

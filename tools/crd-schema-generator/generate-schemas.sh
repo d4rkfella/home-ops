@@ -275,7 +275,7 @@ HTML
 
 
 
-for group in "${!API_GROUPS[@]}"; do
+while IFS= read -r group; do
 
 
     echo "<details>" >> "${OUTPUT_DIR}/index.html"
@@ -290,7 +290,7 @@ for group in "${!API_GROUPS[@]}"; do
 
 
 
-    for schema in ${API_GROUPS[$group]}; do
+    while IFS= read -r schema; do
 
 
         printf \
@@ -301,7 +301,9 @@ for group in "${!API_GROUPS[@]}"; do
         >> "${OUTPUT_DIR}/index.html"
 
 
-    done
+    done < <(
+        printf '%s\n' ${API_GROUPS[$group]} | sort -f
+    )
 
 
 
@@ -309,7 +311,9 @@ for group in "${!API_GROUPS[@]}"; do
         >> "${OUTPUT_DIR}/index.html"
 
 
-done
+done < <(
+    printf '%s\n' "${!API_GROUPS[@]}" | sort -f
+)
 
 
 

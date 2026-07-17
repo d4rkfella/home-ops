@@ -48,61 +48,8 @@ echo "Fetching CRDs..."
 
 
 if [ ! -s "${TMP}/crds.yaml" ]; then
-    echo "No CRDs returned"
+    echo "No CRDs returned from cluster"
     exit 1
-fi
-
-
-if [ -n "${CRD_FILTER:-}" ]; then
-
-    echo "Filtering CRDs using: ${CRD_FILTER}"
-
-    python3 - "${TMP}/crds.yaml" "${TMP}/filtered.yaml" "${CRD_FILTER}" <<'PY'
-import sys
-import re
-import yaml
-
-source = sys.argv[1]
-dest = sys.argv[2]
-pattern = sys.argv[3]
-
-with open(source) as f:
-    data = yaml.safe_load(f)
-
-items = [
-    item for item in data.get("items", [])
-    if re.search(pattern, item["metadata"]["name"])
-]
-
-data["items"] = items
-
-with open(dest, "w") as f:
-    yaml.safe_dump(data, f)
-PY
-
-    mv "${TMP}/filtered.yaml" "${TMP}/crds.yaml"
-
-fi
-
-
-CRD_COUNT=$(python3 - "${TMP}/crds.yaml" <<'PY'
-import sys
-import yaml
-
-with open(sys.argv[1]) as f:
-    data = yaml.safe_load(f)
-
-print(len(data.get("items", [])))
-PY
-)
-
-
-echo "Found ${CRD_COUNT} CRDs"
-
-
-if [ "${CRD_COUNT}" -eq 0 ]; then
-    echo "No CRDs to convert"
-    exit 0
 fi
 
 
@@ -119,7 +66,6 @@ export FILENAME_FORMAT="{fullgroup}_{kind}_{version}"
         "${SCRIPT_DIR}/openapi2jsonschema.py" \
         "${TMP}/crds.yaml"
 )
-
 
 
 echo "Copying schemas..."
@@ -154,6 +100,11 @@ done
 shopt -u nullglob
 
 
+if [ "${SCHEMA_COUNT}" -eq 0 ]; then
+    echo "No schemas were generated"
+    exit 1
+fi
+
 
 echo "Generating index.html..."
 
@@ -179,6 +130,7 @@ a {
 }
 </style>
 </head>
+
 <body>
 
 <h1>Kubernetes CRD Schemas</h1>

@@ -155,10 +155,7 @@ def write_schema_file(schema, filename):
             schema,
             f,
             ensure_ascii=False,
-            separators=(
-                ",",
-                ":"
-            )
+            indent=2
         )
 
 

@@ -1,0 +1,85 @@
+---
+{
+  apiVersion: "v1",
+  kind: "ServiceAccount",
+  metadata: {
+    name: "tuppr-nfs-hook",
+  },
+}
+---
+{
+  apiVersion: "rbac.authorization.k8s.io/v1",
+  kind: "ClusterRole",
+  metadata: {
+    name: "tuppr-nfs-hook",
+  },
+  rules: [{
+    apiGroups: [
+      "",
+    ],
+    resources: [
+      "pods",
+      "pods/status",
+      "configmaps",
+    ],
+    verbs: [
+      "get",
+      "list",
+      "watch",
+      "create",
+      "update",
+      "patch",
+      "delete",
+    ],
+  }, {
+    apiGroups: [
+      "apps",
+    ],
+    resources: [
+      "deployments",
+      "deployments/scale",
+      "statefulsets",
+      "statefulsets/scale",
+      "daemonsets",
+      "replicasets",
+    ],
+    verbs: [
+      "get",
+      "list",
+      "watch",
+      "patch",
+      "update",
+    ],
+  }, {
+    apiGroups: [
+      "apps",
+    ],
+    resources: [
+      "deployments/scale",
+      "statefulsets/scale",
+    ],
+    verbs: [
+      "get",
+      "update",
+      "patch",
+    ],
+  }],
+}
+---
+{
+  apiVersion: "rbac.authorization.k8s.io/v1",
+  kind: "ClusterRoleBinding",
+  metadata: {
+    name: "tuppr-nfs-hook",
+  },
+  roleRef: {
+    apiGroup: "rbac.authorization.k8s.io",
+    kind: "ClusterRole",
+    name: "tuppr-nfs-hook",
+  },
+  subjects: [{
+    kind: "ServiceAccount",
+    name: "tuppr-nfs-hook",
+    namespace: "system-upgrade",
+  }],
+}

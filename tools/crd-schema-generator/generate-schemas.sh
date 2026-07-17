@@ -47,8 +47,13 @@ fetch_crd() {
 
     echo "Fetching CRD: ${crd}"
 
-    "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
-        > "${TMP}/${crd}.yaml"
+    if ! "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
+        > "${TMP}/${crd}.yaml"; then
+
+        echo "Warning: Failed to fetch CRD: ${crd}" >&2
+        rm -f "${TMP}/${crd}.yaml"
+        return 0
+    fi
 }
 
 

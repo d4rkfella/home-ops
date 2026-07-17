@@ -35,5 +35,7 @@
       namespace: "flux-system",
     },
     interval: "1h",
+    timeout: "15m",
+    retryInterval: "2m",
   },
 }

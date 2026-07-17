@@ -13,7 +13,6 @@ if "DISABLE_SSL_CERT_VALIDATION" in os.environ:
     ssl._create_default_https_context = ssl._create_unverified_context
 
 
-
 QUIET = os.getenv(
     "QUIET",
     "0"
@@ -24,19 +23,16 @@ QUIET = os.getenv(
 )
 
 
-
 DENY_ROOT_ADDITIONAL_PROPERTIES = (
     "DENY_ROOT_ADDITIONAL_PROPERTIES"
     in os.environ
 )
 
 
-
 FILENAME_FORMAT = os.getenv(
     "FILENAME_FORMAT",
     "{kind}_{version}"
 )
-
 
 
 INT_OR_STRING_SCHEMA = {
@@ -51,46 +47,28 @@ INT_OR_STRING_SCHEMA = {
 }
 
 
-
-
 def optimize_schema(node, is_root=False):
     """
-    Single-pass schema optimizer.
+    Optimized in-place schema transformation.
 
-    Performs:
-    - additionalProperties injection
-    - int-or-string conversion
-
-    Mutates objects in-place.
+    Restores kubeconform behavior:
+    - add additionalProperties:false to objects with properties
+    - do not add it to root unless requested
+    - replace int-or-string markers
     """
 
-
     if isinstance(node, dict):
-
-        # replace int-or-string marker
 
         if node.get("format") == "int-or-string":
 
             node.clear()
 
             node.update(
-                {
-                    "oneOf": [
-                        {
-                            "type": "string"
-                        },
-                        {
-                            "type": "integer"
-                        }
-                    ]
-                }
+                INT_OR_STRING_SCHEMA
             )
 
             return node
 
-
-
-        # add additionalProperties only where needed
 
         if (
             "properties" in node
@@ -104,30 +82,25 @@ def optimize_schema(node, is_root=False):
             node["additionalProperties"] = False
 
 
+        for key, value in node.items():
 
-        for key, value in list(node.items()):
-
-            node[key] = optimize_schema(
+            optimize_schema(
                 value,
                 False
             )
 
 
-
     elif isinstance(node, list):
 
-        for index, item in enumerate(node):
+        for item in node:
 
-            node[index] = optimize_schema(
+            optimize_schema(
                 item,
                 False
             )
 
 
-
     return node
-
-
 
 
 
@@ -138,7 +111,18 @@ def write_schema_file(schema, filename):
         True
     )
 
-    filename = os.path.basename(filename)
+
+    filename = os.path.basename(
+        filename
+    )
+
+
+    schema_json = json.dumps(
+        schema,
+        indent=2,
+        ensure_ascii=False
+    )
+
 
     with open(
         filename,
@@ -147,17 +131,12 @@ def write_schema_file(schema, filename):
         buffering=1024 * 1024
     ) as f:
 
-        json.dump(
-            schema,
-            f,
-            ensure_ascii=False,
-            indent=2
-        )
-
+        f.write(schema_json)
         f.write("\n")
 
 
     if not QUIET:
+
         print(
             f"JSON schema written to {filename}"
         )
@@ -185,9 +164,6 @@ def construct_value(loader, node):
 
 
 
-
-
-
 def load_source(path):
 
     if path.startswith(
@@ -207,30 +183,22 @@ def load_source(path):
 
 
 
-
-
-
 def process_crd(crd):
 
     results = []
 
 
-    if (
-        "spec" not in crd
-    ):
+    if "spec" not in crd:
 
         return results
-
 
 
     spec = crd["spec"]
 
 
-
     versions = spec.get(
         "versions"
     )
-
 
 
     if versions:
@@ -249,6 +217,19 @@ def process_crd(crd):
 
                 schema = (
                     version["schema"]
+                    ["openAPIV3Schema"]
+                )
+
+
+            elif (
+                "validation" in version
+                and
+                "openAPIV3Schema"
+                in version["validation"]
+            ):
+
+                schema = (
+                    version["validation"]
                     ["openAPIV3Schema"]
                 )
 
@@ -310,9 +291,6 @@ def process_crd(crd):
 
 
 
-
-
-
 def main():
 
     if len(sys.argv) < 2:
@@ -336,7 +314,6 @@ def main():
 
         with load_source(source) as stream:
 
-
             documents = yaml.load_all(
                 stream,
                 Loader=yaml.SafeLoader
@@ -345,15 +322,12 @@ def main():
 
             for document in documents:
 
-
                 if not document:
 
                     continue
 
 
-
                 crds = []
-
 
 
                 if "items" in document:
@@ -374,7 +348,6 @@ def main():
                     )
 
 
-
                 for crd in crds:
 
                     for schema, filename in process_crd(crd):
@@ -386,9 +359,6 @@ def main():
 
 
     return 0
-
-
-
 
 
 

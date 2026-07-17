@@ -47,17 +47,28 @@ fetch_crd() {
 
     echo "Fetching CRD: ${crd}"
 
-    if ! "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
+    if "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
         > "${TMP}/${crd}.yaml"; then
 
-        echo "Warning: Failed to fetch CRD: ${crd}" >&2
-        rm -f "${TMP}/${crd}.yaml"
         return 0
+
     fi
+
+    echo "Warning: Failed to fetch CRD: ${crd}" >&2
+
+    echo "kubectl error:" >&2
+
+    "${KUBECTL_ARGS[@]}" get crd "${crd}" -o yaml \
+        >/dev/null 2>&1 || true
+
+    rm -f "${TMP}/${crd}.yaml"
+
+    return 0
 }
 
 
 echo "Fetching list of CRDs..."
+
 
 mapfile -t CRD_LIST < <(
     "${KUBECTL_ARGS[@]}" get crds -o name |
@@ -72,10 +83,12 @@ fi
 
 
 if [ -n "${CRD_FILTER:-}" ]; then
+
     mapfile -t CRD_LIST < <(
         printf '%s\n' "${CRD_LIST[@]}" |
         grep -E "${CRD_FILTER}" || true
     )
+
 fi
 
 
@@ -83,22 +96,28 @@ echo "Found ${#CRD_LIST[@]} CRDs"
 
 
 PARALLELISM="${PARALLELISM:-10}"
-RUNNING=0
+
 
 for crd in "${CRD_LIST[@]}"; do
 
     fetch_crd "${crd}" &
 
-    ((RUNNING++))
-
-    if [ "${RUNNING}" -ge "${PARALLELISM}" ]; then
-        wait -n
-        ((RUNNING--))
-    fi
+    while [ "$(jobs -r | wc -l)" -ge "${PARALLELISM}" ]; do
+        sleep 1
+    done
 
 done
 
-wait
+
+wait || true
+
+
+if ! compgen -G "${TMP}/*.yaml" >/dev/null; then
+
+    echo "No CRD YAML files were fetched"
+    exit 1
+
+fi
 
 
 echo "Converting CRDs to JSON schemas..."
@@ -123,6 +142,7 @@ shopt -s nullglob
 
 SCHEMA_COUNT=0
 
+
 for schema in "${CONVERSION_TMP}"/*.json; do
 
     filename="$(basename "${schema}")"
@@ -131,16 +151,21 @@ for schema in "${CONVERSION_TMP}"/*.json; do
 
     output_name="$(echo "${filename}" | cut -d '_' -f2-)"
 
+
     mkdir -p "${OUTPUT_DIR}/${group}"
+
 
     cp "${schema}" \
        "${OUTPUT_DIR}/${group}/${output_name}"
+
 
     ((SCHEMA_COUNT++))
 
 done
 
+
 shopt -u nullglob
+
 
 
 echo "Generating index.html..."
@@ -150,8 +175,8 @@ cat > "${OUTPUT_DIR}/index.html" <<'EOF'
 <!DOCTYPE html>
 <html>
 <head>
-<title>Kubernetes CRD Schemas</title>
 <meta charset="UTF-8">
+<title>Kubernetes CRD Schemas</title>
 <style>
 body {
     font-family: sans-serif;
@@ -159,7 +184,7 @@ body {
 }
 
 li {
-    margin: 0.3rem 0;
+    margin: 0.25rem 0;
 }
 
 a {
@@ -167,7 +192,6 @@ a {
 }
 </style>
 </head>
-
 <body>
 
 <h1>Kubernetes CRD Schemas</h1>
@@ -197,9 +221,10 @@ cat >> "${OUTPUT_DIR}/index.html" <<'EOF'
 EOF
 
 
+
 echo
-echo "======================================"
-echo "Generated ${SCHEMA_COUNT} schemas"
-echo "Output: ${OUTPUT_DIR}"
-echo "Index: ${OUTPUT_DIR}/index.html"
-echo "======================================"
+echo "====================================="
+echo "Generated schemas: ${SCHEMA_COUNT}"
+echo "Output directory: ${OUTPUT_DIR}"
+echo "====================================="
+

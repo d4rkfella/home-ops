@@ -2,6 +2,7 @@
 
 set -euo pipefail
 
+
 KUBECTL_ARGS=(kubectl)
 
 if [ -n "${KUBECTL_CONTEXT:-}" ]; then
@@ -14,10 +15,12 @@ if ! command -v kubectl >/dev/null 2>&1; then
     exit 1
 fi
 
+
 if ! command -v python3 >/dev/null 2>&1; then
     echo "python3 is required"
     exit 1
 fi
+
 
 if ! python3 -c "import yaml" >/dev/null 2>&1; then
     echo "Python module 'pyyaml' is required"
@@ -33,16 +36,23 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+
 TMP="$(mktemp -d)"
 CONVERSION_TMP="$(mktemp -d)"
 
 trap 'rm -rf "${TMP}" "${CONVERSION_TMP}"' EXIT
 
 
+
 mkdir -p "${OUTPUT_DIR}"
+
+# Remove previous generated content
+rm -rf "${OUTPUT_DIR:?}"/*
+
 
 
 echo "Fetching CRDs..."
+
 
 "${KUBECTL_ARGS[@]}" get crds -o yaml > "${TMP}/crds.yaml"
 
@@ -51,6 +61,7 @@ if [ ! -s "${TMP}/crds.yaml" ]; then
     echo "No CRDs returned from cluster"
     exit 1
 fi
+
 
 
 echo "Converting CRDs to JSON schemas..."
@@ -68,15 +79,21 @@ export FILENAME_FORMAT="{fullgroup}_{kind}_{version}"
 )
 
 
+
 echo "Copying schemas..."
 
 
 shopt -s nullglob
 
+
 SCHEMA_COUNT=0
+
+declare -A GROUPS
+
 
 
 for schema in "${CONVERSION_TMP}"/*.json; do
+
 
     [ -f "${schema}" ] || continue
 
@@ -89,19 +106,27 @@ for schema in "${CONVERSION_TMP}"/*.json; do
     output_name="${filename#*_}"
 
 
+
     mkdir -p "${OUTPUT_DIR}/${group}"
+
 
 
     cp "${schema}" \
        "${OUTPUT_DIR}/${group}/${output_name}"
 
 
+
+    GROUPS["${group}"]=1
+
+
     SCHEMA_COUNT=$((SCHEMA_COUNT + 1))
+
 
 done
 
 
 shopt -u nullglob
+
 
 
 if [ "${SCHEMA_COUNT}" -eq 0 ]; then
@@ -110,15 +135,21 @@ if [ "${SCHEMA_COUNT}" -eq 0 ]; then
 fi
 
 
+
 echo "Generating index.html..."
+
 
 
 cat > "${OUTPUT_DIR}/index.html" <<'EOF'
 <!DOCTYPE html>
 <html>
+
 <head>
+
 <meta charset="UTF-8">
+
 <title>Kubernetes CRD Schemas</title>
+
 
 <style>
 
@@ -127,45 +158,68 @@ body {
     margin: 2rem;
 }
 
+
 h1 {
     margin-bottom: 1rem;
 }
 
+
 #search {
+
     width: 350px;
     padding: 8px;
     margin-bottom: 2rem;
     font-size: 1rem;
+
 }
+
 
 .group {
-    margin-bottom: 1.5rem;
+
+    margin-bottom: 1rem;
+
 }
+
 
 .group-title {
-    font-size: 1.2rem;
+
+    cursor: pointer;
+    font-size: 1.15rem;
     font-weight: bold;
-    margin-bottom: .5rem;
+    padding: .5rem;
+
 }
+
 
 ul {
-    margin-top: .25rem;
+
+    margin-top: .5rem;
+
 }
+
 
 li {
-    margin: .2rem 0;
+
+    margin: .25rem 0;
+
 }
 
+
 a {
+
     text-decoration: none;
+
 }
 
 </style>
 
 
+
 <script>
 
+
 function filterSchemas() {
+
 
     const query =
         document
@@ -174,26 +228,49 @@ function filterSchemas() {
         .toLowerCase();
 
 
+
     document
     .querySelectorAll(".group")
     .forEach(group => {
 
-        const text =
-            group
-            .innerText
-            .toLowerCase();
+
+        const matches =
+            group.innerText
+            .toLowerCase()
+            .includes(query);
+
 
 
         group.style.display =
-            text.includes(query)
+            matches
             ? ""
             : "none";
 
+
+
+        if (query && matches) {
+
+            group.open = true;
+
+        }
+
+
+
+        if (!query) {
+
+            group.open = false;
+
+        }
+
+
     });
+
 
 }
 
+
 </script>
+
 
 </head>
 
@@ -211,60 +288,65 @@ function filterSchemas() {
     onkeyup="filterSchemas()"
 />
 
+
 EOF
 
 
 
-find "${OUTPUT_DIR}" \
-    -mindepth 1 \
-    -type d \
-    | sort \
-    | while read -r group; do
+for group in $(printf "%s\n" "${!GROUPS[@]}" | sort); do
 
 
-        group_name="$(basename "${group}")"
+    group_dir="${OUTPUT_DIR}/${group}"
 
 
-        cat >> "${OUTPUT_DIR}/index.html" <<EOF
+    group_count=$(find "${group_dir}" -maxdepth 1 -type f -name "*.json" | wc -l)
 
-<div class="group">
 
-<div class="group-title">
-${group_name}
-</div>
+
+    cat >> "${OUTPUT_DIR}/index.html" <<EOF
+
+<details class="group">
+
+<summary class="group-title">
+
+${group} (${group_count})
+
+</summary>
+
 
 <ul>
 
 EOF
 
 
-        find "${group}" \
-            -maxdepth 1 \
-            -type f \
-            -name "*.json" \
-            | sort \
-            | while read -r schema; do
+
+    for schema in "${group_dir}"/*.json; do
 
 
-                relative_path="${schema#${OUTPUT_DIR}/}"
-
-                filename="$(basename "${schema}")"
+        filename="$(basename "${schema}")"
 
 
-                printf '<li><a href="%s">%s</a></li>\n' \
-                    "${relative_path}" \
-                    "${filename}" \
-                    >> "${OUTPUT_DIR}/index.html"
+        relative_path="${group}/${filename}"
 
 
-        done
+
+        printf \
+            '<li><a href="%s">%s</a></li>\n' \
+            "${relative_path}" \
+            "${filename}" \
+            >> "${OUTPUT_DIR}/index.html"
 
 
-        cat >> "${OUTPUT_DIR}/index.html" <<EOF
+    done
+
+
+
+    cat >> "${OUTPUT_DIR}/index.html" <<EOF
 
 </ul>
 
-</div>
+</details>
+
 
 EOF
 
@@ -276,7 +358,9 @@ done
 cat >> "${OUTPUT_DIR}/index.html" <<'EOF'
 
 </body>
+
 </html>
+
 EOF
 
 

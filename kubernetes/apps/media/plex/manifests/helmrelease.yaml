@@ -15,6 +15,9 @@
     values: {
       controllers: {
         plex: {
+          labels: {
+            darkfellanetwork.com/talos-upgrade-hook: "nas-nfs-quiesce",
+          },
           annotations: {
             reloader.stakater.com/auto: "true",
           },

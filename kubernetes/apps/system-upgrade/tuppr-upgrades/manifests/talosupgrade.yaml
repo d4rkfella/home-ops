@@ -13,12 +13,53 @@
     },
     policy: {
       rebootMode: "default",
-      nodrain: true,
     },
     healthChecks: [{
       apiVersion: "volsync.backube/v1alpha1",
       kind: "ReplicationSource",
       expr: "status.conditions.filter(c, c.type == \"Synchronizing\").all(c, c.status == \"False\")",
     }],
+    hooks: {
+      pre: [{
+        name: "nas-nfs-quiesce",
+        image: "dtzar/helm-kubectl:3.16",
+        serviceAccountName: "tuppr-nfs-hook",
+        command: [
+          "/bin/bash",
+          "/scripts/pre.sh",
+        ],
+        volumeMounts: [{
+          name: "hook-scripts",
+          mountPath: "/scripts",
+        }],
+        volumes: [{
+          name: "hook-scripts",
+          configMap: {
+            name: "nfs-quiesce-scripts",
+            defaultMode: 493,
+          },
+        }],
+      }],
+      post: [{
+        name: "restore-nfs-consumers",
+        image: "dtzar/helm-kubectl:3.16",
+        serviceAccountName: "tuppr-nfs-hook",
+        command: [
+          "/bin/bash",
+          "/scripts/post.sh",
+        ],
+        volumeMounts: [{
+          name: "hook-scripts",
+          mountPath: "/scripts",
+        }],
+        volumes: [{
+          name: "hook-scripts",
+          configMap: {
+            name: "nfs-quiesce-scripts",
+            defaultMode: 493,
+          },
+        }],
+      }],
+    },
   },
 }

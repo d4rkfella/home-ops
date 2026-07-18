@@ -51,9 +51,6 @@
         enabled: false,
       },
       artifactory: {
-        labels: {
-          darkfellanetwork.com/talos-upgrade-hook: "nas-nfs-quiesce",
-        },
         statefulset: {
           annotations: {
             reloader.stakater.com/auto: "true",

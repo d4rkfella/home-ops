@@ -15,9 +15,6 @@
     values: {
       controllers: {
         sonarr: {
-          labels: {
-            darkfellanetwork.com/talos-upgrade-hook: "nas-nfs-quiesce",
-          },
           annotations: {
             reloader.stakater.com/auto: "true",
           },

@@ -207,15 +207,23 @@ function searchSchemas() {
     .forEach(group => {
 
 
-        let visible = false;
+        const groupMatch =
+            group
+            .querySelector("summary")
+            .innerText
+            .toLowerCase()
+            .includes(q);
+
+
+        let visible = groupMatch;
 
 
         group
         .querySelectorAll("li")
         .forEach(item => {
 
-
             const match =
+                groupMatch ||
                 item.innerText
                 .toLowerCase()
                 .includes(q);

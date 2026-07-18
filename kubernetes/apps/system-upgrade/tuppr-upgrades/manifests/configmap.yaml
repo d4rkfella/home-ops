@@ -111,10 +111,10 @@
       ",
     post.sh: "\
        set -euo pipefail\n\
-       NAS_IP=\"192.168.91.40\"\n\
+       NFS_IP=\"192.168.91.40\"\n\
        \n\
        for i in $(seq 1 60); do\n\
-      \  (echo > /dev/tcp/\"$NAS_IP\"/2049) 2>/dev/null && break\n\
+      \  (echo > /dev/tcp/\"$NFS_IP\"/2049) 2>/dev/null && break\n\
       \  sleep 5\n\
        done\n\
        \n\

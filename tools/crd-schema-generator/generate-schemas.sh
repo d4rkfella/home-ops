@@ -120,7 +120,7 @@ fi
 
 
 
-echo "Generating index..."
+echo "Generating html index file..."
 
 
 

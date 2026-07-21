@@ -28,21 +28,6 @@
           "/bin/bash",
           "/scripts/pre.sh",
         ],
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          allowPrivilegeEscalation: false,
-          readOnlyRootFilesystem: true,
-          capabilities: {
-            drop: [
-              "ALL",
-            ],
-          },
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
         volumeMounts: [{
           name: "hook-scripts",
           mountPath: "/scripts",
@@ -69,21 +54,6 @@
           "/bin/bash",
           "/scripts/post.sh",
         ],
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          allowPrivilegeEscalation: false,
-          readOnlyRootFilesystem: true,
-          capabilities: {
-            drop: [
-              "ALL",
-            ],
-          },
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
         volumeMounts: [{
           name: "hook-scripts",
           mountPath: "/scripts",

@@ -7,38 +7,18 @@
   },
   data: {
     pre.sh: "\
-       #!/bin/bash\n\
-       mkdir -p /debug\n\
-       exec > >(tee -a /debug/pre.log) 2>&1\n\
-       \n\
-       trap 'echo \"FAILED line=$LINENO exit=$?\"' ERR\n\
-       \n\
-       echo \"===== PRE HOOK START $(date -Is) =====\"\n\
-       echo \"HOSTNAME=$(hostname)\"\n\
-       echo \"USER=$(id)\"\n\
-       echo \"PWD=$(pwd)\"\n\
-       env | sort\n\
-       \n\
-       set -euxo pipefail\n\
-       \n\
+       set -euo pipefail\n\
        NFS_IP=\"192.168.91.40\"\n\
-       \n\
-       echo \"Checking kubectl access\"\n\
-       kubectl auth can-i --list\n\
        \n\
        mkdir -p /tmp/bare-pods\n\
        \n\
-       echo \"Getting pods\"\n\
        kubectl get pods -A -o json > /tmp/all-pods.json\n\
        \n\
-       echo \"Finding NFS consumers\"\n\
        jq -c --arg ip \"$NFS_IP\" '\n\
       \  .items[] as $p\n\
       \  | select(($p.spec.volumes // []) | any(.nfs.server? == $ip))\n\
       \  | {ns: $p.metadata.namespace, pod: $p.metadata.name, owner: ($p.metadata.ownerReferences[0] // null)}\n\
        ' /tmp/all-pods.json > /tmp/pod-owners.jsonl\n\
-       \n\
-       cat /tmp/pod-owners.jsonl\n\
        \n\
        : > /tmp/statefulsets.list\n\
        : > /tmp/daemonsets.list\n\
@@ -53,8 +33,6 @@
        \n\
       \  echo \"$ns $pod\" >> /tmp/watched-pods.list\n\
        \n\
-      \  echo \"Processing $ns/$pod owner=$owner_kind/$owner_name\"\n\
-       \n\
       \  case \"$owner_kind\" in\n\
       \    StatefulSet)\n\
       \      echo \"$ns $owner_name\" >> /tmp/statefulsets.list ;;\n\
@@ -65,6 +43,8 @@
       \      rs_name=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].name}')\n\
       \      if [ \"$rs_kind\" = \"Deployment\" ]; then\n\
       \        echo \"$ns $rs_name\" >> /tmp/deployments.list\n\
+      \      else\n\
+      \        echo \"Skipping ReplicaSet $ns/$owner_name owned by $rs_kind\" >&2\n\
       \      fi ;;\n\
       \    Job)\n\
       \      echo \"Skipping Job-owned pod $ns/$pod\" ;;\n\
@@ -73,6 +53,8 @@
       \        | jq 'del(.status,.metadata.resourceVersion,.metadata.uid,.metadata.selfLink,.metadata.creationTimestamp,.metadata.managedFields,.metadata.generation,.spec.nodeName)' \\\n\
       \        > /tmp/bare-pods/\"$ns\"-\"$pod\".json\n\
       \      kubectl -n \"$ns\" delete pod \"$pod\" --wait=false ;;\n\
+      \    *)\n\
+      \      echo \"Unhandled owner kind $owner_kind for $ns/$pod\" >&2 ;;\n\
       \  esac\n\
        done < /tmp/pod-owners.jsonl\n\
        \n\
@@ -80,15 +62,7 @@
        sort -u /tmp/daemonsets.list -o /tmp/daemonsets.list\n\
        sort -u /tmp/deployments.list -o /tmp/deployments.list\n\
        \n\
-       echo \"StatefulSets:\"\n\
-       cat /tmp/statefulsets.list\n\
-       echo \"Deployments:\"\n\
-       cat /tmp/deployments.list\n\
-       echo \"DaemonSets:\"\n\
-       cat /tmp/daemonsets.list\n\
-       \n\
        : > /tmp/scaled.list\n\
-       \n\
        while read -r ns name; do\n\
       \  [ -z \"$ns\" ] && continue\n\
       \  replicas=$(kubectl -n \"$ns\" get statefulset \"$name\" -o jsonpath='{.spec.replicas}')\n\
@@ -115,8 +89,7 @@
       \  --from-file=/tmp/bare-pods \\\n\
       \  --dry-run=client -o yaml | kubectl apply -f -\n\
        \n\
-       echo \"Waiting for NFS pods\"\n\
-       \n\
+       echo \"Waiting for all NFS consumer pods to terminate...\"\n\
        pids=()\n\
        while read -r ns pod; do\n\
       \  [ -z \"$ns\" ] && continue\n\
@@ -130,26 +103,14 @@
        done\n\
        \n\
        if [ \"$fail\" -ne 0 ]; then\n\
-      \  echo \"NFS consumers failed termination\"\n\
+      \  echo \"One or more NFS consumer pods failed to terminate within timeout\" >&2\n\
       \  exit 1\n\
        fi\n\
        \n\
-       echo \"===== PRE HOOK COMPLETE $(date -Is) =====\"\n\
+       echo \"All NFS consumers terminated.\"\n\
       ",
     post.sh: "\
-       #!/bin/bash\n\
-       mkdir -p /debug\n\
-       exec > >(tee -a /debug/post.log) 2>&1\n\
-       \n\
-       trap 'echo \"FAILED line=$LINENO exit=$?\"' ERR\n\
-       \n\
-       echo \"===== POST HOOK START $(date -Is) =====\"\n\
-       echo \"HOSTNAME=$(hostname)\"\n\
-       echo \"USER=$(id)\"\n\
-       env | sort\n\
-       \n\
-       set -euxo pipefail\n\
-       \n\
+       set -euo pipefail\n\
        NFS_IP=\"192.168.91.40\"\n\
        \n\
        for i in $(seq 1 60); do\n\
@@ -165,6 +126,7 @@
        done\n\
        \n\
        jq -r '.data[\"daemonsets.list\"] // empty' /tmp/state.json | while read -r ns name; do\n\
+      \  [ -z \"$ns\" ] && continue\n\
       \  kubectl -n \"$ns\" patch daemonset \"$name\" --type json \\\n\
       \    -p '[{\"op\":\"remove\",\"path\":\"/spec/template/spec/nodeSelector/tuppr.io~1paused\"}]'\n\
        done\n\
@@ -174,8 +136,6 @@
        done\n\
        \n\
        kubectl -n system-upgrade delete configmap nfs-hook-state\n\
-       \n\
-       echo \"===== POST HOOK COMPLETE $(date -Is) =====\"\n\
       ",
   },
 }

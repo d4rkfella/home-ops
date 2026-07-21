@@ -26,10 +26,7 @@
         serviceAccountName: "tuppr-nfs-hook",
         command: [
           "/bin/bash",
-          "-c",
-        ],
-        args: [
-          "exec > >(tee -a /debug/pre-hook.log) 2>&1; echo \"PRE HOOK START $(date)\"; /scripts/pre.sh; echo \"PRE HOOK EXIT $? $(date)\"",
+          "/scripts/pre.sh",
         ],
         volumeMounts: [{
           name: "hook-scripts",
@@ -37,9 +34,6 @@
         }, {
           name: "tmp",
           mountPath: "/tmp",
-        }, {
-          name: "debug",
-          mountPath: "/debug",
         }],
         volumes: [{
           name: "hook-scripts",
@@ -50,11 +44,6 @@
         }, {
           name: "tmp",
           emptyDir: {},
-        }, {
-          name: "debug",
-          persistentVolumeClaim: {
-            claimName: "tuppr-hook-debug",
-          },
         }],
       }],
       post: [{
@@ -63,10 +52,7 @@
         serviceAccountName: "tuppr-nfs-hook",
         command: [
           "/bin/bash",
-          "-c",
-        ],
-        args: [
-          "exec > >(tee -a /debug/post-hook.log) 2>&1; echo \"POST HOOK START $(date)\"; /scripts/post.sh; echo \"POST HOOK EXIT $? $(date)\"",
+          "/scripts/post.sh",
         ],
         volumeMounts: [{
           name: "hook-scripts",
@@ -74,9 +60,6 @@
         }, {
           name: "tmp",
           mountPath: "/tmp",
-        }, {
-          name: "debug",
-          mountPath: "/debug",
         }],
         volumes: [{
           name: "hook-scripts",
@@ -87,11 +70,6 @@
         }, {
           name: "tmp",
           emptyDir: {},
-        }, {
-          name: "debug",
-          persistentVolumeClaim: {
-            claimName: "tuppr-hook-debug",
-          },
         }],
       }],
     },

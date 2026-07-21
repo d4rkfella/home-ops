@@ -34,6 +34,9 @@
         }, {
           name: "tmp",
           mountPath: "/tmp",
+        }, {
+          name: "debug",
+          mountPath: "/debug",
         }],
         volumes: [{
           name: "hook-scripts",
@@ -44,6 +47,11 @@
         }, {
           name: "tmp",
           emptyDir: {},
+        }, {
+          name: "debug",
+          persistentVolumeClaim: {
+            claimName: "tuppr-hook-debug",
+          },
         }],
       }],
       post: [{
@@ -60,6 +68,9 @@
         }, {
           name: "tmp",
           mountPath: "/tmp",
+        }, {
+          name: "debug",
+          mountPath: "/debug",
         }],
         volumes: [{
           name: "hook-scripts",
@@ -70,6 +81,11 @@
         }, {
           name: "tmp",
           emptyDir: {},
+        }, {
+          name: "debug",
+          persistentVolumeClaim: {
+            claimName: "tuppr-hook-debug",
+          },
         }],
       }],
     },

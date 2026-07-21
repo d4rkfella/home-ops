@@ -7,7 +7,17 @@
   },
   data: {
     pre.sh: "\
-       set -euo pipefail\n\
+       #!/bin/bash\n\
+       mkdir -p /debug\n\
+       exec > >(tee -a /debug/pre.log)\n\
+       exec 2>&1\n\
+       \n\
+       echo \"===== PRE HOOK START $(date -Is) =====\"\n\
+       echo \"HOSTNAME=$(hostname)\"\n\
+       echo \"USER=$(id)\"\n\
+       env | sort\n\
+       \n\
+       set -euxo pipefail\n\
        NFS_IP=\"192.168.91.40\"\n\
        \n\
        mkdir -p /tmp/bare-pods\n\
@@ -110,7 +120,17 @@
        echo \"All NFS consumers terminated.\"\n\
       ",
     post.sh: "\
-       set -euo pipefail\n\
+       #!/bin/bash\n\
+       mkdir -p /debug\n\
+       exec > >(tee -a /debug/post.log)\n\
+       exec 2>&1\n\
+       \n\
+       echo \"===== POST HOOK START $(date -Is) =====\"\n\
+       echo \"HOSTNAME=$(hostname)\"\n\
+       echo \"USER=$(id)\"\n\
+       env | sort\n\
+       \n\
+       set -euxo pipefail\n\
        NFS_IP=\"192.168.91.40\"\n\
        \n\
        for i in $(seq 1 60); do\n\

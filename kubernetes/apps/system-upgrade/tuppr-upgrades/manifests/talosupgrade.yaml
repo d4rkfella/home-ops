@@ -26,7 +26,10 @@
         serviceAccountName: "tuppr-nfs-hook",
         command: [
           "/bin/bash",
-          "/scripts/pre.sh",
+          "-c",
+        ],
+        args: [
+          "exec > >(tee -a /debug/pre-hook.log) 2>&1; echo \"PRE HOOK START $(date)\"; /scripts/pre.sh; echo \"PRE HOOK EXIT $? $(date)\"",
         ],
         volumeMounts: [{
           name: "hook-scripts",
@@ -60,7 +63,10 @@
         serviceAccountName: "tuppr-nfs-hook",
         command: [
           "/bin/bash",
-          "/scripts/post.sh",
+          "-c",
+        ],
+        args: [
+          "exec > >(tee -a /debug/post-hook.log) 2>&1; echo \"POST HOOK START $(date)\"; /scripts/post.sh; echo \"POST HOOK EXIT $? $(date)\"",
         ],
         volumeMounts: [{
           name: "hook-scripts",

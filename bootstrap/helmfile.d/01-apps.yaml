@@ -169,18 +169,6 @@
       events: [
         "presync",
       ],
-      command: "sh",
-      args: [
-        "-c",
-        "\
-           sops -d ../../kubernetes/apps/vault/vault/manifests/vault.secret.sops.yaml | kubectl apply --server-side --namespace=vault --field-manager=kustomize-controller -f -\n\
-          ",
-      ],
-      showlogs: true,
-    }, {
-      events: [
-        "presync",
-      ],
       command: "kubectl",
       args: [
         "apply",

@@ -123,6 +123,41 @@
         "which xdg-open",
       ],
     },
+    rotate-issuing-ca: {
+      desc: "Rotate Vault issuing CA",
+      interactive: true,
+      vars: {
+        NS: {
+          sh: "gum input --placeholder \"Namespace\" --value \"vault\"",
+        },
+        LABEL: {
+          sh: "gum input --placeholder \"Pod label selector\" --value \"app.kubernetes.io/name=vault\"",
+        },
+        VAULT_POD: {
+          sh: "kubectl get pods --namespace {{.NS}} -l {{.LABEL}} --no-headers --output=jsonpath='{.items[0].metadata.name}'",
+        },
+        ISS_MOUNT: {
+          sh: "gum input --placeholder \"Issuing PKI mount\" --value \"pki\"",
+        },
+        INT_MOUNT: {
+          sh: "gum input --placeholder \"Intermediate PKI mount\" --value \"pki-intermediate\"",
+        },
+        COMMON_NAME: {
+          sh: "gum input --placeholder \"Common name\"",
+        },
+        TTL: {
+          sh: "gum input --placeholder \"TTL\" --value \"8760h\"",
+        },
+      },
+      cmds: [
+        "kubectl --namespace {{.NS}} exec {{.VAULT_POD}} -- env VAULT_SKIP_VERIFY=true VAULT_ADDR=https://127.0.0.1:8200 sh -c 'set -e; echo \"Generating CSR using existing key material...\"; CSR=$(vault write -format=json {{.ISS_MOUNT}}/issuers/generate/intermediate/existing common_name=\"{{.COMMON_NAME}}\" country=\"Bulgaria\" locality=\"Sofia\" organization=\"DarkfellaNET\" format=pem_bundle | jq -r \".data.csr\"); echo \"Signing CSR with intermediate CA...\"; CERT=$(vault write -format=json {{.INT_MOUNT}}/root/sign-intermediate csr=\"$CSR\" ttl=\"{{.TTL}}\" | jq -r \".data.certificate\"); echo \"Importing signed certificate...\"; ISSUER=$(vault write -format=json {{.ISS_MOUNT}}/intermediate/set-signed certificate=\"$CERT\" | jq -r \".data.imported_issuers[0]\"); vault write {{.ISS_MOUNT}}/config/issuers default=\"$ISSUER\"; echo \"New issuer: $ISSUER\"; echo \"Rotation complete\"'",
+      ],
+      preconditions: [
+        "which kubectl",
+        "which gum",
+        "kubectl get pod --namespace {{.NS}} {{.VAULT_POD}}",
+      ],
+    },
     unseal-vault: {
       interactive: true,
       vars: {

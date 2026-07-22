@@ -201,19 +201,6 @@
           }, {
             fromEndpoints: [{
               matchLabels: {
-                app.kubernetes.io/name: "openbao",
-                io.kubernetes.pod.namespace: "openbao",
-              },
-            }],
-            toPorts: [{
-              ports: [{
-                port: "8201",
-                protocol: "TCP",
-              }],
-            }],
-          }, {
-            fromEndpoints: [{
-              matchLabels: {
                 app.kubernetes.io/name: "cert-manager",
                 io.kubernetes.pod.namespace: "cert-manager",
               },
@@ -274,6 +261,20 @@
                 protocol: "UDP",
               }, {
                 port: "53",
+                protocol: "TCP",
+              }],
+            }],
+          }, {
+            toEndpoints: [{
+              matchLabels: {
+                app.kubernetes.io/name: "openbao",
+                app.kubernetes.io/instance: "openbao",
+                io.kubernetes.pod.namespace: "openbao",
+              },
+            }],
+            toPorts: [{
+              ports: [{
+                port: "8201",
                 protocol: "TCP",
               }],
             }],

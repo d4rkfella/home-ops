@@ -28,7 +28,7 @@
         tproxy: false,
         datapathMode: "netkit",
       },
-      l7Proxy: true,
+      l7Proxy: false,
       cgroup: {
         automount: {
           enabled: false,

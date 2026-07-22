@@ -263,6 +263,11 @@
                 port: "53",
                 protocol: "TCP",
               }],
+              rules: [{
+                dns: {
+                  matchPattern: "*",
+                },
+              }],
             }],
           }, {
             toEntities: [

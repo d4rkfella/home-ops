@@ -296,6 +296,9 @@
             }],
             toPorts: [{
               ports: [{
+                port: "8200",
+                protocol: "TCP",
+              }, {
                 port: "8201",
                 protocol: "TCP",
               }],

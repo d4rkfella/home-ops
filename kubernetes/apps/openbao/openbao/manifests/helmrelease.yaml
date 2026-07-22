@@ -48,6 +48,7 @@
       server: {
         enabled: true,
         updateStrategyType: "RollingUpdate",
+        logLevel: "debug",
         logFormat: "json",
         extraEnvironmentVars: {
           GOOGLE_APPLICATION_CREDENTIALS: "/openbao/userconfig/gcp-creds/openbao-unseal-creds.json",

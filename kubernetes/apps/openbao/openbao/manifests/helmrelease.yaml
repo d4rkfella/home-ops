@@ -20,8 +20,8 @@
           },
           patch: "\
              - op: add\n\
-             path: /spec/template/spec/hostUsers\n\
-             value: false\n\
+            \  path: /spec/template/spec/hostUsers\n\
+            \  value: false\
             ",
         }, {
           target: {
@@ -31,8 +31,8 @@
           },
           patch: "\
              - op: add\n\
-             path: /spec/endpoints/0/bearerTokenFile\n\
-             value: /vault/secrets/token\n\
+            \  path: /spec/endpoints/0/bearerTokenFile\n\
+            \  value: \"/vault/secrets/token\"\
             ",
         }],
       },

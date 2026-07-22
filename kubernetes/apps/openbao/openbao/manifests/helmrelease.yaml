@@ -29,7 +29,7 @@
     values: {
       global: {
         enabled: false,
-        tlsDisable: true,
+        tlsDisable: false,
         serverTelemetry: {
           prometheusOperator: false,
         },

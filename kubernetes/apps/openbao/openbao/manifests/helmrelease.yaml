@@ -277,11 +277,11 @@
                 port: "53",
                 protocol: "TCP",
               }],
-              rules: [{
-                dns: {
+              rules: {
+                dns: [{
                   matchPattern: "*",
-                },
-              }],
+                }],
+              },
             }],
           }, {
             toEndpoints: [{

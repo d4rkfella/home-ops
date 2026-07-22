@@ -99,6 +99,7 @@
           raft: {
             enabled: true,
             setNodeId: true,
+            apiAddr: "https://openbao.darkfellanetwork.com:8200",
             config: "\
                ui = true\n\
                \n\
@@ -258,6 +259,9 @@
               ports: [{
                 port: "53",
                 protocol: "UDP",
+              }, {
+                port: "53",
+                protocol: "TCP",
               }],
             }],
           }, {

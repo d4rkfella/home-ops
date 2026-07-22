@@ -26,7 +26,7 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.7.1@sha256:9f7732e0ec47abe75aec4d597488369164b1cb5e037f66c51d82c6ce86df6b8a /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.30-trixie@sha256:59b6257276fac6ece01b0112c5dcb9c5db6f4a7effaeb7d6bfc0a7767ad5951c /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.31-trixie@sha256:29ebc32bfeb4f18edf3bc87c2ed9440816857cfd7fe95ca45d66b6fade0a4688 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.2@sha256:0bc8915bce25ea3bf0f3e27a74cb5ad092488e6e5245af384816d628ed7fd426 /usr/local/bin/sops /usr/local/bin/
@@ -87,7 +87,7 @@ RUN echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
 # renovate: datasource=pypi depName=vaultctl
-ARG VAULTCTL_VERSION=0.2.6
+ARG VAULTCTL_VERSION=0.3.2
 RUN uv tool install vaultctl==${VAULTCTL_VERSION} && \
     uv python update-shell && \
     uv cache clean

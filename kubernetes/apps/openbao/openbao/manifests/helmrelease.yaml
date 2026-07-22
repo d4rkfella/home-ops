@@ -96,10 +96,10 @@
         ha: {
           enabled: true,
           replicas: 3,
+          apiAddr: "https://openbao.darkfellanetwork.com:8200",
           raft: {
             enabled: true,
             setNodeId: true,
-            apiAddr: "https://openbao.darkfellanetwork.com:8200",
             config: "\
                ui = true\n\
                \n\

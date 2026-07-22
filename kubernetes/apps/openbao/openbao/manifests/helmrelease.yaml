@@ -23,6 +23,17 @@
             \  path: /spec/template/spec/hostUsers\n\
             \  value: false\n\
             ",
+        }, {
+          target: {
+            kind: "ServiceMonitor",
+            name: "openbao",
+            namespace: "openbao",
+          },
+          patch: "\
+             - op: add\n\
+             path: /spec/endpoints/0/bearerTokenFile\n\
+             value: /vault/secrets/token\n\
+            ",
         }],
       },
     }],
@@ -167,11 +178,9 @@
           scheme: "",
           interval: "30s",
           scrapeTimeout: "10s",
-          tlsConfig: {},
-          authorization: {
-            bearerTokenFile: "/vault/secrets/token",
+          tlsConfig: {
+            serverName: "openbao.darkfellanetwork.com",
           },
-          scrapeClass: "",
         },
         prometheusRules: {
           enabled: true,

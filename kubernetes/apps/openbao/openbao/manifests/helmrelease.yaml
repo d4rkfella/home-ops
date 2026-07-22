@@ -20,8 +20,8 @@
           },
           patch: "\
              - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\n\
+             path: /spec/template/spec/hostUsers\n\
+             value: false\n\
             ",
         }, {
           target: {

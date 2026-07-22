@@ -28,7 +28,7 @@
         tproxy: false,
         datapathMode: "netkit",
       },
-      l7Proxy: false,
+      l7Proxy: true,
       cgroup: {
         automount: {
           enabled: false,
@@ -37,7 +37,7 @@
       },
       devices: "eth0",
       envoy: {
-        enabled: false,
+        enabled: true,
       },
       cluster: {
         id: 1,

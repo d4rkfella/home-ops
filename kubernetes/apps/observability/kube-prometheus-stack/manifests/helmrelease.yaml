@@ -126,7 +126,7 @@
               vault.hashicorp.com/role: "prometheus",
               vault.hashicorp.com/agent-inject-containers: "prometheus",
               vault.hashicorp.com/agent-run-as-group: "65532",
-              vault.hashicorp.com/tls-server-name: "vault.darkfellanetwork.com",
+              vault.hashicorp.com/tls-server-name: "openbao.darkfellanetwork.com",
             },
           },
           podMonitorSelectorNilUsesHelmValues: false,

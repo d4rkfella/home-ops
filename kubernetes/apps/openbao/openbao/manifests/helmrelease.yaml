@@ -1,0 +1,331 @@
+---
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "openbao",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "openbao",
+    },
+    postRenderers: [{
+      kustomize: {
+        patches: [{
+          target: {
+            kind: "StatefulSet",
+            name: "openbao",
+          },
+          patch: "\
+             - op: add\n\
+            \  path: /spec/template/spec/hostUsers\n\
+            \  value: false\n\
+            ",
+        }],
+      },
+    }],
+    values: {
+      global: {
+        enabled: false,
+        tlsDisable: true,
+        serverTelemetry: {
+          prometheusOperator: false,
+        },
+      },
+      injector: {
+        enabled: true,
+        logFormat: "json",
+        revokeOnShutdown: true,
+        strategy: {
+          type: "Recreate",
+        },
+        webhook: {
+          failurePolicy: "Fail",
+        },
+      },
+      server: {
+        enabled: true,
+        updateStrategyType: "RollingUpdate",
+        logFormat: "json",
+        extraEnvironmentVars: {
+          GOOGLE_APPLICATION_CREDENTIALS: "/openbao/userconfig/gcp-creds/openbao-unseal-creds.json",
+        },
+        server: ,
+        volumes: [{
+          name: "gcp-kms-creds",
+          secret: {
+            secretName: "gcp-kms-creds",
+          },
+        }, {
+          name: "openbao-server-tls",
+          secret: {
+            secretName: "openbao-server-tls",
+          },
+        }],
+        volumeMounts: [{
+          name: "gcp-kms-creds",
+          mountPath: "/openbao/userconfig/gcp-creds",
+          readOnly: true,
+        }, {
+          name: "openbao-server-tls",
+          mountPath: "/openbao/userconfig/openbao-server-tls",
+          readOnly: true,
+        }],
+        affinity: "\
+           podAntiAffinity:\n\
+          \  preferredDuringSchedulingIgnoredDuringExecution:\n\
+          \    - weight: 100\n\
+          \      podAffinityTerm:\n\
+          \        labelSelector:\n\
+          \          matchLabels:\n\
+          \            app.kubernetes.io/name: {{ template \"openbao.name\" . }}\n\
+          \            app.kubernetes.io/instance: \"{{ .Release.Name }}\"\n\
+          \            component: server\n\
+          \        topologyKey: kubernetes.io/hostname\n\
+          ",
+        persistentVolumeClaimRetentionPolicy: {
+          whenDeleted: "Retain",
+          whenScaled: "Retain",
+        },
+        auditStorage: {
+          enabled: true,
+        },
+        ha: {
+          enabled: true,
+          replicas: 3,
+          raft: {
+            enabled: true,
+            setNodeId: true,
+            config: "\
+               ui = true\n\
+               \n\
+               listener \"tcp\" {\n\
+              \  tls_disable = 0\n\
+              \  tls_min_version = \"tls13\"\n\
+              \  tls_cert_file = \"/openbao/userconfig/openbao-server-tls/tls.crt\"\n\
+              \  tls_key_file  = \"/openbao/userconfig/openbao-server-tls/tls.key\"\n\
+              \  address = \"[::]:8200\"\n\
+              \  cluster_address = \"[::]:8201\"\n\
+               }\n\
+               \n\
+               storage \"raft\" {\n\
+              \  path = \"/openbao/data\"\n\
+              \  retry_join {\n\
+              \    leader_api_addr = \"https://openbao-0.openbao-internal:8200\"\n\
+              \    leader_client_cert_file = \"/openbao/userconfig/openbao-server-tls/tls.crt\"\n\
+              \    leader_client_key_file = \"/openbao/userconfig/openbao-server-tls/tls.key\"\n\
+              \    leader_tls_servername = \"openbao.darkfellanetwork.com\"\n\
+              \  }\n\
+              \  retry_join {\n\
+              \    leader_api_addr = \"https://openbao-1.openbao-internal:8200\"\n\
+              \    leader_client_cert_file = \"/openbao/userconfig/openbao-server-tls/tls.crt\"\n\
+              \    leader_client_key_file = \"/openbao/userconfig/openbao-server-tls/tls.key\"\n\
+              \    leader_tls_servername = \"openbao.darkfellanetwork.com\"\n\
+              \  }\n\
+              \  retry_join {\n\
+              \    leader_api_addr = \"https://openbao-2.openbao-internal:8200\"\n\
+              \    leader_client_cert_file = \"/openbao/userconfig/openbao-server-tls/tls.crt\"\n\
+              \    leader_client_key_file = \"/openbao/userconfig/openbao-server-tls/tls.key\"\n\
+              \    leader_tls_servername = \"openbao.darkfellanetwork.com\"\n\
+              \  }\n\
+               }\n\
+               \n\
+               service_registration \"kubernetes\" {}\n\
+               \n\
+               telemetry {\n\
+              \  prometheus_retention_time = \"24h\"\n\
+              \  disable_hostname = true\n\
+               }\n\
+               \n\
+               seal \"gcpckms\" {\n\
+              \  project     = \"home-ops-503207\"\n\
+              \  region      = \"global\"\n\
+              \  key_ring    = \"openbao-unseal-kr\"\n\
+              \  crypto_key  = \"openbao-unseal-key\"\n\
+               }\n\
+              ",
+          },
+        },
+      },
+      ui: {
+        enabled: true,
+        serviceType: "LoadBalancer",
+        externalTrafficPolicy: "Local",
+        annotations: {
+          external-dns.alpha.kubernetes.io/hostname: "openbao.darkfellanetwork.com",
+          lbipam.cilium.io/ips: "192.168.91.54",
+        },
+      },
+      serverTelemetry: {
+        serviceMonitor: {
+          enabled: true,
+          selectors: {},
+          scheme: "",
+          interval: "30s",
+          scrapeTimeout: "10s",
+          tlsConfig: {},
+          authorization: {},
+          scrapeClass: "",
+        },
+        prometheusRules: {
+          enabled: true,
+          rules: [],
+        },
+        grafanaDashboard: {
+          enabled: true,
+        },
+      },
+      extraObjects: [{
+        apiVersion: "cert-manager.io/v1",
+        kind: "Certificate",
+        metadata: {
+          name: "openbao-server-cert",
+          namespace: "openbao",
+        },
+        spec: {
+          secretName: "openbao-server-tls",
+          dnsNames: [
+            "openbao.darkfellanetwork.com",
+          ],
+          issuerRef: {
+            name: "zerossl-prod",
+            kind: "ClusterIssuer",
+          },
+          privateKey: {
+            algorithm: "ECDSA",
+            rotationPolicy: "Always",
+            size: 256,
+            encoding: "PKCS8",
+          },
+          usages: [
+            "server auth",
+          ],
+        },
+      }, {
+        apiVersion: "cilium.io/v2",
+        kind: "CiliumNetworkPolicy",
+        metadata: {
+          name: "openbao-server-policy",
+        },
+        spec: {
+          endpointSelector: {
+            matchLabels: {
+              app.kubernetes.io/name: "openbao",
+            },
+          },
+          ingress: [{
+            fromEndpoints: [{
+              matchLabels: {
+                app.kubernetes.io/name: "external-secrets",
+                io.kubernetes.pod.namespace: "external-secrets",
+              },
+            }],
+          }, {
+            fromEndpoints: [{
+              matchLabels: {
+                app.kubernetes.io/name: "cert-manager",
+                io.kubernetes.pod.namespace: "cert-manager",
+              },
+            }],
+            toPorts: [{
+              ports: [{
+                port: "8200",
+                protocol: "TCP",
+              }],
+            }],
+          }, {
+            fromEndpoints: [{
+              matchLabels: {
+                app.kubernetes.io/name: "prometheus",
+                io.kubernetes.pod.namespace: "observability",
+              },
+            }],
+            toPorts: [{
+              ports: [{
+                port: "8200",
+                protocol: "TCP",
+              }],
+            }],
+          }, {
+            fromEndpoints: [{
+              matchLabels: {
+                app.kubernetes.io/name: "gatus",
+                io.kubernetes.pod.namespace: "observability",
+              },
+            }],
+            toPorts: [{
+              ports: [{
+                port: "8200",
+                protocol: "TCP",
+              }],
+            }],
+          }, {
+            fromCIDRSet: [{
+              cidr: "192.168.91.0/24",
+            }],
+            toPorts: [{
+              ports: [{
+                port: "8200",
+                protocol: "TCP",
+              }],
+            }],
+          }],
+          egress: [{
+            toEndpoints: [{
+              matchLabels: {
+                io.kubernetes.pod.namespace: "kube-system",
+                k8s-app: "kube-dns",
+              },
+            }],
+            toPorts: [{
+              ports: [{
+                port: "53",
+                protocol: "UDP",
+              }],
+            }],
+          }, {
+            toEntities: [
+              "kube-apiserver",
+            ],
+            toPorts: [{
+              ports: [{
+                port: "6443",
+                protocol: "TCP",
+              }],
+            }],
+          }, {
+            toFQDNs: [{
+              matchName: "cloudkms.googleapis.com",
+            }],
+            toPorts: [{
+              ports: [{
+                port: "443",
+                protocol: "TCP",
+              }],
+            }],
+          }],
+        },
+      }],
+      snapshotAgent: {
+        enabled: true,
+        schedule: "30 2 * * *",
+        image: {
+          repository: "ghcr.io/openbao/openbao-snapshot-agent",
+          tag: "0.3.0",
+        },
+        s3CredentialsSecret: "openbao-r2-credentials",
+        config: {
+          s3Host: "https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com",
+          s3Bucket: "openbao-snapshots",
+          s3Uri: "s3://openbao-snapshots",
+          s3ExpireDays: "14",
+          s3cmdExtraFlag: "-v --region=auto",
+          baoAuthPath: "kubernetes",
+          baoRole: "snapshot",
+        },
+      },
+    },
+  },
+}

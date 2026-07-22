@@ -5,6 +5,7 @@
   resources: [
     "./ocirepository.yaml",
     "./secret.sops.yaml",
+    "./certificate.yaml",
     "./helmrelease.yaml",
   ],
 }

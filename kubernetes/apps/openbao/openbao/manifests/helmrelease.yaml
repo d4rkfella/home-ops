@@ -179,32 +179,6 @@
         },
       },
       extraObjects: [{
-        apiVersion: "cert-manager.io/v1",
-        kind: "Certificate",
-        metadata: {
-          name: "openbao-server-cert",
-          namespace: "openbao",
-        },
-        spec: {
-          secretName: "openbao-server-tls",
-          dnsNames: [
-            "openbao.darkfellanetwork.com",
-          ],
-          issuerRef: {
-            name: "zerossl-prod",
-            kind: "ClusterIssuer",
-          },
-          privateKey: {
-            algorithm: "ECDSA",
-            rotationPolicy: "Always",
-            size: 256,
-            encoding: "PKCS8",
-          },
-          usages: [
-            "server auth",
-          ],
-        },
-      }, {
         apiVersion: "cilium.io/v2",
         kind: "CiliumNetworkPolicy",
         metadata: {

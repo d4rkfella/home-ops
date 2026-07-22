@@ -4,7 +4,7 @@
   kind: "Kustomization",
   resources: [
     "./dns-config.yaml",
-    "./allow-only-vault-provider.yaml",
+    #"./allow-only-vault-provider.yaml",
     "./mount-internal-ca.yaml",
   ],
 }

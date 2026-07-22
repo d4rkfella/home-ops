@@ -333,6 +333,9 @@
           repository: "ghcr.io/openbao/openbao-snapshot-agent",
           tag: "0.3.0",
         },
+        extraEnvironmentVars: {
+          BAO_ADDR: "https://openbao.darkfellanetwork.com:8200",
+        },
         s3CredentialsSecret: "openbao-r2-credentials",
         config: {
           s3Host: "https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com",

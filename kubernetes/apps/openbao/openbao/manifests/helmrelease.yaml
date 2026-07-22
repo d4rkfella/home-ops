@@ -168,7 +168,9 @@
           interval: "30s",
           scrapeTimeout: "10s",
           tlsConfig: {},
-          authorization: {},
+          authorization: {
+            bearerTokenFile: "/vault/secrets/token",
+          },
           scrapeClass: "",
         },
         prometheusRules: {

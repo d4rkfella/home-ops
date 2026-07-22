@@ -36,15 +36,7 @@
         },
       },
       injector: {
-        enabled: true,
-        logLevel: "debug",
-        logFormat: "json",
-        strategy: {
-          type: "Recreate",
-        },
-        webhook: {
-          failurePolicy: "Fail",
-        },
+        enabled: false,
       },
       server: {
         enabled: true,

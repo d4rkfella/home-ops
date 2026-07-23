@@ -47,8 +47,8 @@
   },
   spec: {
     vault: {
-      path: "pki_intermediate/sign/kubernetes",
-      server: "https://vault.darkfellanetwork.com:8200",
+      path: "pki_intermediate/sign/cert-manager",
+      server: "https://openbao.darkfellanetwork.com:8200",
       auth: {
         kubernetes: {
           role: "vault-issuer",

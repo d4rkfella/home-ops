@@ -37,7 +37,8 @@
             tls: true,
           },
         },
-        customCertificatesSecretName: "artifactory-ca",
+        #customCertificatesSecretName: "artifactory-ca",
+        resetAccessCAKeys: true,
       },
       jfconnect: {
         enabled: false,

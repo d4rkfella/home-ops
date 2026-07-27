@@ -8,6 +8,7 @@
   },
   spec: {
     interval: "1h",
+    timeout: "15m",
     chartRef: {
       kind: "OCIRepository",
       name: "artifactory",

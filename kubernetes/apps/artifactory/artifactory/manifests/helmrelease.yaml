@@ -35,9 +35,12 @@
         accessConfig: {
           security: {
             tls: true,
+            tls-subject-alternative-names: [
+              "artifactory",
+            ],
           },
         },
-        #customCertificatesSecretName: "artifactory-ca",
+        customCertificatesSecretName: "artifactory-ca",
         resetAccessCAKeys: true,
       },
       jfconnect: {

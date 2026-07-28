@@ -58,7 +58,7 @@
           ",
         customVolumeMounts: "\
            - name: trusted-certs\n\
-          \  mountPath: /opt/jfrog/frontend/var/etc/security/keys/trusted\n\
+          \  mountPath: /opt/jfrog/router/var/etc/security/keys/trusted\n\
           ",
       },
       jfconnect: {

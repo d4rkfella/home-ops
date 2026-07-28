@@ -29,9 +29,6 @@
           certificateSecretName: "artifactory-ca",
         },
       },
-      mc: {
-        enabled: false,
-      },
       access: {
         javaOpts: {
           other: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
@@ -74,15 +71,6 @@
            - name: trusted-certs\n\
           \  mountPath: /opt/jfrog/router/var/etc/security/keys/trusted\n\
           ",
-      },
-      onemodel: {
-        enabled: true,
-      },
-      evidence: {
-        enabled: false,
-      },
-      event: {
-        enabled: false,
       },
       artifactory: {
         statefulset: {

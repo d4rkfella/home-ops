@@ -102,6 +102,9 @@
           \  mountPath: /mnt/artifactory-backup\n\
           ",
         extraSystemYaml: {
+          jfconnect: {
+            enabled: false,
+          },
           artifactory: {
             tomcat: {
               httpsConnector: {

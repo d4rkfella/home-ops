@@ -38,6 +38,9 @@
           "packages.darkfellanetwork.com",
         ],
         tls: [{
+          hosts: [
+            "packages.darkfellanetwork.com",
+          ],
           secretName: "artifactory-tls",
         }],
         httpRoute: {

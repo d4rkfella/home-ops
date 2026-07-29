@@ -187,62 +187,6 @@
   apiVersion: "gateway.networking.k8s.io/v1",
   kind: "Gateway",
   metadata: {
-    name: "artifactory",
-    annotations: {
-      gatus.home-operations.com/endpoint: "\
-         client:\n\
-        \  dns-resolver: tcp://k8s-gateway.k8s-gateway.svc.cluster.local:53\n\
-         group: external\n\
-        ",
-    },
-  },
-  spec: {
-    gatewayClassName: "envoy",
-    addresses: [{
-      type: "IPAddress",
-      value: "192.168.91.50",
-    }],
-    infrastructure: {
-      annotations: {
-        lbipam.cilium.io/ips: "192.168.91.50",
-      },
-    },
-    listeners: [{
-      name: "http",
-      protocol: "HTTP",
-      port: 80,
-      hostname: "packages.darkfellanetwork.com",
-      allowedRoutes: {
-        namespaces: {
-          from: "Same",
-        },
-      },
-    }, {
-      name: "https",
-      protocol: "HTTPS",
-      port: 443,
-      hostname: "packages.darkfellanetwork.com",
-      allowedRoutes: {
-        namespaces: {
-          from: "All",
-        },
-      },
-      tls: {
-        mode: "Terminate",
-        certificateRefs: [{
-          kind: "Secret",
-          name: "darkfellanet-tls",
-        }],
-      },
-    }],
-  },
-}
----
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
-{
-  apiVersion: "gateway.networking.k8s.io/v1",
-  kind: "Gateway",
-  metadata: {
     name: "plex",
     annotations: {
       gatus.home-operations.com/endpoint: "\

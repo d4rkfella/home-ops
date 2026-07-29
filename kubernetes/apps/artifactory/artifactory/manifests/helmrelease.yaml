@@ -31,6 +31,16 @@
         joinKeySecretName: "artifactory-secret",
         masterKeySecretName: "artifactory-secret",
       },
+      gatewayApi: {
+        enabled: true,
+        gatewayClassName: "envoy",
+        hosts: [
+          "packages.darkfellanetwork.com",
+        ],
+        httpRoute: {
+          enabled: true,
+        },
+      },
       access: {
         javaOpts: {
           other: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",

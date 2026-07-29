@@ -28,6 +28,8 @@
           enabled: true,
           certificateSecretName: "artifactory-ca",
         },
+        joinKeySecretName: "artifactory-secret",
+        masterKeySecretName: "artifactory-secret",
       },
       access: {
         javaOpts: {
@@ -136,8 +138,6 @@
             },
           },
         },
-        masterKeySecretName: "artifactory-secret",
-        joinKeySecretName: "artifactory-secret",
         admin: {
           secret: "artifactory-secret",
           dataKey: "bootstrap.creds",

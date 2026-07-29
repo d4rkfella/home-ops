@@ -63,20 +63,6 @@
       jfconnect: {
         enabled: false,
       },
-      router: {
-        customVolumes: "\
-           - name: trusted-certs\n\
-          \  secret:\n\
-          \    secretName: artifactory-ca\n\
-          \    items:\n\
-          \      - key: ca.crt\n\
-          \        path: ca.crt\n\
-          ",
-        customVolumeMounts: "\
-           - name: trusted-certs\n\
-          \  mountPath: /opt/jfrog/router/var/etc/security/keys/trusted\n\
-          ",
-      },
       artifactory: {
         statefulset: {
           annotations: {

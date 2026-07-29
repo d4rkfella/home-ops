@@ -24,10 +24,6 @@
           loki_url: "http://loki-headless.observability.svc.cluster.local:3100",
           release_name: "kube-prometheus-stack",
         },
-        customCertificates: {
-          enabled: true,
-          certificateSecretName: "artifactory-ca",
-        },
         joinKeySecretName: "artifactory-secret",
         masterKeySecretName: "artifactory-secret",
       },
@@ -52,16 +48,6 @@
         javaOpts: {
           other: "-javaagent:/opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar",
         },
-        accessConfig: {
-          security: {
-            tls: true,
-            tls-subject-alternative-names: [
-              "artifactory",
-            ],
-          },
-        },
-        customCertificatesSecretName: "artifactory-ca",
-        resetAccessCAKeys: true,
       },
       jfconnect: {
         enabled: false,

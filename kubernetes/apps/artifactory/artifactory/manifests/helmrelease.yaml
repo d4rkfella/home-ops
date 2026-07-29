@@ -118,18 +118,6 @@
            - name: nfs-backup-volume\n\
           \  mountPath: /mnt/artifactory-backup\n\
           ",
-        extraSystemYaml: {
-          jfconnect: {
-            enabled: false,
-          },
-          artifactory: {
-            tomcat: {
-              httpsConnector: {
-                enabled: true,
-              },
-            },
-          },
-        },
         admin: {
           secret: "artifactory-secret",
           dataKey: "bootstrap.creds",

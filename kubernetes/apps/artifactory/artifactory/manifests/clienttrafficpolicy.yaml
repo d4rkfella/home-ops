@@ -5,7 +5,6 @@
   kind: "ClientTrafficPolicy",
   metadata: {
     name: "disable-path-normalization",
-    namespace: "<namespace>",
   },
   spec: {
     targetRef: {

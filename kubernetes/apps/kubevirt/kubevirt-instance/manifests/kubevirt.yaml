@@ -34,6 +34,10 @@
           "HypervStrictCheck",
           "KubevirtSeccompProfile",
         ],
+        disabledFeatureGates: [
+          "Template",
+          "VMExport",
+        ],
       },
       smbios: {
         sku: "TalosCloud",

@@ -32,5 +32,12 @@
       semanticCommitScope: "container",
       commitMessageTopic: "{{depName}}",
     },
+    {
+      matchDatasources: ["docker"],
+      matchPackageNames: [
+        "/^factory\\.talos\\.dev\\/installer-secureboot\\//",
+      ],
+      enabled: false,
+    },
   ],
 }

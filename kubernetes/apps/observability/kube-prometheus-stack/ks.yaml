@@ -8,8 +8,8 @@
   },
   spec: {
     dependsOn: [{
-      name: "vault",
-      namespace: "vault",
+      name: "openbao",
+      namespace: "openbao",
     }],
     path: "./kubernetes/apps/observability/kube-prometheus-stack/manifests",
     prune: true,

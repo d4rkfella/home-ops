@@ -11,6 +11,7 @@
       name: "cloudflare-dns",
       namespace: "external-dns",
     }],
+    interval: "1h",
     path: "./kubernetes/apps/cloudflared/cloudflared/manifests",
     prune: true,
     sourceRef: {
@@ -19,6 +20,5 @@
       namespace: "flux-system",
     },
     wait: false,
-    interval: "1h",
   },
 }

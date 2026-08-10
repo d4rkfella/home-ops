@@ -21,7 +21,7 @@ permissions:
 jobs:
   main:
     name: Schemas
-    runs-on: home-ops-runner2
+    runs-on: ${{ github.event.repository.name }}-runner
     permissions:
       contents: read
       packages: write

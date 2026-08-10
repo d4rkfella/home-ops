@@ -4,7 +4,7 @@
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
   metadata: {
-    name: "home-ops-runner2",
+    name: "home-ops-runner",
   },
   spec: {
     interval: "1h",
@@ -60,12 +60,23 @@
                 },
               },
             }],
+            volumeMounts: [{
+              name: "talos",
+              mountPath: "/var/run/secrets/talos.dev",
+              readOnly: true,
+            }],
             securityContext: {
               allowPrivilegeEscalation: false,
               readOnlyRootFilesystem: false,
             },
           }],
-          serviceAccountName: "home-ops-runner2",
+          serviceAccountName: "home-ops-runner",
+          volumes: [{
+            name: "talos",
+            secret: {
+              secretName: "home-ops-runner",
+            },
+          }],
         },
       },
       controllerServiceAccount: {

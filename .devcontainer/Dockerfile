@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260724.1@sha256:678c6550cc43645e08669028bc177f50be4e7c5b8cca677067b1914d4afc7a03
+FROM ubuntu:resolute-20260811.1@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -36,7 +36,7 @@ COPY --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.52.0
+ARG TASK_VERSION=v3.53.1
 RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && \

@@ -15,6 +15,7 @@
       rotationPolicy: "Always",
       size: 256,
     },
+    commonName: "opnsense-exporter",
     dnsNames: [
       "opnsense-exporter",
       "opnsense-exporter.observability",

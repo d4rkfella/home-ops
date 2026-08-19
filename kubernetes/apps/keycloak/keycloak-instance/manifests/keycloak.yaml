@@ -73,7 +73,7 @@
       schema: "public",
     },
     instances: 1,
-    image: "ghcr.io/d4rkfella/keycloak:26.7.1@sha256:b3f467bd354c7c0454c8dc29eb1389352dc83e6a391abd6a47aad80a255943af",
+    image: "ghcr.io/d4rkfella/keycloak:26.7.1@sha256:7f0d10b58f2107af69ed08ec09a7a302ff73120026b15ab4e331494b17940327",
     startOptimized: true,
     proxy: {
       headers: "xforwarded",

@@ -167,12 +167,9 @@
           scheme: "",
           interval: "30s",
           scrapeTimeout: "10s",
+          bearerTokenFile: "/vault/secrets/token",
           tlsConfig: {
             serverName: "openbao.darkfellanetwork.com",
-          },
-          authorization: {
-            type: "Bearer",
-            credentialsFile: "/vault/secrets/token"
           },
         },
         prometheusRules: {

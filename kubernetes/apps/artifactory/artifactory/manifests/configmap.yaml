@@ -1,0 +1,14 @@
+---
+{
+  apiVersion: "v1",
+  kind: "ConfigMap",
+  metadata: {
+    name: "artifactory-setenv",
+  },
+  data: {
+    setenv.sh: "\
+       CATALINA_OPTS=\"-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar\"\n\
+       CATALINA_OPTS=\"$CATALINA_OPTS -Djf.product.home=/opt/jfrog/artifactory\"\n\
+      ",
+  },
+}

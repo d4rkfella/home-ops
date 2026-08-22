@@ -46,7 +46,7 @@
       },
       access: {
         javaOpts: {
-          other: "-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar -Djf.product.home=/opt/jfrog/artifactory",
+          other: "-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar",
         },
       },
       jfconnect: {
@@ -101,12 +101,19 @@
           \  image:\n\
           \    reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest@sha256:c86b73ecf0042010f45c5ce6a8003b7a6ab6cb0a028fc1d24422284f3b9d12f3\n\
           \    pullPolicy: IfNotPresent\n\
+           - name: setenv-script\n\
+          \  configMap:\n\
+          \    name: artifactory-setenv\n\
+          \    defaultMode: 0755\n\
           ",
         customVolumeMounts: "\
            - name: nfs-backup-volume\n\
           \  mountPath: /mnt/artifactory-backup\n\
            - name: license-patcher\n\
           \  mountPath: /opt/jfrog/license-patcher\n\
+           - name: setenv-script\n\
+          \  mountPath: /opt/jfrog/artifactory/app/artifactory/tomcat/bin/setenv.sh\n\
+          \  subPath: setenv.sh\n\
           ",
         admin: {
           secret: "artifactory-secret",

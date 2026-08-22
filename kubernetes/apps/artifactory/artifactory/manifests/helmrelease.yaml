@@ -234,6 +234,15 @@
         \    bearerTokenSecret:\n\
         \      name: artifactory-secret\n\
         \      key: jfrog-metrics-token\n\
+         ---\n\
+         apiVersion: v1,\n\
+         kind: ConfigMap,\n\
+         metadata:\n\
+        \  name: {{ template \"artifactory.name\" . }}-setenv\n\
+         data:\n\
+        \  setenv.sh: |\n\
+        \    CATALINA_OPTS=\"-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar\"\n\
+        \    CATALINA_OPTS=\"$CATALINA_OPTS -Djf.product.home=/opt/jfrog/artifactory\"\n\
         ",
     },
   },

@@ -107,7 +107,7 @@
         customVolumeMounts: "\
            - name: nfs-backup-volume\n\
           \  mountPath: /mnt/artifactory-backup\n\
-           - name: license-patcher-image\n\
+           - name: license-patcher\n\
           \  mountPath: /opt/jfrog/license-patcher\n\
           ",
         admin: {

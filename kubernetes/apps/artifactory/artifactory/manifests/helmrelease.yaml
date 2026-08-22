@@ -99,10 +99,20 @@
           \  nfs:\n\
           \    server: 192.168.91.40\n\
           \    path: /mnt/exos20/artifactory-backup\n\
+           - name: license-patcher\n\
+          \  image:\n\
+          \    reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest\n\
+          \    pullPolicy: Always\n\
           ",
         customVolumeMounts: "\
            - name: nfs-backup-volume\n\
           \  mountPath: /mnt/artifactory-backup\n\
+           - name: license-patcher\n\
+          \  mountPath: /opt/jfrog/artifactory/app/artifactory/tomcat/bin/setenv.sh\n\
+          \  subPath: opt/jfrog/artifactory/app/artifactory/tomcat/bin/setenv.sh\n\
+           - name: license-patcher\n\
+          \  mountPath: /opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar\n\
+          \  subPath: opt/jfrog/artifactory/app/artifactory/jfrog-artifactory-license-patcher-1.0.jar\n\
           ",
         admin: {
           secret: "artifactory-secret",

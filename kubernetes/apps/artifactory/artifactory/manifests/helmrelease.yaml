@@ -53,10 +53,10 @@
         enabled: false,
       },
       artifactory: {
-        extraEnvironmentVariables: "\
-           - name: CATALINA_OPTS\n\
-          \  value: \"-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar -Djf.product.home=/opt/jfrog/artifactory\"\n\
-          ",
+        extraEnvironmentVariables: [{
+          name: "CATALINA_OPTS",
+          value: "-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar -Djf.product.home=/opt/jfrog/artifactory",
+        }],
         statefulset: {
           annotations: {
             reloader.stakater.com/auto: "true",

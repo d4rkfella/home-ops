@@ -243,6 +243,18 @@
         \  setenv.sh: |\n\
         \    CATALINA_OPTS=\"-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar\"\n\
         \    CATALINA_OPTS=\"$CATALINA_OPTS -Djf.product.home=/opt/jfrog/artifactory\"\n\
+         ---\n\
+         apiVersion: gateway.envoyproxy.io/v1alpha1\n\
+         kind: ClientTrafficPolicy\n\
+         metadata:\n\
+        \  name: {{ template \"artifactory.name\" . }}\n\
+         spec:\n\
+        \  targetRefs:\n\
+        \  - group: gateway.networking.k8s.io\n\
+        \    kind: Gateway\n\
+        \    name: {{ template \"artifactory.name\" . }}-gateway\n\
+        \  path:\n\
+        \    escapedSlashesAction: KeepUnchanged\n\
         ",
     },
   },

@@ -236,7 +236,7 @@
         \      key: jfrog-metrics-token\n\
          ---\n\
          apiVersion: v1\n\
-         kind: ConfigMap,\n\
+         kind: ConfigMap\n\
          metadata:\n\
         \  name: {{ template \"artifactory.name\" . }}-setenv\n\
          data:\n\

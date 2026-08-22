@@ -101,7 +101,7 @@
           \    path: /mnt/exos20/artifactory-backup\n\
            - name: license-patcher\n\
           \  image:\n\
-          \    reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest\n\
+          \    reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest@sha256:c86b73ecf0042010f45c5ce6a8003b7a6ab6cb0a028fc1d24422284f3b9d12f3\n\
           \    pullPolicy: Always\n\
           ",
         customVolumeMounts: "\

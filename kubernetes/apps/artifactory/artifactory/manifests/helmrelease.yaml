@@ -85,12 +85,6 @@
           \    - name: FLUENTD_CONF\n\
           \      value: ../../../..{{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf\n\
           ",
-        image: {
-          registry: "ghcr.io",
-          repository: "d4rkfella/artifactory-pro",
-          tag: "7.161.16@sha256:02f26028230eba3c5c1931cd6e8d24a768c937b811f1aba37652cb0ef6e2d2df",
-          pullPolicy: "IfNotPresent",
-        },
         persistence: {
           size: "200Gi",
         },

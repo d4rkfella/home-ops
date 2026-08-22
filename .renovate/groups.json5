@@ -2,22 +2,6 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   packageRules: [
     {
-      description: [
-        'Artifactory Group',
-      ],
-      groupName: 'Artifactory',
-      matchPackageNames: [
-        '/artifactory/',
-      ],
-      matchDatasources: [
-        'docker',
-      ],
-      group: {
-        commitMessageTopic: '{{{groupName}}} group',
-      },
-      minimumGroupSize: 2,
-    },
-    {
       "prTitle": "chore(deps): update devcontainer dependencies",
       "commitMessageTopic": "devcontainer dependencies",
       groupName: 'devcontainer',

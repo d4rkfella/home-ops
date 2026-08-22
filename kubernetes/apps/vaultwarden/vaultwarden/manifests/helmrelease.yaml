@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/vaultwarden",
-                tag: "1.37.1@sha256:bb3e3f1d23a21d4b2aa67b3ac36abfc22c78b1b64ecba6ec46879698358aaa3e",
+                tag: "1.37.2@sha256:ea22fad040acb6386b5998a81f54e91284a7b0760b57f397fa06fee456dd8142",
               },
               env: {
                 SSO_ENABLED: "true",

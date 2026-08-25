@@ -19,7 +19,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/brrpolice",
-                tag: "0.15.2@sha256:ac777529eeae5357f66c0de30ffdd773cd2efd5eeffe5ce945e08cdb33779efc",
+                tag: "0.15.2@sha256:4e2b33f23c9da5a4fc88cab2f646de34f3d96a782fe5a1e4743c7eb6e9befe60",
               },
               env: {
                 BRRPOLICE_HTTP__PORT: 80,

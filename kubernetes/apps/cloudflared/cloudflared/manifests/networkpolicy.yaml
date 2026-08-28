@@ -47,7 +47,7 @@
         }],
         rules: {
           dns: [{
-            matchPattern: "*.v2.argotunnel.com",
+            matchPattern: "**.argotunnel.com",
           }, {
             matchName: "api.cloudflare.com",
           }],
@@ -68,7 +68,7 @@
       }],
     }, {
       toFQDNs: [{
-        matchPattern: "*.v2.argotunnel.com",
+        matchPattern: "**.argotunnel.com",
       }],
       toPorts: [{
         ports: [{
@@ -86,6 +86,18 @@
       toPorts: [{
         ports: [{
           port: "443",
+          protocol: "TCP",
+        }],
+      }],
+    }, {
+      toCIDRSet: [{
+        cidr: "1.1.1.1/32",
+      }, {
+        cidr: "1.0.0.1/32",
+      }],
+      toPorts: [{
+        ports: [{
+          port: "853",
           protocol: "TCP",
         }],
       }],

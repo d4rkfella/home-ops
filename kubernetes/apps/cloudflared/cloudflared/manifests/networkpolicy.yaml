@@ -50,6 +50,8 @@
             matchPattern: "**.argotunnel.com",
           }, {
             matchName: "api.cloudflare.com",
+          }, {
+            matchName: "external.envoy-gateway-system.svc.cluster.local",
           }],
         },
       }],

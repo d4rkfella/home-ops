@@ -48,27 +48,13 @@ INT_OR_STRING_SCHEMA = {
 
 
 def optimize_schema(node, is_root=False):
-    """
-    Optimized in-place schema transformation.
-
-    Restores kubeconform behavior:
-    - add additionalProperties:false to objects with properties
-    - do not add it to root unless requested
-    - replace int-or-string markers
-    """
 
     if isinstance(node, dict):
 
         if node.get("format") == "int-or-string":
-
             node.clear()
-
-            node.update(
-                INT_OR_STRING_SCHEMA
-            )
-
+            node.update(INT_OR_STRING_SCHEMA)
             return node
-
 
         if (
             "properties" in node
@@ -78,27 +64,10 @@ def optimize_schema(node, is_root=False):
                 or DENY_ROOT_ADDITIONAL_PROPERTIES
             )
         ):
-
             node["additionalProperties"] = False
 
-
         for key, value in node.items():
-
-            optimize_schema(
-                value,
-                False
-            )
-
-
-    elif isinstance(node, list):
-
-        for item in node:
-
-            optimize_schema(
-                item,
-                False
-            )
-
+            optimize_schema(value, False)
 
     return node
 

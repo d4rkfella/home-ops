@@ -17,6 +17,16 @@
       datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
     },
     {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "(^|/)kubernetes/apps/artifactory/artifactory/manifests/helmrelease\\.yaml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*\\\\?\"(?<depName>[^:\"]+):(?<currentValue>[^@\"]+)@(?<currentDigest>sha256:[a-f0-9]+)\\\\?\""
+      ],
+      "datasourceTemplate": "docker"
+    },
+    {
       customType: 'regex',
       description: [
         'Process CloudnativePG Postgresql version',

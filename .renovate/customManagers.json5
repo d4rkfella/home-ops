@@ -22,7 +22,7 @@
         "(^|/)kubernetes/apps/artifactory/artifactory/manifests/helmrelease\\.yaml$/"
       ],
       "matchStrings": [
-        "image:\\s*\\\\?\"(?<depName>[^:\"]+):(?<currentValue>[^@\"]+)@(?<currentDigest>sha256:[a-f0-9]+)\\\\?\""
+        'image:\\s*["\\\\]*(?<depName>[^:@\\s"\\\\]+):(?<currentValue>[^@\\s"\\\\]+)@(?<currentDigest>sha256:[a-f0-9]+)'
       ],
       "datasourceTemplate": "docker"
     },

@@ -17,17 +17,6 @@
       datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
     },
     {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "(^|/)kubernetes/apps/artifactory/artifactory/manifests/helmrelease\\.yaml$/"
-      ],
-      "matchStrings": [
-        "fluentd:(?<currentValue>[0-9.]+)@(?<currentDigest>sha256:[a-f0-9]+)"
-      ],
-      "depNameTemplate": "releases-docker.jfrog.io/fluentd",
-      "datasourceTemplate": "docker"
-    },
-    {
       customType: 'regex',
       description: [
         'Process CloudnativePG Postgresql version',

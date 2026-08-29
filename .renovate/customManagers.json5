@@ -22,8 +22,9 @@
         "(^|/)kubernetes/apps/artifactory/artifactory/manifests/helmrelease\\.yaml$/"
       ],
       "matchStrings": [
-        'image:\\s*["\\\\]*(?<depName>[^:@\\s"\\\\]+):(?<currentValue>[^@\\s"\\\\]+)@(?<currentDigest>sha256:[a-f0-9]+)'
+        "fluentd:(?<currentValue>[0-9.]+)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
+      "depNameTemplate": "releases-docker.jfrog.io/fluentd",
       "datasourceTemplate": "docker"
     },
     {

@@ -72,7 +72,7 @@
           ",
         customSidecarContainers: "\
            - name: \"artifactory-fluentd-sidecar\"\n\
-          \  image: \"releases-docker.jfrog.io/fluentd:4.17@sha256:9a806aca316f8cd2bfd5b09f9b24ad3c3d53f8f31802c6b7e36dffac1f0719ed\"\n\
+          \  image: \"releases-docker.jfrog.io/fluentd:4.22@sha256:8370a38335843ecf80953fa3c407db0c512202a3f3293267359ac7f838a7abf6\"\n\
           \  imagePullPolicy: \"IfNotPresent\"\n\
           \  volumeMounts:\n\
           \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\

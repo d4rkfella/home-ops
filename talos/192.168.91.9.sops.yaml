@@ -347,7 +347,7 @@
       "192.168.91.10",
     ],
     kubelet: {
-      image: "ghcr.io/siderolabs/kubelet:v1.36.4",
+      image: "ghcr.io/siderolabs/kubelet:v1.37.0",
       nodeIP: {
         validSubnets: [
           "192.168.91.0/24",

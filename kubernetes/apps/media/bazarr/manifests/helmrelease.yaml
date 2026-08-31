@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -50,28 +50,17 @@
               probes: {
                 startup: {
                   enabled: true,
-                  custom: true,
                   spec: {
-                    httpGet: {
-                      path: "/api/system/ping",
-                      port: 6767,
-                    },
-                    periodSeconds: 10,
-                    failureThreshold: 30,
+                    periodSeconds: 30,
+                    failureThreshold: 10,
                   },
                 },
                 liveness: {
                   enabled: true,
-                  custom: true,
                   spec: {
-                    httpGet: {
-                      path: "/api/system/ping",
-                      port: 6767,
-                    },
-                    initialDelaySeconds: 5,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
                 readiness: {
@@ -82,10 +71,9 @@
                       path: "/api/system/ping",
                       port: 6767,
                     },
-                    initialDelaySeconds: 5,
                     periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
               },

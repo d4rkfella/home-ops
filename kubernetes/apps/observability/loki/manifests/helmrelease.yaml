@@ -12,21 +12,6 @@
       kind: "OCIRepository",
       name: "loki",
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "StatefulSet",
-            name: "loki",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\
-            ",
-        }],
-      },
-    }],
     values: {
       deploymentMode: "SingleBinary",
       loki: {
@@ -85,6 +70,7 @@
       },
       singleBinary: {
         replicas: 1,
+        hostUsers: false,
         persistence: {
           enabled: true,
           size: "50Gi",

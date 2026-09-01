@@ -16,14 +16,13 @@
       description: [
         'Actions Runner Controller Group',
       ],
-      groupName: 'Actions Runner Controller',
+      groupName: 'actions-runner-controller',
       matchPackageNames: [
         '/gha-runner-scale-set-controller/',
         '/gha-runner-scale-set/',
       ],
       matchDatasources: [
         'docker',
-        'helm',
       ],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
@@ -36,17 +35,17 @@
       matchDatasources: [
         'docker',
       ],
-      matchPackageNames: ["/flux-operator/", "/flux-instance/", "/flux-operator-manifests/"],
+      matchPackageNames: ["/flux-operator/", "/flux-instance/"],
       group: {
         commitMessageTopic: '{{{groupName}}} group',
       },
-      minimumGroupSize: 3,
+      minimumGroupSize: 2,
     },
     {
       description: [
         'Keycloak Group',
       ],
-      groupName: 'Keycloak',
+      groupName: 'keycloak',
       matchPackagePatterns: [
         'd4rkfella/keycloak',
         'keycloak/keycloak-k8s-resources',
@@ -94,7 +93,7 @@
     },
     {
       description: "Barman Cloud Group",
-      group: "Barman Cloud",
+      group: "barman-cloud",
       matchDatasources: ["docker"],
       matchPackagePatterns: ["/plugin-barman-cloud/", "plugin-barman-cloud-sidecar"],
       group: {

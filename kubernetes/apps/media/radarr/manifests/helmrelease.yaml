@@ -79,6 +79,10 @@
                     httpGet: {
                       path: "/ping",
                       port: 80,
+                      httpHeaders: [{
+                        name: "Host",
+                        value: "localhost",
+                      }],
                     },
                     periodSeconds: 10,
                     timeoutSeconds: 5,

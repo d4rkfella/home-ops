@@ -25,7 +25,7 @@
         enabled: true,
       },
       certController: {
-        enabled: false,
+        create: false,
       },
       webhook: {
         certManager: {

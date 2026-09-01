@@ -1,0 +1,33 @@
+---
+{
+  # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+  apiVersion: "monitoring.coreos.com/v1",
+  kind: "PrometheusRule",
+  metadata: {
+    name: "external-secrets-rules",
+  },
+  spec: {
+    groups: [{
+      name: "external-secrets.rules",
+      rules: [{
+        alert: "ExternalSecretNotReady",
+        expr: "\
+           externalsecret_status_condition{\n\
+          \  condition=\"Ready\",\n\
+          \  status=\"False\"\n\
+           } == 1\n\
+          ",
+        for: "5m",
+        labels: {
+          severity: "warning",
+        },
+        annotations: {
+          summary: "ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} is not ready",
+          description: "\
+             ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} has been in Ready=False state for more than 5 minutes.\n\
+            ",
+        },
+      }],
+    }],
+  },
+}

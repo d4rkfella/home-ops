@@ -24,6 +24,9 @@
       grafanaDashboard: {
         enabled: true,
       },
+      certController: {
+        enabled: false,
+      },
       webhook: {
         certManager: {
           enabled: true,

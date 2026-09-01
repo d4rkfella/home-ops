@@ -32,6 +32,8 @@
                 PROWLARR__AUTH__REQUIRED: "DisabledForLocalAddresses",
                 PROWLARR__LOG__DBENABLED: "False",
                 PROWLARR__LOG__LEVEL: "info",
+                PROWLARR__SERVER__ALLOWEDHOSTS: "prowlarr.darkfellanetwork.com,prowlarr.media.svc.cluster.local",
+                PROWLARR__SERVER__TRUSTEDNETWORKS: "172.16.0.0/16",
                 PROWLARR__SERVER__BINDADDRESS: "0.0.0.0",
                 PROWLARR__SERVER__PORT: 80,
                 PROWLARR__AUTH__APIKEY: {

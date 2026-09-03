@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -26,26 +26,31 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/qbittorrent",
-                tag: "5.2.3.2013@sha256:0f1972814358b759b39801da0a088b3181aae94366845bd6bac76c97935d8959",
+                tag: "5.2.3.2013@sha256:779d80fa4a25cdaeefcfe5dd60ecdc90eb1782592645b00c746e79712c82a5b7",
               },
               env: {
                 TZ: "Europe/Sofia",
               },
               probes: {
                 readiness: {
-                  enabled: false,
+                  enabled: true,
+                  custom: true,
                   spec: {
-                    initialDelaySeconds: 2,
+                    httpGet: {
+                      path: "/api/v2/app/version",
+                      port: 80,
+                    },
                     periodSeconds: 10,
-                    failureThreshold: 3,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
                 liveness: {
-                  enabled: false,
+                  enabled: true,
                   spec: {
-                    initialDelaySeconds: 2,
-                    periodSeconds: 10,
-                    failureThreshold: 3,
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
                 startup: {

@@ -19,7 +19,7 @@
         envoyDeployment: {
           replicas: 1,
           container: {
-            image: "mirror.gcr.io/envoyproxy/envoy:v1.39.0",
+            image: "mirror.gcr.io/envoyproxy/envoy:v1.39.1",
             resources: {
               requests: {
                 cpu: "100m",
@@ -39,7 +39,7 @@
       metrics: {
         prometheus: {
           compression: {
-            type: "Gzip",
+            type: "Zstd",
           },
         },
       },
@@ -246,16 +246,34 @@
     name: "envoy",
   },
   spec: {
-    compression: [{
+    compressor: [{
+      type: "Zstd",
+      zstd: {},
+    }, {
       type: "Brotli",
+      brotli: {},
     }, {
       type: "Gzip",
+      gzip: {},
     }],
+    retry: {
+      numRetries: 2,
+      retryOn: {
+        triggers: [
+          "reset",
+        ],
+      },
+    },
     targetSelectors: [{
       group: "gateway.networking.k8s.io",
       kind: "Gateway",
     }],
     tcpKeepalive: {},
+    timeout: {
+      http: {
+        requestTimeout: "0s",
+      },
+    },
   },
 }
 ---

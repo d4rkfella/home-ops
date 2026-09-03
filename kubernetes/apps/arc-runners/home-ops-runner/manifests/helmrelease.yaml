@@ -4,7 +4,7 @@
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
   metadata: {
-    name: "home-ops-runner2",
+    name: "home-ops-runner",
   },
   spec: {
     interval: "1h",
@@ -45,7 +45,7 @@
           },
           containers: [{
             name: "runner",
-            image: "ghcr.io/actions/actions-runner:2.336.0@sha256:0cfdcc701ce933c6d243c6b0b2da767366dc9f2e99961d4c3754b0b78084cdda",
+            image: "ghcr.io/actions/actions-runner:2.337.0@sha256:e5496277be5d09bc968b3d64911b74e219ac4a3f2edce956a3ecf9271bea1ef4",
             command: [
               "/home/runner/run.sh",
             ],
@@ -60,12 +60,23 @@
                 },
               },
             }],
+            volumeMounts: [{
+              name: "talos",
+              mountPath: "/var/run/secrets/talos.dev",
+              readOnly: true,
+            }],
             securityContext: {
               allowPrivilegeEscalation: false,
               readOnlyRootFilesystem: false,
             },
           }],
-          serviceAccountName: "home-ops-runner2",
+          serviceAccountName: "home-ops-runner",
+          volumes: [{
+            name: "talos",
+            secret: {
+              secretName: "home-ops-runner",
+            },
+          }],
         },
       },
       controllerServiceAccount: {

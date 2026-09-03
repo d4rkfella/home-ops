@@ -1,7 +1,6 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 {
-  # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
   metadata: {
@@ -14,7 +13,7 @@
     },
     interval: "1h",
     values: {
-      alertmanagerAddress: "http://alertmanager-operated.observability.svc.cluster.local:9093",
+      alertmanagerAddress: "https://alertmanager-operated.observability.svc.cluster.local:9093",
       networkPolicy: {
         enabled: false,
       },

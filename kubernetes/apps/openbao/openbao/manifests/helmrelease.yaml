@@ -23,17 +23,6 @@
             \  path: /spec/template/spec/hostUsers\n\
             \  value: false\
             ",
-        }, {
-          target: {
-            kind: "ServiceMonitor",
-            name: "openbao",
-            namespace: "openbao",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/endpoints/0/bearerTokenFile\n\
-            \  value: \"/vault/secrets/token\"\
-            ",
         }],
       },
     }],
@@ -178,6 +167,7 @@
           scheme: "",
           interval: "30s",
           scrapeTimeout: "10s",
+          bearerTokenFile: "/vault/secrets/token",
           tlsConfig: {
             serverName: "openbao.darkfellanetwork.com",
           },
@@ -493,7 +483,7 @@
         schedule: "30 2 * * *",
         image: {
           repository: "ghcr.io/openbao/openbao-snapshot-agent",
-          tag: "0.3.0",
+          tag: "0.4.3",
         },
         extraEnvironmentVars: {
           BAO_ADDR: "https://openbao.darkfellanetwork.com:8200",

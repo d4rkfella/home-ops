@@ -13,16 +13,12 @@
       name: "flux-instance",
     },
     values: {
+      commonAnnotations: {
+        fluxcd.controlplane.io/reconcileArtifactEvery: "1h",
+      },
       instance: {
-        distribution: {
-          artifact: "oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests:v0.57.0",
-        },
         cluster: {
           networkPolicy: false,
-        },
-        storage: {
-          class: "openebs-zfs-128k",
-          size: "20Gi",
         },
         components: [
           "source-controller",
@@ -30,13 +26,16 @@
           "helm-controller",
           "notification-controller",
         ],
+        storage: {
+          class: "openebs-zfs-128k",
+          size: "20Gi",
+        },
         sync: {
           kind: "GitRepository",
           url: "https://github.com/d4rkfella/home-ops",
           ref: "refs/heads/main",
           path: "kubernetes/flux/cluster",
           interval: "1h",
-          recurseSubmodules: true,
         },
         kustomize: {
           patches: [
@@ -53,7 +52,7 @@
                 ",
               target: {
                 kind: "Deployment",
-                name: "(kustomize-controller|helm-controller|source-controller)",
+                name: "(helm-controller|source-controller)",
               },
             },
             {
@@ -83,6 +82,9 @@
                  - op: add\n\
                 \  path: /spec/template/spec/containers/0/args/-\n\
                 \  value: --concurrent=20\n\
+                 - op: add\n\
+                \  path: /spec/template/spec/containers/0/args/-\n\
+                \  value: --requeue-dependency=5s\n\
                  - op: replace\n\
                 \  path: /spec/template/spec/volumes/0\n\
                 \  value:\n\

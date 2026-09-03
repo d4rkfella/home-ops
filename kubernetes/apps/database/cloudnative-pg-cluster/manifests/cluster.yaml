@@ -17,7 +17,7 @@
       },
     },
     instances: 3,
-    imageName: "ghcr.io/cloudnative-pg/postgresql:18.4-minimal-trixie@sha256:a18aba0ea52ca14b834740f400ae72750e85b0441457ab9dc02233954117bf4e",
+    imageName: "ghcr.io/cloudnative-pg/postgresql:18.6-minimal-trixie@sha256:5c389b0268d9e637ca55efa41a7fafa3996332b5ea3c6099d0861c5f31acb00e",
     primaryUpdateStrategy: "unsupervised",
     storage: {
       pvcTemplate: {

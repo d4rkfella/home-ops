@@ -52,14 +52,8 @@ jobs:
           client-id: ${{ secrets.BOT_APP_ID }}
           private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
 
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-          token: ${{ steps.app-token.outputs.token }}
-
       - name: Run Renovate
-        uses: renovatebot/github-action@973d3e5a68e735a444e8c03432b66eedb343c302 # v46.2.0
+        uses: renovatebot/github-action@39b914146caeff8cd512e61c8992f1d5913af85c # v46.2.5
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
           RENOVATE_AUTODISCOVER: true

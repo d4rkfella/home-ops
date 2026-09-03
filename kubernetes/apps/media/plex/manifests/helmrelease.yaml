@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/plex",
-                tag: "1.43.3.10828@sha256:38fbee29835ec5ecdcf449d41f86b0512d8754ec9314020e75aea73dbae9f180",
+                tag: "1.43.3.10896@sha256:36822606f2fe998b195c53f84eef4191a611220cc9d5f149c4e81035cf92dd1b",
               },
               env: {
                 TZ: "Europe/Sofia",

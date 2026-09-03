@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260707@sha256:3131b4cc82a783df6c9df078f86e01819a13594b865c2cad47bd1bca2b7063bb
+FROM ubuntu:resolute-20260811.1@sha256:2260313b31c8c011cd2eebe728008efac1b3982be73eb71348ea2648d2c0e09b
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -14,29 +14,29 @@ RUN apt-get update && \
         xdg-utils gum && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.13.7@sha256:e824808e0a9c8138c2f7b17f21cfebee2f1442a336d812eb0034c9c897059302 /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.14.0@sha256:ff9b1177abf0874e963261c4937ce5f5e8080adde6ae49b4e13195f37bee1a67 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
-COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.3@sha256:148ad45c3bd6e2f051bda3d1e4572a1f4e546b3fc0b658bf1391ac1ec277a475 /usr/local/bin/flux /usr/local/bin/
+COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.5@sha256:704d5529535570a495249b643159c93a9aa88ffca07813c974a54b7ba6edbd86 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.2@sha256:d91bc4e7e95e8d2f549c747a72dc174f90579e410a1695f57f686674f84ce849 /ko-app/cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.7.2@sha256:51281cecf2eee8824f1dc99b25503e3a900dc4fea208b82d4c080660c33d935b /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.7.4@sha256:f20e612d5a98a942f62cf7e63621cde9614eaffabe538fb93c8a9f836cac4469 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.1-trixie@sha256:cdb9c942f24d6ef9a2888ba635e96a9c7c9758eb4dc58c1165f4b6c311d1cbc5 /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.9-trixie@sha256:b2b767dc8bbe5b9f813ca4958a43cc8421ca8eab6c954c74e5b1e641fea7a6ad /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.3@sha256:857f5a151ac0b2bfc55c1e4e5581d66fb8e268e4d106b38e74191f3bac9d58ea /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
-COPY --from=mikefarah/yq:4.53.3@sha256:11a1f0b604b13dbbdc662260d8db6f644b22d8553122a25c1b5b2e8713ca6977 /usr/bin/yq /usr/local/bin/
+COPY --from=mikefarah/yq:4.53.6@sha256:cfc4eee658595834ef304eadb0c3ea721f3b7cb6404ad8b7cb909cc5b5145b23 /usr/bin/yq /usr/local/bin/
 RUN yq --version
 
 # renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.52.0
+ARG TASK_VERSION=v3.53.1
 RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
     sha256sum -c --strict --ignore-missing task_checksums.txt && \
     tar -xvzf task_linux_amd64.tar.gz && \
@@ -48,7 +48,7 @@ ARG VIRTCTL_VERSION=v1.9.0
 RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && chmod +x /usr/local/bin/virtctl
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.2.3
+ARG HELM_VERSION=v4.2.4
 RUN curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \
@@ -56,7 +56,7 @@ RUN curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.s
     rm -rf /tmp/*
 
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-ARG KUBECTL_VERSION=v1.36.3
+ARG KUBECTL_VERSION=v1.37.0
 RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
       --certificate kubectl.cert \
@@ -67,7 +67,7 @@ RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.si
     rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
-ARG LEFTHOOK_VERSION=v2.1.10
+ARG LEFTHOOK_VERSION=v2.1.12
 RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
     dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
     rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb

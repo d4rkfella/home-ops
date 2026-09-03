@@ -5,7 +5,6 @@
   kind: "Certificate",
   metadata: {
     name: "opnsense-exporter-tls",
-    namespace: "database",
   },
   spec: {
     secretName: "opnsense-exporter-tls",
@@ -16,6 +15,7 @@
       rotationPolicy: "Always",
       size: 256,
     },
+    commonName: "opnsense-exporter",
     dnsNames: [
       "opnsense-exporter",
       "opnsense-exporter.observability",

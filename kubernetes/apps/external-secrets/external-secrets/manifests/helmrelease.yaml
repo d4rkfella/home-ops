@@ -12,35 +12,8 @@
       kind: "OCIRepository",
       name: "external-secrets",
     },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "Deployment",
-            name: "(external-secrets|external-secrets-webhook)",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/hostUsers\n\
-            \  value: false\
-            ",
-        }],
-      },
-    }],
     values: {
-      installCRDs: true,
-      image: {
-        repository: "ghcr.io/external-secrets/external-secrets",
-      },
-      certController: {
-        image: {
-          repository: "ghcr.io/external-secrets/external-secrets",
-        },
-        serviceMonitor: {
-          enabled: true,
-          interval: "1m",
-        },
-      },
+      hostUsers: false,
       extraArgs: {
         enable-secrets-caching: "true",
         enable-managed-secrets-caching: "true",
@@ -51,21 +24,8 @@
       grafanaDashboard: {
         enabled: true,
       },
-      securityContext: {
-        allowPrivilegeEscalation: false,
-        capabilities: {
-          drop: [
-            "ALL",
-          ],
-        },
-        enabled: true,
-        readOnlyRootFilesystem: true,
-        runAsNonRoot: true,
-        runAsUser: 65532,
-        runAsGroup: 65532,
-        seccompProfile: {
-          type: "RuntimeDefault",
-        },
+      certController: {
+        create: false,
       },
       webhook: {
         certManager: {
@@ -74,19 +34,13 @@
             issuerRef: {
               name: "vault-issuer",
               kind: "ClusterIssuer",
-              group: "cert-manager.io",
             },
-            duration: "2160h", # 90d
+            duration: "2160h",
+            renewBefore: "720h",
           },
         },
-        image: {
-          repository: "ghcr.io/external-secrets/external-secrets",
-        },
-        lookaheadInterval: "240h", # 10d
-        serviceMonitor: {
-          enabled: true,
-          interval: "1m",
-        },
+        hostUsers: false,
+        lookaheadInterval: "240h",
       },
     },
   },

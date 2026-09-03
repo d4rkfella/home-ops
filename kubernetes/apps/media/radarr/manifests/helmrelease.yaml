@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/radarr",
-                tag: "6.4.0.10540@sha256:4d2dad4cd22192945e55b813e2d9533013ca6788eb2b69f175876180ee2a2e39",
+                tag: "6.4.3.10645@sha256:5e82e1c518aeb0535b3b4d3663cb65d016ce03b60cff2c731345e2dc0ff0e8a9",
               },
               env: {
                 TZ: "Europe/Sofia",
@@ -32,6 +32,8 @@
                 RADARR__AUTH__REQUIRED: "DisabledForLocalAddresses",
                 RADARR__LOG__DBENABLED: "False",
                 RADARR__LOG__LEVEL: "info",
+                RADARR__SERVER__ALLOWEDHOSTS: "radarr.darkfellanetwork.com,radarr.media.svc.cluster.local",
+                RADARR__SERVER__TRUSTEDNETWORKS: "172.16.0.0/16",
                 RADARR__SERVER__PORT: 80,
                 RADARR__SERVER__BINDADDRESS: "0.0.0.0",
                 RADARR__AUTH__APIKEY: {
@@ -64,16 +66,10 @@
               probes: {
                 liveness: {
                   enabled: true,
-                  custom: true,
                   spec: {
-                    httpGet: {
-                      path: "/ping",
-                      port: 80,
-                    },
-                    initialDelaySeconds: 2,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
                 readiness: {
@@ -83,11 +79,21 @@
                     httpGet: {
                       path: "/ping",
                       port: 80,
+                      httpHeaders: [{
+                        name: "Host",
+                        value: "localhost",
+                      }],
                     },
-                    initialDelaySeconds: 2,
                     periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                startup: {
+                  enabled: true,
+                  spec: {
+                    failureThreshold: 30,
+                    periodSeconds: 10,
                   },
                 },
               },

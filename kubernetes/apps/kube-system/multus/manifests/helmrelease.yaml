@@ -34,14 +34,14 @@
       cni-plugins: {
         image: {
           repository: "ghcr.io/d4rkfella/cni-plugins",
-          tag: "1.9.1@sha256:9436822de9e20e42aa2aa479704949e06d8a209dc5ee6dcdd0b78f23798e5bd1",
+          tag: "1.9.1@sha256:30ae68b9eaa206a8c0c75e1d1d183386b0d97d8e9c701d2c7aa2dfc85459b73d",
         },
         resources: {},
       },
       multus: {
         image: {
           repository: "ghcr.io/d4rkfella/multus-cni",
-          tag: "4.2.4@sha256:db66c8a561ea2dfc6e94b602451e1a95b38fbc89aa10b39db8e8c8e320e2d0dc",
+          tag: "4.2.4@sha256:2d119a97a27befcf87d383ba52066045f25eed20bd13114f1573330f47336a58",
         },
         resources: {
           requests: {

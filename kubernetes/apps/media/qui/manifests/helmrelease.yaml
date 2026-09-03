@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/qui",
-                tag: "1.24.0@sha256:9b2b3b46944c8228fb104f7bf3def603cc5c5fb35affe521dc3713afb9d5a2f5",
+                tag: "1.28.0@sha256:da60a44192bdea42f450f447ca7d690b7409d2ddd4ef5c494d424c17eaa078f9",
               },
               env: {
                 QUI__CHECK_FOR_UPDATES: false,

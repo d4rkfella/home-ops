@@ -43,6 +43,16 @@
             },
           },
         },
+        httpRoute: {
+          enabled: true,
+          hostnames: [
+            "flux.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+          }],
+        },
       },
     },
     valuesFrom: [{

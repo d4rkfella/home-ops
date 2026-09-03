@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 {
   apiVersion: "helm.toolkit.fluxcd.io/v2",
   kind: "HelmRelease",
@@ -22,7 +22,7 @@
             app: {
               image: {
                 repository: "ghcr.io/d4rkfella/bazarr",
-                tag: "1.6.1_beta8@sha256:cdfc952e702fbf807b15599fb2e8b80576c610ed1f3408bf881a566245618e4f",
+                tag: "1.6.1_beta35@sha256:aaa3185716d81cfca8f9305a8bc5dc90e1a023ffae279525f400ea7ef56de5a3",
               },
               env: {
                 TZ: "Europe/Sofia",
@@ -50,28 +50,17 @@
               probes: {
                 startup: {
                   enabled: true,
-                  custom: true,
                   spec: {
-                    httpGet: {
-                      path: "/api/system/ping",
-                      port: 6767,
-                    },
-                    periodSeconds: 10,
-                    failureThreshold: 30,
+                    periodSeconds: 30,
+                    failureThreshold: 10,
                   },
                 },
                 liveness: {
                   enabled: true,
-                  custom: true,
                   spec: {
-                    httpGet: {
-                      path: "/api/system/ping",
-                      port: 6767,
-                    },
-                    initialDelaySeconds: 5,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
                 readiness: {
@@ -82,10 +71,9 @@
                       path: "/api/system/ping",
                       port: 6767,
                     },
-                    initialDelaySeconds: 5,
                     periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
                   },
                 },
               },

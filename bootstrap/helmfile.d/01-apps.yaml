@@ -155,10 +155,10 @@
       ],
     }],
   }, {
-    name: "vault",
-    namespace: "vault",
-    chart: "oci://ghcr.io/d4rkfella/charts-mirror/vault",
-    version: "0.34.0",
+    name: "openbao",
+    namespace: "openbao",
+    chart: "oci://ghcr.io/openbao/charts/openbao",
+    version: "0.29.4",
     values: [
       "./templates/values.yaml.gotmpl",
     ],
@@ -173,11 +173,11 @@
       args: [
         "apply",
         "--server-side",
-        "--namespace=vault",
+        "--namespace=openbao",
         "--field-manager=kustomize-controller",
         "--force-conflicts",
         "-f",
-        "../../kubernetes/apps/vault/vault/manifests/certificate.yaml",
+        "../../kubernetes/apps/openbao/openbao/manifests/certificate.yaml",
       ],
       showlogs: true,
     }, {
@@ -202,7 +202,6 @@
     values: [
       "./templates/values.yaml.gotmpl",
     ],
-    #needs: ['vault/vault']
     hooks: [{
       events: [
         "postsync",

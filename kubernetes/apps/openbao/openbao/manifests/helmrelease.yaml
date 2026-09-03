@@ -483,7 +483,7 @@
         schedule: "30 2 * * *",
         image: {
           repository: "ghcr.io/openbao/openbao-snapshot-agent",
-          tag: "0.4.3",
+          tag: "0.4.4",
         },
         extraEnvironmentVars: {
           BAO_ADDR: "https://openbao.darkfellanetwork.com:8200",

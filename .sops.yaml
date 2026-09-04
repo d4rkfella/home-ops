@@ -2,7 +2,7 @@
 {
   creation_rules: [{
     path_regex: "talos/.+\\.sops\\.yaml",
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|password)$",
+    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
     mac_only_encrypted: true,
     key_groups: [{
       age: [

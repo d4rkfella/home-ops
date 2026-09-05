@@ -81,7 +81,7 @@
       isWALArchiver: true,
       parameters: {
         barmanObjectName: "cloudflare",
-        serverName: "postgres-db-2",
+        serverName: "postgres-db-3",
       },
     }],
     bootstrap: {
@@ -95,7 +95,7 @@
         name: "barman-cloud.cloudnative-pg.io",
         parameters: {
           barmanObjectName: "cloudflare",
-          serverName: "postgres-db-1",
+          serverName: "postgres-db-2",
         },
       },
     }],

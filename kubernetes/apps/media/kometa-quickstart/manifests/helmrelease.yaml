@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+{
+  apiVersion: "helm.toolkit.fluxcd.io/v2",
+  kind: "HelmRelease",
+  metadata: {
+    name: "kometa-quickstart",
+  },
+  spec: {
+    interval: "1h",
+    chartRef: {
+      kind: "OCIRepository",
+      name: "kometa-quickstart",
+    },
+    values: {
+      controllers: {
+        kometa-quickstart: {
+          annotations: {
+            reloader.stakater.com/auto: "true",
+          },
+          containers: {
+            app: {
+              image: {
+                repository: "kometateam/quickstart",
+                tag: "v0.10.6@sha256:dcf023caf3748f0577d06df707f20f2153ef88fa085ae5ebfcadd15ae1a6a532",
+              },
+              env: {
+                TZ: "Europe/Sofia",
+              },
+              probes: {
+                startup: {
+                  enabled: true,
+                  spec: {
+                    periodSeconds: 30,
+                    failureThreshold: 10,
+                  },
+                },
+                liveness: {
+                  enabled: true,
+                  spec: {
+                    periodSeconds: 30,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+                readiness: {
+                  enabled: true,
+                  custom: true,
+                  spec: {
+                    httpGet: {
+                      path: "/api/v1/status",
+                      port: 7171,
+                    },
+                    periodSeconds: 10,
+                    timeoutSeconds: 5,
+                    failureThreshold: 5,
+                  },
+                },
+              },
+              securityContext: {
+                allowPrivilegeEscalation: false,
+                readOnlyRootFilesystem: true,
+                capabilities: {
+                  drop: [
+                    "ALL",
+                  ],
+                },
+              },
+              resources: {
+                requests: {
+                  cpu: "10m",
+                },
+                limits: {
+                  memory: "4Gi",
+                },
+              },
+            },
+          },
+        },
+      },
+      defaultPodOptions: {
+        securityContext: {
+          runAsNonRoot: true,
+          runAsUser: 65532,
+          runAsGroup: 65532,
+          fsGroup: 65532,
+          fsGroupChangePolicy: "OnRootMismatch",
+          seccompProfile: {
+            type: "RuntimeDefault",
+          },
+        },
+      },
+      service: {
+        app: {
+          controller: "kometa-quickstart",
+          ports: {
+            http: {
+              port: 7171,
+            },
+          },
+        },
+      },
+      route: {
+        app: {
+          hostnames: [
+            "kometa-quickstart.darkfellanetwork.com",
+          ],
+          parentRefs: [{
+            name: "internal",
+            namespace: "envoy-gateway-system",
+            sectionName: "https",
+          }],
+          rules: [{
+            backendRefs: [{
+              name: "kometa-quickstart",
+              port: 7171,
+            }],
+          }],
+        },
+      },
+      persistence: {
+        config: {
+          existingClaim: "kometa-quickstart",
+          globalMounts: [{
+            path: "/config",
+          }],
+        },
+      },
+    },
+  },
+}

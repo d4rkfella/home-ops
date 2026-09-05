@@ -20,10 +20,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.5@sha256:704d5529535570a495249b643159c93a9aa88ffca07813c974a54b7ba6edbd86 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
-COPY --from=ghcr.io/openbao/openbao:2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641 \
-    /usr/bin/bao \
-    /usr/local/bin/bao
-
+COPY --from=ghcr.io/openbao/openbao:2.6.2@sha256:11fd73a2102cda9c55d5d881a8c3210303146a7ec1e8ac76f526e175c6d24641 /usr/bin/bao /usr/local/bin/
 RUN bao version
 
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
@@ -92,8 +89,6 @@ RUN echo 'source /usr/share/bash-completion/bash_completion' >> ~/.bashrc && \
     echo 'eval "$(direnv hook bash)"' >> ~/.bashrc && \
     helm plugin install --verify=false https://github.com/databus23/helm-diff
 
-# renovate: datasource=pypi depName=vaultctl
-ARG VAULTCTL_VERSION=0.3.3
-RUN uv tool install vaultctl==${VAULTCTL_VERSION} && \
-    uv python update-shell && \
+
+RUN uv python update-shell && \
     uv cache clean

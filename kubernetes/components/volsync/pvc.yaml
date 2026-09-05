@@ -12,7 +12,7 @@
     dataSourceRef: {
       kind: "ReplicationDestination",
       apiGroup: "volsync.backube",
-      name: "${APP}-dst",
+      name: "${APP}",
     },
     resources: {
       requests: {

@@ -48,7 +48,7 @@
                   custom: true,
                   spec: {
                     httpGet: {
-                      path: "/api/v1/status",
+                      path: "/",
                       port: 7171,
                     },
                     periodSeconds: 10,

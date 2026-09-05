@@ -22,6 +22,10 @@
       },
       redirectURL: "https://radarr.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "radarr-access-token",
+        idToken: "radarr-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -32,7 +36,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-d9ac4ce",
+            "radarr-access-token",
           ],
         },
       }],

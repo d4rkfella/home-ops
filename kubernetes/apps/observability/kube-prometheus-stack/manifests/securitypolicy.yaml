@@ -22,6 +22,10 @@
       },
       redirectURL: "https://prometheus.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "prometheus-access-token",
+        idToken: "prometheus-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -32,7 +36,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-5313e4f6",
+            "prometheus-access-token",
           ],
         },
       }],
@@ -95,6 +99,10 @@
       },
       redirectURL: "https://alertmanager.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "alertmanager-access-token",
+        idToken: "alertmanager-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -105,7 +113,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-4679ee76",
+            "alertmanager-access-token",
           ],
         },
       }],

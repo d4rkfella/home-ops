@@ -22,6 +22,10 @@
       },
       redirectURL: "https://sonarr.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "sonarr-access-token",
+        idToken: "sonarr-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -32,7 +36,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-16e2627e",
+            "sonarr-access-token",
           ],
         },
       }],

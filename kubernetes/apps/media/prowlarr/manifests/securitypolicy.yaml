@@ -22,6 +22,10 @@
       },
       redirectURL: "https://prowlarr.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "prowlarr-access-token",
+        idToken: "prowlarr-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -32,7 +36,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-e600eaa8",
+            "prowlarr-access-token",
           ],
         },
       }],

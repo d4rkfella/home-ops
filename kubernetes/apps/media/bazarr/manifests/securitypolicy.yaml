@@ -22,6 +22,10 @@
       },
       redirectURL: "https://bazarr.darkfellanetwork.com/oauth2/callback",
       logoutPath: "/logout",
+      cookieNames: {
+        accessToken: "bazarr-access-token",
+        idToken: "bazarr-id-token",
+      },
     },
     jwt: {
       providers: [{
@@ -32,7 +36,7 @@
         },
         extractFrom: {
           cookies: [
-            "AccessToken-e825b4",
+            "bazarr-access-token",
           ],
         },
       }],

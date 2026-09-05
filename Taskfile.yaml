@@ -8,6 +8,9 @@
   shopt: [
     "globstar",
   ],
+  dotenv: [
+    ".env",
+  ],
   env: {
     BOOTSTRAP_DIR: "{{.ROOT_DIR}}/bootstrap",
     KUBERNETES_DIR: "{{.ROOT_DIR}}/kubernetes",

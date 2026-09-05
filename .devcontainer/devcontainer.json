@@ -4,6 +4,9 @@
   "workspaceFolder": "/workspace",
   "postStartCommand": "/usr/bin/direnv allow /workspace/.envrc",
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind",
+  "features": {
+      "ghcr.io/devcontainers/features/aws-cli:1.1.4": {}
+  },
   "customizations": {
     "vscode": {
       "extensions": [

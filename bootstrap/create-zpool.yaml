@@ -55,7 +55,7 @@
        log \"Verifying ZFS extension signature\"\n\
        \n\
        cosign verify \\\n\
-      \    --certificate-identity-regexp '@siderolabs\\.com$' \\\n\
+      \    --certificate-identity-regexp '@(siderolabs\\.com|talos-production\\.iam\\.gserviceaccount\\.com)$' \\\n\
       \    --certificate-oidc-issuer https://accounts.google.com \\\n\
       \    \"$ZFS_IMAGE\" >/dev/null 2>&1 \\\n\
       \    || fatal \"ZFS extension signature verification failed\"\n\
@@ -76,16 +76,28 @@
        done\n\
        \n\
        ###############################################################################\n\
-       # Idempotency checks\n\
+       # Existing pool handling\n\
        ###############################################################################\n\
        \n\
        if zpool list -H -o name 2>/dev/null | grep -qx \"$POOL_NAME\"; then\n\
-      \    log \"ZFS pool '${POOL_NAME}' already exists; skipping further actions\"\n\
-      \    zpool status \"$POOL_NAME\"\n\
-      \    exit 0\n\
+      \    if [[ \"$WIPE_DISKS\" == \"true\" ]]; then\n\
+      \        log \"WIPE_DISKS enabled; destroying existing ZFS pool '${POOL_NAME}'\"\n\
+       \n\
+      \        zpool destroy -f \"$POOL_NAME\" \\\n\
+      \            || fatal \"Failed to destroy existing ZFS pool '${POOL_NAME}'\"\n\
+      \    else\n\
+      \        log \"ZFS pool '${POOL_NAME}' already exists; WIPE_DISKS is disabled\"\n\
+      \        zpool status \"$POOL_NAME\"\n\
+      \        exit 0\n\
+      \    fi\n\
        fi\n\
        \n\
+       ###############################################################################\n\
+       # Detect existing filesystem signatures\n\
+       ###############################################################################\n\
+       \n\
        fs_detected=false\n\
+       \n\
        for dev in \"${DEV_ARRAY[@]}\"; do\n\
       \    if blkid \"$dev\" >/dev/null 2>&1; then\n\
       \        log \"Existing disk signature detected on ${dev}\"\n\
@@ -102,12 +114,13 @@
        # Optional disk wipe\n\
        ###############################################################################\n\
        \n\
-       if [[ \"$fs_detected\" == \"true\" && \"$WIPE_DISKS\" == \"true\" ]]; then\n\
+       if [[ \"$WIPE_DISKS\" == \"true\" ]]; then\n\
       \    log \"Disk wipe enabled; clearing existing signatures\"\n\
        \n\
       \    for dev in \"${DEV_ARRAY[@]}\"; do\n\
       \        log \"Clearing filesystem signatures on ${dev}\"\n\
-      \        wipefs -a \"$dev\"\n\
+      \        wipefs -a \"$dev\" \\\n\
+      \            || fatal \"Failed to clear filesystem signatures on ${dev}\"\n\
       \    done\n\
        fi\n\
        \n\
@@ -146,7 +159,6 @@
   kind: "Job",
   metadata: {
     name: "create-zpool",
-    namespace: "kube-system",
   },
   spec: {
     ttlSecondsAfterFinished: 600,
@@ -158,6 +170,12 @@
         },
       },
       spec: {
+        dnsConfig: {
+          options: [{
+            name: "ndots",
+            value: "0",
+          }],
+        },
         containers: [{
           name: "create-zpool",
           image: "alpine:3.24",
@@ -165,7 +183,7 @@
             "/bin/sh",
             "-c",
             "\
-               apk add --no-cache bash curl crane cosign libuuid e2fsprogs\n\
+               apk add --no-cache bash curl util-linux crane cosign libuuid e2fsprogs\n\
                /scripts/create_zpool.sh\n\
               ",
           ],
@@ -175,6 +193,9 @@
           env: [{
             name: "DEVICES",
             value: "/dev/sda /dev/sdb /dev/sdc /dev/sdd",
+          }, {
+            name: "WIPE_DISKS",
+            value: "false",
           }, {
             name: "ASHIFT",
             value: "12",

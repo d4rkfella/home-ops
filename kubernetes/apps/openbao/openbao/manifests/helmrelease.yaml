@@ -86,10 +86,6 @@
           \            component: server\n\
           \        topologyKey: kubernetes.io/hostname\n\
           ",
-        persistentVolumeClaimRetentionPolicy: {
-          whenDeleted: "Retain",
-          whenScaled: "Retain",
-        },
         auditStorage: {
           enabled: true,
         },

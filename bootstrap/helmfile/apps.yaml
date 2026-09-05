@@ -1,0 +1,379 @@
+---
+{
+  helmDefaults: {
+    cleanupOnFail: true,
+    forceConflicts: true,
+    wait: true,
+    waitForJobs: true,
+  },
+  bases: [
+    "default.yaml",
+  ],
+  defaultInherit: "default",
+  releases: [{
+    name: "cilium",
+    namespace: "kube-system",
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "wait",
+        "--for=create",
+        "crd/ciliuml2announcementpolicies.cilium.io",
+        "crd/ciliumloadbalancerippools.cilium.io",
+        "--timeout=2m",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/kube-system/cilium/manifests/config.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "coredns",
+    namespace: "kube-system",
+    needs: [
+      "kube-system/cilium",
+    ],
+  }, {
+    name: "kubelet-csr-approver",
+    namespace: "kube-system",
+    needs: [
+      "kube-system/coredns",
+    ],
+  }, {
+    name: "cert-manager",
+    namespace: "cert-manager",
+    needs: [
+      "kube-system/kubelet-csr-approver",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           sops -d ../../kubernetes/apps/cert-manager/cert-manager/manifests/issuer.secret.sops.yaml | kubectl apply --server-side --namespace={{ .Release.Namespace }} --field-manager=kustomize-controller -f -\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "wait",
+        "--for=create",
+        "crd/clusterissuers.cert-manager.io",
+        "--timeout=2m",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "zfs-localpv",
+    namespace: "openebs-system",
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           kubectl get namespace \"{{ .Release.Namespace }}\" >/dev/null 2>&1 ||\n\
+          \  kubectl create namespace \"{{ .Release.Namespace }}\"\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../create-zpool.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "wait",
+        "--for=condition=complete",
+        "--timeout=15m",
+        "job/create-zpool",
+        "-n",
+        "{{ .Release.Namespace }}",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml",
+        "-f",
+        "https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "wait",
+        "--for=create",
+        "crd/volumesnapshotclasses.snapshot.storage.k8s.io",
+        "--timeout=2m",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace=openebs-system",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml",
+        "-f",
+        "../../kubernetes/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "openbao",
+    namespace: "openbao",
+    wait: false,
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           kubectl get namespace \"{{ .Release.Namespace }}\" >/dev/null 2>&1 ||\n\
+          \  kubectl create namespace \"{{ .Release.Namespace }}\"\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           sops -d ../../kubernetes/apps/openbao/openbao/manifests/secret.sops.yaml | kubectl apply --server-side --namespace={{ .Release.Namespace }} --field-manager=kustomize-controller -f -\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/openbao/openbao/manifests/certificate.yaml",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "../../tools/openbao-bootstrap/bootstrap.sh",
+      args: [
+        "{{ .Release.Namespace }}",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "external-secrets",
+    namespace: "external-secrets",
+    needs: [
+      "cert-manager/cert-manager",
+      "openbao/openbao",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "wait",
+        "--for=create",
+        "crd/clustersecretstores.external-secrets.io",
+        "crd/clusterexternalsecrets.external-secrets.io",
+        "--timeout=2m",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/external-secrets/external-secrets/manifests/clustersecretstore.yaml",
+        "-f",
+        "../../kubernetes/apps/external-secrets/external-secrets/manifests/externalsecret.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "multus",
+    namespace: "kube-system",
+    needs: [
+      "cert-manager/cert-manager",
+    ],
+    hooks: [{
+      events: [
+        "postsync",
+      ],
+      command: "kubectl",
+      args: [
+        "-n",
+        "kube-system",
+        "patch",
+        "ds",
+        "multus",
+        "--type=json",
+        "-p",
+        "[{\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/args/-\",\"value\":\"--multus-bin-file=/usr/bin/multus\"}]",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "flux-operator",
+    namespace: "flux-system",
+    needs: [
+      "external-secrets/external-secrets",
+    ],
+    set: [{
+      name: "web.config.authentication.oauth2.clientID",
+      value: "{{ exec \"kubectl\" (list \"get\" \"secret\" \"flux-web-client\" \"-n\" \"flux-system\" \"-o\" \"jsonpath={.data.CLIENT_ID}\") | b64dec }}",
+    }, {
+      name: "web.config.authentication.oauth2.clientSecret",
+      value: "{{ exec \"kubectl\" (list \"get\" \"secret\" \"flux-web-client\" \"-n\" \"flux-system\" \"-o\" \"jsonpath={.data.CLIENT_SECRET}\") | b64dec }}",
+    }],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           kubectl get namespace \"{{ .Release.Namespace }}\" >/dev/null 2>&1 ||\n\
+          \  kubectl create namespace \"{{ .Release.Namespace }}\"\n\
+          ",
+      ],
+      showlogs: true,
+    }, {
+      events: [
+        "presync",
+      ],
+      command: "kubectl",
+      args: [
+        "apply",
+        "--server-side",
+        "--namespace={{ .Release.Namespace }}",
+        "--field-manager=kustomize-controller",
+        "--force-conflicts",
+        "-f",
+        "../../kubernetes/apps/flux-system/flux-operator/manifests/externalsecret.yaml",
+      ],
+      showlogs: true,
+    }],
+  }, {
+    name: "flux-instance",
+    namespace: "flux-system",
+    needs: [
+      "flux-system/flux-operator",
+    ],
+    hooks: [{
+      events: [
+        "presync",
+      ],
+      command: "sh",
+      args: [
+        "-c",
+        "\
+           sops -d ../../kubernetes/apps/flux-system/flux-instance/manifests/secret.sops.yaml | kubectl apply --server-side --namespace={{ .Release.Namespace }} --field-manager=kustomize-controller -f -\n\
+          ",
+      ],
+      showlogs: true,
+    }],
+  }],
+}

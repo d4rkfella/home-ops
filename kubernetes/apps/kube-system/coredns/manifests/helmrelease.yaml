@@ -28,8 +28,12 @@
     }],
     values: {
       fullnameOverride: "coredns",
+      image: {
+        repository: "mirror.gcr.io/coredns/coredns",
+      },
       replicaCount: 2,
       k8sAppLabelOverride: "kube-dns",
+      priorityClassName: "system-cluster-critical",
       serviceAccount: {
         create: true,
       },
@@ -69,7 +73,7 @@
           parameters: "@kubernetes",
         }, {
           name: "forward",
-          parameters: ". 192.168.91.1",
+          parameters: ". /etc/resolv.conf",
         }, {
           name: "cache",
           configBlock: "prefetch 20",

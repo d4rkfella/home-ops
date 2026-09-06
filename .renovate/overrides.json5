@@ -12,5 +12,11 @@
       matchPackageNames: ['ghcr.io/d4rkfella/bazarr'],
       versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:_beta(?<prerelease>\\d+))?$',
     },
+    {
+      description: "CoreDNS 1.14.3+ prefetch poisons autopath answers, hold until coredns/coredns#8390 is fixed",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/coredns/charts/coredns"],
+      enabled: false,
+    },
   ],
 }

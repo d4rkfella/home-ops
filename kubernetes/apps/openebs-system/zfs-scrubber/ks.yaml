@@ -1,26 +1,19 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "zfs-scrubber",
-  },
-  spec: {
-    path: "./kubernetes/apps/openebs-system/zfs-scrubber/manifests",
-    prune: true,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    wait: false,
-    interval: "1h",
-    postBuild: {
-      substitute: {
-        # renovate: datasource=custom.talos-factory depName=siderolabs/talos
-        TALOS_VERSION: "v1.14.0",
-      },
-    },
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: zfs-scrubber
+spec:
+  path: ./kubernetes/apps/openebs-system/zfs-scrubber/manifests
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  interval: 1h
+  postBuild:
+    substitute:
+      # renovate: datasource=custom.talos-factory depName=siderolabs/talos
+      TALOS_VERSION: v1.14.0

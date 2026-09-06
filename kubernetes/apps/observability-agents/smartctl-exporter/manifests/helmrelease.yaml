@@ -1,43 +1,28 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "smartctl-exporter",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "prometheus-smartctl-exporter",
-    },
-    driftDetection: {
-      mode: "enabled",
-      ignore: [
-        # Ignore "validated" annotation which is not inserted during install
-        {
-          paths: [
-            "/metadata/annotations/prometheus-operator-validated",
-          ],
-          target: {
-            kind: "PrometheusRule",
-          },
-        },
-      ],
-    },
-    values: {
-      fullnameOverride: "smartctl-exporter",
-      serviceMonitor: {
-        enabled: true,
-      },
-      prometheusRules: {
-        enabled: false,
-      },
-      image: {
-        repository: "ghcr.io/d4rkfella/smartctl_exporter",
-        tag: "0.14.0@sha256:7ac9e4460e145f4fbe864f9ccfe461bacf68d75187449973f69f9ba1162b5146",
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: smartctl-exporter
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: prometheus-smartctl-exporter
+  driftDetection:
+    mode: enabled
+    ignore:
+      # Ignore "validated" annotation which is not inserted during install
+      - paths:
+          - /metadata/annotations/prometheus-operator-validated
+        target:
+          kind: PrometheusRule
+  values:
+    fullnameOverride: smartctl-exporter
+    serviceMonitor:
+      enabled: true
+    prometheusRules:
+      enabled: false
+    image:
+      repository: ghcr.io/d4rkfella/smartctl_exporter
+      tag: 0.14.0@sha256:7ac9e4460e145f4fbe864f9ccfe461bacf68d75187449973f69f9ba1162b5146

@@ -1,171 +1,120 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "autobrr",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "autobrr",
-    },
-    values: {
-      controllers: {
-        autobrr: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            autobrr: {
-              image: {
-                repository: "ghcr.io/d4rkfella/autobrr",
-                tag: "1.85.0@sha256:b1ba9712cee971ffee91bce01b0a874a4295b3cb0205bac9268f5f59e62e112a",
-              },
-              env: {
-                TZ: "Europe/Sofia",
-                AUTOBRR__CHECK_FOR_UPDATES: "false",
-                AUTOBRR__HOST: "0.0.0.0",
-                AUTOBRR__PORT: 80,
-                AUTOBRR__METRICS_ENABLED: true,
-                AUTOBRR__METRICS_HOST: "0.0.0.0",
-                AUTOBRR__METRICS_PORT: 9094,
-                AUTOBRR__LOG_PATH: "/config/log",
-                AUTOBRR__LOG_LEVEL: "INFO",
-                AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true",
-                AUTOBRR__DATABASE_TYPE: "postgres",
-                AUTOBRR__OIDC_ENABLED: "true",
-                AUTOBRR__OIDC_ISSUER: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
-                AUTOBRR__OIDC_CLIENT_ID: "93ebcd6f-7b49-4967-bb42-9b9634c67c14",
-                AUTOBRR__OIDC_REDIRECT_URL: "https://autobrr.darkfellanetwork.com/api/auth/oidc/callback",
-              },
-              envFrom: [{
-                secretRef: {
-                  name: "{{ .Release.Name }}-secret",
-                },
-              }],
-              probes: {
-                liveness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/api/healthz/liveness",
-                      port: 80,
-                    },
-                    periodSeconds: 30,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/api/healthz/readiness",
-                      port: 80,
-                    },
-                    periodSeconds: 10,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                startup: {
-                  enabled: true,
-                  spec: {
-                    failureThreshold: 30,
-                    periodSeconds: 10,
-                  },
-                },
-              },
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "10m",
-                },
-                limits: {
-                  cpu: "2000m",
-                  memory: "256Mi",
-                },
-              },
-            },
-          },
-        },
-      },
-      defaultPodOptions: {
-        annotations: {
-          security.darkfellanetwork.com/mount-postgres-ca: "true",
-        },
-        hostUsers: false,
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          fsGroup: 65532,
-          fsGroupChangePolicy: "OnRootMismatch",
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
-      },
-      service: {
-        autobrr: {
-          controller: "autobrr",
-          ports: {
-            http: {
-              port: 80,
-            },
-            http-metrics: {
-              port: 9094,
-            },
-          },
-        },
-      },
-      serviceMonitor: {
-        autobrr: {
-          serviceName: "autobrr",
-          endpoints: [{
-            port: "http-metrics",
-          }],
-        },
-      },
-      route: {
-        autobrr: {
-          hostnames: [
-            "{{ .Release.Name }}.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "internal",
-            namespace: "envoy-gateway-system",
-            sectionName: "https",
-          }],
-          rules: [{
-            backendRefs: [{
-              name: "autobrr",
-              port: 80,
-            }],
-          }],
-        },
-      },
-      persistence: {
-        config: {
-          type: "emptyDir",
-        },
-        tmp: {
-          type: "emptyDir",
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: autobrr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: autobrr
+  values:
+    controllers:
+      autobrr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          autobrr:
+            image:
+              repository: ghcr.io/d4rkfella/autobrr
+              tag: 1.85.0@sha256:b1ba9712cee971ffee91bce01b0a874a4295b3cb0205bac9268f5f59e62e112a
+            env:
+              TZ: Europe/Sofia
+              AUTOBRR__CHECK_FOR_UPDATES: "false"
+              AUTOBRR__HOST: 0.0.0.0
+              AUTOBRR__PORT: 80
+              AUTOBRR__METRICS_ENABLED: true
+              AUTOBRR__METRICS_HOST: 0.0.0.0
+              AUTOBRR__METRICS_PORT: 9094
+              AUTOBRR__LOG_PATH: /config/log
+              AUTOBRR__LOG_LEVEL: INFO
+              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
+              AUTOBRR__DATABASE_TYPE: postgres
+              AUTOBRR__OIDC_ENABLED: "true"
+              AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+              AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
+              AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfellanetwork.com/api/auth/oidc/callback
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz/liveness
+                    port: 80
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthz/readiness
+                    port: 80
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                cpu: 2000m
+                memory: 256Mi
+    defaultPodOptions:
+      annotations:
+        security.darkfellanetwork.com/mount-postgres-ca: "true"
+      hostUsers: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      autobrr:
+        controller: autobrr
+        ports:
+          http:
+            port: 80
+          http-metrics:
+            port: 9094
+    serviceMonitor:
+      autobrr:
+        serviceName: autobrr
+        endpoints:
+          - port: http-metrics
+    route:
+      autobrr:
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: autobrr
+                port: 80
+    persistence:
+      config:
+        type: emptyDir
+      tmp:
+        type: emptyDir

@@ -1,187 +1,131 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "radarr",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "radarr",
-    },
-    values: {
-      controllers: {
-        radarr: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            app: {
-              image: {
-                repository: "ghcr.io/d4rkfella/radarr",
-                tag: "6.4.3.10645@sha256:a706fac30f644c730e1b68a5edb9e7b09ad335f2b6efe09c9abe59cad803a8e1",
-              },
-              env: {
-                TZ: "Europe/Sofia",
-                RADARR__APP__INSTANCENAME: "Radarr",
-                RADARR__APP__THEME: "dark",
-                RADARR__AUTH__METHOD: "External",
-                RADARR__AUTH__REQUIRED: "DisabledForLocalAddresses",
-                RADARR__LOG__DBENABLED: "False",
-                RADARR__LOG__LEVEL: "info",
-                RADARR__SERVER__ALLOWEDHOSTS: "radarr.darkfellanetwork.com,radarr.media.svc.cluster.local",
-                RADARR__SERVER__TRUSTEDNETWORKS: "172.16.0.0/16",
-                RADARR__SERVER__PORT: 80,
-                RADARR__SERVER__BINDADDRESS: "0.0.0.0",
-                RADARR__AUTH__APIKEY: {
-                  valueFrom: {
-                    secretKeyRef: {
-                      name: "{{ .Release.Name }}-secret",
-                      key: "RADARR_API_KEY",
-                    },
-                  },
-                },
-                RADARR__POSTGRES__HOST: "postgres-db-rw.database.svc.cluster.local",
-                RADARR__POSTGRES__MAINDB: "{{ .Release.Name }}",
-                RADARR__POSTGRES__USER: {
-                  valueFrom: {
-                    secretKeyRef: {
-                      name: "{{ .Release.Name }}-secret",
-                      key: "POSTGRES_USERNAME",
-                    },
-                  },
-                },
-                RADARR__POSTGRES__PASSWORD: {
-                  valueFrom: {
-                    secretKeyRef: {
-                      name: "{{ .Release.Name }}-secret",
-                      key: "POSTGRES_PASSWORD",
-                    },
-                  },
-                },
-              },
-              probes: {
-                liveness: {
-                  enabled: true,
-                  spec: {
-                    periodSeconds: 30,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/ping",
-                      port: 80,
-                      httpHeaders: [{
-                        name: "Host",
-                        value: "localhost",
-                      }],
-                    },
-                    periodSeconds: 10,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                startup: {
-                  enabled: true,
-                  spec: {
-                    failureThreshold: 30,
-                    periodSeconds: 10,
-                  },
-                },
-              },
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "100m",
-                  memory: "512Mi",
-                },
-                limits: {
-                  memory: "4Gi",
-                },
-              },
-            },
-          },
-        },
-      },
-      defaultPodOptions: {
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          fsGroup: 65532,
-          fsGroupChangePolicy: "OnRootMismatch",
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
-      },
-      service: {
-        app: {
-          controller: "radarr",
-          ports: {
-            http: {
-              port: 80,
-            },
-          },
-        },
-      },
-      route: {
-        app: {
-          hostnames: [
-            "{{ .Release.Name }}.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "internal",
-            namespace: "envoy-gateway-system",
-            sectionName: "https",
-          }],
-          rules: [{
-            backendRefs: [{
-              name: "radarr",
-              port: 80,
-            }],
-          }],
-        },
-      },
-      persistence: {
-        config: {
-          suffix: "config",
-          type: "persistentVolumeClaim",
-          size: "15Gi",
-          accessMode: "ReadWriteOnce",
-          storageClass: "openebs-zfs-128k",
-          globalMounts: [{
-            path: "/config",
-          }],
-        },
-        tmp: {
-          type: "emptyDir",
-        },
-        media: {
-          type: "nfs",
-          server: "192.168.91.40",
-          path: "/mnt/exos20/data",
-          globalMounts: [{
-            path: "/data",
-          }],
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: radarr
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: radarr
+  values:
+    controllers:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/radarr
+              tag: 6.4.3.10645@sha256:a706fac30f644c730e1b68a5edb9e7b09ad335f2b6efe09c9abe59cad803a8e1
+            env:
+              TZ: Europe/Sofia
+              RADARR__APP__INSTANCENAME: Radarr
+              RADARR__APP__THEME: dark
+              RADARR__AUTH__METHOD: External
+              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__LOG__DBENABLED: "False"
+              RADARR__LOG__LEVEL: info
+              RADARR__SERVER__ALLOWEDHOSTS: radarr.darkfellanetwork.com,radarr.media.svc.cluster.local
+              RADARR__SERVER__TRUSTEDNETWORKS: 172.16.0.0/16
+              RADARR__SERVER__PORT: 80
+              RADARR__SERVER__BINDADDRESS: 0.0.0.0
+              RADARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-secret"
+                    key: RADARR_API_KEY
+              RADARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
+              RADARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
+              RADARR__POSTGRES__USER:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-secret"
+                    key: POSTGRES_USERNAME
+              RADARR__POSTGRES__PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: "{{ .Release.Name }}-secret"
+                    key: POSTGRES_PASSWORD
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: 80
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      app:
+        controller: radarr
+        ports:
+          http:
+            port: 80
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: radarr
+                port: 80
+    persistence:
+      config:
+        suffix: config
+        type: persistentVolumeClaim
+        size: 15Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        globalMounts:
+          - path: /config
+      tmp:
+        type: emptyDir
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data
+        globalMounts:
+          - path: /data

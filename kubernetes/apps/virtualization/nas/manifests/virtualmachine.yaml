@@ -1,148 +1,99 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kubevirt.io/virtualmachine_v1.json
-{
-  apiVersion: "kubevirt.io/v1",
-  kind: "VirtualMachine",
-  metadata: {
-    name: "nas",
-  },
-  spec: {
-    runStrategy: "Always",
-    template: {
-      metadata: {
-        labels: {
-          kubevirt.io/domain: "nas",
-        },
-      },
-      spec: {
-        priorityClassName: "system-node-critical",
-        networks: [{
-          name: "bridge",
-          multus: {
-            default: true,
-            networkName: "virtualization/nas",
-          },
-        }],
-        dnsPolicy: "None",
-        dnsConfig: {
-          nameservers: [
-            "192.168.91.1",
-          ],
-          searches: [
-            "darkfellanetwork.com",
-          ],
-        },
-        domain: {
-          clock: {
-            utc: {},
-          },
-          cpu: {
-            model: "host-passthrough",
-            dedicatedCpuPlacement: true,
-            isolateEmulatorThread: true,
-            sockets: 1,
-            cores: 2,
-            threads: 2,
-          },
-          ioThreadsPolicy: "auto",
-          features: {
-            acpi: {},
-            apic: {},
-            smm: {
-              enabled: false,
-            },
-          },
-          firmware: {
-            bootloader: {
-              efi: {
-                secureBoot: false,
-              },
-            },
-          },
-          devices: {
-            clientPassthrough: {},
-            autoattachVSOCK: true,
-            autoattachInputDevice: false,
-            autoattachMemBalloon: false,
-            hostDevices: [{
-              deviceName: "devices.kubevirt.io/nvme",
-              name: "intel-optane",
-            }, {
-              deviceName: "devices.kubevirt.io/sas",
-              name: "sas",
-            }],
-            interfaces: [{
-              name: "bridge",
-              bridge: {},
-              model: "virtio",
-            }],
-            disks: [{
-              name: "os-disk",
-              bootOrder: 1,
-              disk: {
-                bus: "virtio",
-              },
-            }, {
-              name: "cloudinit",
-              disk: {
-                bus: "virtio",
-              },
-            }],
-          },
-          machine: {
-            type: "q35",
-          },
-          resources: {
-            requests: {
-              memory: "52Gi",
-            },
-            limits: {
-              memory: "52Gi",
-            },
-          },
-          memory: {
-            hugepages: {
-              pageSize: "2Mi",
-            },
-          },
-        },
-        volumes: [{
-          name: "os-disk",
-          dataVolume: {
-            name: "nas-os-disk",
-          },
-        }, {
-          name: "cloudinit",
-          cloudInitNoCloud: {
-            secretRef: {
-              name: "nas-cloudinit",
-            },
-          },
-        }],
-      },
-    },
-    dataVolumeTemplates: [{
-      metadata: {
-        name: "nas-os-disk",
-      },
-      spec: {
-        storage: {
-          storageClassName: "openebs-zfs-block-16k",
-          accessModes: [
-            "ReadWriteOnce",
-          ],
-          resources: {
-            requests: {
-              storage: "20Gi",
-            },
-          },
-        },
-        source: {
-          http: {
-            url: "https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64v3.img",
-          },
-        },
-      },
-    }],
-  },
-}
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: nas
+spec:
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        kubevirt.io/domain: nas
+    spec:
+      priorityClassName: system-node-critical
+      networks:
+        - name: bridge
+          multus:
+            default: true
+            networkName: virtualization/nas
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 192.168.91.1
+        searches:
+          - darkfellanetwork.com
+      domain:
+        clock:
+          utc: {}
+        cpu:
+          model: host-passthrough
+          dedicatedCpuPlacement: true
+          isolateEmulatorThread: true
+          sockets: 1
+          cores: 2
+          threads: 2
+        ioThreadsPolicy: auto
+        features:
+          acpi: {}
+          apic: {}
+          smm:
+            enabled: false
+        firmware:
+          bootloader:
+            efi:
+              secureBoot: false
+        devices:
+          clientPassthrough: {}
+          autoattachVSOCK: true
+          autoattachInputDevice: false
+          autoattachMemBalloon: false
+          hostDevices:
+            - deviceName: devices.kubevirt.io/nvme
+              name: intel-optane
+            - deviceName: devices.kubevirt.io/sas
+              name: sas
+          interfaces:
+            - name: bridge
+              bridge: {}
+              model: virtio
+          disks:
+            - name: os-disk
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: cloudinit
+              disk:
+                bus: virtio
+        machine:
+          type: q35
+        resources:
+          requests:
+            memory: 52Gi
+          limits:
+            memory: 52Gi
+        memory:
+          hugepages:
+            pageSize: 2Mi
+      volumes:
+        - name: os-disk
+          dataVolume:
+            name: nas-os-disk
+        - name: cloudinit
+          cloudInitNoCloud:
+            secretRef:
+              name: nas-cloudinit
+  dataVolumeTemplates:
+    - metadata:
+        name: nas-os-disk
+      spec:
+        storage:
+          storageClassName: openebs-zfs-block-16k
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+        source:
+          http:
+            url: https://cloud-images.ubuntu.com/releases/resolute/release/ubuntu-26.04-server-cloudimg-amd64v3.img

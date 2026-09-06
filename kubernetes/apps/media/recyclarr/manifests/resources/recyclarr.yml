@@ -1,3 +1,4 @@
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/recyclarr/recyclarr/master/schemas/config-schema.json
 radarr:
   radarr:
@@ -63,7 +64,6 @@ radarr:
           - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
         assign_scores_to:
           - name: SQP-3
-
 sonarr:
   sonarr:
     base_url: http://sonarr.media.svc.cluster.local

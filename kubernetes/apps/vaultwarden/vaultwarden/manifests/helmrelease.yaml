@@ -1,169 +1,122 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "vaultwarden",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "vaultwarden",
-    },
-    values: {
-      controllers: {
-        vaultwarden: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            app: {
-              image: {
-                repository: "ghcr.io/d4rkfella/vaultwarden",
-                tag: "1.37.2@sha256:20c93b0266e39c72d16c3742fc99a3b944ff4bdd91053e7d82ea61fc5d6638bc",
-              },
-              env: {
-                SSO_ENABLED: "true",
-                SSO_ONLY: "true",
-                SSO_AUTHORITY: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
-                SSO_CLIENT_ID: "f7126e9c-bcc7-4182-8510-8ab70a6eb6a8",
-                SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false",
-                DATA_FOLDER: "data",
-                ICON_CACHE_FOLDER: "data/icon_cache",
-                ATTACHMENTS_FOLDER: "data/attachments",
-                DOMAIN: "https://vaultwarden.darkfellanetwork.com",
-                TZ: "Europe/Sofia",
-                SMTP_AUTH_MECHANISM: "Login",
-                SMTP_HOST: "smtp-relay.brevo.com",
-                SMTP_FROM: "noreply@darkfellanetwork.com",
-                SMTP_FROM_NAME: "vaultwarden",
-                SMTP_PORT: 587,
-                SMTP_SECURITY: "starttls",
-                PUSH_ENABLED: true,
-                PUSH_RELAY_URI: "https://api.bitwarden.eu",
-                PUSH_IDENTITY_URI: "https://identity.bitwarden.eu",
-              },
-              envFrom: [{
-                secretRef: {
-                  name: "{{ .Release.Name }}-secret",
-                },
-              }],
-              probes: {
-                liveness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/alive",
-                      port: 80,
-                    },
-                    initialDelaySeconds: 0,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
-                  },
-                },
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/alive",
-                      port: 80,
-                    },
-                    initialDelaySeconds: 0,
-                    periodSeconds: 10,
-                    timeoutSeconds: 1,
-                    failureThreshold: 3,
-                  },
-                },
-              },
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "100m",
-                  memory: "100Mi",
-                },
-                limits: {
-                  memory: "2Gi",
-                },
-              },
-            },
-          },
-        },
-      },
-      defaultPodOptions: {
-        annotations: {
-          security.darkfellanetwork.com/mount-postgres-ca: "true",
-        },
-        hostUsers: false,
-        hostAliases: [{
-          ip: "192.168.91.51",
-          hostnames: [
-            "accounts.darkfellanetwork.com",
-          ],
-        }],
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          fsGroup: 65532,
-          fsGroupChangePolicy: "OnRootMismatch",
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
-      },
-      service: {
-        app: {
-          controller: "vaultwarden",
-          ports: {
-            http: {
-              port: 80,
-            },
-          },
-        },
-      },
-      route: {
-        app: {
-          hostnames: [
-            "{{ .Release.Name }}.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "external",
-            namespace: "envoy-gateway-system",
-            sectionName: "https",
-          }],
-          rules: [{
-            backendRefs: [{
-              name: "vaultwarden",
-              port: 80,
-            }],
-          }],
-        },
-      },
-      persistence: {
-        data: {
-          suffix: "data",
-          type: "persistentVolumeClaim",
-          size: "15Gi",
-          accessMode: "ReadWriteOnce",
-          storageClass: "openebs-zfs-128k",
-          globalMounts: [{
-            path: "/data",
-          }],
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vaultwarden
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: vaultwarden
+  values:
+    controllers:
+      vaultwarden:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/vaultwarden
+              tag: 1.37.2@sha256:20c93b0266e39c72d16c3742fc99a3b944ff4bdd91053e7d82ea61fc5d6638bc
+            env:
+              SSO_ENABLED: "true"
+              SSO_ONLY: "true"
+              SSO_AUTHORITY: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+              SSO_CLIENT_ID: f7126e9c-bcc7-4182-8510-8ab70a6eb6a8
+              SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
+              DATA_FOLDER: data
+              ICON_CACHE_FOLDER: data/icon_cache
+              ATTACHMENTS_FOLDER: data/attachments
+              DOMAIN: https://vaultwarden.darkfellanetwork.com
+              TZ: Europe/Sofia
+              SMTP_AUTH_MECHANISM: Login
+              SMTP_HOST: smtp-relay.brevo.com
+              SMTP_FROM: noreply@darkfellanetwork.com
+              SMTP_FROM_NAME: vaultwarden
+              SMTP_PORT: 587
+              SMTP_SECURITY: starttls
+              PUSH_ENABLED: true
+              PUSH_RELAY_URI: https://api.bitwarden.eu
+              PUSH_IDENTITY_URI: https://identity.bitwarden.eu
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /alive
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      annotations:
+        security.darkfellanetwork.com/mount-postgres-ca: "true"
+      hostUsers: false
+      hostAliases:
+        - ip: 192.168.91.51
+          hostnames:
+            - accounts.darkfellanetwork.com
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      app:
+        controller: vaultwarden
+        ports:
+          http:
+            port: 80
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
+        parentRefs:
+          - name: external
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: vaultwarden
+                port: 80
+    persistence:
+      data:
+        suffix: data
+        type: persistentVolumeClaim
+        size: 15Gi
+        accessMode: ReadWriteOnce
+        storageClass: openebs-zfs-128k
+        globalMounts:
+          - path: /data

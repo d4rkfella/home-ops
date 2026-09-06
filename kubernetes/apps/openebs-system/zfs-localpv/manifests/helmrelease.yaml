@@ -1,72 +1,49 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "zfs-localpv",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "zfs-localpv",
-    },
-    values: {
-      crds: {
-        csi: {
-          volumeSnapshots: {
-            enabled: false,
-          },
-        },
-      },
-      zfsNode: {
-        encrKeysDir: "/var/openebs/keys",
-        allowedTopologyKeys: "kubernetes.io/hostname",
-        driverRegistrar: {
-          image: {
-            registry: "registry.k8s.io/",
-            repository: "sig-storage/csi-node-driver-registrar",
-            tag: "v2.17.0",
-          },
-        },
-      },
-      zfsController: {
-        resizer: {
-          image: {
-            registry: "registry.k8s.io/",
-            repository: "sig-storage/csi-resizer",
-            tag: "v2.2.1",
-          },
-        },
-        snapshotter: {
-          image: {
-            registry: "registry.k8s.io/",
-            repository: "sig-storage/csi-snapshotter",
-            tag: "v8.6.0",
-          },
-        },
-        snapshotController: {
-          image: {
-            registry: "registry.k8s.io/",
-            repository: "sig-storage/snapshot-controller",
-            tag: "v8.6.0",
-          },
-        },
-        provisioner: {
-          image: {
-            registry: "registry.k8s.io/",
-            repository: "sig-storage/csi-provisioner",
-            tag: "v6.3.0",
-          },
-        },
-      },
-      zfs: {
-        bin: "/usr/local/sbin/zfs",
-      },
-      analytics: {
-        enabled: false,
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zfs-localpv
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: zfs-localpv
+  values:
+    crds:
+      csi:
+        volumeSnapshots:
+          enabled: false
+    zfsNode:
+      encrKeysDir: /var/openebs/keys
+      allowedTopologyKeys: kubernetes.io/hostname
+      driverRegistrar:
+        image:
+          registry: registry.k8s.io/
+          repository: sig-storage/csi-node-driver-registrar
+          tag: v2.17.0
+    zfsController:
+      resizer:
+        image:
+          registry: registry.k8s.io/
+          repository: sig-storage/csi-resizer
+          tag: v2.2.1
+      snapshotter:
+        image:
+          registry: registry.k8s.io/
+          repository: sig-storage/csi-snapshotter
+          tag: v8.6.0
+      snapshotController:
+        image:
+          registry: registry.k8s.io/
+          repository: sig-storage/snapshot-controller
+          tag: v8.6.0
+      provisioner:
+        image:
+          registry: registry.k8s.io/
+          repository: sig-storage/csi-provisioner
+          tag: v6.3.0
+    zfs:
+      bin: /usr/local/sbin/zfs
+    analytics:
+      enabled: false

@@ -1,162 +1,113 @@
 ---
-{
-  # yaml-language-server: $schema=https://taskfile.dev/schema.json
-  version: "3",
-  tasks: {
-    sync-secrets: {
-      desc: "Sync all ExternalSecrets",
-      cmds: [{
-        for: {
-          var: "SECRETS",
-          split: "\
-             \n\
-            ",
-        },
-        cmd: "kubectl --namespace {{splitList \",\" .ITEM | first}} annotate externalsecret {{splitList \",\" .ITEM | last}} force-sync=\"{{now | unixEpoch}}\" --overwrite",
-      }],
-      vars: {
-        SECRETS: {
-          sh: "kubectl get externalsecret --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{\"\\n\"}{end}'",
-        },
-      },
-      preconditions: [
-        "which kubectl",
-      ],
-    },
-    cleanse-pods: {
-      desc: "Cleanse pods with a Failed/Pending/Succeeded phase",
-      cmds: [{
-        for: {
-          matrix: {
-            PHASE: [
-              "Failed",
-              "Pending",
-              "Succeeded",
-            ],
-          },
-        },
-        cmd: "kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true",
-      }],
-      preconditions: [
-        "which kubectl",
-      ],
-    },
-    # https://docs.github.com/en/enterprise-cloud@latest/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/deploying-runner-scale-sets-with-actions-runner-controller#upgrading-arc
-    upgrade-arc: {
-      desc: "Upgrade the ARC",
-      cmds: [
-        "helm -n arc-runners uninstall home-ops-runner",
-        "helm -n arc-system uninstall actions-runner-controller",
-        "sleep 5",
-        "flux -n arc-system reconcile hr actions-runner-controller",
-        "flux -n arc-runners reconcile hr home-ops-runner",
-      ],
-      preconditions: [
-        "which flux helm",
-      ],
-    },
-    vnc: {
-      desc: "Open a VNC session to a VM",
-      interactive: true,
-      vars: {
-        VM: {
-          sh: "gum input --placeholder \"VM name\"",
-        },
-        NS: {
-          sh: "gum input --placeholder \"Namespace\" --value \"virtualization\"",
-        },
-      },
-      cmd: "virtctl vnc --vnc-type=tiger --vnc-path=/usr/bin/vncviewer --namespace {{.NS}} {{.VM}}",
-      preconditions: [
-        "which kubectl",
-        "which virtctl",
-        "which vncviewer",
-        "which gum",
-        "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
-      ],
-    },
-    console: {
-      desc: "Connect to a VM console",
-      interactive: true,
-      vars: {
-        VM: {
-          sh: "gum input --placeholder \"VM name\"",
-        },
-        NS: {
-          sh: "gum input --placeholder \"Namespace\" --value \"virtualization\"",
-        },
-      },
-      cmd: "virtctl console --namespace {{.NS}} {{.VM}}",
-      preconditions: [
-        "which kubectl",
-        "which virtctl",
-        "which gum",
-        "kubectl get virtualmachine -n {{.NS}} {{.VM}}",
-      ],
-    },
-    browse-pvc: {
-      desc: "Browse files on a PVC using filebrowser",
-      interactive: true,
-      vars: {
-        PVC: {
-          sh: "gum input --placeholder \"PVC name\"",
-        },
-        NS: {
-          sh: "gum input --placeholder \"Namespace\"",
-        },
-        USER: {
-          sh: "gum input --placeholder \"User ID\" --value \"65532\"",
-        },
-      },
-      cmds: [
-        "kubectl run filebrowser-{{.PVC}} --image=filebrowser/filebrowser:latest --restart=Never --namespace={{.NS}} --overrides='{\"spec\":{\"securityContext\":{\"fsGroup\":{{.USER}}},\"containers\":[{\"name\":\"filebrowser\",\"image\":\"filebrowser/filebrowser:latest\",\"args\":[\"--noauth\",\"--root\",\"/data\",\"--config\",\"/tmp/settings.json\",\"--database\",\"/tmp/filebrowser.db\"],\"ports\":[{\"containerPort\":80}],\"volumeMounts\":[{\"mountPath\":\"/data\",\"name\":\"data\"}]}],\"volumes\":[{\"name\":\"data\",\"persistentVolumeClaim\":{\"claimName\":\"{{.PVC}}\"}}]}}'",
-        "kubectl wait pod/filebrowser-{{.PVC}} --for=condition=Ready --namespace={{.NS}} --timeout=60s",
-        "xdg-open http://localhost:8080 &",
-        "kubectl port-forward pod/filebrowser-{{.PVC}} 8080:8080 --namespace={{.NS}}",
-        {
-          defer: "kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NS}} --ignore-not-found",
-        },
-      ],
-      preconditions: [
-        "which kubectl",
-        "which gum",
-        "which xdg-open",
-      ],
-    },
-    rotate-issuing-ca: {
-      desc: "Rotate Vault issuing CA",
-      interactive: true,
-      vars: {
-        NS: {
-          sh: "gum input --placeholder \"Namespace\" --value \"vault\"",
-        },
-        LABEL: {
-          sh: "gum input --placeholder \"Pod label selector\" --value \"app.kubernetes.io/name=vault\"",
-        },
-        VAULT_POD: {
-          sh: "kubectl get pods --namespace {{.NS}} -l {{.LABEL}} --no-headers --output=jsonpath='{.items[0].metadata.name}'",
-        },
-        ISS_MOUNT: {
-          sh: "gum input --placeholder \"Issuing PKI mount\" --value \"pki\"",
-        },
-        INT_MOUNT: {
-          sh: "gum input --placeholder \"Intermediate PKI mount\" --value \"pki-intermediate\"",
-        },
-        COMMON_NAME: {
-          sh: "gum input --placeholder \"Common name\"",
-        },
-        TTL: {
-          sh: "gum input --placeholder \"TTL\" --value \"8760h\"",
-        },
-      },
-      cmds: [
-        "kubectl --namespace {{.NS}} exec {{.VAULT_POD}} -- env VAULT_SKIP_VERIFY=true VAULT_ADDR=https://127.0.0.1:8200 sh -c 'set -e; echo \"Generating CSR using existing key material...\"; CSR=$(vault write -format=json {{.ISS_MOUNT}}/issuers/generate/intermediate/existing common_name=\"{{.COMMON_NAME}}\" country=\"Bulgaria\" locality=\"Sofia\" organization=\"DarkfellaNET\" format=pem_bundle | jq -r \".data.csr\"); echo \"Signing CSR with intermediate CA...\"; CERT=$(vault write -format=json {{.INT_MOUNT}}/root/sign-intermediate csr=\"$CSR\" ttl=\"{{.TTL}}\" | jq -r \".data.certificate\"); echo \"Importing signed certificate...\"; ISSUER=$(vault write -format=json {{.ISS_MOUNT}}/intermediate/set-signed certificate=\"$CERT\" | jq -r \".data.imported_issuers[0]\"); vault write {{.ISS_MOUNT}}/config/issuers default=\"$ISSUER\"; echo \"New issuer: $ISSUER\"; echo \"Rotation complete\"'",
-      ],
-      preconditions: [
-        "which kubectl",
-        "which gum",
-        "kubectl get pod --namespace {{.NS}} {{.VAULT_POD}}",
-      ],
-    },
-  },
-}
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+tasks:
+  sync-secrets:
+    desc: Sync all ExternalSecrets
+    cmds:
+      - for:
+          var: SECRETS
+          split: ""
+
+        cmd: kubectl --namespace {{splitList "," .ITEM | first}} annotate externalsecret {{splitList "," .ITEM | last}} force-sync="{{now | unixEpoch}}" --overwrite
+    vars:
+      SECRETS:
+        sh: kubectl get externalsecret --all-namespaces --no-headers --output=jsonpath='{range .items[*]}{.metadata.namespace},{.metadata.name}{"\n"}{end}'
+    preconditions:
+      - which kubectl
+  cleanse-pods:
+    desc: Cleanse pods with a Failed/Pending/Succeeded phase
+    cmds:
+      - for:
+          matrix:
+            PHASE:
+              - Failed
+              - Pending
+              - Succeeded
+        cmd: kubectl delete pods --all-namespaces --field-selector status.phase={{.ITEM.PHASE}} --ignore-not-found=true
+    preconditions:
+      - which kubectl
+  # https://docs.github.com/en/enterprise-cloud@latest/actions/hosting-your-own-runners/managing-self-hosted-runners-with-actions-runner-controller/deploying-runner-scale-sets-with-actions-runner-controller#upgrading-arc
+  upgrade-arc:
+    desc: Upgrade the ARC
+    cmds:
+      - helm -n arc-runners uninstall home-ops-runner
+      - helm -n arc-system uninstall actions-runner-controller
+      - sleep 5
+      - flux -n arc-system reconcile hr actions-runner-controller
+      - flux -n arc-runners reconcile hr home-ops-runner
+    preconditions:
+      - which flux helm
+  vnc:
+    desc: Open a VNC session to a VM
+    interactive: true
+    vars:
+      VM:
+        sh: gum input --placeholder "VM name"
+      NS:
+        sh: gum input --placeholder "Namespace" --value "virtualization"
+    cmd: virtctl vnc --vnc-type=tiger --vnc-path=/usr/bin/vncviewer --namespace {{.NS}} {{.VM}}
+    preconditions:
+      - which kubectl
+      - which virtctl
+      - which vncviewer
+      - which gum
+      - kubectl get virtualmachine -n {{.NS}} {{.VM}}
+  console:
+    desc: Connect to a VM console
+    interactive: true
+    vars:
+      VM:
+        sh: gum input --placeholder "VM name"
+      NS:
+        sh: gum input --placeholder "Namespace" --value "virtualization"
+    cmd: virtctl console --namespace {{.NS}} {{.VM}}
+    preconditions:
+      - which kubectl
+      - which virtctl
+      - which gum
+      - kubectl get virtualmachine -n {{.NS}} {{.VM}}
+  browse-pvc:
+    desc: Browse files on a PVC using filebrowser
+    interactive: true
+    vars:
+      PVC:
+        sh: gum input --placeholder "PVC name"
+      NS:
+        sh: gum input --placeholder "Namespace"
+      USER:
+        sh: gum input --placeholder "User ID" --value "65532"
+    cmds:
+      - kubectl run filebrowser-{{.PVC}} --image=filebrowser/filebrowser:latest --restart=Never --namespace={{.NS}} --overrides='{"spec":{"securityContext":{"fsGroup":{{.USER}}},"containers":[{"name":"filebrowser","image":"filebrowser/filebrowser:latest","args":["--noauth","--root","/data","--config","/tmp/settings.json","--database","/tmp/filebrowser.db"],"ports":[{"containerPort":80}],"volumeMounts":[{"mountPath":"/data","name":"data"}]}],"volumes":[{"name":"data","persistentVolumeClaim":{"claimName":"{{.PVC}}"}}]}}'
+      - kubectl wait pod/filebrowser-{{.PVC}} --for=condition=Ready --namespace={{.NS}} --timeout=60s
+      - xdg-open http://localhost:8080 &
+      - kubectl port-forward pod/filebrowser-{{.PVC}} 8080:8080 --namespace={{.NS}}
+      - defer: kubectl delete pod filebrowser-{{.PVC}} --namespace={{.NS}} --ignore-not-found
+    preconditions:
+      - which kubectl
+      - which gum
+      - which xdg-open
+  rotate-issuing-ca:
+    desc: Rotate Vault issuing CA
+    interactive: true
+    vars:
+      NS:
+        sh: gum input --placeholder "Namespace" --value "vault"
+      LABEL:
+        sh: gum input --placeholder "Pod label selector" --value "app.kubernetes.io/name=vault"
+      VAULT_POD:
+        sh: kubectl get pods --namespace {{.NS}} -l {{.LABEL}} --no-headers --output=jsonpath='{.items[0].metadata.name}'
+      ISS_MOUNT:
+        sh: gum input --placeholder "Issuing PKI mount" --value "pki"
+      INT_MOUNT:
+        sh: gum input --placeholder "Intermediate PKI mount" --value "pki-intermediate"
+      COMMON_NAME:
+        sh: gum input --placeholder "Common name"
+      TTL:
+        sh: gum input --placeholder "TTL" --value "8760h"
+    cmds:
+      - "kubectl --namespace {{.NS}} exec {{.VAULT_POD}} -- env VAULT_SKIP_VERIFY=true VAULT_ADDR=https://127.0.0.1:8200 sh -c 'set -e; echo \"Generating CSR using existing key material...\"; CSR=$(vault write -format=json {{.ISS_MOUNT}}/issuers/generate/intermediate/existing common_name=\"{{.COMMON_NAME}}\" country=\"Bulgaria\" locality=\"Sofia\" organization=\"DarkfellaNET\" format=pem_bundle | jq -r \".data.csr\"); echo \"Signing CSR with intermediate CA...\"; CERT=$(vault write -format=json {{.INT_MOUNT}}/root/sign-intermediate csr=\"$CSR\" ttl=\"{{.TTL}}\" | jq -r \".data.certificate\"); echo \"Importing signed certificate...\"; ISSUER=$(vault write -format=json {{.ISS_MOUNT}}/intermediate/set-signed certificate=\"$CERT\" | jq -r \".data.imported_issuers[0]\"); vault write {{.ISS_MOUNT}}/config/issuers default=\"$ISSUER\"; echo \"New issuer: $ISSUER\"; echo \"Rotation complete\"'"
+    preconditions:
+      - which kubectl
+      - which gum
+      - kubectl get pod --namespace {{.NS}} {{.VAULT_POD}}

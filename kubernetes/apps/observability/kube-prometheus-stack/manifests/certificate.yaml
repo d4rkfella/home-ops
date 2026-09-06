@@ -1,46 +1,32 @@
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "prometheus-tls",
-    namespace: "observability",
-  },
-  spec: {
-    secretName: "prometheus-tls",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-    },
-    dnsNames: [
-      "kube-prometheus-stack-prometheus.observability.svc.cluster.local",
-      "prometheus-operated.observability.svc.cluster.local",
-    ],
-    usages: [
-      "server auth",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prometheus-tls
+  namespace: observability
+spec:
+  secretName: prometheus-tls
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - kube-prometheus-stack-prometheus.observability.svc.cluster.local
+    - prometheus-operated.observability.svc.cluster.local
+  usages:
+    - server auth
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "alertmanager-tls",
-    namespace: "observability",
-  },
-  spec: {
-    secretName: "alertmanager-tls",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-    },
-    dnsNames: [
-      "kube-prometheus-stack-alertmanager.observability.svc.cluster.local",
-      "alertmanager-operated.observability.svc.cluster.local",
-    ],
-    usages: [
-      "server auth",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: alertmanager-tls
+  namespace: observability
+spec:
+  secretName: alertmanager-tls
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+  dnsNames:
+    - kube-prometheus-stack-alertmanager.observability.svc.cluster.local
+    - alertmanager-operated.observability.svc.cluster.local
+  usages:
+    - server auth

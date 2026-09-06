@@ -1,25 +1,18 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "recyclarr",
-  },
-  spec: {
-    dependsOn: [{
-      name: "radarr",
-    }, {
-      name: "sonarr",
-    }],
-    interval: "1h",
-    path: "./kubernetes/apps/media/recyclarr/manifests",
-    prune: true,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    wait: false,
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: recyclarr
+spec:
+  dependsOn:
+    - name: radarr
+    - name: sonarr
+  interval: 1h
+  path: ./kubernetes/apps/media/recyclarr/manifests
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false

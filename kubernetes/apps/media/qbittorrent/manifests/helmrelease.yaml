@@ -1,220 +1,151 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "qbittorrent",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "qbittorrent",
-    },
-    dependsOn: [{
-      name: "volsync",
-      namespace: "volsync-system",
-    }],
-    values: {
-      controllers: {
-        qbittorrent: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            app: {
-              image: {
-                repository: "ghcr.io/d4rkfella/qbittorrent",
-                tag: "5.2.3.2013@sha256:779d80fa4a25cdaeefcfe5dd60ecdc90eb1782592645b00c746e79712c82a5b7",
-              },
-              env: {
-                TZ: "Europe/Sofia",
-              },
-              probes: {
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/api/v2/app/version",
-                      port: 80,
-                    },
-                    periodSeconds: 10,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                liveness: {
-                  enabled: true,
-                  spec: {
-                    periodSeconds: 30,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                startup: {
-                  enabled: true,
-                  spec: {
-                    failureThreshold: 30,
-                    periodSeconds: 10,
-                  },
-                },
-              },
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "100m",
-                },
-                limits: {
-                  memory: "10Gi",
-                },
-              },
-            },
-            git-sync: {
-              image: {
-                repository: "registry.k8s.io/git-sync/git-sync",
-                tag: "v4.7.1",
-              },
-              args: [
-                "--repo=https://github.com/VueTorrent/VueTorrent",
-                "--ref=latest-release",
-                "--period=86400s",
-                "--root=/addons",
-              ],
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "10m",
-                  memory: "25Mi",
-                },
-              },
-            },
-          },
-        },
-      },
-      defaultPodOptions: {
-        terminationGracePeriodSeconds: 300,
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          fsGroup: 65532,
-          fsGroupChangePolicy: "OnRootMismatch",
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
-      },
-      service: {
-        app: {
-          forceRename: "qbittorrent",
-          controller: "qbittorrent",
-          primary: true,
-          ports: {
-            http: {
-              port: 80,
-            },
-          },
-        },
-        upload: {
-          controller: "qbittorrent",
-          primary: false,
-          type: "LoadBalancer",
-          allocateLoadBalancerNodePorts: false,
-          externalTrafficPolicy: "Local",
-          annotations: {
-            lbipam.cilium.io/ips: "192.168.91.55",
-          },
-          ports: {
-            bittorrent-tcp: {
-              enabled: true,
-              port: 50413,
-              protocol: "TCP",
-            },
-            bittorrent-udp: {
-              enabled: true,
-              port: 50413,
-              protocol: "UDP",
-            },
-          },
-        },
-      },
-      route: {
-        app: {
-          hostnames: [
-            "{{ .Release.Name }}.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "internal",
-            namespace: "envoy-gateway-system",
-            sectionName: "https",
-          }],
-          rules: [{
-            backendRefs: [{
-              name: "qbittorrent",
-              port: 80,
-            }],
-          }],
-        },
-      },
-      persistence: {
-        config: {
-          existingClaim: "qbittorrent",
-        },
-        media: {
-          type: "nfs",
-          server: "192.168.91.40",
-          path: "/mnt/exos20/data/downloads/torrents",
-          advancedMounts: {
-            qbittorrent: {
-              app: [{
-                path: "/data/downloads/torrents",
-              }],
-            },
-          },
-        },
-        addons: {
-          type: "emptyDir",
-          advancedMounts: {
-            qbittorrent: {
-              app: [{
-                path: "/addons",
-                readOnly: true,
-              }],
-              git-sync: [{
-                path: "/addons",
-              }],
-            },
-          },
-        },
-        tmp: {
-          type: "emptyDir",
-          advancedMounts: {
-            qbittorrent: {
-              git-sync: [{
-                path: "/tmp",
-              }],
-            },
-          },
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbittorrent
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: qbittorrent
+  dependsOn:
+    - name: volsync
+      namespace: volsync-system
+  values:
+    controllers:
+      qbittorrent:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/qbittorrent
+              tag: 5.2.3.2013@sha256:779d80fa4a25cdaeefcfe5dd60ecdc90eb1782592645b00c746e79712c82a5b7
+            env:
+              TZ: Europe/Sofia
+            probes:
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: 80
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 10Gi
+          git-sync:
+            image:
+              repository: registry.k8s.io/git-sync/git-sync
+              tag: v4.7.1
+            args:
+              - --repo=https://github.com/VueTorrent/VueTorrent
+              - --ref=latest-release
+              - --period=86400s
+              - --root=/addons
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 10m
+                memory: 25Mi
+    defaultPodOptions:
+      terminationGracePeriodSeconds: 300
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      app:
+        forceRename: qbittorrent
+        controller: qbittorrent
+        primary: true
+        ports:
+          http:
+            port: 80
+      upload:
+        controller: qbittorrent
+        primary: false
+        type: LoadBalancer
+        allocateLoadBalancerNodePorts: false
+        externalTrafficPolicy: Local
+        annotations:
+          lbipam.cilium.io/ips: 192.168.91.55
+        ports:
+          bittorrent-tcp:
+            enabled: true
+            port: 50413
+            protocol: TCP
+          bittorrent-udp:
+            enabled: true
+            port: 50413
+            protocol: UDP
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: qbittorrent
+                port: 80
+    persistence:
+      config:
+        existingClaim: qbittorrent
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data/downloads/torrents
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /data/downloads/torrents
+      addons:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /addons
+                readOnly: true
+            git-sync:
+              - path: /addons
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            git-sync:
+              - path: /tmp

@@ -1,1569 +1,1251 @@
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "UnattendedInstallConfig",
-  installer: {
-    image: "factory.talos.dev/installer-secureboot/bbfe20732d89cdb6e26a79e27c04a77a68afc3bd1c94334045b508ecf751e293:v1.14.0",
-  },
-  provisioning: {
-    diskSelector: {
-      match: "disk.model == \"CT1000P3PSSD8\"",
-    },
-    wipe: false,
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+installer:
+  image: factory.talos.dev/installer-secureboot/bbfe20732d89cdb6e26a79e27c04a77a68afc3bd1c94334045b508ecf751e293:v1.14.0
+provisioning:
+  diskSelector:
+    match: disk.model == "CT1000P3PSSD8"
+  wipe: false
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "VolumeConfig",
-  name: "EPHEMERAL",
-  mount: {
-    secure: true,
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: VolumeConfig
+name: EPHEMERAL
+mount:
+  secure: true
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "SecurityProfileConfig",
-  workloadIsolation: true,
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: SecurityProfileConfig
+workloadIsolation: true
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "vfio_pci",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: vfio_pci
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "vfio_iommu_type1",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: vfio_iommu_type1
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "nvidia",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "nvidia_uvm",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia_uvm
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "nvidia_drm",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia_drm
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "nvidia_modeset",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia_modeset
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KernelModuleConfig",
-  name: "zfs",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: zfs
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "SysctlConfig",
-  params: {
-    fs.inotify.max_queued_events: "65536",
-    fs.inotify.max_user_watches: "1048576",
-    fs.inotify.max_user_instances: "8192",
-    net.core.default_qdisc: "fq_codel",
-    net.core.rmem_max: "67108864",
-    net.core.wmem_max: "67108864",
-    net.ipv4.tcp_congestion_control: "bbr",
-    net.ipv4.tcp_rmem: "4096 131072 33554432",
-    net.ipv4.tcp_wmem: "4096 131072 33554432",
-    vm.nr_hugepages: "29696",
-    net.core.bpf_jit_harden: "1",
-    user.max_user_namespaces: "49152",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: SysctlConfig
+params:
+  fs.inotify.max_queued_events: "65536"
+  fs.inotify.max_user_watches: "1048576"
+  fs.inotify.max_user_instances: "8192"
+  net.core.default_qdisc: fq_codel
+  net.core.rmem_max: "67108864"
+  net.core.wmem_max: "67108864"
+  net.ipv4.tcp_congestion_control: bbr
+  net.ipv4.tcp_rmem: 4096 131072 33554432
+  net.ipv4.tcp_wmem: 4096 131072 33554432
+  vm.nr_hugepages: "29696"
+  net.core.bpf_jit_harden: "1"
+  user.max_user_namespaces: "49152"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "SysfsConfig",
-  params: {
-    kernel.mm.ksm.run: "1",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: SysfsConfig
+params:
+  kernel.mm.ksm.run: "1"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeEtcdEncryptionConfig",
-  config: {
-    resources: [{
-      providers: [{
-        secretbox: {
-          keys: [{
-            name: "key2",
-            secret: "ENC[AES256_GCM,data:w3WTHpG39EGSdyH3Paeom2qzjfRhtM0DqEYwfE+mr/j2OgAHorZ6O0XUi3c=,iv:jcMrl0opxpLQCIhnGl6HzMPP1pJU11Q75rHyJmc678c=,tag:a1dqBibwTADtTqzIvJuFHg==,type:str]",
-          }],
-        },
-      }],
-      resources: [
-        "secrets",
-      ],
-    }],
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeEtcdEncryptionConfig
+config:
+  resources:
+    - providers:
+        - secretbox:
+            keys:
+              - name: key2
+                secret: ENC[AES256_GCM,data:w3WTHpG39EGSdyH3Paeom2qzjfRhtM0DqEYwfE+mr/j2OgAHorZ6O0XUi3c=,iv:jcMrl0opxpLQCIhnGl6HzMPP1pJU11Q75rHyJmc678c=,tag:a1dqBibwTADtTqzIvJuFHg==,type:str]
+      resources:
+        - secrets
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeServiceAccountConfig",
-  issuer: {
-    privateKey: "ENC[AES256_GCM,data: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,iv:EFvYIJI4Bi+uocRhWsJ25KaD903JdnBaU9zzpom7w8s=,tag:7AVI/G3oVZP8mk8cwlsBDw==,type:str]",
-    issuerURL: "https://192.168.91.10:6443",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeServiceAccountConfig
+issuer:
+  privateKey: ENC[AES256_GCM,data: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,iv:EFvYIJI4Bi+uocRhWsJ25KaD903JdnBaU9zzpom7w8s=,tag:7AVI/G3oVZP8mk8cwlsBDw==,type:str]
+  issuerURL: https://192.168.91.10:6443
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeNodeConfig",
-  nodeIP: {
-    validSubnets: [
-      "192.168.91.0/24",
-    ],
-  },
-  labels: {
-    node.kubernetes.io/exclude-from-external-load-balancers: "",
-    node-role.kubernetes.io/control-plane: "",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+nodeIP:
+  validSubnets:
+    - 192.168.91.0/24
+labels:
+  node.kubernetes.io/exclude-from-external-load-balancers: ""
+  node-role.kubernetes.io/control-plane: ""
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeTalosAPIAccessConfig",
-  allowedRoles: [
-    "os:admin",
-  ],
-  allowedKubernetesNamespaces: [
-    "arc-runners",
-    "system-upgrade",
-  ],
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+allowedKubernetesNamespaces:
+  - arc-runners
+  - system-upgrade
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "DiscoveryServiceConfig",
-  name: "default",
-  endpoint: "https://discovery.talos.dev/",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: DiscoveryServiceConfig
+name: default
+endpoint: https://discovery.talos.dev/
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "DiscoveryIdentityConfig",
-  clusterID: "ENC[AES256_GCM,data:Pbdf0g5IzEEwYoy4wb7IGFEQqOqLlAE9LgfwgBbdnqgMl7z9ZAN1e6j/vTE=,iv:SIMCkkhqtme5dqkBY5O0iBbTvSyJfwp6oBnZ+Eg0Nek=,tag:0J2CnAsJdK07Gk4/2k5AbQ==,type:str]",
-  clusterSecret: "ENC[AES256_GCM,data:H0WQWseAA/dFYIJ3LMkJUGGifuhIXNlTGPZcb/c9fWchhEPjEhoiXAXd+DA=,iv:vFIPavPK2GzQCtM2dnY2IGWVKiJjpbBLiQ1/IvwcJrg=,tag:3jmJMAswlkYuTiyQAolF8A==,type:str]",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: DiscoveryIdentityConfig
+clusterID: ENC[AES256_GCM,data:Pbdf0g5IzEEwYoy4wb7IGFEQqOqLlAE9LgfwgBbdnqgMl7z9ZAN1e6j/vTE=,iv:SIMCkkhqtme5dqkBY5O0iBbTvSyJfwp6oBnZ+Eg0Nek=,tag:0J2CnAsJdK07Gk4/2k5AbQ==,type:str]
+clusterSecret: ENC[AES256_GCM,data:H0WQWseAA/dFYIJ3LMkJUGGifuhIXNlTGPZcb/c9fWchhEPjEhoiXAXd+DA=,iv:vFIPavPK2GzQCtM2dnY2IGWVKiJjpbBLiQ1/IvwcJrg=,tag:3jmJMAswlkYuTiyQAolF8A==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "ResolverConfig",
-  searchDomains: {
-    domains: [],
-  },
-  hostDNS: {
-    enabled: true,
-    forwardKubeDNSToHost: false,
-    resolveMemberNames: false,
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: ResolverConfig
+searchDomains:
+  domains: []
+hostDNS:
+  enabled: true
+  forwardKubeDNSToHost: false
+  resolveMemberNames: false
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "WatchdogTimerConfig",
-  device: "/dev/watchdog0",
-  timeout: "5m",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 5m
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  apiVersion: "v1alpha1",
-  kind: "ImageVerificationConfig",
-  rules: [{
-    image: "ghcr.io/fluxcd/*",
-    keyless: {
-      issuer: "https://token.actions.githubusercontent.com",
-      subjectRegex: "https://github\\.com/fluxcd/.*",
-    },
-  }, {
-    image: "ghcr.io/d4rkfella/artifactory-license-patcher",
-    keyless: {
-      issuer: "https://token.actions.githubusercontent.com",
-      subject: "https://github.com/d4rkfella/artifactory-license-patcher/.github/workflows/build.yaml@refs/heads/main",
-    },
-  }, {
-    image: "ghcr.io/d4rkfella/plex",
-    keyless: {
-      issuer: "https://token.actions.githubusercontent.com",
-      subject: "https://github.com/d4rkfella/plex/.github/workflows/build.yaml@refs/heads/main",
-    },
-  }, {
-    image: "ghcr.io/d4rkfella/vaultctl",
-    keyless: {
-      issuer: "https://token.actions.githubusercontent.com",
-      subject: "https://github.com/d4rkfella/vaultctl/.github/workflows/docker-publish.yaml@refs/heads/main",
-    },
-  }, {
-    image: "ghcr.io/d4rkfella/*",
-    keyless: {
-      issuer: "https://token.actions.githubusercontent.com",
-      subjectRegex: "https://github\\.com/d4rkfella/containers/\\.github/workflows/.*\\.yaml@refs/heads/main",
-    },
-  }],
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+apiVersion: v1alpha1
+kind: ImageVerificationConfig
+rules:
+  - image: ghcr.io/fluxcd/*
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subjectRegex: https://github\.com/fluxcd/.*
+  - image: ghcr.io/d4rkfella/artifactory-license-patcher
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/artifactory-license-patcher/.github/workflows/build.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/plex
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/plex/.github/workflows/build.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/vaultctl
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/vaultctl/.github/workflows/docker-publish.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/*
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subjectRegex: https://github\.com/d4rkfella/containers/\.github/workflows/.*\.yaml@refs/heads/main
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "OOMConfig",
-  triggerExpression: "false",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: OOMConfig
+triggerExpression: "false"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "PCIDriverRebindConfig",
-  name: "0000:05:00.0",
-  targetDriver: "vfio-pci",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: PCIDriverRebindConfig
+name: 0000:05:00.0
+targetDriver: vfio-pci
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "TimeSyncConfig",
-  ntp: {
-    servers: [
-      "time.cloudflare.com",
-    ],
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: TimeSyncConfig
+ntp:
+  servers:
+    - time.cloudflare.com
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "PCIDriverRebindConfig",
-  name: "0000:0a:00.0",
-  targetDriver: "vfio-pci",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: PCIDriverRebindConfig
+name: 0000:0a:00.0
+targetDriver: vfio-pci
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "HostnameConfig",
-  hostname: "k8s-0",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: k8s-0
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "DHCPv4Config",
-  name: "eth0",
-  clientIdentifier: "mac",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: DHCPv4Config
+name: eth0
+clientIdentifier: mac
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "BridgeConfig",
-  name: "br0",
-  stp: {
-    enabled: false,
-  },
-  links: [
-    "eth1",
-  ],
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: BridgeConfig
+name: br0
+stp:
+  enabled: false
+links:
+  - eth1
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "Layer2VIPConfig",
-  name: "192.168.91.10",
-  link: "eth0",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.91.10
+link: eth0
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "RegistryAuthConfig",
-  name: "ghcr.io",
-  username: "d4rkfella",
-  password: "ENC[AES256_GCM,data:K/U6UrPMW895k7/UZc8/0GfFGh9KQYfYKdISdLf/vmNYMisXbuHUIA==,iv:m5NFQKEpuJffVxq7pwgI2xChVXBd+FH26JqK+sf2mZw=,tag:WUtte4oc/JaYdbThGdC9fA==,type:str]",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: RegistryAuthConfig
+name: ghcr.io
+username: d4rkfella
+password: ENC[AES256_GCM,data:K/U6UrPMW895k7/UZc8/0GfFGh9KQYfYKdISdLf/vmNYMisXbuHUIA==,iv:m5NFQKEpuJffVxq7pwgI2xChVXBd+FH26JqK+sf2mZw=,tag:WUtte4oc/JaYdbThGdC9fA==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeletConfig",
-  image: "ghcr.io/siderolabs/kubelet:v1.37.0",
-  config: {
-    maxParallelImagePulls: 10,
-    maxPods: 400,
-    serializeImagePulls: false,
-    serverTLSBootstrap: true,
-    shutdownGracePeriod: "120s",
-    shutdownGracePeriodCriticalPods: "120s",
-    cpuManagerPolicy: "static",
-    cpuManagerPolicyOptions: {
-      full-pcpus-only: "true",
-    },
-  },
-  defaultRuntimeSeccompProfileEnabled: true,
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeletConfig
+image: ghcr.io/siderolabs/kubelet:v1.37.0
+config:
+  maxParallelImagePulls: 10
+  maxPods: 400
+  serializeImagePulls: false
+  serverTLSBootstrap: true
+  shutdownGracePeriod: 120s
+  shutdownGracePeriodCriticalPods: 120s
+  cpuManagerPolicy: static
+  cpuManagerPolicyOptions:
+    full-pcpus-only: "true"
+defaultRuntimeSeccompProfileEnabled: true
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeClusterConfig",
-  clusterName: "main",
-  endpoint: "https://192.168.91.10:6443",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeClusterConfig
+clusterName: main
+endpoint: https://192.168.91.10:6443
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeNetworkConfig",
-  dnsDomain: "cluster.local",
-  podSubnets: [
-    "172.16.0.0/16",
-  ],
-  serviceSubnets: [
-    "172.17.0.0/16",
-  ],
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeNetworkConfig
+dnsDomain: cluster.local
+podSubnets:
+  - 172.16.0.0/16
+serviceSubnets:
+  - 172.17.0.0/16
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubePrismConfig",
-  port: 7445,
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubePrismConfig
+port: 7445
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "CRICustomizationConfig",
-  name: "10-nvidia-container-runtime",
-  content: "\
-     [plugins.\"io.containerd.cri.v1.runtime\"]\n\
-    \  enable_cdi = true\n\
-     \n\
-     [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia]\n\
-    \  privileged_without_host_devices = false\n\
-    \  runtime_engine = \"\"\n\
-    \  runtime_root = \"\"\n\
-    \  runtime_type = \"io.containerd.runc.v2\"\n\
-     \n\
-    \  [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia.options]\n\
-    \    BinaryName = \"/usr/local/bin/nvidia-container-runtime\"\n\
-     \n\
-     [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia-cdi]\n\
-    \  privileged_without_host_devices = false\n\
-    \  runtime_engine = \"\"\n\
-    \  runtime_root = \"\"\n\
-    \  runtime_type = \"io.containerd.runc.v2\"\n\
-     \n\
-    \  [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia-cdi.options]\n\
-    \    BinaryName = \"/usr/local/bin/nvidia-container-runtime.cdi\"\n\
-     \n\
-     [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia-legacy]\n\
-    \  privileged_without_host_devices = false\n\
-    \  runtime_engine = \"\"\n\
-    \  runtime_root = \"\"\n\
-    \  runtime_type = \"io.containerd.runc.v2\"\n\
-     \n\
-    \  [plugins.\"io.containerd.cri.v1.runtime\".containerd.runtimes.nvidia-legacy.options]\n\
-    \    BinaryName = \"/usr/local/bin/nvidia-container-runtime.legacy\"\n\
-    ",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: CRICustomizationConfig
+name: 10-nvidia-container-runtime
+content: |
+  [plugins."io.containerd.cri.v1.runtime"]
+    enable_cdi = true
+
+  [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia]
+    privileged_without_host_devices = false
+    runtime_engine = ""
+    runtime_root = ""
+    runtime_type = "io.containerd.runc.v2"
+
+    [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia.options]
+      BinaryName = "/usr/local/bin/nvidia-container-runtime"
+
+  [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia-cdi]
+    privileged_without_host_devices = false
+    runtime_engine = ""
+    runtime_root = ""
+    runtime_type = "io.containerd.runc.v2"
+
+    [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia-cdi.options]
+      BinaryName = "/usr/local/bin/nvidia-container-runtime.cdi"
+
+  [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia-legacy]
+    privileged_without_host_devices = false
+    runtime_engine = ""
+    runtime_root = ""
+    runtime_type = "io.containerd.runc.v2"
+
+    [plugins."io.containerd.cri.v1.runtime".containerd.runtimes.nvidia-legacy.options]
+      BinaryName = "/usr/local/bin/nvidia-container-runtime.legacy"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "EtcFileConfig",
-  name: "nfsmount.conf",
-  mode: 420,
-  contents: "\
-     [ NFSMount_Global_Options ]\n\
-     nfsvers=4.2\n\
-     hard=True\n\
-     noatime=True\n\
-     nodiratime=True\n\
-     nconnect=16\n\
-    ",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: nfsmount.conf
+mode: 420
+contents: |
+  [ NFSMount_Global_Options ]
+  nfsvers=4.2
+  hard=True
+  noatime=True
+  nodiratime=True
+  nconnect=16
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "UdevRulesConfig",
-  rules: [
-    "SUBSYSTEM==\"block\", ENV{DEVTYPE}==\"disk\", ATTR{queue/scheduler}=\"none\"",
-  ],
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: UdevRulesConfig
+rules:
+  - SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="none"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAPIServerConfig",
-  image: "registry.k8s.io/kube-apiserver:v1.37.0",
-  certExtraSANs: [
-    "127.0.0.1",
-    "192.168.91.10",
-  ],
-  extraArgs: {
-    enable-aggregator-routing: "true",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+image: registry.k8s.io/kube-apiserver:v1.37.0
+certExtraSANs:
+  - 127.0.0.1
+  - 192.168.91.10
+extraArgs:
+  enable-aggregator-routing: "true"
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAuthenticationConfig",
-  configuration: {
-    anonymous: {
-      conditions: [{
-        path: "/livez",
-      }, {
-        path: "/readyz",
-      }, {
-        path: "/healthz",
-      }],
-      enabled: true,
-    },
-    jwt: [],
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAuthenticationConfig
+configuration:
+  anonymous:
+    conditions:
+      - path: /livez
+      - path: /readyz
+      - path: /healthz
+    enabled: true
+  jwt: []
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAuthorizerConfig",
-  name: "node",
-  type: "Node",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: node
+type: Node
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAuthorizerConfig",
-  name: "rbac",
-  type: "RBAC",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAuthorizerConfig
+name: rbac
+type: RBAC
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAPIServerCAConfig",
-  issuingCA: {
-    cert: "ENC[AES256_GCM,data:aPfEaW4wd1njpcHxXVMEZt/+Y4GrVp/5RCd8Mw3LgvLkD3mLsXRApZIUgpuWqQdH2uWNbeaB1zky29utg7yfXKq+PoB84lOoOvXbiTsFi+mtGdFyHF+bPYzhYrPBYk1LE/+idSLrJv9Hr0uYH/6KFPBPnIDkWz1Na13TiMbVphxcmVA7pdrE8IIqRX6NNs81XyMkAMvE91EnNWR1a9Ct0y53UgsA1nv334wZ1OwN/J/yuPb8VBrYZlwHjqdN1MSEBqLOWXCpn6A75VozQH4923t3RcTKm1dTWg2KSlAn8r4yLrK9jj71nOsd+PzsPGMiO04h7/0ImlI//SuyIhS/QlpmcruE4lHgFe6aWH8q4FBEuylDpxkCSsxLAGPasxJ95GL1S92p0vX0cK2m9dUyczlmrjdhFsZXTe+VVElagSSZy7KIEocweExTXWSZBObrSz4eift52Xx0KXQ1XOW1tTzVdefGSsSdPqysp6dDhOrhzWTZQQjSKpXlHBu75PxL+HYsuzInlT6aoxJLY2JIKlMiWFVy6RuQpC62am/FQPYUcH+yH+0+vdV2oYmlKokf+bOObDi22Cq4vBgr1/4108GJwj2kBbQoJCN4v6Y/+p/toptuCBMeEwCbfy4Btj1mABJjmotRvKu7OBPRppt6I8Kg3eeJEZjzjEUq0MDBgPh+syUN8V0fvSLcppTrXB7HGqJGLj2G6NhIYUcpyRmfYyCumO9Lu95SKNSZaeJ7YCVvXW0lo85jfROXsgJlg0eeuKTFn6AzaQIDUqx8QuaxKy0ZqQ==,iv:CWHRZIYZREcLKK4zoxSvmxP8o1V+x/t58Bukz4cO8Zg=,tag:g2wS8BBNmnlcYqyGoLajqQ==,type:str]",
-    key: "ENC[AES256_GCM,data:v7WrNmxa7cGRaw9dN2kBrw/foObzDl+2TbidEm/Lq3yRbIjRgRW3g7oMhCMtKKH9yPS2rimVmWbz1STrdYY3hIxJ0f3miWTZVNox499YXTXOl6FkctM2kVVYPl1HaJx7pmeElJBYoXb42FVg5qGReVmio+oPSex0Sr3FLyVjykPU7jBrVCaDio/YSoqQM4nco9GIhI9+07WcljMF8kFaJWhBVISWnH3D8ZoQQ3ZHpkc3rCL18Ir6U/YJ2ZceQ3gBE/h4ohNqElhSBk/McEu1GElG1YUWZVNAi++ASB9kkpplFIg=,iv:O75y7kKOuWW4NGG/LLo3iCfpM7TSSu8qXRvdy2119dw=,tag:BoqJWTPfWvcpNOZgjoINWw==,type:str]",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAPIServerCAConfig
+issuingCA:
+  cert: ENC[AES256_GCM,data:aPfEaW4wd1njpcHxXVMEZt/+Y4GrVp/5RCd8Mw3LgvLkD3mLsXRApZIUgpuWqQdH2uWNbeaB1zky29utg7yfXKq+PoB84lOoOvXbiTsFi+mtGdFyHF+bPYzhYrPBYk1LE/+idSLrJv9Hr0uYH/6KFPBPnIDkWz1Na13TiMbVphxcmVA7pdrE8IIqRX6NNs81XyMkAMvE91EnNWR1a9Ct0y53UgsA1nv334wZ1OwN/J/yuPb8VBrYZlwHjqdN1MSEBqLOWXCpn6A75VozQH4923t3RcTKm1dTWg2KSlAn8r4yLrK9jj71nOsd+PzsPGMiO04h7/0ImlI//SuyIhS/QlpmcruE4lHgFe6aWH8q4FBEuylDpxkCSsxLAGPasxJ95GL1S92p0vX0cK2m9dUyczlmrjdhFsZXTe+VVElagSSZy7KIEocweExTXWSZBObrSz4eift52Xx0KXQ1XOW1tTzVdefGSsSdPqysp6dDhOrhzWTZQQjSKpXlHBu75PxL+HYsuzInlT6aoxJLY2JIKlMiWFVy6RuQpC62am/FQPYUcH+yH+0+vdV2oYmlKokf+bOObDi22Cq4vBgr1/4108GJwj2kBbQoJCN4v6Y/+p/toptuCBMeEwCbfy4Btj1mABJjmotRvKu7OBPRppt6I8Kg3eeJEZjzjEUq0MDBgPh+syUN8V0fvSLcppTrXB7HGqJGLj2G6NhIYUcpyRmfYyCumO9Lu95SKNSZaeJ7YCVvXW0lo85jfROXsgJlg0eeuKTFn6AzaQIDUqx8QuaxKy0ZqQ==,iv:CWHRZIYZREcLKK4zoxSvmxP8o1V+x/t58Bukz4cO8Zg=,tag:g2wS8BBNmnlcYqyGoLajqQ==,type:str]
+  key: ENC[AES256_GCM,data:v7WrNmxa7cGRaw9dN2kBrw/foObzDl+2TbidEm/Lq3yRbIjRgRW3g7oMhCMtKKH9yPS2rimVmWbz1STrdYY3hIxJ0f3miWTZVNox499YXTXOl6FkctM2kVVYPl1HaJx7pmeElJBYoXb42FVg5qGReVmio+oPSex0Sr3FLyVjykPU7jBrVCaDio/YSoqQM4nco9GIhI9+07WcljMF8kFaJWhBVISWnH3D8ZoQQ3ZHpkc3rCL18Ir6U/YJ2ZceQ3gBE/h4ohNqElhSBk/McEu1GElG1YUWZVNAi++ASB9kkpplFIg=,iv:O75y7kKOuWW4NGG/LLo3iCfpM7TSSu8qXRvdy2119dw=,tag:BoqJWTPfWvcpNOZgjoINWw==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAuditPolicyConfig",
-  configuration: {
-    apiVersion: "audit.k8s.io/v1",
-    kind: "Policy",
-    rules: [{
-      level: "Metadata",
-    }],
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAuditPolicyConfig
+configuration:
+  apiVersion: audit.k8s.io/v1
+  kind: Policy
+  rules:
+    - level: Metadata
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeControllerManagerConfig",
-  extraArgs: {
-    bind-address: "0.0.0.0",
-  },
-  image: "registry.k8s.io/kube-controller-manager:v1.37.0",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+image: registry.k8s.io/kube-controller-manager:v1.37.0
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeCoreDNSConfig",
-  enabled: false,
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeProxyConfig",
-  enabled: false,
-  image: "registry.k8s.io/kube-proxy:v1.37.0",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+image: registry.k8s.io/kube-proxy:v1.37.0
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeSchedulerConfig",
-  extraArgs: {
-    bind-address: "0.0.0.0",
-  },
-  image: "registry.k8s.io/kube-scheduler:v1.37.0",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+image: registry.k8s.io/kube-scheduler:v1.37.0
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "KubeAggregatorCAConfig",
-  issuingCA: {
-    cert: "ENC[AES256_GCM,data:pE7faY/2F8QWo3RrpHVnjqAeIhCa08VAQqE+nEfwaGma6XgqjegK6A+Ut0tX0RUZEgWj57aM8xB8vX+ezbnXIjxsXKJkraAYza9kLDKAFyE6YlBeueAjXUPxgmvd7QInPMRYTuTF3zNR+rMRZixWdoik8Qd47VyrkhXFkwT6iE+c7q5FC4Od2DLeML0R7WqSBb/pZMMbfHCTX4maawuSVQHgTBRSuAVASAzr+vZG3NsW9YppMj3IXzoey0r+Ru/5qLF8xSxYf5KpC+VjJs81IEbG/mGTeFXr5BwbESwRV2m6ORI64WJySivX6OKq+14l5dUOB/Hrm4q3QKOcRjq5oQJtpzY6snc3FnVjpTcwpS9Y7jWZt/IapC/LoLd+JhjUzYA+ych79MftyCZIaejuqbFlXkTQAZL5zZtRHROj4wk8Bv7IUdjmwBkYYUFaUpvi92CXlgQ/NCe7p+xwdoD8IApJE9f41LDsyW1YhGOU8vFRmDGQ21WgMYzpP5xcEmlXylJxKd+SBSHJhcUGERL2C1z9UNMKrt3SAcsX6q52G+RGuc2szvFMB9hhlEeoAPNQSGdjBncsKHzseoGiBgR9II0k2rCtKIftkFLFM6CcCjNARrOkS0s7V76qHbTZjNMNgaUb3314pzK9lrqpmYR3sdfyTGCNXyv/8Oy7FhPjUZCiZ9bje8NviiI/zBGAe3wSublgrFMpliPAIA==,iv:22+CkWXMNqiLJXbgADK3gZdVcuhvjDfFz74cDRHL770=,tag:hNxTf+BDQnO6dXr5tdRd8g==,type:str]",
-    key: "ENC[AES256_GCM,data:nR8o4dCvxZUUt3Z8OnxQcCTNXZ3I0dc6uEUQmv65EUsTk0wJiBpwImvVhdvF8B7YBPChaUO3VCJpjrAISsbNdzfGAPupHl5FL0yCgmR7d5FoNTayNeN9dIajw2KhLjjA6pHAUkG/b/zQka5J0JB+JVJUQliXArf7joLCdXhmhH/Dd7JRZzeYyODcQrcIlDlynaZisTtQMdd/+UhEHYVPPNIhl6ceAlZLHgj3nwMsqziUOsS6YPiOJ2XTAABgtbw6SfhzXfHH2Xo44fuPgdcHSPmuCwK+oUGboUA2QJBjhaegyEY=,iv:KiCg3QIKKmEgl5XsqgARsBgknvTRwMyjbj759bsCVyc=,tag:cDT9/hQy/z7/We5cp5PHig==,type:str]",
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KubeAggregatorCAConfig
+issuingCA:
+  cert: ENC[AES256_GCM,data:pE7faY/2F8QWo3RrpHVnjqAeIhCa08VAQqE+nEfwaGma6XgqjegK6A+Ut0tX0RUZEgWj57aM8xB8vX+ezbnXIjxsXKJkraAYza9kLDKAFyE6YlBeueAjXUPxgmvd7QInPMRYTuTF3zNR+rMRZixWdoik8Qd47VyrkhXFkwT6iE+c7q5FC4Od2DLeML0R7WqSBb/pZMMbfHCTX4maawuSVQHgTBRSuAVASAzr+vZG3NsW9YppMj3IXzoey0r+Ru/5qLF8xSxYf5KpC+VjJs81IEbG/mGTeFXr5BwbESwRV2m6ORI64WJySivX6OKq+14l5dUOB/Hrm4q3QKOcRjq5oQJtpzY6snc3FnVjpTcwpS9Y7jWZt/IapC/LoLd+JhjUzYA+ych79MftyCZIaejuqbFlXkTQAZL5zZtRHROj4wk8Bv7IUdjmwBkYYUFaUpvi92CXlgQ/NCe7p+xwdoD8IApJE9f41LDsyW1YhGOU8vFRmDGQ21WgMYzpP5xcEmlXylJxKd+SBSHJhcUGERL2C1z9UNMKrt3SAcsX6q52G+RGuc2szvFMB9hhlEeoAPNQSGdjBncsKHzseoGiBgR9II0k2rCtKIftkFLFM6CcCjNARrOkS0s7V76qHbTZjNMNgaUb3314pzK9lrqpmYR3sdfyTGCNXyv/8Oy7FhPjUZCiZ9bje8NviiI/zBGAe3wSublgrFMpliPAIA==,iv:22+CkWXMNqiLJXbgADK3gZdVcuhvjDfFz74cDRHL770=,tag:hNxTf+BDQnO6dXr5tdRd8g==,type:str]
+  key: ENC[AES256_GCM,data:nR8o4dCvxZUUt3Z8OnxQcCTNXZ3I0dc6uEUQmv65EUsTk0wJiBpwImvVhdvF8B7YBPChaUO3VCJpjrAISsbNdzfGAPupHl5FL0yCgmR7d5FoNTayNeN9dIajw2KhLjjA6pHAUkG/b/zQka5J0JB+JVJUQliXArf7joLCdXhmhH/Dd7JRZzeYyODcQrcIlDlynaZisTtQMdd/+UhEHYVPPNIhl6ceAlZLHgj3nwMsqziUOsS6YPiOJ2XTAABgtbw6SfhzXfHH2Xo44fuPgdcHSPmuCwK+oUGboUA2QJBjhaegyEY=,iv:KiCg3QIKKmEgl5XsqgARsBgknvTRwMyjbj759bsCVyc=,tag:cDT9/hQy/z7/We5cp5PHig==,type:str]
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "FilesystemTrimConfig",
-  interval: "168h0m0s",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: FilesystemTrimConfig
+interval: 168h0m0s
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  apiVersion: "v1alpha1",
-  kind: "FilesystemScrubConfig",
-  interval: "168h0m0s",
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: FilesystemScrubConfig
+interval: 168h0m0s
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3
 ---
-{
-  # yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
-  version: "v1alpha1",
-  debug: false,
-  machine: {
-    type: "controlplane",
-    token: "ENC[AES256_GCM,data:JojukWYgn/LdMmw8Gf9OMqxRgOUlsaU=,iv:iW8HPbh13u7qy3QybI2nEIdRYiWqyT2IEzAqIkg0JRg=,tag:URPKeoMj35iGQj7o3sjmAQ==,type:str]",
-    ca: {
-      crt: "ENC[AES256_GCM,data:9zJzWM0byKqUENsj2eMtlf9v3drVbg6hIbiDEiyGNXLisZqldBZZg4mw0CuT3P+/dkr183a/PpHPS6zItJpotREdyf+KGdjBXNjU1YRxyA1bqt72+PBPqFgEs0cODkVkkPgjXbe0vCDlKV52Hw3/YOlXRsPkeFa1qLKwm8b9A6i+O3ovzdcPTmPHQXpp4HWs1ZMjkxufta5tYZpy+UEJdpLdA0gcTFFE4gxRsxKC1SCTyGxwvhpCjynw/52hTFI75vxiWepGMGfBkClzj7h3RiXOtHwnatJrYdgYb18/V5TtZp9JA6SuzagXK/d/Beh1qM4X+zpotvd7C005hpYQdt/29/M9rVK/QQXlxMA8j/sX/YguIX5xGGoMezWOEJIDkdPfdPIlWXiVWk6Lc5Y/evG9e/O/AgU/V9aj0LmeMK0hrVyOqeFJHolHD7Tc+IXt2GXj52o9U5FdqkXov1EHykfm0BUbAFUfqI8wkdfbiPceIER0bUuCvJ+IHdDYmxgvbJItoSig84j80giVvDTHuR08Ejap6L7r2mfGa5vFq2edzOxwAgd4q+nCWnOUye2jwouUUIkgrTEXyDv92Fkeyf9Oyb3EFRfSlvfzjqf4fPtuX6qvbr9FAvN9BF1TcahzXiKH/jXNPcn9/F8+VzRcJ8izBl2gkpsXk0e08yCJx/JxESnqZD/P8O3CiO6IlctA70YBTqRSfoQtuQMzq5vAPROpLsCssUkRtHj8UcXQzGi6DyNk9VMbsgtxLSrW6xZfP4Qf0Vn9NoSy2ZQTLC4h8cbDNP7h7xLe78LItWwCXdojZOcrQ49V2NOP5A7i0sz/19r18tAp7HQGyZlC4W4atizdd2y0QKozwru5QCRxuUGlFqY6,iv:Q8s+VGC9zMK6yDqn08+5dVGsmSQqfO8IkT/DZICLqaE=,tag:XdN4Psq3fovtOZxy/qrg7w==,type:str]",
-      key: "ENC[AES256_GCM,data:J+kD7qVS+mb4wqkecpe/40ZmPr3xj2H6jBco1cOtJ9Khzp6NumDNd9wiHi5lz+0EKSLVkbyNrMSc3zyovbh8QuT4P6ReoUmClpz/BA4GqyCUfgjQQi7H3kUJEaJevPNplmGC8J0oXvRZE5gGjYgJ2moKoaQc5gEg0CpLCuOL+AOwUTEWgYJ2xEBad2NtO/aRqppDc85OiBuyDBrqedUb0z/XJxJwEEgmPiKTE4bs7bXNyagA,iv:hdtntRoV1jFkrRtwkwYrYOVZ6z1ln1JSVRzESQfqnTk=,tag:saP7y8teEjXQabJQIYBsRA==,type:str]",
-    },
-    certSANs: [
-      "127.0.0.1",
-      "192.168.91.10",
-    ],
-    features: {
-      diskQuotaSupport: true,
-    },
-  },
-  cluster: {
-    token: "ENC[AES256_GCM,data:5aBQNDoxLnpMxr0k9kDhTfM6DkEP7BM=,iv:vioFjbCC3ooXs+gCAlXK1x5F1lu3vtZGe7zYqv/2+sA=,tag:idBIDbuWdWe5EpDnHh5T3Q==,type:str]",
-    etcd: {
-      advertisedSubnets: [
-        "192.168.91.0/24",
-      ],
-      ca: {
-        crt: "ENC[AES256_GCM,data:Foi6vvC9Ci4FrOB7uiLjqQaqzkrwFUhaxoZZmNeV0Cu/lUoAX1WAbsQ1Z3MqdU4ZL9MFOSuhcSYGHaF9knpjA6EIXugFJpLaV/wiHfbUGU6WA3hN25b4wjvVDcJNVvao7xACtXPwIstvf/hCk/syTD+zpnnLTvV8naXLtmcBQ8euVWHA25QBLzJaKiww81vYFu5yb8LQktP+qHacelieawslL1MskyhYtJzDwR2jbQNLXGgwaBaxOpA1UNO7OI70/L2uOEUh+DNodhHHuta3B0D48PL63BRCfYPdwBosiFvVVtiXYYp0/HcvBEE3NLAYzNWABC0lGIC2ES/X+pDGxU+lHrg81hD3G4wnLEEAqavmfYPy7amtwma1Ig6+FhslppJsnWbe5uxMALshcjTOb1rsjbfyFx7rOVfcRqWoNgbwYtVazM1G2z3Tml2m3slpNA5SGHYyFoLwL4vM2iVV+iqvZryrgF6giqDgT9N6WPx1uIONOFT5t93U5iZmFXtvxNiVKr1CFrUC6ozihKBUz/GWRNvmykmm+AycdTYNxeuSmJXolBWAv+YzzsfE26DnrBwC6mdla8EdWhuwM34HuSuzrvuVJTq9hGaNU5nM6B3bkPSS8IADFzZMQCgH90xyrXGts/703JFCpS7yRnZj6tp24KCI3wEV6uRAFd8h0Yzp4T03jkIfPp5i2wPSmwvV4ZeOpe2jO/GFP7J285W6nDDllSezquIe8BEz6BAYQIgj2mwj0950R4DBC0ANzrleySu45zHo2okwGFWrNxhBq/mmuFvTqw0lwhv2FDASGp77wdNhvGJk87mM2wJVgn/v7GAQZFNNSXGr6kxUe0U+ah4BXF6vHOqL76Fuxp+8ToPEsKitLcgPkMeAhuwoMKUZtxJmVajxI+EibPYps9EScdouk0zvsGRS0SmB5iY31gSUGOk4Fnbw0c07PHi9TnB5ViP2w7K6d2CsrbAPA1MwPtRCE05Dol22w1UwGw5kqLiE6ps7H37It+sRk5+pv3UiFCLkQg==,iv:v/nQHsHEUII4tDwqQy4hsg+VonvYw0P66rOdb6wPxN0=,tag:AIi9RBhWTjg6yUr2zHo0Fw==,type:str]",
-        key: "ENC[AES256_GCM,data:MPCbWOpAUOViA4DEhHrnTj2whX1UIu3nDkUuvIKDmmb4w3WNvmM2NjnTEGDNzjt6VQWCFrQVCJV6gr5TkQdN8RM1DGL1CWg2wxlK32xRNKfDwOuNhJLjVl1OergxcYG/OTu5a28vuQoulpciL6ADpdQ1ZPhHfwDP9ZtiV8KJExErxLh1XIo3s63EZK2GDqwUHh5UUpYginu2R4HyOWqY8Zh/Ygu9ZeEd4pYcyT6keDYpCTBptr6UhU6e4sN8F2eRYOgjoewq/4eoxjXzYBbXFGmetA5H1Fdg/yZN0Yki7In2x0ZLorlpDqU8nMe/NyvXYSdvObLirsD1XBraRjZLkZcY9rVWSG8FH+HDGT8VJcgBaH2f/3pIy/AA/kXLvpSbVjGwyehF8BpqABwFtD23Kw==,iv:CSjk6RpbRkAxwwwS5B3cwBGAvvuI4uKjPYs3SwYyQCU=,tag:oYJhpK/xqxg5w3R7gQJ56w==,type:str]",
-      },
-      extraArgs: {
-        listen-metrics-urls: "http://0.0.0.0:2381",
-      },
-    },
-  },
-  sops: {
-    age: [{
-      enc: "\
-         -----BEGIN AGE ENCRYPTED FILE-----\n\
-         YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4\n\
-         RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4\n\
-         REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r\n\
-         WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63\n\
-         I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==\n\
-         -----END AGE ENCRYPTED FILE-----\n\
-        ",
-      recipient: "age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d",
-    }],
-    encrypted_regex: "^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$",
-    lastmodified: "2026-09-06T16:11:21Z",
-    mac: "ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]",
-    mac_only_encrypted: true,
-    version: "3.13.3",
-  },
-}
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+version: v1alpha1
+debug: false
+machine:
+  type: controlplane
+  token: ENC[AES256_GCM,data:JojukWYgn/LdMmw8Gf9OMqxRgOUlsaU=,iv:iW8HPbh13u7qy3QybI2nEIdRYiWqyT2IEzAqIkg0JRg=,tag:URPKeoMj35iGQj7o3sjmAQ==,type:str]
+  ca:
+    crt: ENC[AES256_GCM,data:9zJzWM0byKqUENsj2eMtlf9v3drVbg6hIbiDEiyGNXLisZqldBZZg4mw0CuT3P+/dkr183a/PpHPS6zItJpotREdyf+KGdjBXNjU1YRxyA1bqt72+PBPqFgEs0cODkVkkPgjXbe0vCDlKV52Hw3/YOlXRsPkeFa1qLKwm8b9A6i+O3ovzdcPTmPHQXpp4HWs1ZMjkxufta5tYZpy+UEJdpLdA0gcTFFE4gxRsxKC1SCTyGxwvhpCjynw/52hTFI75vxiWepGMGfBkClzj7h3RiXOtHwnatJrYdgYb18/V5TtZp9JA6SuzagXK/d/Beh1qM4X+zpotvd7C005hpYQdt/29/M9rVK/QQXlxMA8j/sX/YguIX5xGGoMezWOEJIDkdPfdPIlWXiVWk6Lc5Y/evG9e/O/AgU/V9aj0LmeMK0hrVyOqeFJHolHD7Tc+IXt2GXj52o9U5FdqkXov1EHykfm0BUbAFUfqI8wkdfbiPceIER0bUuCvJ+IHdDYmxgvbJItoSig84j80giVvDTHuR08Ejap6L7r2mfGa5vFq2edzOxwAgd4q+nCWnOUye2jwouUUIkgrTEXyDv92Fkeyf9Oyb3EFRfSlvfzjqf4fPtuX6qvbr9FAvN9BF1TcahzXiKH/jXNPcn9/F8+VzRcJ8izBl2gkpsXk0e08yCJx/JxESnqZD/P8O3CiO6IlctA70YBTqRSfoQtuQMzq5vAPROpLsCssUkRtHj8UcXQzGi6DyNk9VMbsgtxLSrW6xZfP4Qf0Vn9NoSy2ZQTLC4h8cbDNP7h7xLe78LItWwCXdojZOcrQ49V2NOP5A7i0sz/19r18tAp7HQGyZlC4W4atizdd2y0QKozwru5QCRxuUGlFqY6,iv:Q8s+VGC9zMK6yDqn08+5dVGsmSQqfO8IkT/DZICLqaE=,tag:XdN4Psq3fovtOZxy/qrg7w==,type:str]
+    key: ENC[AES256_GCM,data:J+kD7qVS+mb4wqkecpe/40ZmPr3xj2H6jBco1cOtJ9Khzp6NumDNd9wiHi5lz+0EKSLVkbyNrMSc3zyovbh8QuT4P6ReoUmClpz/BA4GqyCUfgjQQi7H3kUJEaJevPNplmGC8J0oXvRZE5gGjYgJ2moKoaQc5gEg0CpLCuOL+AOwUTEWgYJ2xEBad2NtO/aRqppDc85OiBuyDBrqedUb0z/XJxJwEEgmPiKTE4bs7bXNyagA,iv:hdtntRoV1jFkrRtwkwYrYOVZ6z1ln1JSVRzESQfqnTk=,tag:saP7y8teEjXQabJQIYBsRA==,type:str]
+  certSANs:
+    - 127.0.0.1
+    - 192.168.91.10
+  features:
+    diskQuotaSupport: true
+cluster:
+  token: ENC[AES256_GCM,data:5aBQNDoxLnpMxr0k9kDhTfM6DkEP7BM=,iv:vioFjbCC3ooXs+gCAlXK1x5F1lu3vtZGe7zYqv/2+sA=,tag:idBIDbuWdWe5EpDnHh5T3Q==,type:str]
+  etcd:
+    advertisedSubnets:
+      - 192.168.91.0/24
+    ca:
+      crt: ENC[AES256_GCM,data:Foi6vvC9Ci4FrOB7uiLjqQaqzkrwFUhaxoZZmNeV0Cu/lUoAX1WAbsQ1Z3MqdU4ZL9MFOSuhcSYGHaF9knpjA6EIXugFJpLaV/wiHfbUGU6WA3hN25b4wjvVDcJNVvao7xACtXPwIstvf/hCk/syTD+zpnnLTvV8naXLtmcBQ8euVWHA25QBLzJaKiww81vYFu5yb8LQktP+qHacelieawslL1MskyhYtJzDwR2jbQNLXGgwaBaxOpA1UNO7OI70/L2uOEUh+DNodhHHuta3B0D48PL63BRCfYPdwBosiFvVVtiXYYp0/HcvBEE3NLAYzNWABC0lGIC2ES/X+pDGxU+lHrg81hD3G4wnLEEAqavmfYPy7amtwma1Ig6+FhslppJsnWbe5uxMALshcjTOb1rsjbfyFx7rOVfcRqWoNgbwYtVazM1G2z3Tml2m3slpNA5SGHYyFoLwL4vM2iVV+iqvZryrgF6giqDgT9N6WPx1uIONOFT5t93U5iZmFXtvxNiVKr1CFrUC6ozihKBUz/GWRNvmykmm+AycdTYNxeuSmJXolBWAv+YzzsfE26DnrBwC6mdla8EdWhuwM34HuSuzrvuVJTq9hGaNU5nM6B3bkPSS8IADFzZMQCgH90xyrXGts/703JFCpS7yRnZj6tp24KCI3wEV6uRAFd8h0Yzp4T03jkIfPp5i2wPSmwvV4ZeOpe2jO/GFP7J285W6nDDllSezquIe8BEz6BAYQIgj2mwj0950R4DBC0ANzrleySu45zHo2okwGFWrNxhBq/mmuFvTqw0lwhv2FDASGp77wdNhvGJk87mM2wJVgn/v7GAQZFNNSXGr6kxUe0U+ah4BXF6vHOqL76Fuxp+8ToPEsKitLcgPkMeAhuwoMKUZtxJmVajxI+EibPYps9EScdouk0zvsGRS0SmB5iY31gSUGOk4Fnbw0c07PHi9TnB5ViP2w7K6d2CsrbAPA1MwPtRCE05Dol22w1UwGw5kqLiE6ps7H37It+sRk5+pv3UiFCLkQg==,iv:v/nQHsHEUII4tDwqQy4hsg+VonvYw0P66rOdb6wPxN0=,tag:AIi9RBhWTjg6yUr2zHo0Fw==,type:str]
+      key: ENC[AES256_GCM,data:MPCbWOpAUOViA4DEhHrnTj2whX1UIu3nDkUuvIKDmmb4w3WNvmM2NjnTEGDNzjt6VQWCFrQVCJV6gr5TkQdN8RM1DGL1CWg2wxlK32xRNKfDwOuNhJLjVl1OergxcYG/OTu5a28vuQoulpciL6ADpdQ1ZPhHfwDP9ZtiV8KJExErxLh1XIo3s63EZK2GDqwUHh5UUpYginu2R4HyOWqY8Zh/Ygu9ZeEd4pYcyT6keDYpCTBptr6UhU6e4sN8F2eRYOgjoewq/4eoxjXzYBbXFGmetA5H1Fdg/yZN0Yki7In2x0ZLorlpDqU8nMe/NyvXYSdvObLirsD1XBraRjZLkZcY9rVWSG8FH+HDGT8VJcgBaH2f/3pIy/AA/kXLvpSbVjGwyehF8BpqABwFtD23Kw==,iv:CSjk6RpbRkAxwwwS5B3cwBGAvvuI4uKjPYs3SwYyQCU=,tag:oYJhpK/xqxg5w3R7gQJ56w==,type:str]
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+sops:
+  age:
+    - enc: |
+        -----BEGIN AGE ENCRYPTED FILE-----
+        YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB2TDJObzVWUDltUjJteGw4
+        RFpELyt5Um9yQXpyT3hLUWJYOHA0cnlydVRzCkhrOFBmeVRBTEpnaHdhVnh2eWI4
+        REpmVmxHcngycC85VEZjaFI4MlR4Q2sKLS0tIGdyV2NoYWJNbWdzckV3NzNMQ24r
+        WGpjYnJkQ0RiU2ZjcFJUVzRwc2Z2R0UKtFIFiIEsKg3OBJ1LffkTtjpQqZOcUq63
+        I0p5ubAZ+An75HjkoDaq4lBaimZPxQnk4k9bdiYoN3UD4l3e60bu6g==
+        -----END AGE ENCRYPTED FILE-----
+      recipient: age1frhtpr8u3u99pvcuq5mjevxdq9agjfpkd8fjtnpj9qymzh5v845q53f37d
+  encrypted_regex: ^(clusterID|clusterSecret|privateKey|token|crt|cert|key|secretboxEncryptionSecret|secret|password)$
+  lastmodified: "2026-09-06T16:11:21Z"
+  mac: ENC[AES256_GCM,data:EedoJPz8unC55zcsOFCiY6rQItIm3kfYODCI+z8bS0R6pLQjYlNp6tsUvMW+LczVbNY11Q158a3r514xR2tOpWYdbv2reUhmTOwWs2vurRHmw2/UeuTtlUUy7PhU0Y4HbNvOGqZuGe43+SjCaeU1Yi69j/Bp3ckLUqjpQn/Tvns=,iv:sr7EeR9/4buHAtfvYmAJJ5Z8Kcw2gXBhP41LUlB44XU=,tag:uT+FPMeCWd5/ZZwdTt4dxQ==,type:str]
+  mac_only_encrypted: true
+  version: 3.13.3

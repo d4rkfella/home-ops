@@ -1,47 +1,33 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "external-secrets",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "external-secrets",
-    },
-    values: {
-      hostUsers: false,
-      extraArgs: {
-        enable-secrets-caching: "true",
-        enable-managed-secrets-caching: "true",
-      },
-      serviceMonitor: {
-        enabled: true,
-      },
-      grafanaDashboard: {
-        enabled: true,
-      },
-      certController: {
-        create: false,
-      },
-      webhook: {
-        certManager: {
-          enabled: true,
-          cert: {
-            issuerRef: {
-              name: "vault-issuer",
-              kind: "ClusterIssuer",
-            },
-            duration: "2160h",
-            renewBefore: "720h",
-          },
-        },
-        hostUsers: false,
-        lookaheadInterval: "240h",
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: external-secrets
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: external-secrets
+  values:
+    hostUsers: false
+    extraArgs:
+      enable-secrets-caching: "true"
+      enable-managed-secrets-caching: "true"
+    serviceMonitor:
+      enabled: true
+    grafanaDashboard:
+      enabled: true
+    certController:
+      create: false
+    webhook:
+      certManager:
+        enabled: true
+        cert:
+          issuerRef:
+            name: vault-issuer
+            kind: ClusterIssuer
+          duration: 2160h
+          renewBefore: 720h
+      hostUsers: false
+      lookaheadInterval: 240h

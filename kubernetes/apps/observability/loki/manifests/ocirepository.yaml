@@ -1,27 +1,19 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
-{
-  apiVersion: "source.toolkit.fluxcd.io/v1",
-  kind: "OCIRepository",
-  metadata: {
-    name: "loki",
-  },
-  spec: {
-    interval: "15m",
-    layerSelector: {
-      mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip",
-      operation: "copy",
-    },
-    url: "oci://ghcr.io/d4rkfella/charts-mirror/loki",
-    ref: {
-      tag: "7.3.0",
-    },
-    verify: {
-      provider: "cosign",
-      matchOIDCIdentity: [{
-        issuer: "https://token.actions.githubusercontent.com",
-        subject: "https://github.com/d4rkfella/charts-mirror/.github/workflows/chart-builder.yaml@refs/heads/main",
-      }],
-    },
-  },
-}
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: loki
+spec:
+  interval: 15m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  url: oci://ghcr.io/d4rkfella/charts-mirror/loki
+  ref:
+    tag: 7.3.0
+  verify:
+    provider: cosign
+    matchOIDCIdentity:
+      - issuer: https://token.actions.githubusercontent.com
+        subject: https://github.com/d4rkfella/charts-mirror/.github/workflows/chart-builder.yaml@refs/heads/main

@@ -1,40 +1,28 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "qui",
-  },
-  spec: {
-    components: [
-      "../../../../components/volsync",
-    ],
-    dependsOn: [{
-      name: "qbittorrent",
-    }, {
-      name: "cloudnative-pg-cluster",
-      namespace: "database",
-    }, {
-      name: "keycloak-instance",
-      namespace: "keycloak",
-    }, {
-      name: "nas",
-      namespace: "virtualization",
-    }],
-    postBuild: {
-      substitute: {
-        APP: "qui",
-      },
-    },
-    interval: "1h",
-    path: "./kubernetes/apps/media/qui/manifests",
-    prune: true,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    wait: false,
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: qui
+spec:
+  components:
+    - ../../../../components/volsync
+  dependsOn:
+    - name: qbittorrent
+    - name: cloudnative-pg-cluster
+      namespace: database
+    - name: keycloak-instance
+      namespace: keycloak
+    - name: nas
+      namespace: virtualization
+  postBuild:
+    substitute:
+      APP: qui
+  interval: 1h
+  path: ./kubernetes/apps/media/qui/manifests
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false

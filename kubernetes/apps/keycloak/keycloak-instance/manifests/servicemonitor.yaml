@@ -1,28 +1,19 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/monitoring.coreos.com/servicemonitor_v1.json
-{
-  apiVersion: "monitoring.coreos.com/v1",
-  kind: "ServiceMonitor",
-  metadata: {
-    name: "keycloak",
-  },
-  spec: {
-    endpoints: [{
-      port: "management",
-      path: "/metrics",
-    }],
-    jobLabel: "keycloak",
-    namespaceSelector: {
-      matchNames: [
-        "keycloak",
-      ],
-    },
-    selector: {
-      matchLabels: {
-        app: "keycloak",
-        app.kubernetes.io/instance: "keycloak",
-        app.kubernetes.io/managed-by: "keycloak-operator",
-      },
-    },
-  },
-}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: keycloak
+spec:
+  endpoints:
+    - port: management
+      path: /metrics
+  jobLabel: keycloak
+  namespaceSelector:
+    matchNames:
+      - keycloak
+  selector:
+    matchLabels:
+      app: keycloak
+      app.kubernetes.io/instance: keycloak
+      app.kubernetes.io/managed-by: keycloak-operator

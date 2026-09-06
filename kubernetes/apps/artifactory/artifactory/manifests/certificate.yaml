@@ -1,26 +1,19 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/cert-manager.io/certificate_v1.json
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "artifactory",
-  },
-  spec: {
-    secretName: "artifactory-tls",
-    issuerRef: {
-      name: "zerossl-prod",
-      kind: "ClusterIssuer",
-    },
-    privateKey: {
-      algorithm: "ECDSA",
-      rotationPolicy: "Always",
-      encoding: "PKCS8",
-      size: 256,
-    },
-    commonName: "packages.darkfellanetwork.com",
-    dnsNames: [
-      "packages.darkfellanetwork.com",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: artifactory
+spec:
+  secretName: artifactory-tls
+  issuerRef:
+    name: zerossl-prod
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    rotationPolicy: Always
+    encoding: PKCS8
+    size: 256
+  commonName: packages.darkfellanetwork.com
+  dnsNames:
+    - packages.darkfellanetwork.com

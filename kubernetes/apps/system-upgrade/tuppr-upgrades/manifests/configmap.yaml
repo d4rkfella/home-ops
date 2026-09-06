@@ -1,141 +1,135 @@
 ---
-{
-  apiVersion: "v1",
-  kind: "ConfigMap",
-  metadata: {
-    name: "nfs-quiesce-scripts",
-  },
-  data: {
-    pre.sh: "\
-       set -euo pipefail\n\
-       NFS_IP=\"192.168.91.40\"\n\
-       \n\
-       mkdir -p /tmp/bare-pods\n\
-       \n\
-       kubectl get pods -A -o json > /tmp/all-pods.json\n\
-       \n\
-       jq -c --arg ip \"$NFS_IP\" '\n\
-      \  .items[] as $p\n\
-      \  | select(($p.spec.volumes // []) | any(.nfs.server? == $ip))\n\
-      \  | {ns: $p.metadata.namespace, pod: $p.metadata.name, owner: ($p.metadata.ownerReferences[0] // null)}\n\
-       ' /tmp/all-pods.json > /tmp/pod-owners.jsonl\n\
-       \n\
-       : > /tmp/statefulsets.list\n\
-       : > /tmp/daemonsets.list\n\
-       : > /tmp/deployments.list\n\
-       : > /tmp/watched-pods.list\n\
-       \n\
-       while read -r item; do\n\
-      \  ns=$(jq -r .ns <<<\"$item\")\n\
-      \  pod=$(jq -r .pod <<<\"$item\")\n\
-      \  owner_kind=$(jq -r '.owner.kind // \"none\"' <<<\"$item\")\n\
-      \  owner_name=$(jq -r '.owner.name // \"none\"' <<<\"$item\")\n\
-       \n\
-      \  echo \"$ns $pod\" >> /tmp/watched-pods.list\n\
-       \n\
-      \  case \"$owner_kind\" in\n\
-      \    StatefulSet)\n\
-      \      echo \"$ns $owner_name\" >> /tmp/statefulsets.list ;;\n\
-      \    DaemonSet)\n\
-      \      echo \"$ns $owner_name\" >> /tmp/daemonsets.list ;;\n\
-      \    ReplicaSet)\n\
-      \      rs_kind=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].kind}')\n\
-      \      rs_name=$(kubectl -n \"$ns\" get replicaset \"$owner_name\" -o jsonpath='{.metadata.ownerReferences[0].name}')\n\
-      \      if [ \"$rs_kind\" = \"Deployment\" ]; then\n\
-      \        echo \"$ns $rs_name\" >> /tmp/deployments.list\n\
-      \      else\n\
-      \        echo \"Skipping ReplicaSet $ns/$owner_name owned by $rs_kind\" >&2\n\
-      \      fi ;;\n\
-      \    Job)\n\
-      \      echo \"Skipping Job-owned pod $ns/$pod\" ;;\n\
-      \    none)\n\
-      \      kubectl -n \"$ns\" get pod \"$pod\" -o json \\\n\
-      \        | jq 'del(.status,.metadata.resourceVersion,.metadata.uid,.metadata.selfLink,.metadata.creationTimestamp,.metadata.managedFields,.metadata.generation,.spec.nodeName)' \\\n\
-      \        > /tmp/bare-pods/\"$ns\"-\"$pod\".json\n\
-      \      kubectl -n \"$ns\" delete pod \"$pod\" --wait=false ;;\n\
-      \    *)\n\
-      \      echo \"Unhandled owner kind $owner_kind for $ns/$pod\" >&2 ;;\n\
-      \  esac\n\
-       done < /tmp/pod-owners.jsonl\n\
-       \n\
-       sort -u /tmp/statefulsets.list -o /tmp/statefulsets.list\n\
-       sort -u /tmp/daemonsets.list -o /tmp/daemonsets.list\n\
-       sort -u /tmp/deployments.list -o /tmp/deployments.list\n\
-       \n\
-       : > /tmp/scaled.list\n\
-       while read -r ns name; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  replicas=$(kubectl -n \"$ns\" get statefulset \"$name\" -o jsonpath='{.spec.replicas}')\n\
-      \  echo \"$ns StatefulSet $name $replicas\" >> /tmp/scaled.list\n\
-      \  kubectl -n \"$ns\" scale statefulset \"$name\" --replicas=0\n\
-       done < /tmp/statefulsets.list\n\
-       \n\
-       while read -r ns name; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  replicas=$(kubectl -n \"$ns\" get deployment \"$name\" -o jsonpath='{.spec.replicas}')\n\
-      \  echo \"$ns Deployment $name $replicas\" >> /tmp/scaled.list\n\
-      \  kubectl -n \"$ns\" scale deployment \"$name\" --replicas=0\n\
-       done < /tmp/deployments.list\n\
-       \n\
-       while read -r ns name; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  kubectl -n \"$ns\" patch daemonset \"$name\" --type merge \\\n\
-      \    -p '{\"spec\":{\"template\":{\"spec\":{\"nodeSelector\":{\"tuppr.io/paused\":\"true\"}}}}}'\n\
-       done < /tmp/daemonsets.list\n\
-       \n\
-       kubectl -n system-upgrade create configmap nfs-hook-state \\\n\
-      \  --from-file=scaled.list=/tmp/scaled.list \\\n\
-      \  --from-file=daemonsets.list=/tmp/daemonsets.list \\\n\
-      \  --from-file=/tmp/bare-pods \\\n\
-      \  --dry-run=client -o yaml | kubectl apply -f -\n\
-       \n\
-       echo \"Waiting for all NFS consumer pods to terminate...\"\n\
-       pids=()\n\
-       while read -r ns pod; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  kubectl -n \"$ns\" wait --for=delete pod/\"$pod\" --timeout=5m &\n\
-      \  pids+=($!)\n\
-       done < /tmp/watched-pods.list\n\
-       \n\
-       fail=0\n\
-       for pid in \"${pids[@]}\"; do\n\
-      \  wait \"$pid\" || fail=1\n\
-       done\n\
-       \n\
-       if [ \"$fail\" -ne 0 ]; then\n\
-      \  echo \"One or more NFS consumer pods failed to terminate within timeout\" >&2\n\
-      \  exit 1\n\
-       fi\n\
-       \n\
-       echo \"All NFS consumers terminated.\"\n\
-      ",
-    post.sh: "\
-       set -euo pipefail\n\
-       NFS_IP=\"192.168.91.40\"\n\
-       \n\
-       for i in $(seq 1 60); do\n\
-      \  (echo > /dev/tcp/\"$NFS_IP\"/2049) 2>/dev/null && break\n\
-      \  sleep 5\n\
-       done\n\
-       \n\
-       kubectl -n system-upgrade get configmap nfs-hook-state -o json > /tmp/state.json\n\
-       \n\
-       jq -r '.data[\"scaled.list\"] // empty' /tmp/state.json | while read -r ns kind name replicas; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  kubectl -n \"$ns\" scale \"$kind\" \"$name\" --replicas=\"$replicas\"\n\
-       done\n\
-       \n\
-       jq -r '.data[\"daemonsets.list\"] // empty' /tmp/state.json | while read -r ns name; do\n\
-      \  [ -z \"$ns\" ] && continue\n\
-      \  kubectl -n \"$ns\" patch daemonset \"$name\" --type json \\\n\
-      \    -p '[{\"op\":\"remove\",\"path\":\"/spec/template/spec/nodeSelector/tuppr.io~1paused\"}]'\n\
-       done\n\
-       \n\
-       jq -r '.data | keys[]' /tmp/state.json | grep -v '^scaled.list$\\|^daemonsets.list$' | while read -r key; do\n\
-      \  jq -r \".data[\\\"$key\\\"]\" /tmp/state.json | kubectl apply -f -\n\
-       done\n\
-       \n\
-       kubectl -n system-upgrade delete configmap nfs-hook-state\n\
-      ",
-  },
-}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfs-quiesce-scripts
+data:
+  pre.sh: |
+    set -euo pipefail
+    NFS_IP="192.168.91.40"
+
+    mkdir -p /tmp/bare-pods
+
+    kubectl get pods -A -o json > /tmp/all-pods.json
+
+    jq -c --arg ip "$NFS_IP" '
+      .items[] as $p
+      | select(($p.spec.volumes // []) | any(.nfs.server? == $ip))
+      | {ns: $p.metadata.namespace, pod: $p.metadata.name, owner: ($p.metadata.ownerReferences[0] // null)}
+    ' /tmp/all-pods.json > /tmp/pod-owners.jsonl
+
+    : > /tmp/statefulsets.list
+    : > /tmp/daemonsets.list
+    : > /tmp/deployments.list
+    : > /tmp/watched-pods.list
+
+    while read -r item; do
+      ns=$(jq -r .ns <<<"$item")
+      pod=$(jq -r .pod <<<"$item")
+      owner_kind=$(jq -r '.owner.kind // "none"' <<<"$item")
+      owner_name=$(jq -r '.owner.name // "none"' <<<"$item")
+
+      echo "$ns $pod" >> /tmp/watched-pods.list
+
+      case "$owner_kind" in
+        StatefulSet)
+          echo "$ns $owner_name" >> /tmp/statefulsets.list ;;
+        DaemonSet)
+          echo "$ns $owner_name" >> /tmp/daemonsets.list ;;
+        ReplicaSet)
+          rs_kind=$(kubectl -n "$ns" get replicaset "$owner_name" -o jsonpath='{.metadata.ownerReferences[0].kind}')
+          rs_name=$(kubectl -n "$ns" get replicaset "$owner_name" -o jsonpath='{.metadata.ownerReferences[0].name}')
+          if [ "$rs_kind" = "Deployment" ]; then
+            echo "$ns $rs_name" >> /tmp/deployments.list
+          else
+            echo "Skipping ReplicaSet $ns/$owner_name owned by $rs_kind" >&2
+          fi ;;
+        Job)
+          echo "Skipping Job-owned pod $ns/$pod" ;;
+        none)
+          kubectl -n "$ns" get pod "$pod" -o json \
+            | jq 'del(.status,.metadata.resourceVersion,.metadata.uid,.metadata.selfLink,.metadata.creationTimestamp,.metadata.managedFields,.metadata.generation,.spec.nodeName)' \
+            > /tmp/bare-pods/"$ns"-"$pod".json
+          kubectl -n "$ns" delete pod "$pod" --wait=false ;;
+        *)
+          echo "Unhandled owner kind $owner_kind for $ns/$pod" >&2 ;;
+      esac
+    done < /tmp/pod-owners.jsonl
+
+    sort -u /tmp/statefulsets.list -o /tmp/statefulsets.list
+    sort -u /tmp/daemonsets.list -o /tmp/daemonsets.list
+    sort -u /tmp/deployments.list -o /tmp/deployments.list
+
+    : > /tmp/scaled.list
+    while read -r ns name; do
+      [ -z "$ns" ] && continue
+      replicas=$(kubectl -n "$ns" get statefulset "$name" -o jsonpath='{.spec.replicas}')
+      echo "$ns StatefulSet $name $replicas" >> /tmp/scaled.list
+      kubectl -n "$ns" scale statefulset "$name" --replicas=0
+    done < /tmp/statefulsets.list
+
+    while read -r ns name; do
+      [ -z "$ns" ] && continue
+      replicas=$(kubectl -n "$ns" get deployment "$name" -o jsonpath='{.spec.replicas}')
+      echo "$ns Deployment $name $replicas" >> /tmp/scaled.list
+      kubectl -n "$ns" scale deployment "$name" --replicas=0
+    done < /tmp/deployments.list
+
+    while read -r ns name; do
+      [ -z "$ns" ] && continue
+      kubectl -n "$ns" patch daemonset "$name" --type merge \
+        -p '{"spec":{"template":{"spec":{"nodeSelector":{"tuppr.io/paused":"true"}}}}}'
+    done < /tmp/daemonsets.list
+
+    kubectl -n system-upgrade create configmap nfs-hook-state \
+      --from-file=scaled.list=/tmp/scaled.list \
+      --from-file=daemonsets.list=/tmp/daemonsets.list \
+      --from-file=/tmp/bare-pods \
+      --dry-run=client -o yaml | kubectl apply -f -
+
+    echo "Waiting for all NFS consumer pods to terminate..."
+    pids=()
+    while read -r ns pod; do
+      [ -z "$ns" ] && continue
+      kubectl -n "$ns" wait --for=delete pod/"$pod" --timeout=5m &
+      pids+=($!)
+    done < /tmp/watched-pods.list
+
+    fail=0
+    for pid in "${pids[@]}"; do
+      wait "$pid" || fail=1
+    done
+
+    if [ "$fail" -ne 0 ]; then
+      echo "One or more NFS consumer pods failed to terminate within timeout" >&2
+      exit 1
+    fi
+
+    echo "All NFS consumers terminated."
+  post.sh: |-
+    set -euo pipefail
+    NFS_IP="192.168.91.40"
+
+    for i in $(seq 1 60); do
+      (echo > /dev/tcp/"$NFS_IP"/2049) 2>/dev/null && break
+      sleep 5
+    done
+
+    kubectl -n system-upgrade get configmap nfs-hook-state -o json > /tmp/state.json
+
+    jq -r '.data["scaled.list"] // empty' /tmp/state.json | while read -r ns kind name replicas; do
+      [ -z "$ns" ] && continue
+      kubectl -n "$ns" scale "$kind" "$name" --replicas="$replicas"
+    done
+
+    jq -r '.data["daemonsets.list"] // empty' /tmp/state.json | while read -r ns name; do
+      [ -z "$ns" ] && continue
+      kubectl -n "$ns" patch daemonset "$name" --type json \
+        -p '[{"op":"remove","path":"/spec/template/spec/nodeSelector/tuppr.io~1paused"}]'
+    done
+
+    jq -r '.data | keys[]' /tmp/state.json | grep -v '^scaled.list$\|^daemonsets.list$' | while read -r key; do
+      jq -r ".data[\"$key\"]" /tmp/state.json | kubectl apply -f -
+    done
+
+    kubectl -n system-upgrade delete configmap nfs-hook-state

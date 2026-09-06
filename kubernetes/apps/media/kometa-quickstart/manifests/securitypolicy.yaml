@@ -1,77 +1,52 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
-{
-  apiVersion: "gateway.envoyproxy.io/v1alpha1",
-  kind: "SecurityPolicy",
-  metadata: {
-    name: "kometa-quickstart",
-  },
-  spec: {
-    targetRefs: [{
-      group: "gateway.networking.k8s.io",
-      kind: "HTTPRoute",
-      name: "kometa-quickstart",
-    }],
-    oidc: {
-      provider: {
-        issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
-      },
-      clientID: "e41c6d33-78c6-4fb6-9074-b48a5750838d",
-      clientSecret: {
-        name: "kometa-quickstart-secret",
-      },
-      redirectURL: "https://kometa-quickstart.darkfellanetwork.com/oauth2/callback",
-      logoutPath: "/logout",
-      cookieNames: {
-        accessToken: "quickstart-access-token",
-        idToken: "quickstart-id-token",
-      },
-    },
-    jwt: {
-      providers: [{
-        name: "keycloak",
-        issuer: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET",
-        remoteJWKS: {
-          uri: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs",
-        },
-        extractFrom: {
-          cookies: [
-            "quickstart-access-token",
-          ],
-        },
-      }],
-    },
-    authorization: {
-      defaultAction: "Deny",
-      rules: [{
-        action: "Allow",
-        name: "allow-by-group",
-        principal: {
-          jwt: {
-            provider: "keycloak",
-            claims: [{
-              name: "groups",
-              values: [
-                "media-admin",
-              ],
-            }],
-          },
-        },
-      }, {
-        action: "Allow",
-        name: "allow-by-email",
-        principal: {
-          jwt: {
-            provider: "keycloak",
-            claims: [{
-              name: "email",
-              values: [
-                "georgi.panov@darkfellanetwork.com",
-              ],
-            }],
-          },
-        },
-      }],
-    },
-  },
-}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: kometa-quickstart
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: kometa-quickstart
+  oidc:
+    provider:
+      issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+    clientID: e41c6d33-78c6-4fb6-9074-b48a5750838d
+    clientSecret:
+      name: kometa-quickstart-secret
+    redirectURL: https://kometa-quickstart.darkfellanetwork.com/oauth2/callback
+    logoutPath: /logout
+    cookieNames:
+      accessToken: quickstart-access-token
+      idToken: quickstart-id-token
+  jwt:
+    providers:
+      - name: keycloak
+        issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+        remoteJWKS:
+          uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+        extractFrom:
+          cookies:
+            - quickstart-access-token
+  authorization:
+    defaultAction: Deny
+    rules:
+      - action: Allow
+        name: allow-by-group
+        principal:
+          jwt:
+            provider: keycloak
+            claims:
+              - name: groups
+                values:
+                  - media-admin
+      - action: Allow
+        name: allow-by-email
+        principal:
+          jwt:
+            provider: keycloak
+            claims:
+              - name: email
+                values:
+                  - georgi.panov@darkfellanetwork.com

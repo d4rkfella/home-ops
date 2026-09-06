@@ -1,61 +1,42 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "zfs-scrubber",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "zfs-scrubber",
-    },
-    values: {
-      controllers: {
-        zfs-scrubber: {
-          type: "cronjob",
-          cronjob: {
-            schedule: "0 0 1,15 * *",
-            successfulJobsHistory: 1,
-            failedJobsHistory: 1,
-            concurrencyPolicy: "Forbid",
-            timeZone: "Europe/Sofia",
-            backoffLimit: 0,
-          },
-          containers: {
-            app: {
-              image: {
-                repository: "ghcr.io/heavybullets8/zfs-scrubber",
-                tag: "1.1.2@sha256:d142396cbf0926b84a586666b777e357c622c7780bcf1444af4384bf3f14411b",
-              },
-              env: {
-                ZFS_POOL: "ssd_pool",
-                PUSHOVER_NOTIFICATION: true,
-                TALOS_VERSION: "${TALOS_VERSION}",
-              },
-              envFrom: [{
-                secretRef: {
-                  name: "zfs-scrubber-secret",
-                },
-              }],
-              securityContext: {
-                privileged: true,
-              },
-            },
-          },
-        },
-      },
-      persistence: {
-        dev: {
-          type: "hostPath",
-          hostPath: "/dev/zfs",
-          globalMounts: [{
-            path: "/dev/zfs",
-          }],
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zfs-scrubber
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: zfs-scrubber
+  values:
+    controllers:
+      zfs-scrubber:
+        type: cronjob
+        cronjob:
+          schedule: 0 0 1,15 * *
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          concurrencyPolicy: Forbid
+          timeZone: Europe/Sofia
+          backoffLimit: 0
+        containers:
+          app:
+            image:
+              repository: ghcr.io/heavybullets8/zfs-scrubber
+              tag: 1.1.2@sha256:d142396cbf0926b84a586666b777e357c622c7780bcf1444af4384bf3f14411b
+            env:
+              ZFS_POOL: ssd_pool
+              PUSHOVER_NOTIFICATION: true
+              TALOS_VERSION: ${TALOS_VERSION}
+            envFrom:
+              - secretRef:
+                  name: zfs-scrubber-secret
+            securityContext:
+              privileged: true
+    persistence:
+      dev:
+        type: hostPath
+        hostPath: /dev/zfs
+        globalMounts:
+          - path: /dev/zfs

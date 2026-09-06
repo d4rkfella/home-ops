@@ -1,41 +1,29 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/monitoring.coreos.com/scrapeconfig_v1alpha1.json
-{
-  apiVersion: "monitoring.coreos.com/v1alpha1",
-  kind: "ScrapeConfig",
-  metadata: {
-    name: "nas-exos20-zfs-metrics",
-    labels: {
-      release: "kube-prometheus-stack",
-    },
-  },
-  spec: {
-    staticConfigs: [{
-      targets: [
-        "192.168.91.40:9134",
-      ],
-      labels: {
-        instance: "NAS",
-      },
-    }],
-    jobName: "nas-zfs-metrics",
-    scrapeInterval: "60s",
-    scrapeTimeout: "60s",
-    metricsPath: "/metrics",
-    metricRelabelings: [{
-      sourceLabels: [
-        "name",
-      ],
-      regex: "^([^@]*).*$",
-      targetLabel: "filesystem",
-      replacement: "${1}",
-    }, {
-      sourceLabels: [
-        "name",
-      ],
-      regex: "^.*:.._(.*)$",
-      targetLabel: "snapshot_type",
-      replacement: "${1}",
-    }],
-  },
-}
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: nas-exos20-zfs-metrics
+  labels:
+    release: kube-prometheus-stack
+spec:
+  staticConfigs:
+    - targets:
+        - 192.168.91.40:9134
+      labels:
+        instance: NAS
+  jobName: nas-zfs-metrics
+  scrapeInterval: 60s
+  scrapeTimeout: 60s
+  metricsPath: /metrics
+  metricRelabelings:
+    - sourceLabels:
+        - name
+      regex: ^([^@]*).*$
+      targetLabel: filesystem
+      replacement: ${1}
+    - sourceLabels:
+        - name
+      regex: ^.*:.._(.*)$
+      targetLabel: snapshot_type
+      replacement: ${1}

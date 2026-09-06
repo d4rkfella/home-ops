@@ -1,81 +1,59 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/tuppr.home-operations.com/talosupgrade_v1alpha1.json
-{
-  apiVersion: "tuppr.home-operations.com/v1alpha1",
-  kind: "TalosUpgrade",
-  metadata: {
-    name: "talos",
-  },
-  spec: {
-    talos: {
-      # renovate: datasource=custom.talos-factory depName=siderolabs/talos
-      version: "v1.14.0",
-    },
-    policy: {
-      rebootMode: "default",
-    },
-    healthChecks: [{
-      apiVersion: "volsync.backube/v1alpha1",
-      kind: "ReplicationSource",
-      expr: "status.conditions.filter(c, c.type == \"Synchronizing\").all(c, c.status == \"False\")",
-    }],
-    hooks: {
-      pre: [{
-        name: "nas-nfs-quiesce",
-        image: "alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4",
-        backoffLimit: 5,
-        activeDeadlineSeconds: 3600,
-        serviceAccountName: "tuppr-nfs-hook",
-        command: [
-          "/bin/bash",
-          "/scripts/pre.sh",
-        ],
-        volumeMounts: [{
-          name: "hook-scripts",
-          mountPath: "/scripts",
-        }, {
-          name: "tmp",
-          mountPath: "/tmp",
-        }],
-        volumes: [{
-          name: "hook-scripts",
-          configMap: {
-            name: "nfs-quiesce-scripts",
-            defaultMode: 493,
-          },
-        }, {
-          name: "tmp",
-          emptyDir: {},
-        }],
-      }],
-      post: [{
-        name: "restore-nfs-consumers",
-        image: "alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4",
-        backoffLimit: 5,
-        activeDeadlineSeconds: 3600,
-        serviceAccountName: "tuppr-nfs-hook",
-        command: [
-          "/bin/bash",
-          "/scripts/post.sh",
-        ],
-        volumeMounts: [{
-          name: "hook-scripts",
-          mountPath: "/scripts",
-        }, {
-          name: "tmp",
-          mountPath: "/tmp",
-        }],
-        volumes: [{
-          name: "hook-scripts",
-          configMap: {
-            name: "nfs-quiesce-scripts",
-            defaultMode: 493,
-          },
-        }, {
-          name: "tmp",
-          emptyDir: {},
-        }],
-      }],
-    },
-  },
-}
+apiVersion: tuppr.home-operations.com/v1alpha1
+kind: TalosUpgrade
+metadata:
+  name: talos
+spec:
+  talos:
+    # renovate: datasource=custom.talos-factory depName=siderolabs/talos
+    version: v1.14.0
+  policy:
+    rebootMode: default
+  healthChecks:
+    - apiVersion: volsync.backube/v1alpha1
+      kind: ReplicationSource
+      expr: status.conditions.filter(c, c.type == "Synchronizing").all(c, c.status == "False")
+  hooks:
+    pre:
+      - name: nas-nfs-quiesce
+        image: alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4
+        backoffLimit: 5
+        activeDeadlineSeconds: 3600
+        serviceAccountName: tuppr-nfs-hook
+        command:
+          - /bin/bash
+          - /scripts/pre.sh
+        volumeMounts:
+          - name: hook-scripts
+            mountPath: /scripts
+          - name: tmp
+            mountPath: /tmp
+        volumes:
+          - name: hook-scripts
+            configMap:
+              name: nfs-quiesce-scripts
+              defaultMode: 493
+          - name: tmp
+            emptyDir: {}
+    post:
+      - name: restore-nfs-consumers
+        image: alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4
+        backoffLimit: 5
+        activeDeadlineSeconds: 3600
+        serviceAccountName: tuppr-nfs-hook
+        command:
+          - /bin/bash
+          - /scripts/post.sh
+        volumeMounts:
+          - name: hook-scripts
+            mountPath: /scripts
+          - name: tmp
+            mountPath: /tmp
+        volumes:
+          - name: hook-scripts
+            configMap:
+              name: nfs-quiesce-scripts
+              defaultMode: 493
+          - name: tmp
+            emptyDir: {}

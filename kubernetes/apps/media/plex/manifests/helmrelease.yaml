@@ -1,193 +1,132 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "plex",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "plex",
-    },
-    values: {
-      controllers: {
-        plex: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            app: {
-              image: {
-                repository: "ghcr.io/d4rkfella/plex",
-                tag: "1.43.3.10896@sha256:36822606f2fe998b195c53f84eef4191a611220cc9d5f149c4e81035cf92dd1b",
-              },
-              env: {
-                TZ: "Europe/Sofia",
-                PLEX_ADVERTISE_URL: "https://plex.darkfellanetwork.com:443,http://plex.media.svc.cluster.local:32400",
-              },
-              probes: {
-                liveness: {
-                  enabled: true,
-                  spec: {
-                    periodSeconds: 30,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                readiness: {
-                  enabled: true,
-                  custom: true,
-                  spec: {
-                    httpGet: {
-                      path: "/identity",
-                      port: 32400,
-                    },
-                    periodSeconds: 10,
-                    timeoutSeconds: 5,
-                    failureThreshold: 5,
-                  },
-                },
-                startup: {
-                  enabled: true,
-                  spec: {
-                    failureThreshold: 30,
-                    periodSeconds: 10,
-                  },
-                },
-              },
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                readOnlyRootFilesystem: true,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-              },
-              resources: {
-                requests: {
-                  cpu: "100m",
-                  memory: "4Gi",
-                },
-                limits: {
-                  nvidia.com/gpu: 1,
-                  memory: "8Gi",
-                },
-              },
-            },
-          },
-          pod: {
-            runtimeClassName: "nvidia",
-          },
-        },
-      },
-      defaultPodOptions: {
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 65532,
-          runAsGroup: 65532,
-          fsGroup: 65532,
-          fsGroupChangePolicy: "OnRootMismatch",
-        },
-      },
-      service: {
-        app: {
-          ports: {
-            http: {
-              port: 32400,
-            },
-          },
-        },
-      },
-      route: {
-        app: {
-          annotations: {
-            gatus.home-operations.com/endpoint: "path: /identity",
-          },
-          hostnames: [
-            "plex.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "plex",
-            namespace: "envoy-gateway-system",
-          }],
-          rules: [{
-            backendRefs: [{
-              identifier: "app",
-              port: 32400,
-            }],
-            filters: [{
-              type: "RequestHeaderModifier",
-              requestHeaderModifier: {
-                remove: [
-                  "Range",
-                ],
-              },
-            }],
-            matches: [{
-              path: {
-                type: "PathPrefix",
-                value: "/library/streams",
-              },
-            }],
-          }, {
-            backendRefs: [{
-              identifier: "app",
-              port: 32400,
-            }],
-          }],
-        },
-      },
-      persistence: {
-        config: {
-          existingClaim: "plex",
-          globalMounts: [{
-            path: "/config/Library/Application Support/Plex Media Server",
-          }],
-        },
-        config-data: {
-          suffix: "data",
-          type: "persistentVolumeClaim",
-          size: "75Gi",
-          storageClass: "openebs-zfs-128k",
-          accessMode: "ReadWriteOnce",
-          globalMounts: [{
-            path: "/config/Library/Application Support/Plex Media Server/Cache",
-            subPath: "Cache",
-          }, {
-            path: "/config/Library/Application Support/Plex Media Server/Metadata",
-            subPath: "Metadata",
-          }, {
-            path: "/config/Library/Application Support/Plex Media Server/Media",
-            subPath: "Media",
-          }],
-        },
-        media: {
-          type: "nfs",
-          server: "192.168.91.40",
-          path: "/mnt/exos20/data/media",
-          globalMounts: [{
-            path: "/data/media",
-            readOnly: true,
-          }],
-        },
-        tmpfs: {
-          type: "emptyDir",
-          globalMounts: [{
-            path: "/config/Library/Application Support/Plex Media Server/Logs",
-            subPath: "logs",
-          }, {
-            path: "/transcode",
-            subPath: "transcode",
-          }, {
-            path: "/tmp",
-            subPath: "tmp",
-          }],
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: plex
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: plex
+  values:
+    controllers:
+      plex:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/d4rkfella/plex
+              tag: 1.43.3.10896@sha256:36822606f2fe998b195c53f84eef4191a611220cc9d5f149c4e81035cf92dd1b
+            env:
+              TZ: Europe/Sofia
+              PLEX_ADVERTISE_URL: https://plex.darkfellanetwork.com:443,http://plex.media.svc.cluster.local:32400
+            probes:
+              liveness:
+                enabled: true
+                spec:
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /identity
+                    port: 32400
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            resources:
+              requests:
+                cpu: 100m
+                memory: 4Gi
+              limits:
+                nvidia.com/gpu: 1
+                memory: 8Gi
+        pod:
+          runtimeClassName: nvidia
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: 32400
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/endpoint: "path: /identity"
+        hostnames:
+          - plex.darkfellanetwork.com
+        parentRefs:
+          - name: plex
+            namespace: envoy-gateway-system
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 32400
+            filters:
+              - type: RequestHeaderModifier
+                requestHeaderModifier:
+                  remove:
+                    - Range
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /library/streams
+          - backendRefs:
+              - identifier: app
+                port: 32400
+    persistence:
+      config:
+        existingClaim: plex
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server
+      config-data:
+        suffix: data
+        type: persistentVolumeClaim
+        size: 75Gi
+        storageClass: openebs-zfs-128k
+        accessMode: ReadWriteOnce
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server/Cache
+            subPath: Cache
+          - path: /config/Library/Application Support/Plex Media Server/Metadata
+            subPath: Metadata
+          - path: /config/Library/Application Support/Plex Media Server/Media
+            subPath: Media
+      media:
+        type: nfs
+        server: 192.168.91.40
+        path: /mnt/exos20/data/media
+        globalMounts:
+          - path: /data/media
+            readOnly: true
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /config/Library/Application Support/Plex Media Server/Logs
+            subPath: logs
+          - path: /transcode
+            subPath: transcode
+          - path: /tmp
+            subPath: tmp

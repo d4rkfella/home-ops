@@ -1,20 +1,14 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1.json
-{
-  apiVersion: "source.toolkit.fluxcd.io/v1",
-  kind: "OCIRepository",
-  metadata: {
-    name: "zfs-localpv",
-  },
-  spec: {
-    interval: "15m",
-    layerSelector: {
-      mediaType: "application/vnd.cncf.helm.chart.content.v1.tar+gzip",
-      operation: "copy",
-    },
-    url: "oci://ghcr.io/openebs/charts/zfs-localpv",
-    ref: {
-      tag: "2.11.1",
-    },
-  },
-}
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: OCIRepository
+metadata:
+  name: zfs-localpv
+spec:
+  interval: 15m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  url: oci://ghcr.io/openebs/charts/zfs-localpv
+  ref:
+    tag: 2.11.1

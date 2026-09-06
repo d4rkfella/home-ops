@@ -1,90 +1,84 @@
 ---
-{
-  apiVersion: "v1",
-  kind: "ConfigMap",
-  metadata: {
-    name: "pgadmin4-config",
-  },
-  data: {
-    config_distro.py: "\
-       import os\n\
-       import ast\n\
-       CA_FILE = os.environ.get('SSL_CERT_FILE')\n\
-       LOG_FILE = '/dev/null'\n\
-       HELP_PATH = '../../docs'\n\
-       DEFAULT_BINARY_PATHS = {\n\
-      \    'pg': '/usr/local/pgsql-18',\n\
-      \    'pg-18': '/usr/local/pgsql-18',\n\
-       }\n\
-       \n\
-       SERVER_MODE = True\n\
-       CHECK_EMAIL_DELIVERABILITY = False\n\
-       ALLOW_SPECIAL_EMAIL_DOMAINS = []\n\
-       GLOBALLY_DELIVERABLE = True\n\
-       SESSION_EXPIRATION_TIME = 7\n\
-       AUTHENTICATION_SOURCES = ast.literal_eval(os.environ.get('AUTHENTICATION_SOURCES', \"['oauth2']\"))\n\
-       MASTER_PASSWORD_REQUIRED = os.environ.get('MASTER_PASSWORD_REQUIRED', 'True') == 'True'\n\
-       OAUTH2_CONFIG = [{\n\
-      \    'OAUTH2_NAME': os.environ.get('OAUTH2_NAME'),\n\
-      \    'OAUTH2_DISPLAY_NAME': os.environ.get('OAUTH2_DISPLAY_NAME'),\n\
-      \    'OAUTH2_CLIENT_ID': os.environ.get('OAUTH2_CLIENT_ID'),\n\
-      \    'OAUTH2_CLIENT_SECRET': os.environ.get('OAUTH2_CLIENT_SECRET'),\n\
-      \    'OAUTH2_TOKEN_URL': os.environ.get('OAUTH2_TOKEN_URL'),\n\
-      \    'OAUTH2_AUTHORIZATION_URL': os.environ.get('OAUTH2_AUTHORIZATION_URL'),\n\
-      \    'OAUTH2_USERINFO_ENDPOINT': os.environ.get('OAUTH2_USERINFO_ENDPOINT'),\n\
-      \    'OAUTH2_SERVER_METADATA_URL': os.environ.get('OAUTH2_SERVER_METADATA_URL'),\n\
-      \    'OAUTH2_SCOPE': os.environ.get('OAUTH2_SCOPE', 'openid email profile'),\n\
-      \    'OAUTH2_USERNAME_CLAIM': os.environ.get('OAUTH2_USERNAME_CLAIM'),\n\
-      \    'OAUTH2_ICON': os.environ.get('OAUTH2_ICON', 'fa-github'),\n\
-      \    'OAUTH2_BUTTON_COLOR': os.environ.get('OAUTH2_BUTTON_COLOR'),\n\
-      \    'OAUTH2_REDIRECT_URL': os.environ.get('OAUTH2_REDIRECT_URL'),\n\
-      \    'OAUTH2_CHALLENGE_METHOD': os.environ.get('OAUTH2_CHALLENGE_METHOD', 'S256'),\n\
-      \    'OAUTH2_RESPONSE_TYPE': os.environ.get('OAUTH2_RESPONSE_TYPE', 'code'),\n\
-      \    'OAUTH2_CLIENT_AUTH_METHOD': os.environ.get('OAUTH2_CLIENT_AUTH_METHOD'),\n\
-      \    'OAUTH2_WORKLOAD_IDENTITY_TOKEN_FILE': os.environ.get('OAUTH2_WORKLOAD_IDENTITY_TOKEN_FILE'),\n\
-      \    'OAUTH2_API_BASE_URL': os.environ.get('OAUTH2_API_BASE_URL'),\n\
-      \    'OAUTH2_ADDITIONAL_CLAIMS': os.environ.get('OAUTH2_ADDITIONAL_CLAIMS'),\n\
-      \    'OAUTH2_SSL_CERT_VERIFICATION': os.environ.get('OAUTH2_SSL_CERT_VERIFICATION', 'True') == 'True',\n\
-      \    'OAUTH2_LOGOUT_URL': os.environ.get('OAUTH2_LOGOUT_URL'),\n\
-       }]\n\
-      ",
-    gunicorn_config.py: "\
-       import os\n\
-       import gunicorn\n\
-       from config import JSON_LOGGER, CONSOLE_LOG_LEVEL, CONSOLE_LOG_FORMAT_JSON, SESSION_EXPIRATION_TIME\n\
-       \n\
-       gunicorn.SERVER_SOFTWARE = \"Python\"\n\
-       \n\
-       if JSON_LOGGER:\n\
-      \    logconfig_dict = {\n\
-      \        \"version\": 1,\n\
-      \        \"disable_existing_loggers\": False,\n\
-      \        \"root\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": []},\n\
-      \        \"loggers\": {\n\
-      \            \"gunicorn.error\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": [\"error_console\"], \"propagate\": True, \"qualname\": \"gunicorn.error\"},\n\
-      \            \"gunicorn.access\": {\"level\": CONSOLE_LOG_LEVEL, \"handlers\": [\"console\"], \"propagate\": True, \"qualname\": \"gunicorn.access\"},\n\
-      \        },\n\
-      \        \"handlers\": {\n\
-      \            \"console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"json\", \"stream\": \"ext://sys.stdout\"},\n\
-      \            \"error_console\": {\"class\": \"logging.StreamHandler\", \"formatter\": \"json\", \"stream\": \"ext://sys.stderr\"},\n\
-      \        },\n\
-      \        \"formatters\": {\n\
-      \            \"json\": {\"class\": \"jsonformatter.JsonFormatter\", \"format\": CONSOLE_LOG_FORMAT_JSON},\n\
-      \        },\n\
-      \    }\n\
-       \n\
-       bind = \"{}:{}\".format(os.environ.get(\"PGADMIN_LISTEN_ADDRESS\", \"0.0.0.0\"), os.environ.get(\"PGADMIN_LISTEN_PORT\", \"443\" if os.environ.get(\"PGADMIN_ENABLE_TLS\") else \"80\"))\n\
-       if os.environ.get(\"PGADMIN_ENABLE_TLS\"):\n\
-      \    keyfile = os.environ.get(\"PGADMIN_TLS_KEYFILE\", \"/certs/server.key\")\n\
-      \    certfile = os.environ.get(\"PGADMIN_TLS_CERTFILE\", \"/certs/server.cert\")\n\
-       workers = int(os.environ.get(\"GUNICORN_WORKERS\", \"1\"))\n\
-       threads = int(os.environ.get(\"GUNICORN_THREADS\", \"25\"))\n\
-       timeout = SESSION_EXPIRATION_TIME * 60 * 60 * 24\n\
-       limit_request_line = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_LINE\", \"8190\"))\n\
-       limit_request_fields = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELDS\", \"100\"))\n\
-       limit_request_field_size = int(os.environ.get(\"GUNICORN_LIMIT_REQUEST_FIELD_SIZE\", \"8190\"))\n\
-       accesslog = os.environ.get(\"GUNICORN_ACCESS_LOGFILE\", \"-\")\n\
-       control_socket_disable = True\n\
-      ",
-  },
-}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin4-config
+data:
+  config_distro.py: |
+    import os
+    import ast
+    CA_FILE = os.environ.get('SSL_CERT_FILE')
+    LOG_FILE = '/dev/null'
+    HELP_PATH = '../../docs'
+    DEFAULT_BINARY_PATHS = {
+        'pg': '/usr/local/pgsql-18',
+        'pg-18': '/usr/local/pgsql-18',
+    }
+
+    SERVER_MODE = True
+    CHECK_EMAIL_DELIVERABILITY = False
+    ALLOW_SPECIAL_EMAIL_DOMAINS = []
+    GLOBALLY_DELIVERABLE = True
+    SESSION_EXPIRATION_TIME = 7
+    AUTHENTICATION_SOURCES = ast.literal_eval(os.environ.get('AUTHENTICATION_SOURCES', "['oauth2']"))
+    MASTER_PASSWORD_REQUIRED = os.environ.get('MASTER_PASSWORD_REQUIRED', 'True') == 'True'
+    OAUTH2_CONFIG = [{
+        'OAUTH2_NAME': os.environ.get('OAUTH2_NAME'),
+        'OAUTH2_DISPLAY_NAME': os.environ.get('OAUTH2_DISPLAY_NAME'),
+        'OAUTH2_CLIENT_ID': os.environ.get('OAUTH2_CLIENT_ID'),
+        'OAUTH2_CLIENT_SECRET': os.environ.get('OAUTH2_CLIENT_SECRET'),
+        'OAUTH2_TOKEN_URL': os.environ.get('OAUTH2_TOKEN_URL'),
+        'OAUTH2_AUTHORIZATION_URL': os.environ.get('OAUTH2_AUTHORIZATION_URL'),
+        'OAUTH2_USERINFO_ENDPOINT': os.environ.get('OAUTH2_USERINFO_ENDPOINT'),
+        'OAUTH2_SERVER_METADATA_URL': os.environ.get('OAUTH2_SERVER_METADATA_URL'),
+        'OAUTH2_SCOPE': os.environ.get('OAUTH2_SCOPE', 'openid email profile'),
+        'OAUTH2_USERNAME_CLAIM': os.environ.get('OAUTH2_USERNAME_CLAIM'),
+        'OAUTH2_ICON': os.environ.get('OAUTH2_ICON', 'fa-github'),
+        'OAUTH2_BUTTON_COLOR': os.environ.get('OAUTH2_BUTTON_COLOR'),
+        'OAUTH2_REDIRECT_URL': os.environ.get('OAUTH2_REDIRECT_URL'),
+        'OAUTH2_CHALLENGE_METHOD': os.environ.get('OAUTH2_CHALLENGE_METHOD', 'S256'),
+        'OAUTH2_RESPONSE_TYPE': os.environ.get('OAUTH2_RESPONSE_TYPE', 'code'),
+        'OAUTH2_CLIENT_AUTH_METHOD': os.environ.get('OAUTH2_CLIENT_AUTH_METHOD'),
+        'OAUTH2_WORKLOAD_IDENTITY_TOKEN_FILE': os.environ.get('OAUTH2_WORKLOAD_IDENTITY_TOKEN_FILE'),
+        'OAUTH2_API_BASE_URL': os.environ.get('OAUTH2_API_BASE_URL'),
+        'OAUTH2_ADDITIONAL_CLAIMS': os.environ.get('OAUTH2_ADDITIONAL_CLAIMS'),
+        'OAUTH2_SSL_CERT_VERIFICATION': os.environ.get('OAUTH2_SSL_CERT_VERIFICATION', 'True') == 'True',
+        'OAUTH2_LOGOUT_URL': os.environ.get('OAUTH2_LOGOUT_URL'),
+    }]
+  gunicorn_config.py: |-
+    import os
+    import gunicorn
+    from config import JSON_LOGGER, CONSOLE_LOG_LEVEL, CONSOLE_LOG_FORMAT_JSON, SESSION_EXPIRATION_TIME
+
+    gunicorn.SERVER_SOFTWARE = "Python"
+
+    if JSON_LOGGER:
+        logconfig_dict = {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "root": {"level": CONSOLE_LOG_LEVEL, "handlers": []},
+            "loggers": {
+                "gunicorn.error": {"level": CONSOLE_LOG_LEVEL, "handlers": ["error_console"], "propagate": True, "qualname": "gunicorn.error"},
+                "gunicorn.access": {"level": CONSOLE_LOG_LEVEL, "handlers": ["console"], "propagate": True, "qualname": "gunicorn.access"},
+            },
+            "handlers": {
+                "console": {"class": "logging.StreamHandler", "formatter": "json", "stream": "ext://sys.stdout"},
+                "error_console": {"class": "logging.StreamHandler", "formatter": "json", "stream": "ext://sys.stderr"},
+            },
+            "formatters": {
+                "json": {"class": "jsonformatter.JsonFormatter", "format": CONSOLE_LOG_FORMAT_JSON},
+            },
+        }
+
+    bind = "{}:{}".format(os.environ.get("PGADMIN_LISTEN_ADDRESS", "0.0.0.0"), os.environ.get("PGADMIN_LISTEN_PORT", "443" if os.environ.get("PGADMIN_ENABLE_TLS") else "80"))
+    if os.environ.get("PGADMIN_ENABLE_TLS"):
+        keyfile = os.environ.get("PGADMIN_TLS_KEYFILE", "/certs/server.key")
+        certfile = os.environ.get("PGADMIN_TLS_CERTFILE", "/certs/server.cert")
+    workers = int(os.environ.get("GUNICORN_WORKERS", "1"))
+    threads = int(os.environ.get("GUNICORN_THREADS", "25"))
+    timeout = SESSION_EXPIRATION_TIME * 60 * 60 * 24
+    limit_request_line = int(os.environ.get("GUNICORN_LIMIT_REQUEST_LINE", "8190"))
+    limit_request_fields = int(os.environ.get("GUNICORN_LIMIT_REQUEST_FIELDS", "100"))
+    limit_request_field_size = int(os.environ.get("GUNICORN_LIMIT_REQUEST_FIELD_SIZE", "8190"))
+    accesslog = os.environ.get("GUNICORN_ACCESS_LOGFILE", "-")
+    control_socket_disable = True

@@ -1,23 +1,17 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "volsync",
-  },
-  spec: {
-    dependsOn: [{
-      name: "zfs-localpv",
-      namespace: "openebs-system",
-    }],
-    path: "./kubernetes/apps/volsync-system/volsync/manifests",
-    prune: true,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    interval: "1h",
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: volsync
+spec:
+  dependsOn:
+    - name: zfs-localpv
+      namespace: openebs-system
+  path: ./kubernetes/apps/volsync-system/volsync/manifests
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  interval: 1h

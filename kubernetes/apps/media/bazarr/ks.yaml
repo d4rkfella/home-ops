@@ -1,43 +1,30 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "bazarr",
-  },
-  spec: {
-    components: [
-      "../../../../components/volsync",
-    ],
-    dependsOn: [{
-      name: "radarr",
-    }, {
-      name: "sonarr",
-    }, {
-      name: "cloudnative-pg-cluster",
-      namespace: "database",
-    }, {
-      name: "keycloak-instance",
-      namespace: "keycloak",
-    }, {
-      name: "nas",
-      namespace: "virtualization",
-    }],
-    path: "./kubernetes/apps/media/bazarr/manifests",
-    postBuild: {
-      substitute: {
-        APP: "bazarr",
-        VOLSYNC_CAPACITY: "2Gi",
-      },
-    },
-    prune: true,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    wait: false,
-    interval: "1h",
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: bazarr
+spec:
+  components:
+    - ../../../../components/volsync
+  dependsOn:
+    - name: radarr
+    - name: sonarr
+    - name: cloudnative-pg-cluster
+      namespace: database
+    - name: keycloak-instance
+      namespace: keycloak
+    - name: nas
+      namespace: virtualization
+  path: ./kubernetes/apps/media/bazarr/manifests
+  postBuild:
+    substitute:
+      APP: bazarr
+      VOLSYNC_CAPACITY: 2Gi
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: false
+  interval: 1h

@@ -1,70 +1,48 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "alloy",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "alloy",
-    },
-    values: {
-      fullnameOverride: "alloy",
-      serviceMonitor: {
-        enabled: false,
-      },
-      alloy: {
-        configMap: {
-          create: false,
-          name: "alloy-configmap",
-          key: "config.alloy",
-        },
-        storagePath: "/var/lib/alloy",
-        enableReporting: false,
-        mounts: {
-          extra: [{
-            name: "host-rootfs-path",
-            mountPath: "/host/root",
-          }, {
-            name: "host-procfs-path",
-            mountPath: "/host/proc",
-          }, {
-            name: "host-sysfs-path",
-            mountPath: "/host/sys",
-          }],
-        },
-      },
-      controller: {
-        podAnnotations: {
-          configmap.reloader.stakater.com/reload: "alloy-configmap",
-          security.darkfellanetwork.com/mount-internal-ca: "true",
-        },
-        volumes: {
-          extra: [{
-            name: "host-rootfs-path",
-            hostPath: {
-              path: "/",
-              type: "Directory",
-            },
-          }, {
-            name: "host-procfs-path",
-            hostPath: {
-              path: "/proc",
-              type: "Directory",
-            },
-          }, {
-            name: "host-sysfs-path",
-            hostPath: {
-              path: "/sys",
-              type: "Directory",
-            },
-          }],
-        },
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: alloy
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: alloy
+  values:
+    fullnameOverride: alloy
+    serviceMonitor:
+      enabled: false
+    alloy:
+      configMap:
+        create: false
+        name: alloy-configmap
+        key: config.alloy
+      storagePath: /var/lib/alloy
+      enableReporting: false
+      mounts:
+        extra:
+          - name: host-rootfs-path
+            mountPath: /host/root
+          - name: host-procfs-path
+            mountPath: /host/proc
+          - name: host-sysfs-path
+            mountPath: /host/sys
+    controller:
+      podAnnotations:
+        configmap.reloader.stakater.com/reload: alloy-configmap
+        security.darkfellanetwork.com/mount-internal-ca: "true"
+      volumes:
+        extra:
+          - name: host-rootfs-path
+            hostPath:
+              path: /
+              type: Directory
+          - name: host-procfs-path
+            hostPath:
+              path: /proc
+              type: Directory
+          - name: host-sysfs-path
+            hostPath:
+              path: /sys
+              type: Directory

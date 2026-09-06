@@ -1,136 +1,97 @@
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-metrics-prometheus-client-certs",
-  },
-  spec: {
-    secretName: "hubble-metrics-prometheus-client-certs",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    commonName: "prometheus-client",
-    usages: [
-      "client auth",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-metrics-prometheus-client-certs
+spec:
+  secretName: hubble-metrics-prometheus-client-certs
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: prometheus-client
+  usages:
+    - client auth
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-server-certs",
-  },
-  spec: {
-    secretName: "hubble-server-certs",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    dnsNames: [
-      "*.main.hubble-grpc.cilium.io",
-    ],
-    usages: [
-      "server auth",
-    ],
-    duration: "8760h",
-    renewBefore: "360h",
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-server-certs
+spec:
+  secretName: hubble-server-certs
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  dnsNames:
+    - "*.main.hubble-grpc.cilium.io"
+  usages:
+    - server auth
+  duration: 8760h
+  renewBefore: 360h
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-relay-server-certs",
-  },
-  spec: {
-    secretName: "hubble-relay-server-certs",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    commonName: "hubble-relay.kube-system.svc.cluster.local",
-    dnsNames: [
-      "hubble-relay.kube-system.svc.cluster.local",
-      "hubble-relay.kube-system.svc",
-      "hubble-relay.kube-system",
-      "hubble-relay",
-    ],
-    usages: [
-      "server auth",
-    ],
-    duration: "8760h",
-    renewBefore: "360h",
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-relay-server-certs
+spec:
+  secretName: hubble-relay-server-certs
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: hubble-relay.kube-system.svc.cluster.local
+  dnsNames:
+    - hubble-relay.kube-system.svc.cluster.local
+    - hubble-relay.kube-system.svc
+    - hubble-relay.kube-system
+    - hubble-relay
+  usages:
+    - server auth
+  duration: 8760h
+  renewBefore: 360h
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-relay-client-certs",
-  },
-  spec: {
-    secretName: "hubble-relay-client-certs",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    commonName: "hubble-relay-client",
-    usages: [
-      "client auth",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-relay-client-certs
+spec:
+  secretName: hubble-relay-client-certs
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: hubble-relay-client
+  usages:
+    - client auth
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-ui-client-certs",
-  },
-  spec: {
-    secretName: "hubble-ui-client-certs",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    commonName: "hubble-ui-client",
-    usages: [
-      "client auth",
-    ],
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-ui-client-certs
+spec:
+  secretName: hubble-ui-client-certs
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  commonName: hubble-ui-client
+  usages:
+    - client auth
 ---
-{
-  apiVersion: "cert-manager.io/v1",
-  kind: "Certificate",
-  metadata: {
-    name: "hubble-metrics-tls",
-  },
-  spec: {
-    secretName: "hubble-metrics-tls",
-    issuerRef: {
-      name: "vault-issuer",
-      kind: "ClusterIssuer",
-      group: "cert-manager.io",
-    },
-    dnsNames: [
-      "*.hubble-metrics.cilium.io",
-    ],
-    usages: [
-      "server auth",
-    ],
-    duration: "8760h",
-    renewBefore: "360h",
-  },
-}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hubble-metrics-tls
+spec:
+  secretName: hubble-metrics-tls
+  issuerRef:
+    name: vault-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io
+  dnsNames:
+    - "*.hubble-metrics.cilium.io"
+  usages:
+    - server auth
+  duration: 8760h
+  renewBefore: 360h

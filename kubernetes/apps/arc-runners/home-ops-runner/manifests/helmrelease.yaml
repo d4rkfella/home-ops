@@ -1,88 +1,62 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "home-ops-runner",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "gha-runner-scale-set",
-    },
-    values: {
-      githubConfigUrl: "https://github.com/d4rkfella/home-ops",
-      githubConfigSecret: "home-ops-runner-secret",
-      namespaceOverride: "arc-runners",
-      minRunners: 1,
-      maxRunners: 3,
-      containerMode: {
-        type: "kubernetes",
-        kubernetesModeWorkVolumeClaim: {
-          accessModes: [
-            "ReadWriteOnce",
-          ],
-          storageClassName: "openebs-zfs-128k",
-          resources: {
-            requests: {
-              storage: "25Gi",
-            },
-          },
-        },
-      },
-      template: {
-        spec: {
-          hostUsers: false,
-          securityContext: {
-            runAsNonRoot: true,
-            seccompProfile: {
-              type: "RuntimeDefault",
-            },
-            runAsUser: 1001,
-            fsGroup: 123,
-          },
-          containers: [{
-            name: "runner",
-            image: "ghcr.io/actions/actions-runner:2.337.0@sha256:e5496277be5d09bc968b3d64911b74e219ac4a3f2edce956a3ecf9271bea1ef4",
-            command: [
-              "/home/runner/run.sh",
-            ],
-            env: [{
-              name: "ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER",
-              value: "false",
-            }, {
-              name: "NODE",
-              valueFrom: {
-                fieldRef: {
-                  fieldPath: "status.hostIP",
-                },
-              },
-            }],
-            volumeMounts: [{
-              name: "talos",
-              mountPath: "/var/run/secrets/talos.dev",
-              readOnly: true,
-            }],
-            securityContext: {
-              allowPrivilegeEscalation: false,
-              readOnlyRootFilesystem: false,
-            },
-          }],
-          serviceAccountName: "home-ops-runner",
-          volumes: [{
-            name: "talos",
-            secret: {
-              secretName: "home-ops-runner",
-            },
-          }],
-        },
-      },
-      controllerServiceAccount: {
-        name: "actions-runner-controller",
-        namespace: "arc-system",
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: home-ops-runner
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: gha-runner-scale-set
+  values:
+    githubConfigUrl: https://github.com/d4rkfella/home-ops
+    githubConfigSecret: home-ops-runner-secret
+    namespaceOverride: arc-runners
+    minRunners: 1
+    maxRunners: 3
+    containerMode:
+      type: kubernetes
+      kubernetesModeWorkVolumeClaim:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: openebs-zfs-128k
+        resources:
+          requests:
+            storage: 25Gi
+    template:
+      spec:
+        hostUsers: false
+        securityContext:
+          runAsNonRoot: true
+          seccompProfile:
+            type: RuntimeDefault
+          runAsUser: 1001
+          fsGroup: 123
+        containers:
+          - name: runner
+            image: ghcr.io/actions/actions-runner:2.337.0@sha256:e5496277be5d09bc968b3d64911b74e219ac4a3f2edce956a3ecf9271bea1ef4
+            command:
+              - /home/runner/run.sh
+            env:
+              - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
+                value: "false"
+              - name: NODE
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+            volumeMounts:
+              - name: talos
+                mountPath: /var/run/secrets/talos.dev
+                readOnly: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+        serviceAccountName: home-ops-runner
+        volumes:
+          - name: talos
+            secret:
+              secretName: home-ops-runner
+    controllerServiceAccount:
+      name: actions-runner-controller
+      namespace: arc-system

@@ -1,60 +1,46 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
-{
-  apiVersion: "kustomize.toolkit.fluxcd.io/v1",
-  kind: "Kustomization",
-  metadata: {
-    name: "zfs-localpv",
-  },
-  spec: {
-    interval: "1h",
-    path: "./kubernetes/apps/openebs-system/zfs-localpv/manifests",
-    prune: false,
-    sourceRef: {
-      kind: "GitRepository",
-      name: "flux-system",
-      namespace: "flux-system",
-    },
-    healthChecks: [{
-      apiVersion: "helm.toolkit.fluxcd.io/v2",
-      kind: "HelmRelease",
-      name: "zfs-localpv",
-      namespace: "openebs-system",
-    }, {
-      apiVersion: "zfs.openebs.io/v1",
-      kind: "ZFSNode",
-      name: "k8s-0",
-      namespace: "openebs-system",
-    }, {
-      apiVersion: "storage.k8s.io/v1",
-      kind: "StorageClass",
-      name: "openebs-zfs-1m",
-    }, {
-      apiVersion: "storage.k8s.io/v1",
-      kind: "StorageClass",
-      name: "openebs-zfs-128k",
-    }, {
-      apiVersion: "storage.k8s.io/v1",
-      kind: "StorageClass",
-      name: "openebs-zfs-32k",
-    }, {
-      apiVersion: "storage.k8s.io/v1",
-      kind: "StorageClass",
-      name: "openebs-zfs-block-64k",
-    }, {
-      apiVersion: "storage.k8s.io/v1",
-      kind: "StorageClass",
-      name: "openebs-zfs-block-16k",
-    }, {
-      apiVersion: "snapshot.storage.k8s.io/v1",
-      kind: "VolumeSnapshotClass",
-      name: "zfspv-snapclass",
-    }],
-    healthCheckExprs: [{
-      apiVersion: "zfs.openebs.io/v1",
-      kind: "ZFSNode",
-      current: "pools != null && pools.exists(p, p.name == 'ssd_pool')",
-      failed: "pools != null && !pools.exists(p, p.name == 'ssd_pool')",
-    }],
-  },
-}
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: zfs-localpv
+spec:
+  interval: 1h
+  path: ./kubernetes/apps/openebs-system/zfs-localpv/manifests
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: zfs-localpv
+      namespace: openebs-system
+    - apiVersion: zfs.openebs.io/v1
+      kind: ZFSNode
+      name: k8s-0
+      namespace: openebs-system
+    - apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      name: openebs-zfs-1m
+    - apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      name: openebs-zfs-128k
+    - apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      name: openebs-zfs-32k
+    - apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      name: openebs-zfs-block-64k
+    - apiVersion: storage.k8s.io/v1
+      kind: StorageClass
+      name: openebs-zfs-block-16k
+    - apiVersion: snapshot.storage.k8s.io/v1
+      kind: VolumeSnapshotClass
+      name: zfspv-snapclass
+  healthCheckExprs:
+    - apiVersion: zfs.openebs.io/v1
+      kind: ZFSNode
+      current: pools != null && pools.exists(p, p.name == 'ssd_pool')
+      failed: pools != null && !pools.exists(p, p.name == 'ssd_pool')

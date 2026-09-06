@@ -1,33 +1,23 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/barmancloud.cnpg.io/objectstore_v1.json
-{
-  apiVersion: "barmancloud.cnpg.io/v1",
-  kind: "ObjectStore",
-  metadata: {
-    name: "cloudflare",
-  },
-  spec: {
-    configuration: {
-      data: {
-        compression: "bzip2",
-      },
-      destinationPath: "s3://pgsql-backup/",
-      endpointURL: "https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com",
-      s3Credentials: {
-        accessKeyId: {
-          name: "postgres-admin-secret",
-          key: "ACCESS_KEY_ID",
-        },
-        secretAccessKey: {
-          name: "postgres-admin-secret",
-          key: "ACCESS_SECRET_KEY",
-        },
-      },
-      wal: {
-        compression: "bzip2",
-        maxParallel: 8,
-      },
-    },
-    retentionPolicy: "30d",
-  },
-}
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: cloudflare
+spec:
+  configuration:
+    data:
+      compression: bzip2
+    destinationPath: s3://pgsql-backup/
+    endpointURL: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
+    s3Credentials:
+      accessKeyId:
+        name: postgres-admin-secret
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: postgres-admin-secret
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: bzip2
+      maxParallel: 8
+  retentionPolicy: 30d

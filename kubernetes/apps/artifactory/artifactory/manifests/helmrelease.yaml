@@ -1,257 +1,221 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "artifactory",
-  },
-  spec: {
-    interval: "1h",
-    timeout: "15m",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "artifactory",
-    },
-    values: {
-      global: {
-        jfrog: {
-          observability: {
-            branch: "master",
-          },
-        },
-        prometheus: {
-          loki_url: "http://loki-headless.observability.svc.cluster.local:3100",
-          release_name: "kube-prometheus-stack",
-        },
-        joinKeySecretName: "artifactory-secret",
-        masterKeySecretName: "artifactory-secret",
-      },
-      gatewayApi: {
-        enabled: true,
-        gatewayClassName: "envoy",
-        disableRouterBypass: true,
-        hosts: [
-          "packages.darkfellanetwork.com",
-        ],
-        tls: [{
-          hosts: [
-            "packages.darkfellanetwork.com",
-          ],
-          secretName: "artifactory-tls",
-        }],
-        httpRoute: {
-          enabled: true,
-        },
-      },
-      access: {
-        javaOpts: {
-          other: "-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar",
-        },
-      },
-      jfconnect: {
-        enabled: false,
-      },
-      artifactory: {
-        statefulset: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-        },
-        metrics: {
-          enabled: true,
-        },
-        customInitContainersBegin: "\
-           - name: \"prepare-fluentd-conf-on-persistent-volume\"\n\
-          \  image: \"{{ include \"artifactory.getImageInfoByValue\" (list . \"initContainers\") }}\"\n\
-          \  imagePullPolicy: \"{{ .Values.artifactory.image.pullPolicy }}\"\n\
-          \  command: [\"/bin/sh\", \"-c\", \"mkdir -p {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/; curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf\"]\n\
-          \  volumeMounts:\n\
-          \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
-          \      name: artifactory-volume\n\
-          ",
-        customSidecarContainers: "\
-           - name: \"artifactory-fluentd-sidecar\"\n\
-          \  image: \"releases-docker.jfrog.io/fluentd:4.22@sha256:8370a38335843ecf80953fa3c407db0c512202a3f3293267359ac7f838a7abf6\"\n\
-          \  imagePullPolicy: \"IfNotPresent\"\n\
-          \  volumeMounts:\n\
-          \    - mountPath: \"{{ .Values.artifactory.persistence.mountPath }}\"\n\
-          \      name: artifactory-volume\n\
-          \  env:\n\
-          \    - name: JF_PRODUCT_DATA_INTERNAL\n\
-          \      value: {{ .Values.artifactory.persistence.mountPath }}\n\
-          \    - name: LOKI_URL\n\
-          \      value: {{ .Values.global.prometheus.loki_url }}\n\
-          \    - name: FLUENTD_CONF\n\
-          \      value: ../../../..{{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf\n\
-          ",
-        persistence: {
-          size: "200Gi",
-        },
-        customVolumes: "\
-           - name: nfs-backup-volume\n\
-          \  nfs:\n\
-          \    server: 192.168.91.40\n\
-          \    path: /mnt/exos20/artifactory-backup\n\
-           - name: license-patcher\n\
-          \  image:\n\
-          \    reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest@sha256:c86b73ecf0042010f45c5ce6a8003b7a6ab6cb0a028fc1d24422284f3b9d12f3\n\
-          \    pullPolicy: IfNotPresent\n\
-           - name: setenv-script\n\
-          \  configMap:\n\
-          \    name: artifactory-setenv\n\
-          \    defaultMode: 0755\n\
-          ",
-        customVolumeMounts: "\
-           - name: nfs-backup-volume\n\
-          \  mountPath: /mnt/artifactory-backup\n\
-           - name: license-patcher\n\
-          \  mountPath: /opt/jfrog/license-patcher\n\
-           - name: setenv-script\n\
-          \  mountPath: /opt/jfrog/artifactory/app/artifactory/tomcat/bin/setenv.sh\n\
-          \  subPath: setenv.sh\n\
-          ",
-        admin: {
-          secret: "artifactory-secret",
-          dataKey: "bootstrap.creds",
-        },
-      },
-      postgresql: {
-        enabled: false,
-      },
-      database: {
-        type: "postgresql",
-        driver: "org.postgresql.Driver",
-        secrets: {
-          user: {
-            name: "artifactory-secret",
-            key: "db-user",
-          },
-          password: {
-            name: "artifactory-secret",
-            key: "db-password",
-          },
-          url: {
-            name: "artifactory-secret",
-            key: "db-url",
-          },
-        },
-      },
-      nginx: {
-        enabled: false,
-      },
-      additionalResources: "\
-         apiVersion: v1\n\
-         kind: Service\n\
-         metadata:\n\
-        \  name: {{ template \"artifactory.fullname\" . }}-metrics\n\
-        \  labels:\n\
-        \    app: {{ template \"artifactory.name\" . }}\n\
-        \    component: {{ template \"artifactory.name\" . }}\n\
-        \    chart: {{ template \"artifactory.chart\" . }}\n\
-        \    heritage: {{ .Release.Service }}\n\
-        \    release: {{ .Values.global.prometheus.release_name }}\n\
-         spec:\n\
-        \  type: ClusterIP\n\
-        \  ports:\n\
-        \  - name: metrics\n\
-        \    port: 24231\n\
-        \    targetPort: 8082\n\
-        \    protocol: TCP\n\
-        \  selector:\n\
-        \    app: {{ template \"artifactory.name\" . }}\n\
-        \    component: {{ template \"artifactory.name\" . }}\n\
-         ---\n\
-         apiVersion: monitoring.coreos.com/v1\n\
-         kind: ServiceMonitor\n\
-         metadata:\n\
-        \  name: servicemonitor-{{ template \"artifactory.name\" . }}\n\
-        \  labels:\n\
-        \    metrics: jfrog\n\
-        \    app: {{ template \"artifactory.name\" . }}\n\
-        \    chart: {{ template \"artifactory.chart\" . }}\n\
-        \    heritage: {{ .Release.Service }}\n\
-        \    release: {{ .Values.global.prometheus.release_name }}\n\
-         spec:\n\
-        \  selector:\n\
-        \    matchLabels:\n\
-        \      app: {{ template \"artifactory.name\" . }}\n\
-        \      component: {{ template \"artifactory.name\" . }}\n\
-        \  endpoints:\n\
-        \  - port: metrics\n\
-        \    scheme: http\n\
-        \    path: /artifactory/api/v1/metrics\n\
-        \    interval: 15s\n\
-        \    bearerTokenSecret:\n\
-        \      name: artifactory-secret\n\
-        \      key: jfrog-metrics-token\n\
-         ---\n\
-         apiVersion: v1\n\
-         kind: Service\n\
-         metadata:\n\
-        \  name: {{ .Values.observability.name }}-metrics\n\
-        \  labels:\n\
-        \    app: {{ .Values.observability.name }}\n\
-        \    component: {{ .Values.observability.name }}\n\
-        \    chart: {{ template \"artifactory.chart\" . }}\n\
-        \    heritage: {{ .Release.Service }}\n\
-        \    release: {{ .Values.global.prometheus.release_name }}\n\
-         spec:\n\
-        \  type: ClusterIP\n\
-        \  ports:\n\
-        \  - name: metricsob\n\
-        \    port: 24232\n\
-        \    targetPort: 8082\n\
-        \    protocol: TCP\n\
-        \  selector:\n\
-        \    app: {{ template \"artifactory.name\" . }}\n\
-        \    component: {{ template \"artifactory.name\" . }}\n\
-         ---\n\
-         apiVersion: monitoring.coreos.com/v1\n\
-         kind: ServiceMonitor\n\
-         metadata:\n\
-        \  name: servicemonitor-{{ .Values.observability.name }}\n\
-        \  labels:\n\
-        \    metrics: jfrog\n\
-        \    app: {{ .Values.observability.name }}\n\
-        \    chart: {{ template \"artifactory.chart\" . }}\n\
-        \    heritage: {{ .Release.Service }}\n\
-        \    release: {{ .Values.global.prometheus.release_name }}\n\
-         spec:\n\
-        \  selector:\n\
-        \    matchLabels:\n\
-        \      app: {{ .Values.observability.name }}\n\
-        \      component: {{ .Values.observability.name }}\n\
-        \  endpoints:\n\
-        \  - port: metricsob\n\
-        \    scheme: http\n\
-        \    path: /observability/api/v1/metrics\n\
-        \    interval: 15s\n\
-        \    bearerTokenSecret:\n\
-        \      name: artifactory-secret\n\
-        \      key: jfrog-metrics-token\n\
-         ---\n\
-         apiVersion: v1\n\
-         kind: ConfigMap\n\
-         metadata:\n\
-        \  name: {{ template \"artifactory.name\" . }}-setenv\n\
-         data:\n\
-        \  setenv.sh: |\n\
-        \    CATALINA_OPTS=\"-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar\"\n\
-        \    CATALINA_OPTS=\"$CATALINA_OPTS -Djf.product.home=/opt/jfrog/artifactory\"\n\
-         ---\n\
-         apiVersion: gateway.envoyproxy.io/v1alpha1\n\
-         kind: ClientTrafficPolicy\n\
-         metadata:\n\
-        \  name: {{ template \"artifactory.name\" . }}\n\
-         spec:\n\
-        \  targetRefs:\n\
-        \  - group: gateway.networking.k8s.io\n\
-        \    kind: Gateway\n\
-        \    name: {{ template \"artifactory.name\" . }}-gateway\n\
-        \  path:\n\
-        \    escapedSlashesAction: KeepUnchanged\n\
-        ",
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: artifactory
+spec:
+  interval: 1h
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: artifactory
+  values:
+    global:
+      jfrog:
+        observability:
+          branch: master
+      prometheus:
+        loki_url: http://loki-headless.observability.svc.cluster.local:3100
+        release_name: kube-prometheus-stack
+      joinKeySecretName: artifactory-secret
+      masterKeySecretName: artifactory-secret
+    gatewayApi:
+      enabled: true
+      gatewayClassName: envoy
+      disableRouterBypass: true
+      hosts:
+        - packages.darkfellanetwork.com
+      tls:
+        - hosts:
+            - packages.darkfellanetwork.com
+          secretName: artifactory-tls
+      httpRoute:
+        enabled: true
+    access:
+      javaOpts:
+        other: -javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar
+    jfconnect:
+      enabled: false
+    artifactory:
+      statefulset:
+        annotations:
+          reloader.stakater.com/auto: "true"
+      metrics:
+        enabled: true
+      customInitContainersBegin: |
+        - name: "prepare-fluentd-conf-on-persistent-volume"
+          image: "{{ include "artifactory.getImageInfoByValue" (list . "initContainers") }}"
+          imagePullPolicy: "{{ .Values.artifactory.image.pullPolicy }}"
+          command: ["/bin/sh", "-c", "mkdir -p {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/; curl https://raw.githubusercontent.com/jfrog/log-analytics-prometheus/{{ .Values.global.jfrog.observability.branch }}/fluent_metrics.conf.rt -o {{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf"]
+          volumeMounts:
+            - mountPath: "{{ .Values.artifactory.persistence.mountPath }}"
+              name: artifactory-volume
+      customSidecarContainers: |
+        - name: "artifactory-fluentd-sidecar"
+          image: "releases-docker.jfrog.io/fluentd:4.22@sha256:8370a38335843ecf80953fa3c407db0c512202a3f3293267359ac7f838a7abf6"
+          imagePullPolicy: "IfNotPresent"
+          volumeMounts:
+            - mountPath: "{{ .Values.artifactory.persistence.mountPath }}"
+              name: artifactory-volume
+          env:
+            - name: JF_PRODUCT_DATA_INTERNAL
+              value: {{ .Values.artifactory.persistence.mountPath }}
+            - name: LOKI_URL
+              value: {{ .Values.global.prometheus.loki_url }}
+            - name: FLUENTD_CONF
+              value: ../../../..{{ .Values.artifactory.persistence.mountPath }}/etc/fluentd/fluentd.conf
+      persistence:
+        size: 200Gi
+      customVolumes: |
+        - name: nfs-backup-volume
+          nfs:
+            server: 192.168.91.40
+            path: /mnt/exos20/artifactory-backup
+        - name: license-patcher
+          image:
+            reference: ghcr.io/d4rkfella/artifactory-license-patcher:latest@sha256:c86b73ecf0042010f45c5ce6a8003b7a6ab6cb0a028fc1d24422284f3b9d12f3
+            pullPolicy: IfNotPresent
+        - name: setenv-script
+          configMap:
+            name: artifactory-setenv
+            defaultMode: 0755
+      customVolumeMounts: |
+        - name: nfs-backup-volume
+          mountPath: /mnt/artifactory-backup
+        - name: license-patcher
+          mountPath: /opt/jfrog/license-patcher
+        - name: setenv-script
+          mountPath: /opt/jfrog/artifactory/app/artifactory/tomcat/bin/setenv.sh
+          subPath: setenv.sh
+      admin:
+        secret: artifactory-secret
+        dataKey: bootstrap.creds
+    postgresql:
+      enabled: false
+    database:
+      type: postgresql
+      driver: org.postgresql.Driver
+      secrets:
+        user:
+          name: artifactory-secret
+          key: db-user
+        password:
+          name: artifactory-secret
+          key: db-password
+        url:
+          name: artifactory-secret
+          key: db-url
+    nginx:
+      enabled: false
+    additionalResources: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: {{ template "artifactory.fullname" . }}-metrics
+        labels:
+          app: {{ template "artifactory.name" . }}
+          component: {{ template "artifactory.name" . }}
+          chart: {{ template "artifactory.chart" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Values.global.prometheus.release_name }}
+      spec:
+        type: ClusterIP
+        ports:
+        - name: metrics
+          port: 24231
+          targetPort: 8082
+          protocol: TCP
+        selector:
+          app: {{ template "artifactory.name" . }}
+          component: {{ template "artifactory.name" . }}
+      ---
+      apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      metadata:
+        name: servicemonitor-{{ template "artifactory.name" . }}
+        labels:
+          metrics: jfrog
+          app: {{ template "artifactory.name" . }}
+          chart: {{ template "artifactory.chart" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Values.global.prometheus.release_name }}
+      spec:
+        selector:
+          matchLabels:
+            app: {{ template "artifactory.name" . }}
+            component: {{ template "artifactory.name" . }}
+        endpoints:
+        - port: metrics
+          scheme: http
+          path: /artifactory/api/v1/metrics
+          interval: 15s
+          bearerTokenSecret:
+            name: artifactory-secret
+            key: jfrog-metrics-token
+      ---
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: {{ .Values.observability.name }}-metrics
+        labels:
+          app: {{ .Values.observability.name }}
+          component: {{ .Values.observability.name }}
+          chart: {{ template "artifactory.chart" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Values.global.prometheus.release_name }}
+      spec:
+        type: ClusterIP
+        ports:
+        - name: metricsob
+          port: 24232
+          targetPort: 8082
+          protocol: TCP
+        selector:
+          app: {{ template "artifactory.name" . }}
+          component: {{ template "artifactory.name" . }}
+      ---
+      apiVersion: monitoring.coreos.com/v1
+      kind: ServiceMonitor
+      metadata:
+        name: servicemonitor-{{ .Values.observability.name }}
+        labels:
+          metrics: jfrog
+          app: {{ .Values.observability.name }}
+          chart: {{ template "artifactory.chart" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Values.global.prometheus.release_name }}
+      spec:
+        selector:
+          matchLabels:
+            app: {{ .Values.observability.name }}
+            component: {{ .Values.observability.name }}
+        endpoints:
+        - port: metricsob
+          scheme: http
+          path: /observability/api/v1/metrics
+          interval: 15s
+          bearerTokenSecret:
+            name: artifactory-secret
+            key: jfrog-metrics-token
+      ---
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: {{ template "artifactory.name" . }}-setenv
+      data:
+        setenv.sh: |
+          CATALINA_OPTS="-javaagent:/opt/jfrog/license-patcher/jfrog-artifactory-license-patcher-1.0.jar"
+          CATALINA_OPTS="$CATALINA_OPTS -Djf.product.home=/opt/jfrog/artifactory"
+      ---
+      apiVersion: gateway.envoyproxy.io/v1alpha1
+      kind: ClientTrafficPolicy
+      metadata:
+        name: {{ template "artifactory.name" . }}
+      spec:
+        targetRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: {{ template "artifactory.name" . }}-gateway
+        path:
+          escapedSlashesAction: KeepUnchanged

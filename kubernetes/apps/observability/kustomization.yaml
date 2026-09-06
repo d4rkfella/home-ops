@@ -1,22 +1,17 @@
 ---
-{
-  apiVersion: "kustomize.config.k8s.io/v1beta1",
-  kind: "Kustomization",
-  resources: [
-    "./namespace.yaml",
-    "./grafana-operator/ks.yaml",
-    "./grafana-instance/ks.yaml",
-    "./kube-prometheus-stack/ks.yaml",
-    "./silence-operator/ks.yaml",
-    "./silence-operator-silences/ks.yaml",
-    "./gatus/ks.yaml",
-    "./opnsense-exporter/ks.yaml",
-    "./loki/ks.yaml",
-  ],
-  components: [
-    "../../components/alerts",
-  ],
-  transformers: [
-    "./transformers",
-  ],
-}
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+  - ./grafana-operator/ks.yaml
+  - ./grafana-instance/ks.yaml
+  - ./kube-prometheus-stack/ks.yaml
+  - ./silence-operator/ks.yaml
+  - ./silence-operator-silences/ks.yaml
+  - ./gatus/ks.yaml
+  - ./opnsense-exporter/ks.yaml
+  - ./loki/ks.yaml
+components:
+  - ../../components/alerts
+transformers:
+  - ./transformers

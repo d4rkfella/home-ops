@@ -1,61 +1,42 @@
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-{
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "multus",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "multus",
-    },
-    postRenderers: [{
-      kustomize: {
-        patches: [{
-          target: {
-            kind: "DaemonSet",
-            name: "multus",
-          },
-          patch: "\
-             - op: add\n\
-            \  path: /spec/template/spec/containers/0/args\n\
-            \  value:\n\
-            \    - \"--cleanup-config-on-exit\"\n\
-            \    - \"--multus-bin-file=/usr/bin/multus\"\n\
-            \    - \"--multus-cni-conf-dir=/tmp\"\n\
-            ",
-        }],
-      },
-    }],
-    values: {
-      cni-plugins: {
-        image: {
-          repository: "ghcr.io/d4rkfella/cni-plugins",
-          tag: "1.9.1@sha256:de9b8409f1beaeca10d4ab45b8ba6925c7bd5c04d4c03416ecfb04efc18b99a7",
-        },
-        resources: {},
-      },
-      multus: {
-        image: {
-          repository: "ghcr.io/d4rkfella/multus-cni",
-          tag: "4.2.4@sha256:2d119a97a27befcf87d383ba52066045f25eed20bd13114f1573330f47336a58",
-        },
-        resources: {
-          requests: {
-            cpu: "10m",
-          },
-          limits: {
-            memory: "512Mi",
-          },
-        },
-      },
-      cni: {
-        netPath: "/etc/cni/net.d",
-        binPath: "/opt/cni/bin",
-      },
-    },
-  },
-}
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: multus
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: multus
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: multus
+            patch: |
+              - op: add
+                path: /spec/template/spec/containers/0/args
+                value:
+                  - "--cleanup-config-on-exit"
+                  - "--multus-bin-file=/usr/bin/multus"
+                  - "--multus-cni-conf-dir=/tmp"
+  values:
+    cni-plugins:
+      image:
+        repository: ghcr.io/d4rkfella/cni-plugins
+        tag: 1.9.1@sha256:de9b8409f1beaeca10d4ab45b8ba6925c7bd5c04d4c03416ecfb04efc18b99a7
+      resources: {}
+    multus:
+      image:
+        repository: ghcr.io/d4rkfella/multus-cni
+        tag: 4.2.4@sha256:2d119a97a27befcf87d383ba52066045f25eed20bd13114f1573330f47336a58
+      resources:
+        requests:
+          cpu: 10m
+        limits:
+          memory: 512Mi
+    cni:
+      netPath: /etc/cni/net.d
+      binPath: /opt/cni/bin

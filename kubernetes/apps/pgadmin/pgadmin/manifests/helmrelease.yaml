@@ -1,138 +1,97 @@
 ---
-{
-  # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
-  apiVersion: "helm.toolkit.fluxcd.io/v2",
-  kind: "HelmRelease",
-  metadata: {
-    name: "pgadmin",
-  },
-  spec: {
-    interval: "1h",
-    chartRef: {
-      kind: "OCIRepository",
-      name: "pgadmin",
-    },
-    values: {
-      controllers: {
-        pgadmin: {
-          annotations: {
-            reloader.stakater.com/auto: "true",
-          },
-          containers: {
-            pgadmin: {
-              image: {
-                repository: "ghcr.io/d4rkfella/pgadmin4",
-                tag: "9.17@sha256:06c55e6f133ea493a4c4cf838c4286b5048b9989049807a9fa1b5bb7c5fe649e",
-              },
-              env: {
-                GUNICORN_LIMIT_REQUEST_LINE: 0,
-                GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0,
-                AUTHENTICATION_SOURCES: "['oauth2']",
-                MASTER_PASSWORD_REQUIRED: "True",
-                OAUTH2_DISPLAY_NAME: "Keycloak",
-                OAUTH2_NAME: "keycloak",
-                OAUTH2_SERVER_METADATA_URL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration",
-                OAUTH2_USERNAME_CLAIM: "preferred_username",
-                OAUTH2_CHALLENGE_METHOD: "S256",
-                OAUTH2_RESPONSE_TYPE: "code",
-                OAUTH2_CLIENT_ID: "1935675b-bf31-48f2-9290-80ae2394ac07",
-                OAUTH2_LOGOUT_URL: "https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&id_token_hint={id_token}",
-              },
-              envFrom: [{
-                secretRef: {
-                  name: "pgadmin-secret",
-                },
-              }],
-              securityContext: {
-                allowPrivilegeEscalation: false,
-                capabilities: {
-                  drop: [
-                    "ALL",
-                  ],
-                },
-                readOnlyRootFilesystem: true,
-              },
-            },
-          },
-        },
-      },
-      defaultPodOptions: {
-        hostUsers: false,
-        securityContext: {
-          runAsNonRoot: true,
-          runAsUser: 5050,
-          runAsGroup: 5050,
-          fsGroup: 5050,
-          fsGroupChangePolicy: "Always",
-          seccompProfile: {
-            type: "RuntimeDefault",
-          },
-        },
-      },
-      persistence: {
-        config: {
-          existingClaim: "{{ .Release.Name }}",
-          globalMounts: [{
-            path: "/var/lib/pgadmin",
-          }],
-        },
-        config-distro: {
-          type: "configMap",
-          name: "pgadmin4-config",
-          globalMounts: [{
-            path: "/usr/lib/pgadmin4/config_distro.py",
-            subPath: "config_distro.py",
-            readOnly: true,
-          }],
-        },
-        gunicorn-config: {
-          type: "configMap",
-          name: "pgadmin4-config",
-          globalMounts: [{
-            path: "/usr/lib/pgadmin4/gunicorn_config.py",
-            subPath: "gunicorn_config.py",
-            readOnly: true,
-          }],
-        },
-        empty: {
-          type: "emptyDir",
-          sizeLimit: "100Mi",
-          globalMounts: [{
-            path: "/tmp",
-            subPath: "tmp",
-          }, {
-            path: "/var/log",
-            subPath: "log",
-          }],
-        },
-      },
-      route: {
-        pgadmin: {
-          hostnames: [
-            "{{ .Release.Name }}.darkfellanetwork.com",
-          ],
-          parentRefs: [{
-            name: "internal",
-            namespace: "envoy-gateway-system",
-          }],
-          rules: [{
-            backendRefs: [{
-              port: 80,
-              name: "pgadmin",
-            }],
-          }],
-        },
-      },
-      service: {
-        pgadmin: {
-          controller: "pgadmin",
-          ports: {
-            http: {
-              port: 80,
-            },
-          },
-        },
-      },
-    },
-  },
-}
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: pgadmin
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: pgadmin
+  values:
+    controllers:
+      pgadmin:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          pgadmin:
+            image:
+              repository: ghcr.io/d4rkfella/pgadmin4
+              tag: 9.17@sha256:06c55e6f133ea493a4c4cf838c4286b5048b9989049807a9fa1b5bb7c5fe649e
+            env:
+              GUNICORN_LIMIT_REQUEST_LINE: 0
+              GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0
+              AUTHENTICATION_SOURCES: "['oauth2']"
+              MASTER_PASSWORD_REQUIRED: "True"
+              OAUTH2_DISPLAY_NAME: Keycloak
+              OAUTH2_NAME: keycloak
+              OAUTH2_SERVER_METADATA_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration
+              OAUTH2_USERNAME_CLAIM: preferred_username
+              OAUTH2_CHALLENGE_METHOD: S256
+              OAUTH2_RESPONSE_TYPE: code
+              OAUTH2_CLIENT_ID: 1935675b-bf31-48f2-9290-80ae2394ac07
+              OAUTH2_LOGOUT_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&id_token_hint={id_token}
+            envFrom:
+              - secretRef:
+                  name: pgadmin-secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+              readOnlyRootFilesystem: true
+    defaultPodOptions:
+      hostUsers: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 5050
+        runAsGroup: 5050
+        fsGroup: 5050
+        fsGroupChangePolicy: Always
+        seccompProfile:
+          type: RuntimeDefault
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /var/lib/pgadmin
+      config-distro:
+        type: configMap
+        name: pgadmin4-config
+        globalMounts:
+          - path: /usr/lib/pgadmin4/config_distro.py
+            subPath: config_distro.py
+            readOnly: true
+      gunicorn-config:
+        type: configMap
+        name: pgadmin4-config
+        globalMounts:
+          - path: /usr/lib/pgadmin4/gunicorn_config.py
+            subPath: gunicorn_config.py
+            readOnly: true
+      empty:
+        type: emptyDir
+        sizeLimit: 100Mi
+        globalMounts:
+          - path: /tmp
+            subPath: tmp
+          - path: /var/log
+            subPath: log
+    route:
+      pgadmin:
+        hostnames:
+          - "{{ .Release.Name }}.darkfellanetwork.com"
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
+        rules:
+          - backendRefs:
+              - port: 80
+                name: pgadmin
+    service:
+      pgadmin:
+        controller: pgadmin
+        ports:
+          http:
+            port: 80

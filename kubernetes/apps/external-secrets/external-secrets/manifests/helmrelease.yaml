@@ -27,14 +27,6 @@
       certController: {
         create: false,
       },
-      podSpecExtra: {
-        hostAliases: [{
-          ip: "192.168.91.54",
-          hostnames: [
-            "openbao.darkfellanetwork.com",
-          ],
-        }],
-      },
       webhook: {
         certManager: {
           enabled: true,

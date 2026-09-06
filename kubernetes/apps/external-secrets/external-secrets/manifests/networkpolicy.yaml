@@ -24,6 +24,14 @@
           port: "8080",
         }],
       }],
+    }, {
+      fromEndpoints: [{
+        matchLabels: {
+          app.kubernetes.io/name: "openbao",
+          app.kubernetes.io/instance: "openbao",
+          io.kubernetes.pod.namespace: "openbao",
+        },
+      }],
     }],
     egress: [{
       toEndpoints: [{

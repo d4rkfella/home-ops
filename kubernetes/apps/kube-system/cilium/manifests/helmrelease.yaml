@@ -65,8 +65,7 @@
         mode: "snat",
       },
       socketLB: {
-        enabled: true,
-        hostNamespaceOnly: true,
+        enabled: false,
       },
       localRedirectPolicy: true,
       hubble: {

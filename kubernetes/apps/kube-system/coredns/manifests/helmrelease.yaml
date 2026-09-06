@@ -73,7 +73,7 @@
           parameters: "@kubernetes",
         }, {
           name: "forward",
-          parameters: ". /etc/resolv.conf",
+          parameters: ". 192.168.91.1",
         }, {
           name: "cache",
           configBlock: "prefetch 20",

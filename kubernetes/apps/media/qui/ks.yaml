@@ -11,6 +11,8 @@
       "../../../../components/volsync",
     ],
     dependsOn: [{
+      name: "qbittorrent",
+    }, {
       name: "cloudnative-pg-cluster",
       namespace: "database",
     }, {

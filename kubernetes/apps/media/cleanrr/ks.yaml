@@ -7,6 +7,11 @@
     name: "cleanrr",
   },
   spec: {
+    dependsOn: [{
+      name: "radarr",
+    }, {
+      name: "sonarr",
+    }],
     interval: "1h",
     path: "./kubernetes/apps/media/cleanrr/manifests",
     prune: true,

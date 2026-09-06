@@ -11,6 +11,10 @@
       "../../../../components/volsync",
     ],
     dependsOn: [{
+      name: "radarr",
+    }, {
+      name: "sonarr",
+    }, {
       name: "cloudnative-pg-cluster",
       namespace: "database",
     }, {

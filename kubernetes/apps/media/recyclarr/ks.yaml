@@ -9,10 +9,8 @@
   spec: {
     dependsOn: [{
       name: "radarr",
-      namespace: "media",
     }, {
       name: "sonarr",
-      namespace: "media",
     }],
     interval: "1h",
     path: "./kubernetes/apps/media/recyclarr/manifests",

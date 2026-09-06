@@ -24,14 +24,6 @@
           port: "8080",
         }],
       }],
-    }, {
-      fromEndpoints: [{
-        matchLabels: {
-          app.kubernetes.io/name: "openbao",
-          app.kubernetes.io/instance: "openbao",
-          io.kubernetes.pod.namespace: "openbao",
-        },
-      }],
     }],
     egress: [{
       toEndpoints: [{
@@ -61,20 +53,6 @@
       toPorts: [{
         ports: [{
           port: "6443",
-          protocol: "TCP",
-        }],
-      }],
-    }, {
-      toEndpoints: [{
-        matchLabels: {
-          io.kubernetes.pod.namespace: "vault",
-          app.kubernetes.io/name: "vault",
-          vault-active: "true",
-        },
-      }],
-      toPorts: [{
-        ports: [{
-          port: "8200",
           protocol: "TCP",
         }],
       }],

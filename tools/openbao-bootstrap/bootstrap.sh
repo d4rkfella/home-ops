@@ -154,50 +154,7 @@ log "sealed: ${SEALED}"
 # ---------------------------------------------------------------------------
 
 if [[ "${INITIALIZED}" == "true" ]]; then
-
-    if [[ "${SEALED}" == "false" ]]; then
-        log "OpenBao is already initialized and unsealed"
-        log "bootstrap already completed; nothing to do"
-        exit 0
-    fi
-
-    log "OpenBao is initialized but sealed"
-
-    case "${SEAL_TYPE}" in
-        gcpckms)
-            log "GCP KMS auto-unseal detected; waiting for unseal..."
-
-            for _ in {1..120}; do
-                STATUS="$(bao_status)"
-
-                CURRENT_INITIALIZED="$(
-                    jq -r '.initialized // false' <<<"${STATUS}" 2>/dev/null || echo false
-                )"
-
-                CURRENT_SEALED="$(
-                    jq -r '.sealed // true' <<<"${STATUS}" 2>/dev/null || echo true
-                )"
-
-                if [[ "${CURRENT_INITIALIZED}" == "true" &&
-                      "${CURRENT_SEALED}" == "false" ]]; then
-                    log "OpenBao successfully auto-unsealed"
-                    exit 0
-                fi
-
-                sleep 2
-            done
-
-            fatal "OpenBao remained sealed after waiting for GCP KMS auto-unseal"
-            ;;
-
-        shamir)
-            fatal "OpenBao is initialized and sealed with Shamir; refusing to destroy or reinitialize it"
-            ;;
-
-        *)
-            fatal "OpenBao is initialized and sealed with unsupported seal type: ${SEAL_TYPE:-unknown}"
-            ;;
-    esac
+    log "OpenBao is already initialized; nothing to do"
 fi
 
 # ---------------------------------------------------------------------------

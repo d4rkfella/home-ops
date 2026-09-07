@@ -155,6 +155,7 @@ log "sealed: ${SEALED}"
 
 if [[ "${INITIALIZED}" == "true" ]]; then
     log "OpenBao is already initialized; nothing to do"
+    exit 0
 fi
 
 # ---------------------------------------------------------------------------

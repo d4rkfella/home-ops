@@ -2,11 +2,11 @@
 set -euo pipefail
 
 log() {
-    echo "[bootstrap] $*"
+    echo "[openbao-bootstrap] $*"
 }
 
 fatal() {
-    echo "[bootstrap] ERROR: $*" >&2
+    echo "[openbao-bootstrap] ERROR: $*" >&2
     exit 1
 }
 
@@ -57,7 +57,7 @@ bao_status() {
 # Find OpenBao pod
 # ---------------------------------------------------------------------------
 
-log "waiting for OpenBao pod..."
+log "waiting for OpenBao pod creation..."
 
 OPENBAO_POD=""
 
@@ -66,6 +66,7 @@ for _ in {1..120}; do
         kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
             -l app.kubernetes.io/name=openbao \
+            -l openbao-active=true \
             -o jsonpath='{.items[0].metadata.name}' \
             2>/dev/null || true
     )"

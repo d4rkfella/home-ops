@@ -125,8 +125,7 @@ spec:
             plugin_auto_register = true
 
             plugin "kms" "gcpckms" {
-              image       = "ghcr.io/openbao/openbao-plugin-kms-gcp"
-              version     = "v0.1.0@sha256:ed0b6e44716dfb77286dc53e8ee2322e41c8e9b14d9652a20f71dd8384f31842"
+              image       = "ghcr.io/openbao/openbao-plugin-kms-gcp:v0.1.0@sha256:ed0b6e44716dfb77286dc53e8ee2322e41c8e9b14d9652a20f71dd8384f31842"
               binary_name = "openbao-plugin-kms-gcp"
             }
 
@@ -332,11 +331,7 @@ spec:
                       protocol: TCP
             - toFQDNs:
                 - matchName: cloudkms.googleapis.com
-              toPorts:
-                - ports:
-                    - port: "443"
-                      protocol: TCP
-            - toFQDNs:
+                - matchName: ghcr.io
                 - matchName: 2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               toPorts:
                 - ports:

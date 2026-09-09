@@ -12,3 +12,8 @@ spec:
   ref:
     tag: 0.1.1
   url: oci://ghcr.io/home-operations/charts/snapshot-controller
+  verify:
+    provider: cosign
+    matchOIDCIdentity:
+      - issuer: https://token.actions.githubusercontent.com
+        subject: https://github.com/home-operations/helm-charts/blob/main/.github/workflows/release.yaml@refs/heads/main

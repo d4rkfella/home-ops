@@ -10,23 +10,17 @@ spec:
     kind: OCIRepository
     name: multus
   values:
-    cni-plugins:
+    cniPlugins:
       image:
         repository: ghcr.io/d4rkfella/cni-plugins
         tag: 1.9.1@sha256:f2f3cc966a024d7ddc2c8bdc846ce99a1524d64473ef5e07c570575eb97989d7
-      resources: {}
-    multus:
-      image:
-        repository: ghcr.io/d4rkfella/multus-cni
-        tag: 4.2.4@sha256:2d119a97a27befcf87d383ba52066045f25eed20bd13114f1573330f47336a58
-      resources:
-        requests:
-          cpu: 10m
-        limits:
-          memory: 512Mi
-    cni:
-      netPath: /etc/cni/net.d
-      binPath: /opt/cni/bin
-
+    image:
+      repository: ghcr.io/d4rkfella/multus-cni
+      tag: 4.2.4@sha256:2d119a97a27befcf87d383ba52066045f25eed20bd13114f1573330f47336a58
+    resources:
+      requests:
+        cpu: 10m
+      limits:
+        memory: 512Mi
     extraArgs:
       - "--multus-bin-file=/usr/bin/multus"

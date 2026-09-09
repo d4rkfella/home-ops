@@ -34,6 +34,10 @@ spec:
         failurePolicy: Fail
     server:
       enabled: true
+      image:
+        registry: ghcr.io
+        repository: openbao/openbao-distroless
+        tag: 2.7.0-beta20260909@sha256:d320825c76e9e5b0515b27283ea0c0849c4e649fe952087bf1e3b1263d6e0876
       updateStrategyType: RollingUpdate
       logLevel: debug
       logFormat: json
@@ -113,6 +117,10 @@ spec:
             telemetry {
               prometheus_retention_time = "24h"
               disable_hostname = true
+            }
+
+            plugin "kms" "gcpckms" {
+              command = "openbao-plugin-kms-gcpckms"
             }
 
             seal "gcpckms" {

@@ -9,19 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: multus
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: DaemonSet
-              name: multus
-            patch: |
-              - op: add
-                path: /spec/template/spec/containers/0/args
-                value:
-                  - "--cleanup-config-on-exit"
-                  - "--multus-bin-file=/usr/bin/multus"
-                  - "--multus-cni-conf-dir=/tmp"
   values:
     cni-plugins:
       image:
@@ -40,3 +27,6 @@ spec:
     cni:
       netPath: /etc/cni/net.d
       binPath: /opt/cni/bin
+
+    extraArgs:
+      - "--multus-bin-file=/usr/bin/multus"

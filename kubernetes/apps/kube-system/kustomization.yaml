@@ -6,6 +6,7 @@ resources:
   - ./coredns/ks.yaml
   - ./cilium/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
+  - ./snapshot-controller/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
   - ./multus/ks.yaml

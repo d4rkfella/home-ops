@@ -34,10 +34,7 @@ spec:
           repository: sig-storage/csi-snapshotter
           tag: v8.6.0
       snapshotController:
-        image:
-          registry: registry.k8s.io/
-          repository: sig-storage/snapshot-controller
-          tag: v8.6.0
+        enabled: false
       provisioner:
         image:
           registry: registry.k8s.io/

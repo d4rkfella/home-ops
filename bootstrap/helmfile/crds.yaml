@@ -17,7 +17,12 @@ defaultInherit: default
 releases:
   - name: envoy-gateway-controller
     namespace: envoy-gateway-system
+
   - name: grafana-operator
     namespace: observability
+
   - name: kube-prometheus-stack
     namespace: observability
+
+  - name: snapshot-controller
+    namespace: kube-system

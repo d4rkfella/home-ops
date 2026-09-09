@@ -4,12 +4,18 @@ helmDefaults:
   forceConflicts: true
   wait: true
   waitForJobs: true
+
 bases:
   - default.yaml
+
 defaultInherit: default
+
 releases:
   - name: cilium
     namespace: kube-system
+    set:
+      - name: hubble.enabled
+        value: false
     hooks:
       - events:
           - postsync
@@ -33,14 +39,17 @@ releases:
           - -f
           - ../../kubernetes/apps/kube-system/cilium/manifests/config.yaml
         showlogs: true
+
   - name: coredns
     namespace: kube-system
     needs:
       - kube-system/cilium
+
   - name: kubelet-csr-approver
     namespace: kube-system
     needs:
       - kube-system/coredns
+
   - name: cert-manager
     namespace: cert-manager
     needs:
@@ -75,6 +84,7 @@ releases:
           - -f
           - ../../kubernetes/apps/cert-manager/cert-manager/manifests/clusterissuer.yaml
         showlogs: true
+
   - name: zfs-localpv
     namespace: openebs-system
     needs:
@@ -113,30 +123,6 @@ releases:
           - "{{ .Release.Namespace }}"
         showlogs: true
       - events:
-          - presync
-        command: kubectl
-        args:
-          - apply
-          - --server-side
-          - --field-manager=kustomize-controller
-          - --force-conflicts
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
-          - -f
-          - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.6.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
-        showlogs: true
-      - events:
-          - postsync
-        command: kubectl
-        args:
-          - wait
-          - --for=create
-          - crd/volumesnapshotclasses.snapshot.storage.k8s.io
-          - --timeout=2m
-        showlogs: true
-      - events:
           - postsync
         command: kubectl
         args:
@@ -147,9 +133,8 @@ releases:
           - --force-conflicts
           - -f
           - ../../kubernetes/apps/openebs-system/zfs-localpv/manifests/storageclass.yaml
-          - -f
-          - ../../kubernetes/apps/openebs-system/zfs-localpv/manifests/volumesnapshotclass.yaml
         showlogs: true
+
   - name: openbao
     namespace: openbao
     wait: false
@@ -191,6 +176,7 @@ releases:
         args:
           - "{{ .Release.Namespace }}"
         showlogs: true
+
   - name: external-secrets
     namespace: external-secrets
     needs:
@@ -221,33 +207,16 @@ releases:
           - -f
           - ../../kubernetes/apps/external-secrets/external-secrets/manifests/externalsecret.yaml
         showlogs: true
+
   - name: multus
     namespace: kube-system
     needs:
       - cert-manager/cert-manager
-    hooks:
-      - events:
-          - postsync
-        command: kubectl
-        args:
-          - -n
-          - kube-system
-          - patch
-          - ds
-          - multus
-          - --type=json
-          - -p
-          - "[{\"op\":\"add\",\"path\":\"/spec/template/spec/containers/0/args/-\",\"value\":\"--multus-bin-file=/usr/bin/multus\"}]"
-        showlogs: true
+
   - name: flux-operator
     namespace: flux-system
     needs:
       - external-secrets/external-secrets
-    set:
-      - name: web.config.authentication.oauth2.clientID
-        value: "{{ exec \"kubectl\" (list \"get\" \"secret\" \"flux-web-client\" \"-n\" \"flux-system\" \"-o\" \"jsonpath={.data.CLIENT_ID}\") | b64dec }}"
-      - name: web.config.authentication.oauth2.clientSecret
-        value: "{{ exec \"kubectl\" (list \"get\" \"secret\" \"flux-web-client\" \"-n\" \"flux-system\" \"-o\" \"jsonpath={.data.CLIENT_SECRET}\") | b64dec }}"
     hooks:
       - events:
           - presync
@@ -270,6 +239,7 @@ releases:
           - -f
           - ../../kubernetes/apps/flux-system/flux-operator/manifests/externalsecret.yaml
         showlogs: true
+
   - name: flux-instance
     namespace: flux-system
     needs:

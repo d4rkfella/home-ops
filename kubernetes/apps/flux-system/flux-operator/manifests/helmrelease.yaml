@@ -23,7 +23,7 @@ spec:
     serviceMonitor:
       create: true
     web:
-      configSecretName: "{{ .Release.Name }}-web-config"
+      configSecretName: "flux-operator-web-config"
       httpRoute:
         enabled: true
         hostnames:

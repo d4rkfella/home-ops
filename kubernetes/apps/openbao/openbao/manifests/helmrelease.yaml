@@ -126,7 +126,7 @@ spec:
 
             plugin "kms" "gcpckms" {
               image       = "ghcr.io/openbao/openbao-plugin-kms-gcp"
-              version     = "v0.1.0"
+              version     = "v0.1.0@sha256:ed0b6e44716dfb77286dc53e8ee2322e41c8e9b14d9652a20f71dd8384f31842"
               binary_name = "openbao-plugin-kms-gcp"
             }
 

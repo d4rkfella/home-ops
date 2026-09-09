@@ -6,9 +6,12 @@ metadata:
   name: zfs-localpv
 spec:
   interval: 1h
-  chartRef:
-    kind: OCIRepository
-    name: zfs-localpv
+  chart:
+    spec:
+      chart: ./deploy/helm/charts
+      sourceRef:
+        kind: GitRepository
+        name: zfs-localpv
   values:
     crds:
       csi:

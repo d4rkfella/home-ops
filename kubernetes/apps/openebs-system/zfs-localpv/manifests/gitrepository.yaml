@@ -1,0 +1,11 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/source.toolkit.fluxcd.io/gitrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: zfs-localpv
+spec:
+  ref:
+    branch: develop
+  url: https://github.com/openebs/zfs-localpv.git
+  interval: 1h

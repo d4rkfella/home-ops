@@ -3,12 +3,12 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: prometheus-route-oidc
+  name: kube-prometheus-stack-prometheus
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: prometheus
+      name: kube-prometheus-stack-prometheus
   oidc:
     provider:
       issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
@@ -55,12 +55,12 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: alertmanager-route-oidc
+  name: kube-prometheus-stack-alertmanager
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: alertmanager
+      name: kube-prometheus-stack-alertmanager
   oidc:
     provider:
       issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET

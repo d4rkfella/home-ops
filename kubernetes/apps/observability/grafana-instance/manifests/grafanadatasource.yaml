@@ -12,19 +12,9 @@ spec:
     type: alertmanager
     name: alertmanager
     access: proxy
-    url: https://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093
+    url: http://kube-prometheus-stack-alertmanager.observability.svc.cluster.local:9093
     jsonData:
       implementation: prometheus
-      tlsAuthWithCACert: true
-      serverName: kube-prometheus-stack-alertmanager.observability.svc.cluster.local
-    secureJsonData:
-      tlsCACert: ${ca.crt}
-  valuesFrom:
-    - targetPath: secureJsonData.tlsCACert
-      valueFrom:
-        secretKeyRef:
-          name: internal-ca-secret
-          key: ca.crt
   uid: alertmanager
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json
@@ -41,22 +31,12 @@ spec:
     name: prometheus
     access: proxy
     isDefault: true
-    url: https://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
+    url: http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090
     jsonData:
       prometheusType: Prometheus
       timeInterval: 60s
       manageAlerts: true
       alertmanagerUid: alertmanager
-      tlsAuthWithCACert: true
-      serverName: kube-prometheus-stack-prometheus.observability.svc.cluster.local
-    secureJsonData:
-      tlsCACert: ${ca.crt}
-  valuesFrom:
-    - targetPath: secureJsonData.tlsCACert
-      valueFrom:
-        secretKeyRef:
-          name: internal-ca-secret
-          key: ca.crt
   uid: prometheus
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/grafana.integreatly.org/grafanadatasource_v1beta1.json

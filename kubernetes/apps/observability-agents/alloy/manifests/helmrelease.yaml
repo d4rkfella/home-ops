@@ -31,7 +31,6 @@ spec:
     controller:
       podAnnotations:
         configmap.reloader.stakater.com/reload: alloy-configmap
-        security.darkfellanetwork.com/mount-internal-ca: "true"
       volumes:
         extra:
           - name: host-rootfs-path

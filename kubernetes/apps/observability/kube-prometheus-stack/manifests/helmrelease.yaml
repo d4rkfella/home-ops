@@ -16,25 +16,18 @@ spec:
     alertmanager:
       serviceMonitor:
         selfMonitor: true
-        scheme: https
-        tlsConfig:
-          serverName: kube-prometheus-stack-alertmanager.observability.svc.cluster.local
-          caFile: /etc/ssl/certs/internal-ca.crt
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "alertmanager.darkfellanetwork.com"
+          parentRefs:
+            - name: internal
+              namespace: envoy-gateway-system
+              sectionName: https
       alertmanagerSpec:
         hostUsers: false
         externalUrl: https://alertmanager.darkfellanetwork.com
-        web:
-          tlsConfig:
-            cert:
-              secret:
-                name: alertmanager-tls
-                key: tls.crt
-            keySecret:
-              name: alertmanager-tls
-              key: tls.key
-        podMetadata:
-          annotations:
-            security.darkfellanetwork.com/mount-internal-ca: "true"
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -57,36 +50,22 @@ spec:
     prometheus:
       serviceMonitor:
         selfMonitor: true
-        scheme: https
-        tlsConfig:
-          serverName: kube-prometheus-stack-prometheus.observability.svc.cluster.local
-          caFile: /etc/ssl/certs/internal-ca.crt
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "prometheus.darkfellanetwork.com"
+          parentRefs:
+            - name: internal
+              namespace: envoy-gateway-system
+              sectionName: https
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
         externalUrl: https://prometheus.darkfellanetwork.com
         enableRemoteWriteReceiver: true
         hostUsers: false
-        web:
-          tlsConfig:
-            cert:
-              secret:
-                name: prometheus-tls
-                key: tls.crt
-            keySecret:
-              name: prometheus-tls
-              key: tls.key
-        alertingEndpoints:
-          - apiVersion: v2
-            namespace: observability
-            name: kube-prometheus-stack-alertmanager
-            port: http-web
-            scheme: https
-            tlsConfig:
-              caFile: /etc/ssl/certs/internal-ca.crt
-              serverName: kube-prometheus-stack-alertmanager.observability.svc.cluster.local
         podMetadata:
           annotations:
-            security.darkfellanetwork.com/mount-internal-ca: "true"
             vault.hashicorp.com/agent-inject: "true"
             vault.hashicorp.com/agent-init-first: "true"
             vault.hashicorp.com/agent-inject-token: "true"

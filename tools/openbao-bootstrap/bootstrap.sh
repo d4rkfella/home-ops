@@ -1,44 +1,61 @@
 #!/usr/bin/env bash
-set -euo pipefail
+
+set -Eeuo pipefail
+
+readonly SCRIPT_NAME="openbao-bootstrap"
 
 log() {
-    echo "[openbao-bootstrap] $*"
+    printf '[%s] [%s] %s\n' \
+        "$(date --iso-8601=seconds)" \
+        "$SCRIPT_NAME" \
+        "$*"
 }
 
 fatal() {
-    echo "[openbao-bootstrap] ERROR: $*" >&2
+    printf '[%s] [%s] ERROR: %s\n' \
+        "$(date --iso-8601=seconds)" \
+        "$SCRIPT_NAME" \
+        "$*" >&2
     exit 1
 }
 
-OPENBAO_NAMESPACE="${1:?OpenBao namespace must be provided}"
+require_command() {
+    command -v "$1" >/dev/null 2>&1 ||
+        fatal "required command not found: $1"
+}
 
-OPENBAO_LOCAL_PORT="${OPENBAO_LOCAL_PORT:-18200}"
-OPENBAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME:-openbao.darkfellanetwork.com}"
+for command in kubectl bao jq aws; do
+    require_command "$command"
+done
 
-export AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID:?AWS_ACCESS_KEY_ID is required}"
-export AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY:?AWS_SECRET_ACCESS_KEY is required}"
-export AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL:?AWS_ENDPOINT_URL is required}"
-export AWS_REGION="${AWS_REGION:-us-east-1}"
+readonly OPENBAO_NAMESPACE="${1:?usage: $0 <openbao-namespace>}"
 
-SNAPSHOT_BUCKET="${SNAPSHOT_BUCKET:-openbao-snapshots}"
-SNAPSHOT_PREFIX="${SNAPSHOT_PREFIX:-bao_}"
+readonly OPENBAO_LOCAL_PORT="${OPENBAO_LOCAL_PORT:-18200}"
+readonly OPENBAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME:-openbao.darkfellanetwork.com}"
 
-TMP_DIR="/tmp/openbao-bootstrap"
-INIT_FILE="${TMP_DIR}/init.json"
-RESTORE_FILE="${TMP_DIR}/restore.snapshot"
-PORT_FORWARD_LOG="${TMP_DIR}/port-forward.log"
+readonly SNAPSHOT_BUCKET="${SNAPSHOT_BUCKET:-openbao-snapshots}"
+readonly SNAPSHOT_PREFIX="${SNAPSHOT_PREFIX:-bao_}"
 
-mkdir -p "${TMP_DIR}"
+readonly TMP_DIR="$(mktemp -d -t openbao-bootstrap.XXXXXX)"
+readonly INIT_FILE="$TMP_DIR/init.json"
+readonly RESTORE_FILE="$TMP_DIR/restore.snapshot"
+readonly PORT_FORWARD_LOG="$TMP_DIR/port-forward.log"
 
 PORT_FORWARD_PID=""
 
 cleanup() {
-    if [[ -n "${PORT_FORWARD_PID}" ]]; then
-        log "stopping port-forward..."
-        kill "${PORT_FORWARD_PID}" 2>/dev/null || true
-        wait "${PORT_FORWARD_PID}" 2>/dev/null || true
-        PORT_FORWARD_PID=""
+    local exit_code=$?
+
+    if [[ -n "$PORT_FORWARD_PID" ]] &&
+       kill -0 "$PORT_FORWARD_PID" 2>/dev/null; then
+        log "stopping port-forward (pid=$PORT_FORWARD_PID)"
+        kill "$PORT_FORWARD_PID" 2>/dev/null || true
+        wait "$PORT_FORWARD_PID" 2>/dev/null || true
     fi
+
+    rm -rf "$TMP_DIR"
+
+    exit "$exit_code"
 }
 
 trap cleanup EXIT
@@ -50,7 +67,7 @@ trap cleanup EXIT
 bao_status() {
     BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
     BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-    bao status -format=json 2>/dev/null || true
+    bao status -format=json
 }
 
 # ---------------------------------------------------------------------------
@@ -193,10 +210,13 @@ case "${SEAL_TYPE}" in
     shamir)
         log "Shamir seal detected; unsealing..."
 
-        jq -r '.unseal_keys_b64[]' "${INIT_FILE}" |
-            while IFS= read -r key; do
-                bao operator unseal "${key}" >/dev/null
-            done
+        mapfile -t unseal_keys < <(
+            jq -r '.unseal_keys_b64[]' "$INIT_FILE"
+        )
+
+        for key in "${unseal_keys[@]}"; do
+            bao operator unseal "$key" >/dev/null
+        done
         ;;
 
     gcpckms)

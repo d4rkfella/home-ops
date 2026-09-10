@@ -10,7 +10,9 @@ spec:
     kind: OCIRepository
     name: grafana-operator
   values:
+    hostUsers: false
     dashboard:
       enabled: true
     serviceMonitor:
       enabled: true
+    clusterDomain: "cluster.local"

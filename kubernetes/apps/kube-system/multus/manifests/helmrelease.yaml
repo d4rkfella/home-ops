@@ -22,5 +22,3 @@ spec:
         cpu: 10m
       limits:
         memory: 512Mi
-    extraArgs:
-      - "--multus-bin-file=/usr/bin/multus"

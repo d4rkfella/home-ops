@@ -22,7 +22,7 @@ spec:
               pullPolicy: IfNotPresent
             args:
               - --runtime.gomaxprocs=2
-              - --opnsense.protocol=https
+              - --opnsense.protocol=http
               - --opnsense.address=router.darkfellanetwork.com
               - --web.listen-address=:8080
               - --web.config.file=/etc/web-config.yaml
@@ -75,7 +75,7 @@ spec:
         serviceName: opnsense-exporter
         endpoints:
           - port: http
-            scheme: https
+            scheme: http
             path: /metrics
             interval: 30s
             scrapeTimeout: 10s
@@ -86,24 +86,8 @@ spec:
               password:
                 name: opnsense-exporter-secret
                 key: password
-            tlsConfig:
-              serverName: opnsense-exporter.observability.svc.cluster.local
-              ca:
-                secret:
-                  name: opnsense-exporter-tls
-                  key: ca.crt
-              insecureSkipVerify: false
+
     persistence:
-      tls:
-        type: secret
-        name: opnsense-exporter-tls
-        globalMounts:
-          - path: /etc/ssl/certs/opnsense-exporter.crt
-            subPath: tls.crt
-            readOnly: true
-          - path: /etc/ssl/private/opnsense-exporter.key
-            subPath: tls.key
-            readOnly: true
       web-config:
         type: secret
         name: opnsense-exporter-secret

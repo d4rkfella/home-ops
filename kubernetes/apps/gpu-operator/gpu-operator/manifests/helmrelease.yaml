@@ -5,6 +5,8 @@ kind: HelmRelease
 metadata:
   name: gpu-operator
 spec:
+  upgrade:
+    force: true
   interval: 1h
   chartRef:
     kind: OCIRepository

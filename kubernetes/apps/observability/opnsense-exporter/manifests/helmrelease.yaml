@@ -22,7 +22,7 @@ spec:
               pullPolicy: IfNotPresent
             args:
               - --runtime.gomaxprocs=2
-              - --opnsense.protocol=http
+              - --opnsense.protocol=https
               - --opnsense.address=router.darkfellanetwork.com
               - --web.listen-address=:8080
               - --web.config.file=/etc/web-config.yaml

@@ -48,7 +48,7 @@ kind: Gateway
 metadata:
   name: external
   annotations:
-    external-dns.alpha.kubernetes.io/target: external.darkfellanetwork.com
+    external-dns.kubernetes.io/target: external.darkfellanetwork.com
     gatus.home-operations.com/endpoint: |
       client:
         dns-resolver: tcp://1.1.1.1:53
@@ -60,7 +60,7 @@ spec:
       value: 192.168.91.51
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: external.darkfellanetwork.com
+      external-dns.kubernetes.io/hostname: external.darkfellanetwork.com
       lbipam.cilium.io/ips: 192.168.91.51
   listeners:
     - name: http
@@ -88,7 +88,7 @@ kind: Gateway
 metadata:
   name: internal
   annotations:
-    external-dns.alpha.kubernetes.io/target: internal.darkfellanetwork.com
+    external-dns.kubernetes.io/target: internal.darkfellanetwork.com
     gatus.home-operations.com/endpoint: |-
       group: internal
       guarded: true
@@ -102,7 +102,7 @@ spec:
       value: 192.168.91.52
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: internal.darkfellanetwork.com
+      external-dns.kubernetes.io/hostname: internal.darkfellanetwork.com
       lbipam.cilium.io/ips: 192.168.91.52
   listeners:
     - name: http
@@ -243,7 +243,7 @@ kind: HTTPRoute
 metadata:
   name: https-redirect
   annotations:
-    external-dns.alpha.kubernetes.io/controller: none
+    external-dns.kubernetes.io/controller: none
     gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:

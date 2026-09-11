@@ -140,7 +140,7 @@ spec:
       serviceType: LoadBalancer
       externalTrafficPolicy: Local
       annotations:
-        external-dns.alpha.kubernetes.io/hostname: openbao.darkfellanetwork.com
+        external-dns.kubernetes.io/hostname: openbao.darkfellanetwork.com
         lbipam.cilium.io/ips: 192.168.91.54
     serverTelemetry:
       serviceMonitor:

@@ -185,10 +185,15 @@ spec:
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway
-  tcpKeepalive: {}
+  tcpKeepalive:
+    idleTime: 60s
+    interval: 10s
+    probes: 3
   timeout:
     http:
+      connectionIdleTimeout: 4s
       requestTimeout: 0s
+      streamIdleTimeout: 1h
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/clienttrafficpolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
@@ -233,6 +238,13 @@ spec:
     session:
       resumption:
         stateless: {}
+  tcpKeepalive:
+    idleTime: 60s
+    interval: 10s
+    probes: 3
+  timeout:
+    http:
+      idleTimeout: 600s
   targetSelectors:
     - group: gateway.networking.k8s.io
       kind: Gateway

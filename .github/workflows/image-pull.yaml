@@ -1,15 +1,19 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Image Pull
+
 on:
   pull_request:
     branches:
       - main
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
+
 permissions:
   contents: read
+
 jobs:
   filter:
     name: Image Pull - Filter
@@ -22,6 +26,7 @@ jobs:
         uses: bjw-s-labs/action-changed-files@a9a36fb08ce06db9b02fbd8026cc2c0945eb9841 # v0.6.0
         with:
           patterns: kubernetes/**/*
+
   extract:
     if: |-
       ${{
@@ -39,11 +44,12 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Setup Mise
-        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+
+      - name: Setup Flate
+        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
         with:
           cache: false
-          install_args: github:home-operations/flate
+
       - name: Extract Images
         id: extract
         env:
@@ -52,6 +58,7 @@ jobs:
           echo 'images<<EOF' >> $GITHUB_OUTPUT
           flate diff images -p ./kubernetes/flux/cluster -o json >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
+
   pull:
     if: |-
       ${{
@@ -73,10 +80,12 @@ jobs:
           cache: false
           tool_versions: |
             talosctl latest
+
       - name: Pull Image
         env:
           IMAGE: ${{ matrix.image }}
         run: talosctl --nodes "$NODE" image pull "$IMAGE"
+
   success:
     if: ${{ !cancelled() }}
     needs: pull
@@ -86,6 +95,7 @@ jobs:
       - name: Any jobs failed?
         if: ${{ contains(needs.*.result, 'failure') }}
         run: exit 1
+
       - name: All jobs passed or skipped?
         if: ${{ !(contains(needs.*.result, 'failure')) }}
         env:

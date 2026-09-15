@@ -187,7 +187,7 @@ spec:
               value: ssd_pool
             - name: TALOS_VERSION
               # renovate: datasource=custom.talos-factory depName=siderolabs/talos
-              value: v1.14.0
+              value: v1.14.1
           resources:
             limits:
               cpu: "1"

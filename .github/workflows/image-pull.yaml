@@ -47,6 +47,8 @@ jobs:
             github:home-operations/flate 0.4.9
       - name: Extract Images
         id: extract
+        env:
+          FLATE_API_VERSIONS: "gateway.networking.k8s.io/v1"
         run: |
           echo 'images<<EOF' >> $GITHUB_OUTPUT
           flate diff images -p ./kubernetes/flux/cluster -o json >> $GITHUB_OUTPUT

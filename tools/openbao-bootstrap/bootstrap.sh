@@ -208,19 +208,37 @@ fi
 
 log "OpenBao is not initialized; initializing..."
 
-if ! BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
-     BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-     BAO_CACERT="${OPENBAO_CACERT}" \
-     bao operator init -format=json \
-     >"${INIT_FILE}"; then
+INIT_EXIT_CODE=0
 
-    fatal "OpenBao initialization failed"
+BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
+BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+BAO_CACERT="${OPENBAO_CACERT}" \
+bao operator init -format=json \
+    >"${INIT_FILE}" \
+    2>"${TMP_DIR}/init.stderr" \
+|| INIT_EXIT_CODE=$?
+
+if [[ "${INIT_EXIT_CODE}" -ne 0 ]]; then
+    log "bao operator init failed with exit code ${INIT_EXIT_CODE}"
+
+    log "bao operator init stderr:"
+    cat "${TMP_DIR}/init.stderr" >&2
+
+    log "OpenBao pod logs:"
+    kubectl logs \
+        -n "${OPENBAO_NAMESPACE}" \
+        "${OPENBAO_POD}" \
+        --tail=200 >&2 || true
+
+    exit "${INIT_EXIT_CODE}"
 fi
 
 jq -e '.root_token' "${INIT_FILE}" >/dev/null ||
     fatal "OpenBao initialization did not return a root token"
 
 export BAO_TOKEN="$(jq -r '.root_token' "${INIT_FILE}")"
+
+log "OpenBao initialization completed"
 
 # ---------------------------------------------------------------------------
 # Detect seal type after initialization.

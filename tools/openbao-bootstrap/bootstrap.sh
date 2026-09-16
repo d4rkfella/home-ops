@@ -226,7 +226,7 @@ wait_for_api() {
 
     for attempt in {1..120}; do
         status="$(
-            get_status "${pod}" 2>/dev/null || true
+            get_status "${pod}" || true
         )"
 
         printf '%s\n' "${status}" >"${last_status_file}"
@@ -241,6 +241,28 @@ wait_for_api() {
 
         if [[ "${attempt}" -eq 1 || $((attempt % 10)) -eq 0 ]]; then
             log "OpenBao API not ready on ${pod} (attempt ${attempt}/120)"
+
+            log "port-forward log for ${pod}:"
+            cat "${PORT_FORWARD_LOGS[$pod]}" >&2 || true
+
+            log "pod state:"
+            kubectl get pod \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -o wide >&2 || true
+
+            log "container state:"
+            kubectl get pod \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -o jsonpath='{range .status.containerStatuses[*]}name={.name} ready={.ready} restartCount={.restartCount} state={.state} lastState={.lastState}{"\n"}{end}' \
+                >&2 || true
+
+            log "OpenBao pod logs:"
+            kubectl logs \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                --tail=100 >&2 || true
         fi
 
         sleep 2
@@ -248,15 +270,6 @@ wait_for_api() {
 
     log "last bao status output for ${pod}:"
     cat "${last_status_file}" >&2 || true
-
-    log "port-forward log for ${pod}:"
-    cat "${PORT_FORWARD_LOGS[$pod]}" >&2 || true
-
-    log "OpenBao pod logs for ${pod}:"
-    kubectl logs \
-        -n "${OPENBAO_NAMESPACE}" \
-        "${pod}" \
-        --tail=200 >&2 || true
 
     fatal "OpenBao API did not become queryable on ${pod}"
 }

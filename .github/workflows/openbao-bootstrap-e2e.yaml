@@ -442,48 +442,100 @@ jobs:
           set -Eeuo pipefail
 
           for pod in openbao-1 openbao-2; do
+            echo "========================================"
             echo "Waiting for ${pod} to become initialized..."
+            echo "========================================"
 
             initialized=false
 
-            for _ in {1..90}; do
+            for attempt in {1..90}; do
+              echo ""
+              echo "--- ${pod}: attempt ${attempt}/90 ---"
+
+              STATUS_FILE="/tmp/openbao-e2e/${pod}-status.json"
+              ERROR_FILE="/tmp/openbao-e2e/${pod}-status.err"
+
+              rm -f "${STATUS_FILE}" "${ERROR_FILE}"
+
               set +e
-              STATUS="$(
-                kubectl exec \
-                  -n "${OPENBAO_NAMESPACE}" \
-                  "${pod}" \
-                  -- env \
-                    BAO_ADDR="https://127.0.0.1:8200" \
-                    BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-                    BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                    bao status -format=json \
-                  2>/dev/null
-              )"
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao status -format=json \
+                >"${STATUS_FILE}" \
+                2>"${ERROR_FILE}"
+              STATUS_RC=$?
               set -e
 
-              if [[ -n "${STATUS}" ]] && \
-                jq -e '.initialized == true' <<<"${STATUS}" >/dev/null 2>&1; then
-                echo "${pod} is initialized."
-                echo "${STATUS}" | jq '{initialized, sealed, storage_type, ha_enabled}'
-                initialized=true
-                break
+              echo "kubectl exec / bao status exit code: ${STATUS_RC}"
+
+              if [[ -s "${ERROR_FILE}" ]]; then
+                echo "--- stderr ---"
+                cat "${ERROR_FILE}"
               fi
 
+              if [[ -s "${STATUS_FILE}" ]]; then
+                echo "--- status ---"
+                cat "${STATUS_FILE}"
+
+                if jq -e '.initialized == true' \
+                    "${STATUS_FILE}" >/dev/null 2>&1; then
+
+                  echo "--- parsed status ---"
+                  jq '{initialized, sealed, storage_type, ha_enabled}' \
+                    "${STATUS_FILE}"
+
+                  initialized=true
+                  echo "${pod} is initialized."
+                  break
+                else
+                  echo "${pod} is not initialized yet."
+                fi
+              else
+                echo "No status JSON was returned."
+              fi
+
+              echo "Checking ${pod} logs..."
+              kubectl logs \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                --tail=20 2>&1 || true
+
+              echo "Sleeping 2 seconds..."
               sleep 2
             done
 
             if [[ "${initialized}" != "true" ]]; then
-              echo "${pod} did not become initialized." >&2
+              echo ""
+              echo "========================================"
+              echo "${pod} did not become initialized."
+              echo "========================================"
 
-              echo "=== ${pod} logs ===" >&2
+              echo "=== Final ${pod} status ==="
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao status -format=json \
+                2>&1 || true
+
+              echo "=== Final ${pod} logs ==="
               kubectl logs \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
-                --tail=200 >&2 || true
+                --tail=200 2>&1 || true
 
               exit 1
             fi
           done
+
 
       - name: Unseal OpenBao followers
         shell: bash

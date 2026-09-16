@@ -45,7 +45,7 @@ jobs:
           k3d-name: openbao-e2e
           k3d-tag: v5.9.0
           version: v1.37.0+k3s1
-          args: >-
+          k3d-args: >-
             --agents 2
             --servers 1
 
@@ -62,7 +62,7 @@ jobs:
           helm version
 
       # -----------------------------------------------------------------------
-      # Test S3 backend
+      # Setup S3 backend
       # -----------------------------------------------------------------------
 
       - name: Start MinIO
@@ -77,22 +77,51 @@ jobs:
             --publish 9001:9001 \
             --env MINIO_ROOT_USER=minioadmin \
             --env MINIO_ROOT_PASSWORD=minioadmin \
-            quay.io/minio/minio:latest \
+            quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z \
             server /data --console-address ":9001"
 
-          for _ in {1..60}; do
-            if curl -fsS http://127.0.0.1:9000/minio/health/live >/dev/null; then
+          echo "Waiting for MinIO..."
+
+          for _ in {1..120}; do
+            if curl \
+              --fail \
+              --silent \
+              --show-error \
+              --max-time 2 \
+              http://127.0.0.1:9000/minio/health/ready \
+              >/dev/null 2>&1; then
+              echo "MinIO is ready"
               break
             fi
 
             sleep 1
           done
 
-          curl -fsS http://127.0.0.1:9000/minio/health/live >/dev/null
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --max-time 5 \
+            http://127.0.0.1:9000/minio/health/ready \
+            >/dev/null
 
-          aws s3api create-bucket \
+          echo "Creating snapshot bucket..."
+
+          for _ in {1..30}; do
+            if aws s3api create-bucket \
+              --bucket "${SNAPSHOT_BUCKET}" \
+              --endpoint-url "${AWS_ENDPOINT_URL}"; then
+              break
+            fi
+
+            sleep 2
+          done
+
+          aws s3api head-bucket \
             --bucket "${SNAPSHOT_BUCKET}" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
+
+          echo "MinIO bucket is ready"
 
       # -----------------------------------------------------------------------
       # Internal CA + OpenBao server certificate.
@@ -302,8 +331,7 @@ jobs:
           helm upgrade --install openbao openbao/openbao \
             --namespace "${OPENBAO_NAMESPACE}" \
             --values /tmp/openbao-e2e/values.yaml \
-            --wait \
-            --timeout 10m
+            --wait=false
 
       # -----------------------------------------------------------------------
       # The chart/service registration must create openbao-active itself.
@@ -573,8 +601,7 @@ jobs:
           helm upgrade --install openbao openbao/openbao \
             --namespace "${OPENBAO_NAMESPACE}" \
             --values /tmp/openbao-e2e/values.yaml \
-            --wait \
-            --timeout 10m
+            --wait=false
 
       - name: Wait for fresh OpenBao active pod
         shell: bash

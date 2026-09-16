@@ -829,15 +829,20 @@ jobs:
             done
           done
 
-      - name: Debug OpenBao labels
+      - name: Debug OpenBao pods
         shell: bash
         run: |
           set -Eeuo pipefail
 
           kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
-            -o custom-columns='NAME:.metadata.name,PHASE:.status.phase,OPENBAO_ACTIVE:.metadata.labels.openbao-active,APP_NAME:.metadata.labels.app\.kubernetes\.io/name' \
+            -o wide \
             --show-labels
+
+          echo
+          kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            -o json
 
       - name: Verify restored secret
         shell: bash

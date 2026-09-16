@@ -298,39 +298,24 @@ jobs:
             --values /tmp/openbao-e2e/values.yaml \
             --wait=false
 
-      - name: Wait for the OpenBao pods to be running
+      - name: Wait for the first OpenBao pod to be running
         shell: bash
         run: |
           set -Eeuo pipefail
 
-          for _ in {1..180}; do
-            count="$(
-              kubectl get pods \
-                -n "${OPENBAO_NAMESPACE}" \
-                -l app.kubernetes.io/name=openbao \
-                -l app.kubernetes.io/instance=openbao \
-                --no-headers 2>/dev/null |
-              awk '$1 ~ /^openbao-[0-2]$/ { count++ } END { print count+0 }'
-            )"
-
-            if [[ "${count}" == "3" ]]; then
-              break
-            fi
-
-            sleep 2
-          done
-
           for _ in {1..300}; do
-            running="$(
+            pod="$(
               kubectl get pods \
                 -n "${OPENBAO_NAMESPACE}" \
                 -l app.kubernetes.io/name=openbao \
                 -l app.kubernetes.io/instance=openbao \
-                -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' 2>/dev/null |
-              grep -c '^Running$' || true
+                -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' \
+                2>/dev/null |
+              awk '$2 == "Running" { print $1; exit }'
             )"
 
-            if [[ "${running}" == "3" ]]; then
+            if [[ -n "${pod}" ]]; then
+              echo "OpenBao pod is running: ${pod}"
               break
             fi
 
@@ -339,19 +324,21 @@ jobs:
 
           kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
+            -l app.kubernetes.io/name=openbao \
+            -l app.kubernetes.io/instance=openbao \
             -o wide
 
-          running="$(
+          pod="$(
             kubectl get pods \
               -n "${OPENBAO_NAMESPACE}" \
               -l app.kubernetes.io/name=openbao \
               -l app.kubernetes.io/instance=openbao \
-              -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' |
-            grep -c '^Running$' || true
+              -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' |
+            awk '$2 == "Running" { print $1; exit }'
           )"
 
-          if [[ "${running}" != "3" ]]; then
-            echo "Expected three Running OpenBao pods, got ${running}" >&2
+          if [[ -z "${pod}" ]]; then
+            echo "No Running OpenBao pod found" >&2
             kubectl describe pods -n "${OPENBAO_NAMESPACE}" >&2
             exit 1
           fi

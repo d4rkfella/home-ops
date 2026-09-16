@@ -778,6 +778,20 @@ jobs:
 
           TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
 
+          # The non-dev OpenBao cluster does not create a secret/ KV mount
+          # automatically. Create the KV v2 mount used by this E2E test.
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+              BAO_TOKEN="${TOKEN}" \
+              bao secrets enable \
+                -path=secret \
+                kv-v2
+
           kubectl exec \
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
@@ -797,7 +811,9 @@ jobs:
               BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
-              bao kv put secret/e2e \
+              bao kv put \
+                -mount=secret \
+                e2e \
                 value="snapshot-restore-e2e" \
                 source="github-actions"
 

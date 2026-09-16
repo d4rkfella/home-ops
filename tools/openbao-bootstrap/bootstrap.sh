@@ -318,52 +318,35 @@ log "initialization candidate: ${INITIALIZE_POD}"
 log "initialized: ${INITIALIZED}"
 log "sealed: ${SEALED}"
 
-
-wait_for_all_pods() {
+# ---------------------------------------------------------------------------
+# With OrderedReady, pod N+1 is only created once pod N is Ready, and pod N
+# only becomes Ready once it is unsealed. So we cannot wait for all
+# remaining pods to appear and then unseal them as a batch - pod 2 will
+# never be created until pod 1 has already been unsealed. Instead, wait
+# for exactly one new pod (by ordinal) to appear at a time; the caller
+# unseals it before asking for the next ordinal.
+# ---------------------------------------------------------------------------
+wait_for_pod_at_ordinal() {
+    local ordinal="$1"
     local attempt
 
     for attempt in {1..180}; do
         discover_openbao_pods || true
 
-        if [[ "${#OPENBAO_PODS[@]}" -ge "${EXPECTED_REPLICAS}" ]]; then
+        if [[ "${#OPENBAO_PODS[@]}" -gt "${ordinal}" ]]; then
             return 0
         fi
 
         if [[ "${attempt}" -eq 1 || $((attempt % 15)) -eq 0 ]]; then
             log \
-                "waiting for remaining OpenBao pods to be created " \
-                "(${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS}, attempt ${attempt}/180)..."
+                "waiting for OpenBao pod at ordinal ${ordinal} to be created " \
+                "(${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS} exist so far, attempt ${attempt}/180)..."
         fi
 
         sleep 2
     done
 
     return 1
-}
-
-wait_and_prepare_remaining_pods() {
-    wait_for_all_pods ||
-        fatal \
-            "only ${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS} OpenBao pods " \
-            "were created before timing out (StatefulSet may be stuck)"
-
-    log \
-        "all ${#OPENBAO_PODS[@]} OpenBao pods discovered: " \
-        "${OPENBAO_PODS[*]}"
-
-    for pod in "${OPENBAO_PODS[@]}"; do
-        if [[ "${pod}" == "${INITIALIZE_POD}" ]]; then
-            continue
-        fi
-
-        kubectl wait \
-            -n "${OPENBAO_NAMESPACE}" \
-            --for=jsonpath='{.status.phase}'=Running \
-            "pod/${pod}" \
-            --timeout=10m
-
-        start_port_forward "${pod}"
-    done
 }
 
 if [[ "${INITIALIZED}" == "true" ]]; then

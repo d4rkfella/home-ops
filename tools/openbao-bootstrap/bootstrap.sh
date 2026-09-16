@@ -517,4 +517,22 @@ bao \
 
 log "restore command completed"
 
+log "restarting OpenBao pods after snapshot restore..."
+
+for pod in "${OPENBAO_PODS[@]}"; do
+    kubectl delete pod \
+        -n "${OPENBAO_NAMESPACE}" \
+        "${pod}" \
+        --wait=true
+done
+
+log "waiting for OpenBao pods to come back..."
+
+for pod in "${OPENBAO_PODS[@]}"; do
+    start_port_forward "${pod}"
+    wait_for_api "${pod}" >/dev/null
+done
+
+log "all OpenBao pods are responding after snapshot restore"
+
 log "bootstrap completed successfully"

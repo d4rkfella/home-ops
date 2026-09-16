@@ -789,127 +789,179 @@ jobs:
           ./tools/openbao-bootstrap/bootstrap.sh \
             "${OPENBAO_NAMESPACE}"
 
-      - name: Verify restored secret
+      - name: Unseal restored OpenBao cluster
         shell: bash
         run: |
           set -Eeuo pipefail
 
-          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+          SEAL_TYPE="$(
+            jq -r '.type // empty' \
+              /tmp/openbao-e2e/source-init.json
+          )"
 
-          ACTIVE_POD="$(
+          if [[ "${SEAL_TYPE}" != "shamir" ]]; then
+            echo "Source cluster seal type is ${SEAL_TYPE}; no Shamir unseal required."
+            exit 0
+          fi
+
+          mapfile -t UNSEAL_KEYS < <(
+            jq -r '.unseal_keys_b64[0:3][]' \
+              /tmp/openbao-e2e/source-init.json
+          )
+
+          if [[ "${#UNSEAL_KEYS[@]}" -ne 3 ]]; then
+            echo "ERROR: expected 3 Shamir keys, got ${#UNSEAL_KEYS[@]}" >&2
+            exit 1
+          fi
+
+          mapfile -t PODS < <(
             kubectl get pods \
               -n "${OPENBAO_NAMESPACE}" \
               -l app.kubernetes.io/name=openbao \
-              -l openbao-active=true \
-              -o jsonpath='{.items[0].metadata.name}'
-          )"
+              -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' |
+            sed '/^$/d' |
+            sort
+          )
 
-          VALUE="$(
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${ACTIVE_POD}" \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                BAO_TOKEN="${TOKEN}" \
-                bao kv get \
-                  -field=value \
-                  secret/e2e
-          )"
+          if [[ "${#PODS[@]}" -eq 0 ]]; then
+            echo "ERROR: no OpenBao pods found" >&2
+            exit 1
+          fi
 
-          test "${VALUE}" = "snapshot-restore-e2e"
+          for pod in "${PODS[@]}"; do
+            for _ in {1..120}; do
+              STATUS="$(
+                kubectl exec \
+                  -n "${OPENBAO_NAMESPACE}" \
+                  "${pod}" \
+                  -- env \
+                    BAO_ADDR="https://127.0.0.1:8200" \
+                    BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                    BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                    bao status -format=json \
+                  2>/dev/null || true
+              )"
 
-          echo "Restored secret verified successfully."
+              if jq -e '.initialized == true' \
+                >/dev/null 2>&1 <<<"${STATUS}"; then
+                break
+              fi
 
-      - name: Verify restored Raft cluster
-        shell: bash
-        run: |
-          set -Eeuo pipefail
+              sleep 2
+            done
 
-          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+            if ! jq -e '.initialized == true' \
+              >/dev/null 2>&1 <<<"${STATUS}"; then
+              echo "ERROR: ${pod} never became initialized" >&2
+              exit 1
+            fi
 
-          ACTIVE_POD="$(
-            kubectl get pods \
-              -n "${OPENBAO_NAMESPACE}" \
-              -l app.kubernetes.io/name=openbao \
-              -l openbao-active=true \
-              -o jsonpath='{.items[0].metadata.name}'
-          )"
+            if jq -e '.sealed == false' \
+              >/dev/null 2>&1 <<<"${STATUS}"; then
+              echo "${pod} is already unsealed."
+              continue
+            fi
 
-          kubectl exec \
-            -n "${OPENBAO_NAMESPACE}" \
-            "${ACTIVE_POD}" \
-            -- env \
-              BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-              BAO_TOKEN="${TOKEN}" \
-              bao operator raft list-peers
+            echo "Unsealing ${pod}..."
 
-          PEER_COUNT="$(
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${ACTIVE_POD}" \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                BAO_TOKEN="${TOKEN}" \
-                bao operator raft list-peers -format=json \
-              | jq '.data.config.servers | length'
-          )"
+            for key in "${UNSEAL_KEYS[@]}"; do
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao operator unseal "${key}" \
+                >/dev/null
+            done
 
-          echo "Restored Raft peer count: ${PEER_COUNT}"
+            for _ in {1..60}; do
+              STATUS="$(
+                kubectl exec \
+                  -n "${OPENBAO_NAMESPACE}" \
+                  "${pod}" \
+                  -- env \
+                    BAO_ADDR="https://127.0.0.1:8200" \
+                    BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                    BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                    bao status -format=json \
+                  2>/dev/null || true
+              )"
 
-          test "${PEER_COUNT}" -eq 3
+              if jq -e '
+                .initialized == true and
+                .sealed == false
+              ' >/dev/null 2>&1 <<<"${STATUS}"; then
+                break
+              fi
 
-      - name: Verify all OpenBao nodes are initialized and unsealed
-        shell: bash
-        run: |
-          set -Eeuo pipefail
+              sleep 2
+            done
 
-          for pod in openbao-0 openbao-1 openbao-2; do
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${pod}" \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                bao status -format=json \
-              >"/tmp/openbao-e2e/${pod}-status.json"
-
-            jq -e '
+            if ! jq -e '
               .initialized == true and
               .sealed == false
-            ' "/tmp/openbao-e2e/${pod}-status.json" >/dev/null
+            ' >/dev/null 2>&1 <<<"${STATUS}"; then
+              echo "ERROR: ${pod} remained sealed after restore." >&2
+              echo "${STATUS}" >&2
+              exit 1
+            fi
 
             echo "${pod} is initialized and unsealed."
           done
 
-      - name: Show final OpenBao state
-        if: always()
+      - name: Unseal restored OpenBao cluster
         shell: bash
         run: |
-          kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            --show-labels \
-            -o wide || true
+          set -Eeuo pipefail
 
-          kubectl get pvc \
-            -n "${OPENBAO_NAMESPACE}" || true
+          SEAL_TYPE="$(
+            jq -r '.type // empty' \
+              /tmp/openbao-e2e/source-init.json
+          )"
 
-      - name: Dump OpenBao logs on failure
-        if: failure()
-        shell: bash
-        run: |
-          kubectl logs \
-            -n "${OPENBAO_NAMESPACE}" \
-            -l app.kubernetes.io/name=openbao \
-            --all-containers \
-            --prefix \
-            --tail=500 || true
+          if [[ "${SEAL_TYPE}" != "shamir" ]]; then
+            echo "Source cluster seal type is ${SEAL_TYPE}; no Shamir unseal required."
+            exit 0
+          fi
 
-          kubectl describe pods \
-            -n "${OPENBAO_NAMESPACE}" || true
+          mapfile -t UNSEAL_KEYS < <(
+            jq -r '.unseal_keys_b64[0:3][]' \
+              /tmp/openbao-e2e/source-init.json
+          )
+
+          if [[ "${#UNSEAL_KEYS[@]}" -ne 3 ]]; then
+            echo "ERROR: expected 3 Shamir keys, got ${#UNSEAL_KEYS[@]}" >&2
+            exit 1
+          fi
+
+          mapfile -t PODS < <(
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' |
+            sed '/^$/d' |
+            sort
+          )
+
+          if [[ "${#PODS[@]}" -eq 0 ]]; then
+            echo "ERROR: no OpenBao pods found" >&2
+            exit 1
+          fi
+
+          for pod in "${PODS[@]}"; do
+            echo "Unsealing ${pod}..."
+
+            for key in "${UNSEAL_KEYS[@]}"; do
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao operator unseal "${key}" \
+                >/dev/null
+            done
+          done

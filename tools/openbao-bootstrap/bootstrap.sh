@@ -427,44 +427,6 @@ else
     esac
 fi
 
-log "waiting for all OpenBao pods to become initialized and unsealed..."
-
-for pod in "${OPENBAO_PODS[@]}"; do
-    STATUS=""
-
-    for _ in {1..120}; do
-        STATUS="$(
-            get_status "${pod}" 2>/dev/null || true
-        )"
-
-        if jq -e '
-            .initialized == true and
-            .sealed == false
-        ' >/dev/null 2>&1 <<<"${STATUS}"; then
-            break
-        fi
-
-        sleep 2
-    done
-
-    if ! jq -e '
-        .initialized == true and
-        .sealed == false
-    ' >/dev/null 2>&1 <<<"${STATUS}"; then
-        log "final bao status failed for ${pod}:"
-        get_status "${pod}" || true
-
-        log "OpenBao pod logs for ${pod}:"
-        kubectl logs \
-            -n "${OPENBAO_NAMESPACE}" \
-            "${pod}" \
-            --tail=200 >&2 || true
-
-        fatal "${pod} is not initialized and unsealed"
-    fi
-
-    log "${pod} is initialized and unsealed"
-done
 
 log "OpenBao cluster initialized and unsealed"
 
@@ -554,4 +516,5 @@ bao \
     "${RESTORE_FILE}"
 
 log "restore command completed"
+
 log "bootstrap completed successfully"

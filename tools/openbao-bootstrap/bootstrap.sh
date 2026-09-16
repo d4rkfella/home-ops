@@ -442,16 +442,27 @@ else
             log "${INITIALIZE_POD} unsealed"
 
             # openbao-0 becoming Ready is what unblocks the StatefulSet
-            # from creating openbao-1, openbao-2, ... Only now do the
-            # remaining pods actually start to exist.
-            log "waiting for the remaining OpenBao StatefulSet replicas..."
+            # from creating openbao-1. openbao-1 has to be unsealed (and
+            # therefore Ready) before openbao-2 gets created, and so on -
+            # so each remaining ordinal must be waited for and unsealed
+            # one at a time, never as a batch.
+            for (( ordinal=1; ordinal<EXPECTED_REPLICAS; ordinal++ )); do
+                wait_for_pod_at_ordinal "${ordinal}" ||
+                    fatal \
+                        "OpenBao pod at ordinal ${ordinal} was not created " \
+                        "in time (StatefulSet may be stuck)"
 
-            wait_and_prepare_remaining_pods
+                pod="${OPENBAO_PODS[$ordinal]}"
 
-            for pod in "${OPENBAO_PODS[@]}"; do
-                if [[ "${pod}" == "${INITIALIZE_POD}" ]]; then
-                    continue
-                fi
+                log "discovered ${pod}"
+
+                kubectl wait \
+                    -n "${OPENBAO_NAMESPACE}" \
+                    --for=jsonpath='{.status.phase}'=Running \
+                    "pod/${pod}" \
+                    --timeout=10m
+
+                start_port_forward "${pod}"
 
                 log "waiting for ${pod} to join the initialized Raft cluster..."
 

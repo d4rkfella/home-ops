@@ -348,7 +348,9 @@ jobs:
           )"
 
           mapfile -t UNSEAL_KEYS < <(
-            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}]" \
+            jq -r \
+              --argjson threshold "${UNSEAL_THRESHOLD}" \
+              '.unseal_keys_b64[0:$threshold][]' \
               /tmp/openbao-e2e/source-init.json
           )
 

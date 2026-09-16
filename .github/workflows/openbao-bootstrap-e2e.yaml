@@ -461,62 +461,6 @@ jobs:
             done
           }
 
-          wait_for_initialized() {
-            local pod="$1"
-            local timeout=30
-            local elapsed=0
-
-            while (( elapsed < timeout )); do
-              local status
-              status="$(get_status "${pod}")"
-
-              if [[ -n "${status}" ]] &&
-                jq -e '.initialized == true' >/dev/null 2>&1 <<<"${status}"; then
-                return 0
-              fi
-
-              sleep 2
-              elapsed=$((elapsed + 2))
-            done
-
-            echo "ERROR: ${pod} never became initialized" >&2
-
-            kubectl logs \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${pod}" \
-              --tail=250 >&2 || true
-
-            exit 1
-          }
-
-          wait_for_raft_join() {
-            local pod="$1"
-            local timeout=30
-            local elapsed=0
-
-            while (( elapsed < timeout )); do
-              if bao_exec "${pod}" \
-                bao operator raft join \
-                -format=json \
-                https://openbao-active.openbao.svc.cluster.local:8200 2>/dev/null |
-                jq -e '.joined==true'; then
-                return 0
-              fi
-
-              sleep 2
-              elapsed=$((elapsed + 2))
-            done
-
-            echo "ERROR: ${pod} failed to join the raft cluster" >&2
-
-            kubectl logs \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${pod}" \
-              --tail=300 >&2 || true
-
-            exit 1
-          }
-
           wait_for_unsealed() {
             local pod="$1"
             local timeout=30
@@ -551,8 +495,6 @@ jobs:
           }
 
           for pod in openbao-1 openbao-2; do
-            wait_for_raft_join "${pod}"
-            wait_for_initialized "${pod}"
             submit_unseal_keys "${pod}"
             wait_for_unsealed "${pod}"
           done
@@ -845,4 +787,3 @@ jobs:
           test "${VALUE}" = "snapshot-restore-e2e"
 
           echo "Restored secret verified successfully."
-

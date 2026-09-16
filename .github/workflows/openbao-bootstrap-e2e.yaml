@@ -743,7 +743,9 @@ jobs:
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
             -- env \
-              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft list-peers
 
@@ -752,13 +754,18 @@ jobs:
               -n "${OPENBAO_NAMESPACE}" \
               openbao-0 \
               -- env \
-                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao operator raft list-peers -format=json \
               | jq '.data.config.servers | length'
           )"
 
+          echo "Raft peer count: ${PEER_COUNT}"
+
           test "${PEER_COUNT}" -eq 3
+
 
       # -----------------------------------------------------------------------
       # Put known data into the source cluster.
@@ -775,7 +782,9 @@ jobs:
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
             -- env \
-              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao secrets list -format=json \
             | jq -e '."secret/" != null' >/dev/null
@@ -784,7 +793,9 @@ jobs:
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
             -- env \
-              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao kv put secret/e2e \
                 value="snapshot-restore-e2e" \
@@ -805,7 +816,9 @@ jobs:
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
             -- env \
-              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft snapshot save /tmp/e2e.snapshot
 
@@ -964,7 +977,9 @@ jobs:
               -n "${OPENBAO_NAMESPACE}" \
               "${ACTIVE_POD}" \
               -- env \
-                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao kv get \
                   -field=value \
@@ -972,6 +987,8 @@ jobs:
           )"
 
           test "${VALUE}" = "snapshot-restore-e2e"
+
+          echo "Restored secret verified successfully."
 
       - name: Verify restored Raft cluster
         shell: bash
@@ -988,11 +1005,15 @@ jobs:
               -o jsonpath='{.items[0].metadata.name}'
           )"
 
+          echo "Active pod after restore: ${ACTIVE_POD}"
+
           kubectl exec \
             -n "${OPENBAO_NAMESPACE}" \
             "${ACTIVE_POD}" \
             -- env \
-              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft list-peers
 
@@ -1001,11 +1022,15 @@ jobs:
               -n "${OPENBAO_NAMESPACE}" \
               "${ACTIVE_POD}" \
               -- env \
-                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao operator raft list-peers -format=json \
               | jq '.data.config.servers | length'
           )"
+
+          echo "Restored Raft peer count: ${PEER_COUNT}"
 
           test "${PEER_COUNT}" -eq 3
 
@@ -1021,7 +1046,9 @@ jobs:
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
               -- env \
-                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 bao status -format=json \
               >"/tmp/openbao-e2e/${pod}-status.json"
 
@@ -1029,6 +1056,8 @@ jobs:
               .initialized == true and
               .sealed == false
             ' "/tmp/openbao-e2e/${pod}-status.json" >/dev/null
+
+            echo "${pod} is initialized and unsealed."
           done
 
       - name: Show final OpenBao state

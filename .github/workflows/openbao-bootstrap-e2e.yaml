@@ -222,9 +222,6 @@ jobs:
               repository: openbao/openbao
               tag: 2.7.0-beta20260909
 
-            updateStrategyType: RollingUpdate
-            podManagementPolicy: Parallel
-
             serviceAccount:
               create: true
 

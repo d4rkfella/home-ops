@@ -515,15 +515,8 @@ jobs:
           ROOT_TOKEN_FILE="/tmp/openbao-e2e/source-root-token"
           POD_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt"
 
-          test -f "${INIT_FILE}" || {
-            echo "ERROR: missing ${INIT_FILE}" >&2
-            exit 1
-          }
-
-          test -f "${ROOT_TOKEN_FILE}" || {
-            echo "ERROR: missing ${ROOT_TOKEN_FILE}" >&2
-            exit 1
-          }
+          test -f "${INIT_FILE}"
+          test -f "${ROOT_TOKEN_FILE}"
 
           ROOT_TOKEN="$(cat "${ROOT_TOKEN_FILE}")"
 
@@ -532,7 +525,7 @@ jobs:
           )
 
           if [[ "${#UNSEAL_KEYS[@]}" -ne 3 ]]; then
-            echo "ERROR: expected exactly 3 Shamir unseal keys" >&2
+            echo "ERROR: expected 3 Shamir keys" >&2
             exit 1
           fi
 
@@ -556,11 +549,28 @@ jobs:
             bao_exec "${pod}" bao status -format=json 2>/dev/null || true
           }
 
+          submit_unseal_keys() {
+            local pod="$1"
+
+            echo
+            echo "Submitting Shamir keys to ${pod}..."
+
+            for index in 0 1 2; do
+              echo "  Shamir share $((index + 1))/3"
+
+              bao_exec "${pod}" \
+                bao operator unseal "${UNSEAL_KEYS[$index]}" || true
+
+              sleep 1
+            done
+          }
+
           wait_for_initialized() {
             local pod="$1"
             local timeout=180
             local elapsed=0
 
+            echo
             echo "Waiting for ${pod} to become initialized..."
 
             while (( elapsed < timeout )); do
@@ -569,7 +579,7 @@ jobs:
 
               if [[ -n "${status}" ]] &&
                  jq -e '.initialized == true' >/dev/null 2>&1 <<<"${status}"; then
-                echo "${pod} is initialized"
+                echo "${pod} reports initialized=true"
                 echo "${status}" | jq '{
                   type,
                   initialized,
@@ -583,76 +593,11 @@ jobs:
                 return 0
               fi
 
-              echo "${pod}: waiting for initialized=true"
-
               sleep 2
               elapsed=$((elapsed + 2))
             done
 
-            echo "ERROR: ${pod} did not become initialized" >&2
-
-            kubectl logs \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${pod}" \
-              --tail=200 >&2 || true
-
-            exit 1
-          }
-
-          unseal_node() {
-            local pod="$1"
-
-            echo
-            echo "========================================"
-            echo "Unsealing ${pod}"
-            echo "========================================"
-
-            for index in 0 1 2; do
-              local status
-              status="$(get_status "${pod}")"
-
-              if [[ -n "${status}" ]] &&
-                 jq -e '.sealed == false' >/dev/null 2>&1 <<<"${status}"; then
-                echo "${pod} is already unsealed"
-                return 0
-              fi
-
-              echo "Submitting Shamir share $((index + 1))/3 to ${pod}..."
-
-              bao_exec "${pod}" \
-                bao operator unseal "${UNSEAL_KEYS[$index]}"
-
-              status="$(get_status "${pod}")"
-
-              echo "${pod} status after share $((index + 1)):"
-              echo "${status}" | jq '{
-                type,
-                initialized,
-                sealed,
-                t,
-                n,
-                progress,
-                storage_type,
-                ha_enabled,
-                leader_address,
-                leader_cluster_address
-              }' 2>/dev/null || true
-
-              if [[ -n "${status}" ]] &&
-                 jq -e '.sealed == false' >/dev/null 2>&1 <<<"${status}"; then
-                echo "${pod} successfully unsealed"
-                return 0
-              fi
-            done
-
-            echo
-            echo "ERROR: ${pod} is still sealed after 3 Shamir shares."
-            echo
-            echo "Final status:"
-            get_status "${pod}" | jq . >&2 || true
-
-            echo
-            echo "OpenBao logs:"
+            echo "ERROR: ${pod} never became initialized" >&2
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
@@ -661,58 +606,121 @@ jobs:
             exit 1
           }
 
-          for pod in openbao-1 openbao-2; do
-            wait_for_initialized "${pod}"
-            unseal_node "${pod}"
+          wait_for_raft_join() {
+            local pod="$1"
+            local timeout=180
+            local elapsed=0
 
             echo
-            echo "Waiting for ${pod} to finish Raft retry_join..."
-
-            timeout=180
-            elapsed=0
+            echo "Waiting for ${pod} to complete retry_join..."
 
             while (( elapsed < timeout )); do
-              PEERS="$(
-                bao_exec openbao-0 \
-                  env BAO_TOKEN="${ROOT_TOKEN}" \
-                  bao operator raft list-peers \
-                  2>/dev/null || true
-              )"
 
-              if grep -q "${pod}.openbao-internal" <<<"${PEERS}"; then
-                echo "${pod} is present in the Raft peer set"
-                echo "${PEERS}"
-                break
+              if kubectl logs \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                --tail=300 2>/dev/null |
+                grep -q "successfully joined the raft cluster"; then
+
+                echo "${pod} successfully joined the Raft cluster"
+                return 0
               fi
 
-              echo "${pod}: not yet present in leader Raft peer set"
+              echo "${pod}: retry_join has not completed yet"
 
               sleep 2
               elapsed=$((elapsed + 2))
             done
 
-            if (( elapsed >= timeout )); then
-              echo "ERROR: ${pod} did not appear in the leader Raft peer set" >&2
+            echo "ERROR: ${pod} did not complete retry_join" >&2
 
-              echo
-              echo "Leader peer set:"
-              bao_exec openbao-0 \
-                env BAO_TOKEN="${ROOT_TOKEN}" \
-                bao operator raft list-peers >&2 || true
+            echo
+            echo "Last ${pod} logs:"
+            kubectl logs \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              --tail=300 >&2 || true
 
-              echo
-              echo "${pod} status:"
-              get_status "${pod}" | jq . >&2 || true
+            exit 1
+          }
 
-              echo
-              echo "${pod} logs:"
-              kubectl logs \
-                -n "${OPENBAO_NAMESPACE}" \
-                "${pod}" \
-                --tail=250 >&2 || true
+          wait_for_unsealed() {
+            local pod="$1"
+            local timeout=180
+            local elapsed=0
 
-              exit 1
-            fi
+            echo
+            echo "Waiting for ${pod} to become unsealed..."
+
+            while (( elapsed < timeout )); do
+              local status
+              status="$(get_status "${pod}")"
+
+              if [[ -n "${status}" ]] &&
+                 jq -e '
+                   .initialized == true
+                   and
+                   .sealed == false
+                 ' >/dev/null 2>&1 <<<"${status}"; then
+
+                echo "${pod} is unsealed"
+
+                echo "${status}" | jq '{
+                  type,
+                  initialized,
+                  sealed,
+                  storage_type,
+                  ha_enabled,
+                  leader_address,
+                  leader_cluster_address
+                }'
+
+                return 0
+              fi
+
+              sleep 2
+              elapsed=$((elapsed + 2))
+            done
+
+            echo "ERROR: ${pod} remained sealed" >&2
+
+            get_status "${pod}" | jq . >&2 || true
+
+            echo
+            echo "Last ${pod} logs:"
+            kubectl logs \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              --tail=300 >&2 || true
+
+            exit 1
+          }
+
+          for pod in openbao-1 openbao-2; do
+            echo
+            echo "========================================"
+            echo "Processing ${pod}"
+            echo "========================================"
+
+            wait_for_initialized "${pod}"
+
+            # First set of keys allows the Shamir-sealed node
+            # to decrypt the Raft retry_join challenge.
+            submit_unseal_keys "${pod}"
+
+            # The retry_join process now completes and installs
+            # the source cluster's Raft/seal configuration.
+            wait_for_raft_join "${pod}"
+
+            # The join resets Shamir progress to 0/3.
+            # Supply the source cluster's Shamir keys AGAIN
+            # to actually unseal the newly joined node.
+            submit_unseal_keys "${pod}"
+
+            wait_for_unsealed "${pod}"
+
+            echo
+            echo "${pod} is joined and unsealed"
           done
 
           echo

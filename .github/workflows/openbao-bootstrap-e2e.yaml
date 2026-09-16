@@ -436,7 +436,7 @@ jobs:
 
           chmod 600 /tmp/openbao-e2e/source-root-token
 
-      - name: Unseal all source OpenBao nodes
+      - name: Unseal initialized source node
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -446,28 +446,103 @@ jobs:
               /tmp/openbao-e2e/source-init.json
           )
 
-          for pod in openbao-0 openbao-1 openbao-2; do
-            echo "Waiting for ${pod} to join..."
+          echo "Unsealing initialized node openbao-0..."
 
-            for _ in {1..120}; do
+          for key in "${KEYS[@]}"; do
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              openbao-0 \
+              -- env \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                bao operator unseal "${key}" \
+              >/dev/null
+          done
+
+          echo "Checking openbao-0..."
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+              bao status -format=json \
+            > /tmp/openbao-e2e/openbao-0-status.json
+
+          jq -e '
+            .initialized == true and
+            .sealed == false
+          ' /tmp/openbao-e2e/openbao-0-status.json >/dev/null
+
+          echo "openbao-0 is initialized and unsealed."
+
+      - name: Wait for OpenBao Raft followers
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          for pod in openbao-1 openbao-2; do
+            echo "Waiting for ${pod} to join the initialized Raft cluster..."
+
+            initialized=false
+
+            for _ in {1..180}; do
               if kubectl exec \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
-                -- env BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
-                bao status -format=json \
-                >/tmp/openbao-e2e/status.json 2>/dev/null; then
-                break
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao status -format=json \
+                > "/tmp/openbao-e2e/${pod}-status.json" 2>/dev/null; then
+
+                if jq -e '.initialized == true' \
+                  "/tmp/openbao-e2e/${pod}-status.json" >/dev/null; then
+                  initialized=true
+                  echo "${pod} is initialized."
+                  break
+                fi
               fi
 
               sleep 2
             done
 
+            if [[ "${initialized}" != "true" ]]; then
+              echo "${pod} did not become initialized." >&2
+              kubectl logs \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                --tail=200 >&2 || true
+              exit 1
+            fi
+          done
+
+      - name: Unseal OpenBao followers
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mapfile -t KEYS < <(
+            jq -r '.unseal_keys_b64[]' \
+              /tmp/openbao-e2e/source-init.json
+          )
+
+          for pod in openbao-1 openbao-2; do
+            echo "Unsealing ${pod}..."
+
             for key in "${KEYS[@]}"; do
               kubectl exec \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
-                -- env BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
-                bao operator unseal "${key}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                  bao operator unseal "${key}" \
                 >/dev/null
             done
           done

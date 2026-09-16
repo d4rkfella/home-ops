@@ -264,26 +264,8 @@ jobs:
 
                   storage "raft" {
                     path = "/openbao/data"
-
                     retry_join {
-                      leader_api_addr = "https://openbao-0.openbao-internal:8200"
-                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
-                      leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
-                      leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
-                      leader_tls_servername = "openbao.local"
-                    }
-
-                    retry_join {
-                      leader_api_addr = "https://openbao-1.openbao-internal:8200"
-                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
-                      leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
-                      leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
-                      leader_tls_servername = "openbao.local"
-                    }
-
-                    retry_join {
-                      leader_api_addr = "https://openbao-2.openbao-internal:8200"
-                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
+                      leader_api_addr = "https://openbao-active:8200"
                       leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
                       leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
                       leader_tls_servername = "openbao.local"
@@ -303,39 +285,20 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          for _ in {1..300}; do
-            pod="$(
-              kubectl get pods \
-                -n "${OPENBAO_NAMESPACE}" \
-                -l app.kubernetes.io/name=openbao \
-                -l app.kubernetes.io/instance=openbao \
-                -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' \
-                2>/dev/null |
-              awk '$2 == "Running" { print $1; exit }'
-            )"
-
-            if [[ -n "${pod}" ]]; then
-              echo "OpenBao pod is running: ${pod}"
-              break
-            fi
-
-            sleep 2
-          done
-
-          kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            -l app.kubernetes.io/name=openbao \
-            -l app.kubernetes.io/instance=openbao \
-            -o wide
+          echo "Waiting for OpenBao pods with Running status..."
 
           pod="$(
-            kubectl get pods \
+            kubectl wait \
               -n "${OPENBAO_NAMESPACE}" \
-              -l app.kubernetes.io/name=openbao \
-              -l app.kubernetes.io/instance=openbao \
-              -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.status.phase}{"\n"}{end}' |
-            awk '$2 == "Running" { print $1; exit }'
+              --for=jsonpath='{.status.phase}'=Running \
+              --timeout=1m \
+              pod \
+              -l app.kubernetes.io/name=openbao,app.kubernetes.io/instance=openbao,component=server |
+            sed -n 's#^pod/##p' |
+            head -n1
           )"
+
+          echo "Selected first matching pod: ${pod}"
 
           if [[ -z "${pod}" ]]; then
             echo "No Running OpenBao pod found" >&2
@@ -343,7 +306,7 @@ jobs:
             exit 1
           fi
 
-      - name: Initialize source OpenBao cluster
+      - name: Initialize the first OpenBao cluster node
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -360,11 +323,11 @@ jobs:
               bao operator init -format=json \
             > /tmp/openbao-e2e/source-init.json
 
-          jq -e '.root_token' \
-            /tmp/openbao-e2e/source-init.json >/dev/null
-
-          jq -e '.unseal_keys_b64 | length >= 3' \
-            /tmp/openbao-e2e/source-init.json >/dev/null
+          if [[ ! jq -e '.root_token' /tmp/openbao-e2e/source-init.json >/dev/null ]]; then
+            echo "ERROR: failed to extract root_token from source-init.json" >&2
+            cat /tmp/openbao-e2e/source-init.json >&2
+            exit 1
+          fi
 
           jq -r '.root_token' \
             /tmp/openbao-e2e/source-init.json \
@@ -372,22 +335,22 @@ jobs:
 
           chmod 600 /tmp/openbao-e2e/source-root-token
 
-      - name: Unseal initialized source node
+      - name: Unseal initialized OpenBao cluster node
         shell: bash
         run: |
           set -Eeuo pipefail
 
-          mapfile -t KEYS < <(
-            jq -r '.unseal_keys_b64[0:3][]' \
+          UNSEAL_THRESHOLD="$(
+            jq -r '.unseal_threshold' \
+              /tmp/openbao-e2e/source-init.json
+          )"
+
+          mapfile -t UNSEAL_KEYS < <(
+            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}]" \
               /tmp/openbao-e2e/source-init.json
           )
 
-          if [[ "${#KEYS[@]}" -ne 3 ]]; then
-            echo "ERROR: expected exactly 3 unseal keys, got ${#KEYS[@]}"
-            exit 1
-          fi
-
-          for index in 0 1 2; do
+          for index in "${!UNSEAL_KEYS[@]}"; do
             kubectl exec \
               -n "${OPENBAO_NAMESPACE}" \
               openbao-0 \
@@ -443,14 +406,14 @@ jobs:
 
           ROOT_TOKEN="$(cat "${ROOT_TOKEN_FILE}")"
 
-          mapfile -t UNSEAL_KEYS < <(
-            jq -r '.unseal_keys_b64[0:3][]' "${INIT_FILE}"
-          )
+          UNSEAL_THRESHOLD="$(
+            jq -r '.unseal_threshold' \
+              /tmp/openbao-e2e/source-init.json
+          )"
 
-          if [[ "${#UNSEAL_KEYS[@]}" -ne 3 ]]; then
-            echo "ERROR: expected 3 Shamir keys" >&2
-            exit 1
-          fi
+          mapfile -t UNSEAL_KEYS < <(
+            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}]" "${INIT_FILE}"
+          )
 
           bao_exec() {
             local pod="$1"
@@ -517,11 +480,11 @@ jobs:
             local elapsed=0
 
             while (( elapsed < timeout )); do
-              if kubectl logs \
-                -n "${OPENBAO_NAMESPACE}" \
-                "${pod}" \
-                --tail=300 2>/dev/null |
-                grep -q "successfully joined the raft cluster"; then
+              if bao_exec "${pod}" \
+                bao operator raft join \
+                -format=json \
+                https://openbao-active.openbao.svc.cluster.local:8200 2>/dev/null |
+                jq -e '.joined==true'; then
                 return 0
               fi
 
@@ -529,7 +492,7 @@ jobs:
               elapsed=$((elapsed + 2))
             done
 
-            echo "ERROR: ${pod} did not complete retry_join" >&2
+            echo "ERROR: ${pod} failed to join the raft cluster" >&2
 
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
@@ -573,9 +536,8 @@ jobs:
           }
 
           for pod in openbao-1 openbao-2; do
-            wait_for_initialized "${pod}"
-            submit_unseal_keys "${pod}"
             wait_for_raft_join "${pod}"
+            wait_for_initialized "${pod}"
             submit_unseal_keys "${pod}"
             wait_for_unsealed "${pod}"
           done

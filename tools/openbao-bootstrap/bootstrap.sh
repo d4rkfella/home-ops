@@ -132,6 +132,31 @@ discover_openbao_pods() {
     [[ "${#OPENBAO_PODS[@]}" -gt 0 ]]
 }
 
+# ---------------------------------------------------------------------------
+# The OpenBao StatefulSet uses the default OrderedReady pod management
+# policy: pod N+1 is not created until pod N is Ready, and pod N only
+# becomes Ready once it is unsealed. That means openbao-1, openbao-2, ...
+# do not exist in the API server at all until *after* we have unsealed
+# openbao-0 further down. We must know how many replicas to expect up
+# front (the StatefulSet object itself exists immediately, even before
+# its pods do) so we can wait for the rest of them later instead of
+# silently operating on a partial pod list.
+# ---------------------------------------------------------------------------
+log "reading expected OpenBao StatefulSet replica count..."
+
+readonly EXPECTED_REPLICAS="$(
+    kubectl get statefulset \
+        -n "${OPENBAO_NAMESPACE}" \
+        -l app.kubernetes.io/name=openbao \
+        -o jsonpath='{.items[0].spec.replicas}' \
+        2>/dev/null
+)"
+
+[[ -n "${EXPECTED_REPLICAS}" && "${EXPECTED_REPLICAS}" =~ ^[0-9]+$ ]] ||
+    fatal "unable to determine expected OpenBao StatefulSet replica count"
+
+log "expected OpenBao replica count: ${EXPECTED_REPLICAS}"
+
 log "waiting for OpenBao pods..."
 
 for _ in {1..120}; do
@@ -293,6 +318,54 @@ log "initialization candidate: ${INITIALIZE_POD}"
 log "initialized: ${INITIALIZED}"
 log "sealed: ${SEALED}"
 
+
+wait_for_all_pods() {
+    local attempt
+
+    for attempt in {1..180}; do
+        discover_openbao_pods || true
+
+        if [[ "${#OPENBAO_PODS[@]}" -ge "${EXPECTED_REPLICAS}" ]]; then
+            return 0
+        fi
+
+        if [[ "${attempt}" -eq 1 || $((attempt % 15)) -eq 0 ]]; then
+            log \
+                "waiting for remaining OpenBao pods to be created " \
+                "(${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS}, attempt ${attempt}/180)..."
+        fi
+
+        sleep 2
+    done
+
+    return 1
+}
+
+wait_and_prepare_remaining_pods() {
+    wait_for_all_pods ||
+        fatal \
+            "only ${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS} OpenBao pods " \
+            "were created before timing out (StatefulSet may be stuck)"
+
+    log \
+        "all ${#OPENBAO_PODS[@]} OpenBao pods discovered: " \
+        "${OPENBAO_PODS[*]}"
+
+    for pod in "${OPENBAO_PODS[@]}"; do
+        if [[ "${pod}" == "${INITIALIZE_POD}" ]]; then
+            continue
+        fi
+
+        kubectl wait \
+            -n "${OPENBAO_NAMESPACE}" \
+            --for=jsonpath='{.status.phase}'=Running \
+            "pod/${pod}" \
+            --timeout=10m
+
+        start_port_forward "${pod}"
+    done
+}
+
 if [[ "${INITIALIZED}" == "true" ]]; then
     log "OpenBao is already initialized"
 
@@ -384,6 +457,13 @@ else
             unseal_pod "${INITIALIZE_POD}"
 
             log "${INITIALIZE_POD} unsealed"
+
+            # openbao-0 becoming Ready is what unblocks the StatefulSet
+            # from creating openbao-1, openbao-2, ... Only now do the
+            # remaining pods actually start to exist.
+            log "waiting for the remaining OpenBao StatefulSet replicas..."
+
+            wait_and_prepare_remaining_pods
 
             for pod in "${OPENBAO_PODS[@]}"; do
                 if [[ "${pod}" == "${INITIALIZE_POD}" ]]; then

@@ -360,7 +360,7 @@ jobs:
                 BAO_ADDR="https://127.0.0.1:8200" \
                 BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                bao operator unseal "${KEYS[$index]}"
+                bao operator unseal "${UNSEAL_KEYS[$index]}"
           done
 
           set +e

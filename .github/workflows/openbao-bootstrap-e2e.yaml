@@ -436,62 +436,17 @@ jobs:
 
           chmod 600 /tmp/openbao-e2e/source-root-token
 
-      - name: Unseal initialized source node
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-
-          mapfile -t KEYS < <(
-            jq -r '.unseal_keys_b64[]' \
-              /tmp/openbao-e2e/source-init.json
-          )
-
-          echo "Unsealing initialized node openbao-0..."
-
-          for key in "${KEYS[@]}"; do
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              openbao-0 \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                bao operator unseal "${key}" \
-              >/dev/null
-          done
-
-          echo "Checking openbao-0..."
-
-          kubectl exec \
-            -n "${OPENBAO_NAMESPACE}" \
-            openbao-0 \
-            -- env \
-              BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-              bao status -format=json \
-            > /tmp/openbao-e2e/openbao-0-status.json
-
-          jq -e '
-            .initialized == true and
-            .sealed == false
-          ' /tmp/openbao-e2e/openbao-0-status.json >/dev/null
-
-          echo "openbao-0 is initialized and unsealed."
-
-      - name: Wait for OpenBao followers to join
+      - name: Wait for OpenBao followers to initialize
         shell: bash
         run: |
           set -Eeuo pipefail
 
           for pod in openbao-1 openbao-2; do
-            echo "Waiting for ${pod} to join the initialized Raft cluster..."
+            echo "Waiting for ${pod} to become initialized..."
 
             initialized=false
 
             for _ in {1..90}; do
-              echo "--- ${pod} ---"
-
               set +e
               STATUS="$(
                 kubectl exec \
@@ -502,23 +457,16 @@ jobs:
                     BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
                     BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                     bao status -format=json \
-                  2>&1
+                  2>/dev/null
               )"
-              rc=$?
               set -e
 
-              echo "bao status exit code: ${rc}"
-              echo "${STATUS}"
-
-              if [[ "${rc}" -eq 0 ]]; then
-                initialized="$(
-                  jq -r '.initialized // false' <<<"${STATUS}" 2>/dev/null || echo false
-                )"
-
-                if [[ "${initialized}" == "true" ]]; then
-                  echo "${pod} is initialized."
-                  break
-                fi
+              if [[ -n "${STATUS}" ]] && \
+                jq -e '.initialized == true' <<<"${STATUS}" >/dev/null 2>&1; then
+                echo "${pod} is initialized."
+                echo "${STATUS}" | jq '{initialized, sealed, storage_type, ha_enabled}'
+                initialized=true
+                break
               fi
 
               sleep 2
@@ -532,11 +480,6 @@ jobs:
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
                 --tail=200 >&2 || true
-
-              echo "=== ${pod} describe ===" >&2
-              kubectl describe pod \
-                -n "${OPENBAO_NAMESPACE}" \
-                "${pod}" >&2 || true
 
               exit 1
             fi
@@ -563,10 +506,27 @@ jobs:
                   BAO_ADDR="https://127.0.0.1:8200" \
                   BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
                   BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                  bao operator unseal "${key}" \
-                >/dev/null
+                  bao operator unseal "${key}" >/dev/null
             done
+
+            echo "Checking ${pod}..."
+
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              -- env \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                bao status -format=json \
+              > "/tmp/openbao-e2e/${pod}-status.json" || true
+
+            jq -e '.initialized == true and .sealed == false' \
+              "/tmp/openbao-e2e/${pod}-status.json" >/dev/null
+
+            echo "${pod} is initialized and unsealed."
           done
+
 
       - name: Verify source Raft cluster
         shell: bash

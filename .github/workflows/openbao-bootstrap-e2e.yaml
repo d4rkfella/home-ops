@@ -503,8 +503,11 @@ jobs:
 
           echo "openbao-0 is initialized and unsealed."
 
-      - name: Wait for and unseal OpenBao followers
+      - name: Unseal follower nodes
         shell: bash
+        env:
+          OPENBAO_NAMESPACE: openbao
+          OPENBAO_TLS_SERVER_NAME: openbao.local
         run: |
           set -Eeuo pipefail
 
@@ -521,14 +524,13 @@ jobs:
           for pod in openbao-1 openbao-2; do
             echo ""
             echo "========================================"
-            echo "Waiting for ${pod} to initialize and join Raft..."
+            echo "Waiting for ${pod} to initialize..."
             echo "========================================"
 
-            joined=false
+            initialized=false
 
             for attempt in $(seq 1 90); do
               set +e
-
               STATUS="$(
                 kubectl exec \
                   -n "${OPENBAO_NAMESPACE}" \
@@ -540,15 +542,14 @@ jobs:
                     bao status -format=json \
                   2>/tmp/openbao-e2e/${pod}-status.stderr
               )"
-
               STATUS_RC=$?
-
               set -e
 
               INITIALIZED=false
               SEALED=true
 
-              if [[ -n "${STATUS}" ]] && jq -e . >/dev/null 2>&1 <<<"${STATUS}"; then
+              if [[ -n "${STATUS}" ]] &&
+                jq -e . >/dev/null 2>&1 <<<"${STATUS}"; then
                 INITIALIZED="$(jq -r '.initialized // false' <<<"${STATUS}")"
                 SEALED="$(jq -r '.sealed // true' <<<"${STATUS}")"
               fi
@@ -564,46 +565,14 @@ jobs:
               fi
 
               if [[ "${INITIALIZED}" == "true" ]]; then
+                initialized=true
                 echo ""
-                echo "Checking Raft membership for ${pod}..."
-
-                set +e
-
-                RAFT_PEERS="$(
-                  kubectl exec \
-                    -n "${OPENBAO_NAMESPACE}" \
-                    openbao-0 \
-                    -- env \
-                      BAO_ADDR="https://127.0.0.1:8200" \
-                      BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-                      BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                      BAO_TOKEN="$(cat /tmp/openbao-e2e/source-root-token)" \
-                      bao operator raft list-peers -format=json \
-                    2>&1
-                )"
-
-                RAFT_RC=$?
-
-                set -e
-
-                if [[ "${RAFT_RC}" -eq 0 ]] && \
-                  jq -e \
-                    --arg pod "${pod}" \
-                    '.data.config.servers[] | select(.node_id == $pod)' \
-                    <<<"${RAFT_PEERS}" \
-                    >/dev/null 2>&1; then
-
-                  joined=true
-
-                  echo "${pod} is present in the Raft cluster."
-                  echo "${RAFT_PEERS}" | jq .
-
-                  break
-                fi
+                echo "${pod} is initialized and ready for unseal."
+                break
               fi
 
               echo ""
-              echo "${pod} is not ready for unseal yet."
+              echo "${pod} is not initialized yet."
 
               if [[ -s "/tmp/openbao-e2e/${pod}-status.stderr" ]]; then
                 echo "status stderr:"
@@ -613,10 +582,9 @@ jobs:
               sleep 2
             done
 
-            if [[ "${joined}" != "true" ]]; then
+            if [[ "${initialized}" != "true" ]]; then
               echo ""
-              echo "ERROR: ${pod} did not join the Raft cluster."
-
+              echo "ERROR: ${pod} did not initialize."
               echo ""
               echo "Recent ${pod} logs:"
               kubectl logs \
@@ -624,7 +592,6 @@ jobs:
                 "${pod}" \
                 --tail=150 \
                 2>&1 || true
-
               exit 1
             fi
 
@@ -650,7 +617,6 @@ jobs:
               echo "Checking ${pod}..."
 
               set +e
-
               STATUS="$(
                 kubectl exec \
                   -n "${OPENBAO_NAMESPACE}" \
@@ -662,15 +628,13 @@ jobs:
                     bao status -format=json \
                   2>&1
               )"
-
               STATUS_RC=$?
-
               set -e
 
               echo "bao status exit code: ${STATUS_RC}"
               echo "${STATUS}"
 
-              if [[ "${STATUS_RC}" -eq 0 ]] && \
+              if [[ "${STATUS_RC}" -eq 0 ]] &&
                 jq -e \
                   '.initialized == true and .sealed == false' \
                   <<<"${STATUS}" \
@@ -684,11 +648,9 @@ jobs:
               if [[ "${index}" -eq 2 ]]; then
                 echo ""
                 echo "ERROR: ${pod} is still sealed after 3 unseal shares."
-
                 echo ""
                 echo "Final seal status:"
                 echo "${STATUS}"
-
                 echo ""
                 echo "Recent ${pod} logs:"
                 kubectl logs \
@@ -696,7 +658,6 @@ jobs:
                   "${pod}" \
                   --tail=150 \
                   2>&1 || true
-
                 exit 1
               fi
             done

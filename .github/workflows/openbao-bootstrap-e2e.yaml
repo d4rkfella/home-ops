@@ -495,9 +495,14 @@ jobs:
           set -Eeuo pipefail
 
           mapfile -t KEYS < <(
-            jq -r '.unseal_keys_b64[]' \
+            jq -r '.unseal_keys_b64[0:3][]' \
               /tmp/openbao-e2e/source-init.json
           )
+
+          if [[ "${#KEYS[@]}" -ne 3 ]]; then
+            echo "ERROR: expected 3 unseal keys, got ${#KEYS[@]}"
+            exit 1
+          fi
 
           for pod in openbao-1 openbao-2; do
             echo ""
@@ -552,20 +557,19 @@ jobs:
                 cat "/tmp/openbao-e2e/${pod}-status.stderr"
               fi
 
-              echo ""
-              echo "Recent ${pod} logs:"
-              kubectl logs \
-                -n "${OPENBAO_NAMESPACE}" \
-                "${pod}" \
-                --tail=20 \
-                2>&1 || true
-
               sleep 2
             done
 
             if [[ "${initialized}" != "true" ]]; then
               echo ""
               echo "ERROR: ${pod} never became initialized."
+              echo ""
+              echo "Recent ${pod} logs:"
+              kubectl logs \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                --tail=100 \
+                2>&1 || true
               exit 1
             fi
 
@@ -574,7 +578,12 @@ jobs:
             echo "Unsealing ${pod}..."
             echo "========================================"
 
-            for key in "${KEYS[@]}"; do
+            for index in 0 1 2; do
+              key="${KEYS[$index]}"
+
+              echo ""
+              echo "Submitting unseal share $((index + 1))/3 to ${pod}..."
+
               kubectl exec \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
@@ -583,37 +592,56 @@ jobs:
                   BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
                   BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                   bao operator unseal "${key}"
+
+              echo ""
+              echo "Checking ${pod} after share $((index + 1))/3..."
+
+              set +e
+
+              STATUS="$(
+                kubectl exec \
+                  -n "${OPENBAO_NAMESPACE}" \
+                  "${pod}" \
+                  -- env \
+                    BAO_ADDR="https://127.0.0.1:8200" \
+                    BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                    BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                    bao status -format=json \
+                  2>&1
+              )"
+
+              STATUS_RC=$?
+
+              set -e
+
+              echo "bao status exit code: ${STATUS_RC}"
+              echo "${STATUS}"
+
+              if [[ "${STATUS_RC}" -eq 0 ]] && jq -e \
+                '.initialized == true and .sealed == false' \
+                <<<"${STATUS}" \
+                >/dev/null 2>&1; then
+
+                echo ""
+                echo "${pod} is initialized and unsealed."
+                break
+              fi
+
+              if [[ "${index}" -eq 2 ]]; then
+                echo ""
+                echo "ERROR: ${pod} is still sealed after 3 unseal shares."
+
+                echo ""
+                echo "Recent ${pod} logs:"
+                kubectl logs \
+                  -n "${OPENBAO_NAMESPACE}" \
+                  "${pod}" \
+                  --tail=100 \
+                  2>&1 || true
+
+                exit 1
+              fi
             done
-
-            echo ""
-            echo "Checking ${pod}..."
-
-            set +e
-
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              "${pod}" \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                bao status -format=json \
-              > "/tmp/openbao-e2e/${pod}-status.json" \
-              2>&1
-
-            STATUS_RC=$?
-
-            set -e
-
-            echo "bao status exit code: ${STATUS_RC}"
-            cat "/tmp/openbao-e2e/${pod}-status.json"
-
-            jq -e \
-              '.initialized == true and .sealed == false' \
-              "/tmp/openbao-e2e/${pod}-status.json" \
-              >/dev/null
-
-            echo "${pod} is initialized and unsealed."
           done
 
 

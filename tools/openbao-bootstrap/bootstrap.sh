@@ -73,8 +73,6 @@ bao() {
     shift
 
     BAO_ADDR="https://127.0.0.1:${port}" \
-    BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-    BAO_CACERT="${BAO_CACERT}" \
     command bao "$@"
 }
 

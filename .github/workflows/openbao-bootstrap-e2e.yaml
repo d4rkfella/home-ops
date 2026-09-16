@@ -18,9 +18,8 @@ permissions:
 
 env:
   OPENBAO_NAMESPACE: openbao
-  OPENBAO_LOCAL_PORT: "18200"
-  OPENBAO_TLS_SERVER_NAME: openbao.local
-  OPENBAO_CACERT: /tmp/openbao-e2e/ca.crt
+  BAO_TLS_SERVER_NAME: openbao.local
+  BAO_CACERT: /tmp/openbao-e2e/ca.crt
 
   SNAPSHOT_BUCKET: openbao-snapshots
   SNAPSHOT_PREFIX: bao_
@@ -37,10 +36,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Create k3d Kubernetes cluster
-        uses: nolar/setup-k3d-k3s@62c9d1bd2bc843275c85d2e7dcd696edc1160eee # v1.1.0
+        uses: nolar/setup-k3d-k3s@62c9d1bd2bc843275c85d2e7dcd696edc1160eee
         with:
           k3d-name: openbao-e2e
           k3d-tag: v5.9.0
@@ -50,7 +49,7 @@ jobs:
             --servers 1
 
       - name: Install Helm
-        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310
 
       - name: Verify test dependencies
         shell: bash
@@ -60,10 +59,6 @@ jobs:
           aws --version
           kubectl version --client
           helm version
-
-      # -----------------------------------------------------------------------
-      # Setup S3 backend
-      # -----------------------------------------------------------------------
 
       - name: Start MinIO
         shell: bash
@@ -80,8 +75,6 @@ jobs:
             quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z \
             server /data --console-address ":9001"
 
-          echo "Waiting for MinIO..."
-
           for _ in {1..120}; do
             if curl \
               --fail \
@@ -90,7 +83,6 @@ jobs:
               --max-time 2 \
               http://127.0.0.1:9000/minio/health/ready \
               >/dev/null 2>&1; then
-              echo "MinIO is ready"
               break
             fi
 
@@ -105,8 +97,6 @@ jobs:
             http://127.0.0.1:9000/minio/health/ready \
             >/dev/null
 
-          echo "Creating snapshot bucket..."
-
           for _ in {1..30}; do
             if aws s3api create-bucket \
               --bucket "${SNAPSHOT_BUCKET}" \
@@ -120,15 +110,6 @@ jobs:
           aws s3api head-bucket \
             --bucket "${SNAPSHOT_BUCKET}" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
-
-          echo "MinIO bucket is ready"
-
-      # -----------------------------------------------------------------------
-      # Internal CA + OpenBao server certificate.
-      #
-      # The certificate intentionally contains only test/internal names.
-      # Nothing here uses the production openbao.darkfellanetwork.com name.
-      # -----------------------------------------------------------------------
 
       - name: Generate test CA and OpenBao TLS certificate
         shell: bash
@@ -216,19 +197,6 @@ jobs:
             --from-file=tls.crt=/tmp/openbao-e2e/tls.crt \
             --from-file=tls.key=/tmp/openbao-e2e/tls.key \
             --from-file=ca.crt=/tmp/openbao-e2e/ca.crt
-
-      # -----------------------------------------------------------------------
-      # Install OpenBao.
-      #
-      # This intentionally uses:
-      #   - 3 replicas
-      #   - Raft
-      #   - Shamir
-      #   - Kubernetes service registration
-      #   - internal TLS
-      #
-      # There is NO GCP KMS seal.
-      # -----------------------------------------------------------------------
 
       - name: Install OpenBao
         shell: bash
@@ -333,17 +301,10 @@ jobs:
             --values /tmp/openbao-e2e/values.yaml \
             --wait=false
 
-      # -----------------------------------------------------------------------
-      # The chart/service registration must create openbao-active itself.
-      # We deliberately do NOT add that label here.
-      # -----------------------------------------------------------------------
-
       - name: Wait for the OpenBao pods to be running
         shell: bash
         run: |
           set -Eeuo pipefail
-
-          echo "Waiting for three OpenBao pods to exist..."
 
           for _ in {1..180}; do
             count="$(
@@ -362,8 +323,6 @@ jobs:
             sleep 2
           done
 
-          echo "Waiting for all three OpenBao pods to be Running..."
-
           for _ in {1..300}; do
             running="$(
               kubectl get pods \
@@ -375,7 +334,6 @@ jobs:
             )"
 
             if [[ "${running}" == "3" ]]; then
-              echo "All three OpenBao pods are Running"
               break
             fi
 
@@ -401,12 +359,6 @@ jobs:
             exit 1
           fi
 
-      # -----------------------------------------------------------------------
-      # Bootstrap the source cluster.
-      #
-      # We initialize Shamir manually here to create the source snapshot.
-      # -----------------------------------------------------------------------
-
       - name: Initialize source OpenBao cluster
         shell: bash
         run: |
@@ -419,7 +371,7 @@ jobs:
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               bao operator init -format=json \
             > /tmp/openbao-e2e/source-init.json
@@ -451,24 +403,16 @@ jobs:
             exit 1
           fi
 
-          echo "Unsealing initialized node openbao-0..."
-
           for index in 0 1 2; do
-            echo ""
-            echo "Submitting unseal share $((index + 1))/3 to openbao-0..."
-
             kubectl exec \
               -n "${OPENBAO_NAMESPACE}" \
               openbao-0 \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 bao operator unseal "${KEYS[$index]}"
           done
-
-          echo ""
-          echo "Checking openbao-0..."
 
           set +e
 
@@ -478,7 +422,7 @@ jobs:
               openbao-0 \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 bao status -format=json \
               2>&1
@@ -501,13 +445,8 @@ jobs:
             <<<"${STATUS}" \
             >/dev/null
 
-          echo "openbao-0 is initialized and unsealed."
-
       - name: Unseal follower nodes
         shell: bash
-        env:
-          OPENBAO_NAMESPACE: openbao
-          OPENBAO_TLS_SERVER_NAME: openbao.local
         run: |
           set -Eeuo pipefail
 
@@ -538,7 +477,7 @@ jobs:
               "${pod}" \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="${POD_CACERT}" \
                 "$@"
           }
@@ -552,12 +491,7 @@ jobs:
           submit_unseal_keys() {
             local pod="$1"
 
-            echo
-            echo "Submitting Shamir keys to ${pod}..."
-
             for index in 0 1 2; do
-              echo "  Shamir share $((index + 1))/3"
-
               bao_exec "${pod}" \
                 bao operator unseal "${UNSEAL_KEYS[$index]}" || true
 
@@ -570,26 +504,12 @@ jobs:
             local timeout=180
             local elapsed=0
 
-            echo
-            echo "Waiting for ${pod} to become initialized..."
-
             while (( elapsed < timeout )); do
               local status
               status="$(get_status "${pod}")"
 
               if [[ -n "${status}" ]] &&
-                 jq -e '.initialized == true' >/dev/null 2>&1 <<<"${status}"; then
-                echo "${pod} reports initialized=true"
-                echo "${status}" | jq '{
-                  type,
-                  initialized,
-                  sealed,
-                  t,
-                  n,
-                  progress,
-                  storage_type,
-                  ha_enabled
-                }'
+                jq -e '.initialized == true' >/dev/null 2>&1 <<<"${status}"; then
                 return 0
               fi
 
@@ -598,6 +518,7 @@ jobs:
             done
 
             echo "ERROR: ${pod} never became initialized" >&2
+
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
@@ -611,22 +532,14 @@ jobs:
             local timeout=180
             local elapsed=0
 
-            echo
-            echo "Waiting for ${pod} to complete retry_join..."
-
             while (( elapsed < timeout )); do
-
               if kubectl logs \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" \
                 --tail=300 2>/dev/null |
                 grep -q "successfully joined the raft cluster"; then
-
-                echo "${pod} successfully joined the Raft cluster"
                 return 0
               fi
-
-              echo "${pod}: retry_join has not completed yet"
 
               sleep 2
               elapsed=$((elapsed + 2))
@@ -634,8 +547,6 @@ jobs:
 
             echo "ERROR: ${pod} did not complete retry_join" >&2
 
-            echo
-            echo "Last ${pod} logs:"
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
@@ -649,32 +560,15 @@ jobs:
             local timeout=180
             local elapsed=0
 
-            echo
-            echo "Waiting for ${pod} to become unsealed..."
-
             while (( elapsed < timeout )); do
               local status
               status="$(get_status "${pod}")"
 
               if [[ -n "${status}" ]] &&
-                 jq -e '
-                   .initialized == true
-                   and
-                   .sealed == false
-                 ' >/dev/null 2>&1 <<<"${status}"; then
-
-                echo "${pod} is unsealed"
-
-                echo "${status}" | jq '{
-                  type,
-                  initialized,
-                  sealed,
-                  storage_type,
-                  ha_enabled,
-                  leader_address,
-                  leader_cluster_address
-                }'
-
+                jq -e '
+                  .initialized == true and
+                  .sealed == false
+                ' >/dev/null 2>&1 <<<"${status}"; then
                 return 0
               fi
 
@@ -686,8 +580,6 @@ jobs:
 
             get_status "${pod}" | jq . >&2 || true
 
-            echo
-            echo "Last ${pod} logs:"
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
@@ -697,36 +589,12 @@ jobs:
           }
 
           for pod in openbao-1 openbao-2; do
-            echo
-            echo "========================================"
-            echo "Processing ${pod}"
-            echo "========================================"
-
             wait_for_initialized "${pod}"
-
-            # First set of keys allows the Shamir-sealed node
-            # to decrypt the Raft retry_join challenge.
             submit_unseal_keys "${pod}"
-
-            # The retry_join process now completes and installs
-            # the source cluster's Raft/seal configuration.
             wait_for_raft_join "${pod}"
-
-            # The join resets Shamir progress to 0/3.
-            # Supply the source cluster's Shamir keys AGAIN
-            # to actually unseal the newly joined node.
             submit_unseal_keys "${pod}"
-
             wait_for_unsealed "${pod}"
-
-            echo
-            echo "${pod} is joined and unsealed"
           done
-
-          echo
-          echo "========================================"
-          echo "Final Raft peer set"
-          echo "========================================"
 
           bao_exec openbao-0 \
             env BAO_TOKEN="${ROOT_TOKEN}" \
@@ -744,7 +612,7 @@ jobs:
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft list-peers
@@ -755,7 +623,7 @@ jobs:
               openbao-0 \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao operator raft list-peers -format=json \
@@ -766,11 +634,6 @@ jobs:
 
           test "${PEER_COUNT}" -eq 3
 
-
-      # -----------------------------------------------------------------------
-      # Put known data into the source cluster.
-      # -----------------------------------------------------------------------
-
       - name: Create known source secret
         shell: bash
         run: |
@@ -778,14 +641,12 @@ jobs:
 
           TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
 
-          # The non-dev OpenBao cluster does not create a secret/ KV mount
-          # automatically. Create the KV v2 mount used by this E2E test.
           kubectl exec \
             -n "${OPENBAO_NAMESPACE}" \
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao secrets enable \
@@ -797,7 +658,7 @@ jobs:
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao secrets list -format=json \
@@ -808,7 +669,7 @@ jobs:
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao kv put \
@@ -816,10 +677,6 @@ jobs:
                 e2e \
                 value="snapshot-restore-e2e" \
                 source="github-actions"
-
-      # -----------------------------------------------------------------------
-      # Create a Raft snapshot.
-      # -----------------------------------------------------------------------
 
       - name: Create source Raft snapshot
         shell: bash
@@ -833,7 +690,7 @@ jobs:
             openbao-0 \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft snapshot save /tmp/e2e.snapshot
@@ -843,11 +700,6 @@ jobs:
             /tmp/openbao-e2e/e2e.snapshot
 
           test -s /tmp/openbao-e2e/e2e.snapshot
-
-      # -----------------------------------------------------------------------
-      # Upload snapshot to S3-compatible storage.
-      # This exercises the same AWS CLI path used by the bootstrap script.
-      # -----------------------------------------------------------------------
 
       - name: Upload snapshot to test S3
         shell: bash
@@ -861,12 +713,6 @@ jobs:
           aws s3api head-object \
             --bucket "${SNAPSHOT_BUCKET}" \
             --key "${SNAPSHOT_PREFIX}e2e.snapshot"
-
-      # -----------------------------------------------------------------------
-      # Destroy the original OpenBao cluster and its PVCs.
-      #
-      # The S3 snapshot is the only surviving copy of the data.
-      # -----------------------------------------------------------------------
 
       - name: Destroy source OpenBao storage
         shell: bash
@@ -896,10 +742,6 @@ jobs:
             -n "${OPENBAO_NAMESPACE}" \
             --for=delete pod/openbao-2 \
             --timeout=5m || true
-
-      # -----------------------------------------------------------------------
-      # Install a completely fresh 3-node OpenBao cluster.
-      # -----------------------------------------------------------------------
 
       - name: Install fresh OpenBao cluster
         shell: bash
@@ -939,23 +781,13 @@ jobs:
           command -v bao
           bao version
 
-
       - name: Run OpenBao bootstrap script
-        env:
-          BAO_CACERT: /tmp/openbao-e2e/ca.crt
         shell: bash
         run: |
           set -Eeuo pipefail
 
           ./tools/openbao-bootstrap/bootstrap.sh \
             "${OPENBAO_NAMESPACE}"
-
-      # -----------------------------------------------------------------------
-      # The root token from the *fresh init* is intentionally not used here.
-      #
-      # Restoring the Raft snapshot restores the source cluster's auth state,
-      # including its original root token.
-      # -----------------------------------------------------------------------
 
       - name: Verify restored secret
         shell: bash
@@ -972,15 +804,13 @@ jobs:
               -o jsonpath='{.items[0].metadata.name}'
           )"
 
-          echo "Active pod after restore: ${ACTIVE_POD}"
-
           VALUE="$(
             kubectl exec \
               -n "${OPENBAO_NAMESPACE}" \
               "${ACTIVE_POD}" \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao kv get \
@@ -1007,14 +837,12 @@ jobs:
               -o jsonpath='{.items[0].metadata.name}'
           )"
 
-          echo "Active pod after restore: ${ACTIVE_POD}"
-
           kubectl exec \
             -n "${OPENBAO_NAMESPACE}" \
             "${ACTIVE_POD}" \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
               BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
               BAO_TOKEN="${TOKEN}" \
               bao operator raft list-peers
@@ -1025,7 +853,7 @@ jobs:
               "${ACTIVE_POD}" \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 BAO_TOKEN="${TOKEN}" \
                 bao operator raft list-peers -format=json \
@@ -1042,14 +870,12 @@ jobs:
           set -Eeuo pipefail
 
           for pod in openbao-0 openbao-1 openbao-2; do
-            echo "Checking ${pod}..."
-
             kubectl exec \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
                 BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
                 bao status -format=json \
               >"/tmp/openbao-e2e/${pod}-status.json"

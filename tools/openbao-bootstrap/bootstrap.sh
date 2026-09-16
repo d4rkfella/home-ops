@@ -8,7 +8,7 @@ log() {
     printf '[%s] [%s] %s\n' \
         "$(date --iso-8601=seconds)" \
         "$SCRIPT_NAME" \
-        "$*"
+        "$*" >&2
 }
 
 fatal() {

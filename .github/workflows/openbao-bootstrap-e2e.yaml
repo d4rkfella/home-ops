@@ -288,6 +288,16 @@ jobs:
 
           echo "Waiting for OpenBao pods with Running status..."
 
+          for _ in {1..60}; do
+            if kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao,app.kubernetes.io/instance=openbao,component=server \
+              --no-headers 2>/dev/null | grep -q .; then
+              break
+            fi
+            sleep 1
+          done
+
           pod="$(
             kubectl wait \
               -n "${OPENBAO_NAMESPACE}" \

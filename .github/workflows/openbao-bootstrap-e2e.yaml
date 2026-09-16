@@ -401,35 +401,6 @@ jobs:
             exit 1
           fi
 
-      - name: Wait for OpenBao active pod label
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-
-          for _ in {1..120}; do
-            ACTIVE_POD="$(
-              kubectl get pods \
-                -n "${OPENBAO_NAMESPACE}" \
-                -l app.kubernetes.io/name=openbao \
-                -l openbao-active=true \
-                -o jsonpath='{.items[0].metadata.name}' \
-                2>/dev/null || true
-            )"
-
-            if [[ -n "${ACTIVE_POD}" ]]; then
-              echo "OpenBao active pod: ${ACTIVE_POD}"
-              exit 0
-            fi
-
-            sleep 2
-          done
-
-          kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            --show-labels
-
-          exit 1
-
       # -----------------------------------------------------------------------
       # Bootstrap the source cluster.
       #

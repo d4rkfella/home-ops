@@ -794,25 +794,15 @@ jobs:
         run: |
           set -Eeuo pipefail
 
-          SEAL_TYPE="$(
-            jq -r '.type // empty' \
+          UNSEAL_THRESHOLD="$(
+            jq -r '.unseal_threshold' \
               /tmp/openbao-e2e/source-init.json
           )"
 
-          if [[ "${SEAL_TYPE}" != "shamir" ]]; then
-            echo "Source cluster seal type is ${SEAL_TYPE}; no Shamir unseal required."
-            exit 0
-          fi
-
           mapfile -t UNSEAL_KEYS < <(
-            jq -r '.unseal_keys_b64[0:3][]' \
+            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}][]" \
               /tmp/openbao-e2e/source-init.json
           )
-
-          if [[ "${#UNSEAL_KEYS[@]}" -ne 3 ]]; then
-            echo "ERROR: expected 3 Shamir keys, got ${#UNSEAL_KEYS[@]}" >&2
-            exit 1
-          fi
 
           mapfile -t PODS < <(
             kubectl get pods \
@@ -822,11 +812,6 @@ jobs:
             sed '/^$/d' |
             sort
           )
-
-          if [[ "${#PODS[@]}" -eq 0 ]]; then
-            echo "ERROR: no OpenBao pods found" >&2
-            exit 1
-          fi
 
           for pod in "${PODS[@]}"; do
             echo "Unsealing ${pod}..."
@@ -843,3 +828,36 @@ jobs:
                 >/dev/null
             done
           done
+
+      - name: Verify restored secret
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          ACTIVE_POD="$(
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -l openbao-active=true \
+              -o jsonpath='{.items[0].metadata.name}'
+          )"
+
+          VALUE="$(
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${ACTIVE_POD}" \
+              -- env \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                BAO_TOKEN="${TOKEN}" \
+                bao kv get \
+                  -field=value \
+                  secret/e2e
+          )"
+
+          test "${VALUE}" = "snapshot-restore-e2e"
+
+          echo "Restored secret verified successfully."

@@ -911,6 +911,35 @@ jobs:
             --values /tmp/openbao-e2e/values.yaml \
             --wait=false
 
+      - name: Install OpenBao CLI
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          BAO_VERSION="2.7.0-beta20260909"
+          BAO_ARCHIVE="openbao_${BAO_VERSION}_linux_amd64.tar.gz"
+          BAO_URL="https://github.com/openbao/openbao/releases/download/v${BAO_VERSION}/${BAO_ARCHIVE}"
+
+          curl -fsSL \
+            "${BAO_URL}" \
+            -o "/tmp/${BAO_ARCHIVE}"
+
+          rm -rf /tmp/openbao-cli
+          mkdir -p /tmp/openbao-cli
+
+          tar -xzf \
+            "/tmp/${BAO_ARCHIVE}" \
+            -C /tmp/openbao-cli
+
+          sudo install \
+            -m 0755 \
+            /tmp/openbao-cli/bao \
+            /usr/local/bin/bao
+
+          command -v bao
+          bao version
+
+
       - name: Run OpenBao bootstrap script
         env:
           BAO_CACERT: /tmp/openbao-e2e/ca.crt

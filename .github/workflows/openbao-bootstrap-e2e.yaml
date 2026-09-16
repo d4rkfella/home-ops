@@ -436,6 +436,59 @@ jobs:
 
           chmod 600 /tmp/openbao-e2e/source-root-token
 
+      - name: Unseal initialized source node
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mapfile -t KEYS < <(
+            jq -r '.unseal_keys_b64[]' \
+              /tmp/openbao-e2e/source-init.json
+          )
+
+          echo "Unsealing initialized node openbao-0..."
+
+          for key in "${KEYS[@]}"; do
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              openbao-0 \
+              -- env \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                bao operator unseal "${key}"
+          done
+
+          echo ""
+          echo "Checking openbao-0..."
+
+          set +e
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_ADDR="https://127.0.0.1:8200" \
+              BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+              bao status -format=json \
+            > /tmp/openbao-e2e/openbao-0-status.json \
+            2>&1
+
+          STATUS_RC=$?
+
+          set -e
+
+          echo "bao status exit code: ${STATUS_RC}"
+          cat /tmp/openbao-e2e/openbao-0-status.json
+
+          jq -e \
+            '.initialized == true and .sealed == false' \
+            /tmp/openbao-e2e/openbao-0-status.json \
+            >/dev/null
+
+          echo "openbao-0 is initialized and unsealed."
+
       - name: Wait for OpenBao followers to initialize
         shell: bash
         run: |

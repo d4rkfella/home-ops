@@ -1,0 +1,752 @@
+name: OpenBao bootstrap E2E
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/openbao-bootstrap-e2e.yaml"
+      - "tools/openbao-bootstrap/bootstrap.sh"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/openbao-bootstrap-e2e.yaml"
+      - "tools/openbao-bootstrap/bootstrap.sh"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  OPENBAO_NAMESPACE: openbao
+  OPENBAO_LOCAL_PORT: "18200"
+  OPENBAO_TLS_SERVER_NAME: openbao.local
+  OPENBAO_CACERT: /tmp/openbao-e2e/ca.crt
+
+  SNAPSHOT_BUCKET: openbao-snapshots
+  SNAPSHOT_PREFIX: bao_
+
+  AWS_ACCESS_KEY_ID: minioadmin
+  AWS_SECRET_ACCESS_KEY: minioadmin
+  AWS_DEFAULT_REGION: us-east-1
+  AWS_ENDPOINT_URL: http://127.0.0.1:9000
+
+jobs:
+  e2e:
+    name: OpenBao bootstrap / snapshot restore
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Create k3d Kubernetes cluster
+        uses: nolar/setup-k3d-k3s@62c9d1bd2bc843275c85d2e7dcd696edc1160eee # v1.1.0
+        with:
+          k3d-name: openbao-e2e
+          k3d-tag: v5.9.0
+          version: v1.37.0+k3s1
+          args: >-
+            --agents 2
+            --servers 1
+
+      - name: Install Helm
+        uses: azure/setup-helm@9bc31f4ebc9c6b171d7bfbaa5d006ae7abdb4310 # v5.0.1
+
+      - name: Verify test dependencies
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          aws --version
+          kubectl version --client
+          helm version
+
+      # -----------------------------------------------------------------------
+      # Test S3 backend
+      # -----------------------------------------------------------------------
+
+      - name: Start MinIO
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          docker run \
+            --detach \
+            --name openbao-minio \
+            --publish 9000:9000 \
+            --publish 9001:9001 \
+            --env MINIO_ROOT_USER=minioadmin \
+            --env MINIO_ROOT_PASSWORD=minioadmin \
+            quay.io/minio/minio:latest \
+            server /data --console-address ":9001"
+
+          for _ in {1..60}; do
+            if curl -fsS http://127.0.0.1:9000/minio/health/live >/dev/null; then
+              break
+            fi
+
+            sleep 1
+          done
+
+          curl -fsS http://127.0.0.1:9000/minio/health/live >/dev/null
+
+          aws s3api create-bucket \
+            --bucket "${SNAPSHOT_BUCKET}" \
+            --endpoint-url "${AWS_ENDPOINT_URL}"
+
+      # -----------------------------------------------------------------------
+      # Internal CA + OpenBao server certificate.
+      #
+      # The certificate intentionally contains only test/internal names.
+      # Nothing here uses the production openbao.darkfellanetwork.com name.
+      # -----------------------------------------------------------------------
+
+      - name: Generate test CA and OpenBao TLS certificate
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mkdir -p /tmp/openbao-e2e
+
+          openssl genrsa \
+            -out /tmp/openbao-e2e/ca.key \
+            4096
+
+          openssl req \
+            -x509 \
+            -new \
+            -nodes \
+            -key /tmp/openbao-e2e/ca.key \
+            -sha256 \
+            -days 1 \
+            -out /tmp/openbao-e2e/ca.crt \
+            -subj "/CN=OpenBao E2E CA"
+
+          openssl genrsa \
+            -out /tmp/openbao-e2e/tls.key \
+            2048
+
+          cat >/tmp/openbao-e2e/server.cnf <<'EOF'
+          [req]
+          distinguished_name = req_distinguished_name
+          req_extensions = v3_req
+          prompt = no
+
+          [req_distinguished_name]
+          CN = openbao.local
+
+          [v3_req]
+          subjectAltName = @alt_names
+          extendedKeyUsage = serverAuth,clientAuth
+          keyUsage = digitalSignature,keyEncipherment
+
+          [alt_names]
+          DNS.1 = openbao.local
+          DNS.2 = openbao
+          DNS.3 = openbao.openbao.svc
+          DNS.4 = openbao.openbao.svc.cluster.local
+          DNS.5 = openbao-internal
+          DNS.6 = openbao-internal.openbao.svc
+          DNS.7 = openbao-internal.openbao.svc.cluster.local
+
+          DNS.8 = openbao-0.openbao-internal
+          DNS.9 = openbao-0.openbao-internal.openbao.svc
+          DNS.10 = openbao-0.openbao-internal.openbao.svc.cluster.local
+
+          DNS.11 = openbao-1.openbao-internal
+          DNS.12 = openbao-1.openbao-internal.openbao.svc
+          DNS.13 = openbao-1.openbao-internal.openbao.svc.cluster.local
+
+          DNS.14 = openbao-2.openbao-internal
+          DNS.15 = openbao-2.openbao-internal.openbao.svc
+          DNS.16 = openbao-2.openbao-internal.openbao.svc.cluster.local
+          EOF
+
+          openssl req \
+            -new \
+            -key /tmp/openbao-e2e/tls.key \
+            -out /tmp/openbao-e2e/tls.csr \
+            -config /tmp/openbao-e2e/server.cnf
+
+          openssl x509 \
+            -req \
+            -in /tmp/openbao-e2e/tls.csr \
+            -CA /tmp/openbao-e2e/ca.crt \
+            -CAkey /tmp/openbao-e2e/ca.key \
+            -CAcreateserial \
+            -out /tmp/openbao-e2e/tls.crt \
+            -days 1 \
+            -sha256 \
+            -extensions v3_req \
+            -extfile /tmp/openbao-e2e/server.cnf
+
+          kubectl create namespace "${OPENBAO_NAMESPACE}"
+
+          kubectl create secret generic openbao-server-tls \
+            -n "${OPENBAO_NAMESPACE}" \
+            --from-file=tls.crt=/tmp/openbao-e2e/tls.crt \
+            --from-file=tls.key=/tmp/openbao-e2e/tls.key \
+            --from-file=ca.crt=/tmp/openbao-e2e/ca.crt
+
+      # -----------------------------------------------------------------------
+      # Install OpenBao.
+      #
+      # This intentionally uses:
+      #   - 3 replicas
+      #   - Raft
+      #   - Shamir
+      #   - Kubernetes service registration
+      #   - internal TLS
+      #
+      # There is NO GCP KMS seal.
+      # -----------------------------------------------------------------------
+
+      - name: Install OpenBao
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          helm repo add openbao https://openbao.github.io/openbao-helm
+          helm repo update
+
+          cat >/tmp/openbao-e2e/values.yaml <<'EOF'
+          global:
+            enabled: true
+            tlsDisable: false
+
+          injector:
+            enabled: false
+
+          server:
+            enabled: true
+
+            image:
+              registry: ghcr.io
+              repository: openbao/openbao
+              tag: 2.7.0-beta20260909
+
+            updateStrategyType: RollingUpdate
+            podManagementPolicy: Parallel
+
+            serviceAccount:
+              create: true
+
+            volumes:
+              - name: openbao-server-tls
+                secret:
+                  secretName: openbao-server-tls
+
+            volumeMounts:
+              - name: openbao-server-tls
+                mountPath: /openbao/userconfig/openbao-server-tls
+                readOnly: true
+
+            extraEnvironmentVars:
+              BAO_CACERT: /openbao/userconfig/openbao-server-tls/ca.crt
+
+            ha:
+              enabled: true
+              replicas: 3
+
+              apiAddr: https://openbao.local:8200
+
+              raft:
+                enabled: true
+                setNodeId: true
+
+                config: |
+                  ui = true
+
+                  listener "tcp" {
+                    tls_disable = 0
+                    tls_min_version = "tls13"
+
+                    tls_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
+                    tls_key_file  = "/openbao/userconfig/openbao-server-tls/tls.key"
+
+                    address = "[::]:8200"
+                    cluster_address = "[::]:8201"
+                  }
+
+                  storage "raft" {
+                    path = "/openbao/data"
+
+                    retry_join {
+                      leader_api_addr = "https://openbao-0.openbao-internal:8200"
+                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
+                      leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
+                      leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
+                      leader_tls_servername = "openbao.local"
+                    }
+
+                    retry_join {
+                      leader_api_addr = "https://openbao-1.openbao-internal:8200"
+                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
+                      leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
+                      leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
+                      leader_tls_servername = "openbao.local"
+                    }
+
+                    retry_join {
+                      leader_api_addr = "https://openbao-2.openbao-internal:8200"
+                      leader_ca_cert_file = "/openbao/userconfig/openbao-server-tls/ca.crt"
+                      leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
+                      leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
+                      leader_tls_servername = "openbao.local"
+                    }
+                  }
+
+                  service_registration "kubernetes" {}
+          EOF
+
+          helm upgrade --install openbao openbao/openbao \
+            --namespace "${OPENBAO_NAMESPACE}" \
+            --values /tmp/openbao-e2e/values.yaml \
+            --wait \
+            --timeout 10m
+
+      # -----------------------------------------------------------------------
+      # The chart/service registration must create openbao-active itself.
+      # We deliberately do NOT add that label here.
+      # -----------------------------------------------------------------------
+
+      - name: Wait for three OpenBao pods
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          kubectl rollout status \
+            -n "${OPENBAO_NAMESPACE}" \
+            statefulset/openbao \
+            --timeout=10m
+
+          kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            -o wide
+
+          test "$(kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            -l app.kubernetes.io/name=openbao \
+            -l app.kubernetes.io/instance=openbao \
+            --no-headers | wc -l)" -eq 3
+
+      - name: Wait for OpenBao active pod label
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          for _ in {1..120}; do
+            ACTIVE_POD="$(
+              kubectl get pods \
+                -n "${OPENBAO_NAMESPACE}" \
+                -l app.kubernetes.io/name=openbao \
+                -l openbao-active=true \
+                -o jsonpath='{.items[0].metadata.name}' \
+                2>/dev/null || true
+            )"
+
+            if [[ -n "${ACTIVE_POD}" ]]; then
+              echo "OpenBao active pod: ${ACTIVE_POD}"
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            --show-labels
+
+          exit 1
+
+      # -----------------------------------------------------------------------
+      # Bootstrap the source cluster.
+      #
+      # We initialize Shamir manually here to create the source snapshot.
+      # -----------------------------------------------------------------------
+
+      - name: Initialize source OpenBao cluster
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- bao operator init \
+              -format=json \
+              > /tmp/openbao-e2e/source-init.json
+
+          jq -e '.root_token' \
+            /tmp/openbao-e2e/source-init.json >/dev/null
+
+          jq -e '.unseal_keys_b64 | length >= 3' \
+            /tmp/openbao-e2e/source-init.json >/dev/null
+
+          jq -r '.root_token' \
+            /tmp/openbao-e2e/source-init.json \
+            > /tmp/openbao-e2e/source-root-token
+
+          chmod 600 /tmp/openbao-e2e/source-root-token
+
+      - name: Unseal all source OpenBao nodes
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          mapfile -t KEYS < <(
+            jq -r '.unseal_keys_b64[]' \
+              /tmp/openbao-e2e/source-init.json
+          )
+
+          for pod in openbao-0 openbao-1 openbao-2; do
+            echo "Waiting for ${pod} to join..."
+
+            for _ in {1..120}; do
+              if kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                bao status -format=json \
+                >/tmp/openbao-e2e/status.json 2>/dev/null; then
+                break
+              fi
+
+              sleep 2
+            done
+
+            for key in "${KEYS[@]}"; do
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" \
+                -- env BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                bao operator unseal "${key}" \
+                >/dev/null
+            done
+          done
+
+      - name: Verify source Raft cluster
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_TOKEN="${TOKEN}" \
+              bao operator raft list-peers
+
+          PEER_COUNT="$(
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              openbao-0 \
+              -- env \
+                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_TOKEN="${TOKEN}" \
+                bao operator raft list-peers -format=json \
+              | jq '.data.config.servers | length'
+          )"
+
+          test "${PEER_COUNT}" -eq 3
+
+      # -----------------------------------------------------------------------
+      # Put known data into the source cluster.
+      # -----------------------------------------------------------------------
+
+      - name: Create known source secret
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_TOKEN="${TOKEN}" \
+              bao secrets list -format=json \
+            | jq -e '."secret/" != null' >/dev/null
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_TOKEN="${TOKEN}" \
+              bao kv put secret/e2e \
+                value="snapshot-restore-e2e" \
+                source="github-actions"
+
+      # -----------------------------------------------------------------------
+      # Create a Raft snapshot.
+      # -----------------------------------------------------------------------
+
+      - name: Create source Raft snapshot
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            openbao-0 \
+            -- env \
+              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_TOKEN="${TOKEN}" \
+              bao operator raft snapshot save /tmp/e2e.snapshot
+
+          kubectl cp \
+            "${OPENBAO_NAMESPACE}/openbao-0:/tmp/e2e.snapshot" \
+            /tmp/openbao-e2e/e2e.snapshot
+
+          test -s /tmp/openbao-e2e/e2e.snapshot
+
+      # -----------------------------------------------------------------------
+      # Upload snapshot to S3-compatible storage.
+      # This exercises the same AWS CLI path used by the bootstrap script.
+      # -----------------------------------------------------------------------
+
+      - name: Upload snapshot to test S3
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          aws s3 cp \
+            /tmp/openbao-e2e/e2e.snapshot \
+            "s3://${SNAPSHOT_BUCKET}/${SNAPSHOT_PREFIX}e2e.snapshot"
+
+          aws s3api head-object \
+            --bucket "${SNAPSHOT_BUCKET}" \
+            --key "${SNAPSHOT_PREFIX}e2e.snapshot"
+
+      # -----------------------------------------------------------------------
+      # Destroy the original OpenBao cluster and its PVCs.
+      #
+      # The S3 snapshot is the only surviving copy of the data.
+      # -----------------------------------------------------------------------
+
+      - name: Destroy source OpenBao storage
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          helm uninstall openbao \
+            -n "${OPENBAO_NAMESPACE}" \
+            --wait
+
+          kubectl delete pvc \
+            -n "${OPENBAO_NAMESPACE}" \
+            --all \
+            --wait=true
+
+          kubectl wait \
+            -n "${OPENBAO_NAMESPACE}" \
+            --for=delete pod/openbao-0 \
+            --timeout=5m || true
+
+          kubectl wait \
+            -n "${OPENBAO_NAMESPACE}" \
+            --for=delete pod/openbao-1 \
+            --timeout=5m || true
+
+          kubectl wait \
+            -n "${OPENBAO_NAMESPACE}" \
+            --for=delete pod/openbao-2 \
+            --timeout=5m || true
+
+      # -----------------------------------------------------------------------
+      # Install a completely fresh 3-node OpenBao cluster.
+      # -----------------------------------------------------------------------
+
+      - name: Install fresh OpenBao cluster
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          helm upgrade --install openbao openbao/openbao \
+            --namespace "${OPENBAO_NAMESPACE}" \
+            --values /tmp/openbao-e2e/values.yaml \
+            --wait \
+            --timeout 10m
+
+      - name: Wait for fresh OpenBao active pod
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          for _ in {1..120}; do
+            ACTIVE_POD="$(
+              kubectl get pods \
+                -n "${OPENBAO_NAMESPACE}" \
+                -l app.kubernetes.io/name=openbao \
+                -l openbao-active=true \
+                -o jsonpath='{.items[0].metadata.name}' \
+                2>/dev/null || true
+            )"
+
+            if [[ -n "${ACTIVE_POD}" ]]; then
+              echo "Fresh active pod: ${ACTIVE_POD}"
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            --show-labels
+
+          exit 1
+
+      # -----------------------------------------------------------------------
+      # Run the actual bootstrap script under test.
+      #
+      # It must:
+      #   - find openbao-active=true
+      #   - port-forward the active pod
+      #   - initialize
+      #   - detect Shamir
+      #   - unseal
+      #   - find the S3 snapshot
+      #   - download it
+      #   - restore it
+      # -----------------------------------------------------------------------
+
+      - name: Run OpenBao bootstrap script
+        env:
+          BAO_CACERT: /tmp/openbao-e2e/ca.crt
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          ./tools/openbao-bootstrap/bootstrap.sh \
+            "${OPENBAO_NAMESPACE}"
+
+      # -----------------------------------------------------------------------
+      # The root token from the *fresh init* is intentionally not used here.
+      #
+      # Restoring the Raft snapshot restores the source cluster's auth state,
+      # including its original root token.
+      # -----------------------------------------------------------------------
+
+      - name: Verify restored secret
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          ACTIVE_POD="$(
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -l openbao-active=true \
+              -o jsonpath='{.items[0].metadata.name}'
+          )"
+
+          echo "Active pod after restore: ${ACTIVE_POD}"
+
+          VALUE="$(
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${ACTIVE_POD}" \
+              -- env \
+                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_TOKEN="${TOKEN}" \
+                bao kv get \
+                  -field=value \
+                  secret/e2e
+          )"
+
+          test "${VALUE}" = "snapshot-restore-e2e"
+
+      - name: Verify restored Raft cluster
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+
+          ACTIVE_POD="$(
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -l openbao-active=true \
+              -o jsonpath='{.items[0].metadata.name}'
+          )"
+
+          kubectl exec \
+            -n "${OPENBAO_NAMESPACE}" \
+            "${ACTIVE_POD}" \
+            -- env \
+              BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+              BAO_TOKEN="${TOKEN}" \
+              bao operator raft list-peers
+
+          PEER_COUNT="$(
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${ACTIVE_POD}" \
+              -- env \
+                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                BAO_TOKEN="${TOKEN}" \
+                bao operator raft list-peers -format=json \
+              | jq '.data.config.servers | length'
+          )"
+
+          test "${PEER_COUNT}" -eq 3
+
+      - name: Verify all OpenBao nodes are initialized and unsealed
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          for pod in openbao-0 openbao-1 openbao-2; do
+            echo "Checking ${pod}..."
+
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              -- env \
+                BAO_CACERT=/openbao/userconfig/openbao-server-tls/ca.crt \
+                bao status -format=json \
+              >"/tmp/openbao-e2e/${pod}-status.json"
+
+            jq -e '
+              .initialized == true and
+              .sealed == false
+            ' "/tmp/openbao-e2e/${pod}-status.json" >/dev/null
+          done
+
+      - name: Show final OpenBao state
+        if: always()
+        shell: bash
+        run: |
+          kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            --show-labels \
+            -o wide || true
+
+          kubectl get pvc \
+            -n "${OPENBAO_NAMESPACE}" || true
+
+      - name: Dump OpenBao logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          kubectl logs \
+            -n "${OPENBAO_NAMESPACE}" \
+            -l app.kubernetes.io/name=openbao \
+            --all-containers \
+            --prefix \
+            --tail=500 || true
+
+          kubectl describe pods \
+            -n "${OPENBAO_NAMESPACE}" || true

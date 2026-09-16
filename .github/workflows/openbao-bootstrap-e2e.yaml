@@ -280,7 +280,8 @@ jobs:
             --values /tmp/openbao-e2e/values.yaml \
             --wait=false
 
-      - name: Wait for the first OpenBao pod to be running
+      - name: Resolve first OpenBao pod with Running status
+        id: resolve_init_target_pod
         shell: bash
         run: |
           set -Eeuo pipefail
@@ -294,8 +295,7 @@ jobs:
               --timeout=1m \
               pod \
               -l app.kubernetes.io/name=openbao,app.kubernetes.io/instance=openbao,component=server |
-            sed -n 's#^pod/##p' |
-            head -n1
+            awk -F'[/ ]' '/^pod\// { print $2; exit }'
           )"
 
           echo "Selected first matching pod: ${pod}"
@@ -306,6 +306,8 @@ jobs:
             exit 1
           fi
 
+          echo "name=${pod}" >> "$GITHUB_OUTPUT"
+
       - name: Initialize the first OpenBao cluster node
         shell: bash
         run: |
@@ -315,7 +317,7 @@ jobs:
 
           kubectl exec \
             -n "${OPENBAO_NAMESPACE}" \
-            openbao-0 \
+            "${{ steps.resolve_init_target_pod.outputs.name }}" \
             -- env \
               BAO_ADDR="https://127.0.0.1:8200" \
               BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
@@ -323,7 +325,7 @@ jobs:
               bao operator init -format=json \
             > /tmp/openbao-e2e/source-init.json
 
-          if [[ ! jq -e '.root_token' /tmp/openbao-e2e/source-init.json >/dev/null ]]; then
+          if ! jq -e '.root_token' /tmp/openbao-e2e/source-init.json >/dev/null; then
             echo "ERROR: failed to extract root_token from source-init.json" >&2
             cat /tmp/openbao-e2e/source-init.json >&2
             exit 1
@@ -353,7 +355,7 @@ jobs:
           for index in "${!UNSEAL_KEYS[@]}"; do
             kubectl exec \
               -n "${OPENBAO_NAMESPACE}" \
-              openbao-0 \
+              "${{ steps.resolve_init_target_pod.outputs.name }}" \
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
                 BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \

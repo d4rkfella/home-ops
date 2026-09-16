@@ -266,6 +266,7 @@ jobs:
                     path = "/openbao/data"
                     retry_join {
                       leader_api_addr = "https://openbao-active:8200"
+                      leader_ca_cert_file     = "/openbao/userconfig/openbao-server-tls/ca.crt"
                       leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
                       leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
                       leader_tls_servername = "openbao.local"

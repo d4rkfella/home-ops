@@ -338,25 +338,68 @@ jobs:
       # We deliberately do NOT add that label here.
       # -----------------------------------------------------------------------
 
-      - name: Wait for three OpenBao pods
+      - name: Wait for the OpenBao pods to be running
         shell: bash
         run: |
           set -Eeuo pipefail
 
-          kubectl rollout status \
-            -n "${OPENBAO_NAMESPACE}" \
-            statefulset/openbao \
-            --timeout=10m
+          echo "Waiting for three OpenBao pods to exist..."
+
+          for _ in {1..180}; do
+            count="$(
+              kubectl get pods \
+                -n "${OPENBAO_NAMESPACE}" \
+                -l app.kubernetes.io/name=openbao \
+                -l app.kubernetes.io/instance=openbao \
+                --no-headers 2>/dev/null |
+              awk '$1 ~ /^openbao-[0-2]$/ { count++ } END { print count+0 }'
+            )"
+
+            if [[ "${count}" == "3" ]]; then
+              break
+            fi
+
+            sleep 2
+          done
+
+          echo "Waiting for all three OpenBao pods to be Running..."
+
+          for _ in {1..300}; do
+            running="$(
+              kubectl get pods \
+                -n "${OPENBAO_NAMESPACE}" \
+                -l app.kubernetes.io/name=openbao \
+                -l app.kubernetes.io/instance=openbao \
+                -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' 2>/dev/null |
+              grep -c '^Running$' || true
+            )"
+
+            if [[ "${running}" == "3" ]]; then
+              echo "All three OpenBao pods are Running"
+              break
+            fi
+
+            sleep 2
+          done
 
           kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
             -o wide
 
-          test "$(kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            -l app.kubernetes.io/name=openbao \
-            -l app.kubernetes.io/instance=openbao \
-            --no-headers | wc -l)" -eq 3
+          running="$(
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -l app.kubernetes.io/instance=openbao \
+              -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' |
+            grep -c '^Running$' || true
+          )"
+
+          if [[ "${running}" != "3" ]]; then
+            echo "Expected three Running OpenBao pods, got ${running}" >&2
+            kubectl describe pods -n "${OPENBAO_NAMESPACE}" >&2
+            exit 1
+          fi
 
       - name: Wait for OpenBao active pod label
         shell: bash

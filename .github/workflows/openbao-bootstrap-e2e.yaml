@@ -829,20 +829,28 @@ jobs:
             done
           done
 
-      - name: Debug OpenBao pods
+      - name: Check OpenBao cluster status
         shell: bash
         run: |
           set -Eeuo pipefail
 
           kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
-            -o wide \
-            --show-labels
+            -l app.kubernetes.io/name=openbao \
+            -o custom-columns='NAME:.metadata.name,ACTIVE:.metadata.labels.openbao-active,INITIALIZED:.metadata.labels.openbao-initialized,SEALED:.metadata.labels.openbao-sealed,PERF_STANDBY:.metadata.labels.openbao-perf-standby'
 
           echo
-          kubectl get pods \
+
+          for pod in $(kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
-            -o json
+            -l app.kubernetes.io/name=openbao \
+            -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'); do
+            echo "=== ${pod} ==="
+            kubectl logs \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              --tail=100
+          done
 
       - name: Verify restored secret
         shell: bash

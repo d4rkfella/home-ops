@@ -73,25 +73,47 @@ bao() {
     shift
 
     BAO_ADDR="https://127.0.0.1:${port}" \
-    bao "$@"
+    command bao "$@"
 }
 
 get_status() {
     local pod="$1"
     local port="${PORT_FORWARD_PORTS[$pod]}"
-    local output
+    local stdout_file="${TMP_DIR}/${pod}-status.stdout"
+    local stderr_file="${TMP_DIR}/${pod}-status.stderr"
+    local output=""
+    local error_output=""
     local exit_code=0
 
-    output="$(
-        bao "${port}" status -format=json \
-            2>"${TMP_DIR}/${pod}-status.stderr"
-    )" || exit_code=$?
+    : >"${stdout_file}"
+    : >"${stderr_file}"
+
+    bao "${port}" status -format=json \
+        >"${stdout_file}" \
+        2>"${stderr_file}" || exit_code=$?
+
+    output="$(cat "${stdout_file}")"
+    error_output="$(cat "${stderr_file}")"
 
     if [[ "${exit_code}" -ne 0 ]]; then
-        printf '%s\n' "${output}"
+        log "bao status failed for ${pod}"
+        log "  BAO_ADDR=https://127.0.0.1:${port}"
+        log "  BAO_TLS_SERVER_NAME=${BAO_TLS_SERVER_NAME}"
+        log "  BAO_CACERT=${BAO_CACERT}"
+        log "  exit code=${exit_code}"
 
-        if [[ -s "${TMP_DIR}/${pod}-status.stderr" ]]; then
-            cat "${TMP_DIR}/${pod}-status.stderr" >&2
+        if [[ -n "${output}" ]]; then
+            log "  stdout:"
+            printf '%s\n' "${output}" >&2
+        else
+            log "  stdout: <empty>"
+        fi
+
+        if [[ -n "${error_output}" ]]; then
+            log "  stderr:"
+            printf '%s\n' "${error_output}" >&2
+        else
+            log "  stderr: <empty>"
         fi
 
         return "${exit_code}"
@@ -199,13 +221,18 @@ start_port_forward() {
 wait_for_api() {
     local pod="$1"
     local status=""
+    local last_status_file="${TMP_DIR}/${pod}-last-status"
+
+    : >"${last_status_file}"
 
     log "waiting for OpenBao API on ${pod}..."
 
-    for _ in {1..120}; do
+    for attempt in {1..120}; do
         status="$(
             get_status "${pod}" 2>&1
         )" || true
+
+        printf '%s\n' "${status}" >"${last_status_file}"
 
         if jq -e '
             .initialized != null and
@@ -215,14 +242,25 @@ wait_for_api() {
             return 0
         fi
 
+        if [[ "${attempt}" -eq 1 || $((attempt % 10)) -eq 0 ]]; then
+            log "bao status still failing on ${pod} (attempt ${attempt}/120)"
+            printf '%s\n' "${status}" >&2
+        fi
+
         sleep 2
     done
 
-    log "last OpenBao status response/error from ${pod}:"
-    printf '%s\n' "${status}" >&2
+    log "last bao status output for ${pod}:"
+    cat "${last_status_file}" >&2 || true
 
     log "port-forward log for ${pod}:"
     cat "${PORT_FORWARD_LOGS[$pod]}" >&2 || true
+
+    log "OpenBao pod logs for ${pod}:"
+    kubectl logs \
+        -n "${OPENBAO_NAMESPACE}" \
+        "${pod}" \
+        --tail=200 >&2 || true
 
     fatal "OpenBao API did not become queryable on ${pod}"
 }
@@ -309,6 +347,8 @@ else
     unseal_pod() {
         local pod="$1"
         local port="${PORT_FORWARD_PORTS[$pod]}"
+        local key
+        local exit_code=0
 
         log "unsealing ${pod}..."
 
@@ -316,7 +356,17 @@ else
             bao \
                 "${port}" \
                 operator unseal "${key}" \
-                >/dev/null
+                >/dev/null \
+                2>"${TMP_DIR}/${pod}-unseal.stderr" || exit_code=$?
+
+            if [[ "${exit_code}" -ne 0 ]]; then
+                log "bao operator unseal failed for ${pod}"
+                log "  BAO_ADDR=https://127.0.0.1:${port}"
+                log "  BAO_TLS_SERVER_NAME=${BAO_TLS_SERVER_NAME}"
+                log "  BAO_CACERT=${BAO_CACERT}"
+                cat "${TMP_DIR}/${pod}-unseal.stderr" >&2 || true
+                return "${exit_code}"
+            fi
         done
     }
 
@@ -349,9 +399,19 @@ else
                     sleep 2
                 done
 
-                [[ "${JOINED}" == "true" ]] ||
+                if [[ "${JOINED}" != "true" ]]; then
+                    log "last status response from ${pod}:"
+                    get_status "${pod}" || true
+
+                    log "OpenBao pod logs for ${pod}:"
+                    kubectl logs \
+                        -n "${OPENBAO_NAMESPACE}" \
+                        "${pod}" \
+                        --tail=200 >&2 || true
+
                     fatal \
                         "${pod} did not join the initialized Raft cluster"
+                fi
 
                 log "${pod} joined the initialized Raft cluster"
 
@@ -391,11 +451,21 @@ for pod in "${OPENBAO_PODS[@]}"; do
         sleep 2
     done
 
-    jq -e '
+    if ! jq -e '
         .initialized == true and
         .sealed == false
-    ' >/dev/null 2>&1 <<<"${STATUS}" ||
+    ' >/dev/null 2>&1 <<<"${STATUS}"; then
+        log "final bao status failed for ${pod}:"
+        get_status "${pod}" || true
+
+        log "OpenBao pod logs for ${pod}:"
+        kubectl logs \
+            -n "${OPENBAO_NAMESPACE}" \
+            "${pod}" \
+            --tail=200 >&2 || true
+
         fatal "${pod} is not initialized and unsealed"
+    fi
 
     log "${pod} is initialized and unsealed"
 done

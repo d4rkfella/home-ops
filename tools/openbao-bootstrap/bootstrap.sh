@@ -82,44 +82,41 @@ get_status() {
     local stdout_file="${TMP_DIR}/${pod}-status.stdout"
     local stderr_file="${TMP_DIR}/${pod}-status.stderr"
     local output=""
-    local error_output=""
-    local exit_code=0
 
     : >"${stdout_file}"
     : >"${stderr_file}"
 
     bao "${port}" status -format=json \
         >"${stdout_file}" \
-        2>"${stderr_file}" || exit_code=$?
+        2>"${stderr_file}" || true
 
     output="$(cat "${stdout_file}")"
-    error_output="$(cat "${stderr_file}")"
 
-    if [[ "${exit_code}" -ne 0 ]]; then
-        log "bao status failed for ${pod}"
-        log "  BAO_ADDR=https://127.0.0.1:${port}"
-        log "  BAO_TLS_SERVER_NAME=${BAO_TLS_SERVER_NAME}"
-        log "  BAO_CACERT=${BAO_CACERT}"
-        log "  exit code=${exit_code}"
-
-        if [[ -n "${output}" ]]; then
-            log "  stdout:"
-            printf '%s\n' "${output}" >&2
-        else
-            log "  stdout: <empty>"
-        fi
-
-        if [[ -n "${error_output}" ]]; then
-            log "  stderr:"
-            printf '%s\n' "${error_output}" >&2
-        else
-            log "  stderr: <empty>"
-        fi
-
-        return "${exit_code}"
+    if jq -e '
+        .initialized != null and
+        .sealed != null and
+        .storage_type != null
+    ' >/dev/null 2>&1 <<<"${output}"; then
+        printf '%s\n' "${output}"
+        return 0
     fi
 
-    printf '%s\n' "${output}"
+    log "bao status failed for ${pod}"
+    log "  BAO_ADDR=https://127.0.0.1:${port}"
+    log "  BAO_TLS_SERVER_NAME=${BAO_TLS_SERVER_NAME}"
+    log "  BAO_CACERT=${BAO_CACERT}"
+
+    if [[ -n "${output}" ]]; then
+        log "  stdout:"
+        printf '%s\n' "${output}" >&2
+    fi
+
+    if [[ -s "${stderr_file}" ]]; then
+        log "  stderr:"
+        cat "${stderr_file}" >&2
+    fi
+
+    return 1
 }
 
 discover_openbao_pods() {

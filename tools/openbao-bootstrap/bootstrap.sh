@@ -31,42 +31,54 @@ done
 readonly OPENBAO_NAMESPACE="${1:?usage: $0 <openbao-namespace>}"
 
 readonly OPENBAO_LOCAL_PORT="${OPENBAO_LOCAL_PORT:-18200}"
-readonly OPENBAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME:-openbao.darkfellanetwork.com}"
+readonly OPENBAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME:-openbao.local}"
+readonly OPENBAO_CACERT="${OPENBAO_CACERT:-${BAO_CACERT:-}}"
+
+[[ -n "${OPENBAO_CACERT}" ]] ||
+    fatal "OPENBAO_CACERT is not set"
+
+[[ -f "${OPENBAO_CACERT}" ]] ||
+    fatal "OpenBao CA certificate does not exist: ${OPENBAO_CACERT}"
 
 readonly SNAPSHOT_BUCKET="${SNAPSHOT_BUCKET:-openbao-snapshots}"
 readonly SNAPSHOT_PREFIX="${SNAPSHOT_PREFIX:-bao_}"
 
 readonly TMP_DIR="$(mktemp -d -t openbao-bootstrap.XXXXXX)"
-readonly INIT_FILE="$TMP_DIR/init.json"
-readonly RESTORE_FILE="$TMP_DIR/restore.snapshot"
-readonly PORT_FORWARD_LOG="$TMP_DIR/port-forward.log"
+readonly INIT_FILE="${TMP_DIR}/init.json"
+readonly RESTORE_FILE="${TMP_DIR}/restore.snapshot"
+readonly PORT_FORWARD_LOG="${TMP_DIR}/port-forward.log"
 
 PORT_FORWARD_PID=""
 
 cleanup() {
     local exit_code=$?
 
-    if [[ -n "$PORT_FORWARD_PID" ]] &&
-       kill -0 "$PORT_FORWARD_PID" 2>/dev/null; then
-        log "stopping port-forward (pid=$PORT_FORWARD_PID)"
-        kill "$PORT_FORWARD_PID" 2>/dev/null || true
-        wait "$PORT_FORWARD_PID" 2>/dev/null || true
+    if [[ -n "${PORT_FORWARD_PID}" ]] &&
+       kill -0 "${PORT_FORWARD_PID}" 2>/dev/null; then
+        log "stopping port-forward (pid=${PORT_FORWARD_PID})"
+        kill "${PORT_FORWARD_PID}" 2>/dev/null || true
+        wait "${PORT_FORWARD_PID}" 2>/dev/null || true
     fi
 
-    rm -rf "$TMP_DIR"
+    rm -rf "${TMP_DIR}"
 
-    exit "$exit_code"
+    exit "${exit_code}"
 }
 
 trap cleanup EXIT
 
 # ---------------------------------------------------------------------------
 # Helper: query OpenBao through the port-forward.
+#
+# IMPORTANT:
+# Connection failures are allowed to propagate to the caller so the
+# caller can retry them without set -e terminating the script.
 # ---------------------------------------------------------------------------
 
 bao_status() {
     BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
     BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+    BAO_CACERT="${OPENBAO_CACERT}" \
     bao status -format=json
 }
 
@@ -126,7 +138,7 @@ kubectl port-forward \
 PORT_FORWARD_PID=$!
 
 # ---------------------------------------------------------------------------
-# Wait until the OpenBao CLI can obtain a valid status response.
+# Wait until the port-forward is actually accepting connections.
 # ---------------------------------------------------------------------------
 
 log "waiting for OpenBao..."
@@ -134,7 +146,22 @@ log "waiting for OpenBao..."
 STATUS=""
 
 for _ in {1..120}; do
-    STATUS="$(bao_status)"
+    # If kubectl port-forward has already exited, there is no point retrying.
+    if ! kill -0 "${PORT_FORWARD_PID}" 2>/dev/null; then
+        log "port-forward exited unexpectedly"
+
+        if [[ -s "${PORT_FORWARD_LOG}" ]]; then
+            log "port-forward output:"
+            cat "${PORT_FORWARD_LOG}" >&2
+        fi
+
+        fatal "OpenBao port-forward terminated"
+    fi
+
+    # bao status can legitimately fail while the port-forward is starting.
+    STATUS="$(
+        bao_status 2>/dev/null || true
+    )"
 
     if [[ -n "${STATUS}" ]] &&
        jq -e '
@@ -181,7 +208,12 @@ fi
 
 log "OpenBao is not initialized; initializing..."
 
-bao operator init -format=json >"${INIT_FILE}"
+BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
+BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+BAO_CACERT="${OPENBAO_CACERT}" \
+bao operator init \
+    -format=json \
+    >"${INIT_FILE}"
 
 jq -e '.root_token' "${INIT_FILE}" >/dev/null ||
     fatal "OpenBao initialization did not return a root token"
@@ -192,7 +224,9 @@ export BAO_TOKEN="$(jq -r '.root_token' "${INIT_FILE}")"
 # Detect seal type after initialization.
 # ---------------------------------------------------------------------------
 
-STATUS="$(bao_status)"
+STATUS="$(
+    bao_status
+)"
 
 SEAL_TYPE="$(jq -r '.type // empty' <<<"${STATUS}")"
 
@@ -209,12 +243,26 @@ case "${SEAL_TYPE}" in
     shamir)
         log "Shamir seal detected; unsealing..."
 
+        # Use the configured threshold, not every generated share.
+        UNSEAL_THRESHOLD="$(
+            jq -r '.threshold // 3' "${INIT_FILE}"
+        )"
+
         mapfile -t unseal_keys < <(
-            jq -r '.unseal_keys_b64[]' "$INIT_FILE"
+            jq -r \
+                --argjson threshold "${UNSEAL_THRESHOLD}" \
+                '.unseal_keys_b64[:$threshold][]' \
+                "${INIT_FILE}"
         )
 
+        [[ "${#unseal_keys[@]}" -ge "${UNSEAL_THRESHOLD}" ]] ||
+            fatal "OpenBao returned fewer unseal keys than the threshold"
+
         for key in "${unseal_keys[@]}"; do
-            bao operator unseal "$key" >/dev/null
+            BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
+            BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+            BAO_CACERT="${OPENBAO_CACERT}" \
+            bao operator unseal "${key}" >/dev/null
         done
         ;;
 
@@ -236,20 +284,26 @@ log "waiting for OpenBao to become unsealed..."
 UNSEALED=false
 
 for _ in {1..120}; do
-    STATUS="$(bao_status)"
-
-    CURRENT_INITIALIZED="$(
-        jq -r '.initialized // false' <<<"${STATUS}" 2>/dev/null || echo false
+    STATUS="$(
+        bao_status 2>/dev/null || true
     )"
 
-    CURRENT_SEALED="$(
-        jq -r '.sealed // true' <<<"${STATUS}" 2>/dev/null || echo true
-    )"
+    if [[ -n "${STATUS}" ]]; then
+        CURRENT_INITIALIZED="$(
+            jq -r '.initialized // false' <<<"${STATUS}" \
+                2>/dev/null || echo false
+        )"
 
-    if [[ "${CURRENT_INITIALIZED}" == "true" &&
-          "${CURRENT_SEALED}" == "false" ]]; then
-        UNSEALED=true
-        break
+        CURRENT_SEALED="$(
+            jq -r '.sealed // true' <<<"${STATUS}" \
+                2>/dev/null || echo true
+        )"
+
+        if [[ "${CURRENT_INITIALIZED}" == "true" &&
+              "${CURRENT_SEALED}" == "false" ]]; then
+            UNSEALED=true
+            break
+        fi
     fi
 
     sleep 2
@@ -299,6 +353,10 @@ aws s3 cp \
 
 log "restoring Raft snapshot..."
 
+BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
+BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+BAO_CACERT="${OPENBAO_CACERT}" \
+BAO_TOKEN="${BAO_TOKEN}" \
 bao operator raft snapshot restore \
     -force \
     "${RESTORE_FILE}"

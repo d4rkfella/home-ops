@@ -244,12 +244,6 @@ log "OpenBao initialization completed"
 # Detect seal type after initialization.
 # ---------------------------------------------------------------------------
 
-STATUS="$(
-    bao_status
-)"
-
-SEAL_TYPE="$(jq -r '.type // empty' <<<"${STATUS}")"
-
 [[ -n "${SEAL_TYPE}" ]] ||
     fatal "unable to determine OpenBao seal type after initialization"
 

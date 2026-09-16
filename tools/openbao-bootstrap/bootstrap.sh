@@ -226,8 +226,8 @@ wait_for_api() {
 
     for attempt in {1..120}; do
         status="$(
-            get_status "${pod}" 2>&1
-        )" || true
+            get_status "${pod}" 2>/dev/null || true
+        )"
 
         printf '%s\n' "${status}" >"${last_status_file}"
 
@@ -240,8 +240,7 @@ wait_for_api() {
         fi
 
         if [[ "${attempt}" -eq 1 || $((attempt % 10)) -eq 0 ]]; then
-            log "bao status still failing on ${pod} (attempt ${attempt}/120)"
-            printf '%s\n' "${status}" >&2
+            log "OpenBao API not ready on ${pod} (attempt ${attempt}/120)"
         fi
 
         sleep 2

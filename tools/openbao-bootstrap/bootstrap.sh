@@ -208,12 +208,14 @@ fi
 
 log "OpenBao is not initialized; initializing..."
 
-BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
-BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
-BAO_CACERT="${OPENBAO_CACERT}" \
-bao operator init \
-    -format=json \
-    >"${INIT_FILE}"
+if ! BAO_ADDR="https://127.0.0.1:${OPENBAO_LOCAL_PORT}" \
+     BAO_TLS_SERVER_NAME="${OPENBAO_TLS_SERVER_NAME}" \
+     BAO_CACERT="${OPENBAO_CACERT}" \
+     bao operator init -format=json \
+     >"${INIT_FILE}"; then
+
+    fatal "OpenBao initialization failed"
+fi
 
 jq -e '.root_token' "${INIT_FILE}" >/dev/null ||
     fatal "OpenBao initialization did not return a root token"

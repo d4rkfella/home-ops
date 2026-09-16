@@ -462,7 +462,7 @@ jobs:
 
           wait_for_initialized() {
             local pod="$1"
-            local timeout=180
+            local timeout=30
             local elapsed=0
 
             while (( elapsed < timeout )); do
@@ -490,7 +490,7 @@ jobs:
 
           wait_for_raft_join() {
             local pod="$1"
-            local timeout=180
+            local timeout=30
             local elapsed=0
 
             while (( elapsed < timeout )); do
@@ -518,7 +518,7 @@ jobs:
 
           wait_for_unsealed() {
             local pod="$1"
-            local timeout=180
+            local timeout=30
             local elapsed=0
 
             while (( elapsed < timeout )); do

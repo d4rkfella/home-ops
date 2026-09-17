@@ -454,38 +454,52 @@ jobs:
 
             echo "Waiting for ${pod} to be Running..."
 
+            # Pod may not exist yet.
+            until kubectl get pod \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" >/dev/null 2>&1; do
+              sleep 2
+            done
+
             kubectl wait \
               -n "${OPENBAO_NAMESPACE}" \
               --for=jsonpath='{.status.phase}'=Running \
               "pod/${pod}" \
-              --timeout=120s
+              --timeout=180s
           }
 
           submit_unseal_keys() {
             local pod="$1"
 
-            echo "Unsealing ${pod} with ${#UNSEAL_KEYS[@]} key shares..."
+            echo "Submitting unseal keys to ${pod}..."
 
             for key in "${UNSEAL_KEYS[@]}"; do
               bao_exec "${pod}" \
-                bao operator unseal "${key}"
+                bao operator unseal "${key}" || true
             done
+          }
+
+          is_unsealed() {
+            local pod="$1"
+            local status
+
+            status="$(get_status "${pod}")"
+
+            [[ -n "${status}" ]] &&
+              jq -e '
+                .initialized == true and
+                .sealed == false
+              ' >/dev/null 2>&1 <<<"${status}"
           }
 
           wait_for_unsealed() {
             local pod="$1"
-            local timeout=30
+            local timeout=90
             local elapsed=0
 
             while (( elapsed < timeout )); do
-              local status
-              status="$(get_status "${pod}")"
-
-              if [[ -n "${status}" ]] &&
-                jq -e '
-                  .initialized == true and
-                  .sealed == false
-                ' >/dev/null 2>&1 <<<"${status}"; then
+              if is_unsealed "${pod}"; then
+                echo "${pod} is unsealed"
                 return 0
               fi
 
@@ -493,7 +507,32 @@ jobs:
               elapsed=$((elapsed + 2))
             done
 
-            echo "ERROR: ${pod} remained sealed" >&2
+            return 1
+          }
+
+          unseal_until_complete() {
+            local pod="$1"
+            local max_attempts=3
+
+            for attempt in $(seq 1 "${max_attempts}"); do
+              echo
+              echo "=== ${pod}: unseal attempt ${attempt}/${max_attempts} ==="
+
+              submit_unseal_keys "${pod}"
+
+              # The first unseal can be interrupted by the Raft join,
+              # causing OpenBao to seal itself again.
+              if wait_for_unsealed "${pod}"; then
+                return 0
+              fi
+
+              echo "${pod} is still sealed; retrying unseal keys..."
+
+              # Give the Raft join/seal operation a moment to finish.
+              sleep 3
+            done
+
+            echo "ERROR: ${pod} could not be unsealed" >&2
 
             get_status "${pod}" | jq . >&2 || true
 
@@ -507,13 +546,13 @@ jobs:
 
           for pod in openbao-1 openbao-2; do
             wait_for_running "${pod}"
-            submit_unseal_keys "${pod}"
-            wait_for_unsealed "${pod}"
+            unseal_until_complete "${pod}"
           done
 
           bao_exec openbao-0 \
             env BAO_TOKEN="${ROOT_TOKEN}" \
             bao operator raft list-peers
+
 
 
       - name: Verify source Raft cluster

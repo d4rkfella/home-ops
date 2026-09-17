@@ -426,7 +426,7 @@ jobs:
           )"
 
           mapfile -t UNSEAL_KEYS < <(
-            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}]" "${INIT_FILE}"
+            jq -r ".unseal_keys_b64[:${UNSEAL_THRESHOLD}][]" "${INIT_FILE}"
           )
 
           bao_exec() {
@@ -464,11 +464,11 @@ jobs:
           submit_unseal_keys() {
             local pod="$1"
 
-            for index in 0 1 2; do
-              bao_exec "${pod}" \
-                bao operator unseal "${UNSEAL_KEYS[$index]}" || true
+            echo "Unsealing ${pod} with ${#UNSEAL_KEYS[@]} key shares..."
 
-              sleep 1
+            for key in "${UNSEAL_KEYS[@]}"; do
+              bao_exec "${pod}" \
+                bao operator unseal "${key}"
             done
           }
 

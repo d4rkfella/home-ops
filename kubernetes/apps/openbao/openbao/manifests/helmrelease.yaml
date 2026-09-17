@@ -321,6 +321,7 @@ spec:
                 - matchName: cloudkms.googleapis.com
                 - matchName: google.com
                 - matchName: github.com
+                - matchPattern: "*.github.com"
                 - matchName: ghcr.io
                 - matchName: 2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com
               toPorts:

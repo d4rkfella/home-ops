@@ -123,7 +123,7 @@ discover_openbao_pods() {
     mapfile -t OPENBAO_PODS < <(
         kubectl get pods \
             -n "${OPENBAO_NAMESPACE}" \
-            -l app.kubernetes.io/name=openbao \
+            -l app.kubernetes.io/name=openbao,component=server \
             -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' |
         sed '/^$/d' |
         sort

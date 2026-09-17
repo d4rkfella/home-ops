@@ -429,6 +429,11 @@ jobs:
             jq -r ".unseal_keys_b64[:${UNSEAL_THRESHOLD}][]" "${INIT_FILE}"
           )
 
+          if (( ${#UNSEAL_KEYS[@]} != UNSEAL_THRESHOLD )); then
+            echo "ERROR: expected ${UNSEAL_THRESHOLD} unseal keys, got ${#UNSEAL_KEYS[@]}" >&2
+            exit 1
+          fi
+
           bao_exec() {
             local pod="$1"
             shift
@@ -446,7 +451,32 @@ jobs:
           get_status() {
             local pod="$1"
 
-            bao_exec "${pod}" bao status -format=json 2>/dev/null || true
+            bao_exec "${pod}" \
+              bao status -format=json
+          }
+
+          print_status() {
+            local pod="$1"
+            local status
+
+            echo "=== ${pod}: current local OpenBao status ==="
+
+            if status="$(get_status "${pod}" 2>/dev/null)"; then
+              if [[ -n "${status}" ]]; then
+                jq '{
+                  initialized,
+                  sealed,
+                  progress,
+                  nonce,
+                  storage_type,
+                  ha_enabled
+                }' <<<"${status}" || true
+              else
+                echo "OpenBao returned an empty status response"
+              fi
+            else
+              echo "Unable to read OpenBao status from ${pod}"
+            fi
           }
 
           wait_for_running() {
@@ -471,11 +501,11 @@ jobs:
           submit_unseal_keys() {
             local pod="$1"
 
-            echo "Submitting unseal keys to ${pod}..."
+            echo "Submitting ${UNSEAL_THRESHOLD} unseal keys to ${pod}..."
 
             for key in "${UNSEAL_KEYS[@]}"; do
               bao_exec "${pod}" \
-                bao operator unseal "${key}" || true
+                bao operator unseal "${key}"
             done
           }
 
@@ -483,29 +513,81 @@ jobs:
             local pod="$1"
             local status
 
-            status="$(get_status "${pod}")"
+            # Get a completely fresh status from this pod's local
+            # OpenBao listener.
+            if ! status="$(get_status "${pod}" 2>/dev/null)"; then
+              return 1
+            fi
 
-            [[ -n "${status}" ]] &&
-              jq -e '
-                .initialized == true and
-                .sealed == false
-              ' >/dev/null 2>&1 <<<"${status}"
+            [[ -n "${status}" ]] || return 1
+
+            # Do not infer anything from the unseal command output.
+            # Only the fresh status response determines whether the
+            # local OpenBao process is actually unsealed.
+            jq -e '
+              .initialized == true and
+              .sealed == false
+            ' >/dev/null <<<"${status}"
           }
 
           wait_for_unsealed() {
             local pod="$1"
             local timeout=90
             local elapsed=0
+            local status
+
+            echo "Waiting for ${pod} to report sealed=false..."
 
             while (( elapsed < timeout )); do
-              if is_unsealed "${pod}"; then
-                echo "${pod} is unsealed"
-                return 0
+              status=""
+
+              if status="$(get_status "${pod}" 2>/dev/null)" &&
+                [[ -n "${status}" ]]; then
+
+                if jq -e '
+                  .initialized == true and
+                  .sealed == false
+                ' >/dev/null <<<"${status}"; then
+
+                  echo "${pod} reports initialized=true and sealed=false"
+
+                  echo "=== ${pod}: status used to confirm unsealed ==="
+
+                  jq '{
+                    initialized,
+                    sealed,
+                    progress,
+                    nonce,
+                    storage_type,
+                    ha_enabled
+                  }' <<<"${status}"
+
+                  return 0
+                fi
+
+                echo "${pod} still reports sealed=true or is not initialized"
+
+                jq '{
+                  initialized,
+                  sealed,
+                  progress,
+                  nonce,
+                  storage_type,
+                  ha_enabled
+                }' <<<"${status}" || true
+
+              else
+                echo "Could not read fresh status from ${pod}"
               fi
 
               sleep 2
               elapsed=$((elapsed + 2))
             done
+
+            echo "ERROR: ${pod} did not report initialized=true and sealed=false within ${timeout}s" >&2
+
+            echo "=== ${pod}: final status ===" >&2
+            get_status "${pod}" 2>&1 | jq . >&2 || true
 
             return 1
           }
@@ -516,26 +598,42 @@ jobs:
 
             for attempt in $(seq 1 "${max_attempts}"); do
               echo
-              echo "=== ${pod}: unseal attempt ${attempt}/${max_attempts} ==="
+              echo "========================================"
+              echo "${pod}: unseal attempt ${attempt}/${max_attempts}"
+              echo "========================================"
 
               submit_unseal_keys "${pod}"
 
-              # The first unseal can be interrupted by the Raft join,
-              # causing OpenBao to seal itself again.
+              echo
+              echo "=== ${pod}: fresh status after unseal keys ==="
+
+              print_status "${pod}"
+
+              # The Raft join can reset the Shamir unseal state.
+              # Therefore we only succeed when a fresh local status
+              # explicitly reports sealed=false.
               if wait_for_unsealed "${pod}"; then
+                echo
+                echo "${pod} is confirmed unsealed"
                 return 0
               fi
 
-              echo "${pod} is still sealed; retrying unseal keys..."
-
-              # Give the Raft join/seal operation a moment to finish.
-              sleep 3
+              if (( attempt < max_attempts )); then
+                echo
+                echo "${pod} is still sealed; retrying unseal keys..."
+                sleep 3
+              fi
             done
 
-            echo "ERROR: ${pod} could not be unsealed" >&2
+            echo
+            echo "ERROR: ${pod} could not be confirmed unsealed" >&2
 
-            get_status "${pod}" | jq . >&2 || true
+            echo
+            echo "=== ${pod}: final OpenBao status ===" >&2
+            get_status "${pod}" 2>&1 | jq . >&2 || true
 
+            echo
+            echo "=== ${pod}: recent logs ===" >&2
             kubectl logs \
               -n "${OPENBAO_NAMESPACE}" \
               "${pod}" \
@@ -548,6 +646,9 @@ jobs:
             wait_for_running "${pod}"
             unseal_until_complete "${pod}"
           done
+
+          echo
+          echo "=== Raft peers ==="
 
           bao_exec openbao-0 \
             env BAO_TOKEN="${ROOT_TOKEN}" \

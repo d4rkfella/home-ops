@@ -422,8 +422,7 @@ jobs:
           ROOT_TOKEN="$(cat "${ROOT_TOKEN_FILE}")"
 
           UNSEAL_THRESHOLD="$(
-            jq -r '.unseal_threshold' \
-              /tmp/openbao-e2e/source-init.json
+            jq -r '.unseal_threshold' "${INIT_FILE}"
           )"
 
           mapfile -t UNSEAL_KEYS < <(
@@ -448,6 +447,18 @@ jobs:
             local pod="$1"
 
             bao_exec "${pod}" bao status -format=json 2>/dev/null || true
+          }
+
+          wait_for_running() {
+            local pod="$1"
+
+            echo "Waiting for ${pod} to be Running..."
+
+            kubectl wait \
+              -n "${OPENBAO_NAMESPACE}" \
+              --for=jsonpath='{.status.phase}'=Running \
+              "pod/${pod}" \
+              --timeout=120s
           }
 
           submit_unseal_keys() {
@@ -495,6 +506,7 @@ jobs:
           }
 
           for pod in openbao-1 openbao-2; do
+            wait_for_running "${pod}"
             submit_unseal_keys "${pod}"
             wait_for_unsealed "${pod}"
           done
@@ -502,6 +514,7 @@ jobs:
           bao_exec openbao-0 \
             env BAO_TOKEN="${ROOT_TOKEN}" \
             bao operator raft list-peers
+
 
       - name: Verify source Raft cluster
         shell: bash

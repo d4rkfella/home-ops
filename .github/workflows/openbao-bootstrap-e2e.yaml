@@ -962,14 +962,96 @@ jobs:
           set -Eeuo pipefail
 
           TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
+          POD_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt"
 
-          ACTIVE_POD="$(
+          get_active_pod() {
             kubectl get pods \
               -n "${OPENBAO_NAMESPACE}" \
               -l app.kubernetes.io/name=openbao \
               -l openbao-active=true \
-              -o jsonpath='{.items[0].metadata.name}'
-          )"
+              -o jsonpath='{.items[0].metadata.name}' \
+              2>/dev/null
+          }
+
+          echo "Waiting for an active OpenBao pod after snapshot restore..."
+
+          ACTIVE_POD=""
+          TIMEOUT=120
+          ELAPSED=0
+
+          while (( ELAPSED < TIMEOUT )); do
+            ACTIVE_POD=""
+
+            if ACTIVE_POD="$(get_active_pod)" && [[ -n "${ACTIVE_POD}" ]]; then
+              echo "Active OpenBao pod: ${ACTIVE_POD}"
+              break
+            fi
+
+            echo "No active OpenBao pod yet; waiting..."
+            sleep 2
+            ELAPSED=$((ELAPSED + 2))
+          done
+
+          if [[ -z "${ACTIVE_POD}" ]]; then
+            echo "ERROR: no active OpenBao pod appeared within ${TIMEOUT}s" >&2
+
+            echo
+            echo "=== OpenBao pod labels ===" >&2
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              --show-labels >&2 || true
+
+            echo
+            echo "=== OpenBao status ===" >&2
+            kubectl get pods \
+              -n "${OPENBAO_NAMESPACE}" \
+              -l app.kubernetes.io/name=openbao \
+              -o wide >&2 || true
+
+            exit 1
+          fi
+
+          echo "Waiting for ${ACTIVE_POD} to be unsealed and serving..."
+
+          TIMEOUT=120
+          ELAPSED=0
+
+          while (( ELAPSED < TIMEOUT )); do
+            STATUS=""
+
+            if STATUS="$(
+              kubectl exec \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${ACTIVE_POD}" \
+                -- env \
+                  BAO_ADDR="https://127.0.0.1:8200" \
+                  BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                  BAO_CACERT="${POD_CACERT}" \
+                  bao status -format=json \
+                2>/dev/null
+            )"; then
+
+              if jq -e '
+                .initialized == true and
+                .sealed == false
+              ' >/dev/null <<<"${STATUS}"; then
+                echo "${ACTIVE_POD} is initialized and unsealed"
+                break
+              fi
+            fi
+
+            echo "${ACTIVE_POD} is not ready for verification yet; waiting..."
+            sleep 2
+            ELAPSED=$((ELAPSED + 2))
+          done
+
+          if (( ELAPSED >= TIMEOUT )); then
+            echo "ERROR: ${ACTIVE_POD} did not become ready within ${TIMEOUT}s" >&2
+            exit 1
+          fi
+
+          echo "Reading restored secret from ${ACTIVE_POD}..."
 
           VALUE="$(
             kubectl exec \
@@ -978,7 +1060,7 @@ jobs:
               -- env \
                 BAO_ADDR="https://127.0.0.1:8200" \
                 BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
+                BAO_CACERT="${POD_CACERT}" \
                 BAO_TOKEN="${TOKEN}" \
                 bao kv get \
                   -field=value \
@@ -988,3 +1070,4 @@ jobs:
           test "${VALUE}" = "snapshot-restore-e2e"
 
           echo "Restored secret verified successfully."
+

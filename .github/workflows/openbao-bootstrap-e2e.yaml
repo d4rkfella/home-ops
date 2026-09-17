@@ -592,42 +592,6 @@ jobs:
             env BAO_TOKEN="${ROOT_TOKEN}" \
             bao operator raft list-peers
 
-
-
-      - name: Verify source Raft cluster
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-
-          TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
-
-          kubectl exec \
-            -n "${OPENBAO_NAMESPACE}" \
-            openbao-0 \
-            -- env \
-              BAO_ADDR="https://127.0.0.1:8200" \
-              BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-              BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-              BAO_TOKEN="${TOKEN}" \
-              bao operator raft list-peers
-
-          PEER_COUNT="$(
-            kubectl exec \
-              -n "${OPENBAO_NAMESPACE}" \
-              openbao-0 \
-              -- env \
-                BAO_ADDR="https://127.0.0.1:8200" \
-                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                BAO_TOKEN="${TOKEN}" \
-                bao operator raft list-peers -format=json \
-              | jq '.data.config.servers | length'
-          )"
-
-          echo "Raft peer count: ${PEER_COUNT}"
-
-          test "${PEER_COUNT}" -eq 3
-
       - name: Create known source secret
         shell: bash
         run: |
@@ -788,15 +752,167 @@ jobs:
         run: |
           set -Eeuo pipefail
 
+          INIT_FILE="/tmp/openbao-e2e/source-init.json"
+          POD_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt"
+
+          test -f "${INIT_FILE}"
+
           UNSEAL_THRESHOLD="$(
-            jq -r '.unseal_threshold' \
-              /tmp/openbao-e2e/source-init.json
+            jq -r '.unseal_threshold' "${INIT_FILE}"
           )"
 
           mapfile -t UNSEAL_KEYS < <(
-            jq -r ".unseal_keys_b64[0:${UNSEAL_THRESHOLD}][]" \
-              /tmp/openbao-e2e/source-init.json
+            jq -r ".unseal_keys_b64[:${UNSEAL_THRESHOLD}][]" "${INIT_FILE}"
           )
+
+          if (( ${#UNSEAL_KEYS[@]} != UNSEAL_THRESHOLD )); then
+            echo "ERROR: expected ${UNSEAL_THRESHOLD} unseal keys, got ${#UNSEAL_KEYS[@]}" >&2
+            exit 1
+          fi
+
+          bao_exec() {
+            local pod="$1"
+            shift
+
+            kubectl exec \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              -- env \
+                BAO_ADDR="https://127.0.0.1:8200" \
+                BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
+                BAO_CACERT="${POD_CACERT}" \
+                "$@"
+          }
+
+          get_status() {
+            local pod="$1"
+
+            bao_exec "${pod}" \
+              bao status -format=json
+          }
+
+          wait_for_running() {
+            local pod="$1"
+
+            echo "Waiting for ${pod} to be Running..."
+
+            # The pod may not exist immediately after the restore.
+            until kubectl get pod \
+                -n "${OPENBAO_NAMESPACE}" \
+                "${pod}" >/dev/null 2>&1; do
+              sleep 2
+            done
+
+            kubectl wait \
+              -n "${OPENBAO_NAMESPACE}" \
+              --for=jsonpath='{.status.phase}'=Running \
+              "pod/${pod}" \
+              --timeout=180s
+          }
+
+          submit_unseal_keys() {
+            local pod="$1"
+
+            echo "Submitting ${UNSEAL_THRESHOLD} unseal keys to ${pod}..."
+
+            for key in "${UNSEAL_KEYS[@]}"; do
+              bao_exec "${pod}" \
+                bao operator unseal "${key}"
+            done
+          }
+
+          wait_for_unsealed() {
+            local pod="$1"
+            local timeout=90
+            local elapsed=0
+            local status
+
+            echo
+            echo "Waiting for ${pod} to report sealed=false..."
+
+            while (( elapsed < timeout )); do
+              status=""
+
+              # OpenBao can be temporarily unavailable while the restored
+              # Raft state finishes loading. Treat that as transient.
+              if status="$(get_status "${pod}" 2>/dev/null)" &&
+                [[ -n "${status}" ]]; then
+
+                if jq -e '
+                  .initialized == true and
+                  .sealed == false
+                ' >/dev/null <<<"${status}"; then
+
+                  echo
+                  echo "${pod} is confirmed unsealed"
+
+                  echo "=== ${pod}: confirmed local status ==="
+
+                  jq '{
+                    initialized,
+                    sealed,
+                    progress,
+                    nonce,
+                    storage_type,
+                    ha_enabled
+                  }' <<<"${status}"
+
+                  return 0
+                fi
+
+                echo "${pod}: status received, but still sealed"
+
+              else
+                echo "${pod}: status temporarily unavailable; retrying..."
+              fi
+
+              sleep 2
+              elapsed=$((elapsed + 2))
+            done
+
+            echo
+            echo "ERROR: ${pod} did not report sealed=false within ${timeout}s" >&2
+
+            echo
+            echo "=== ${pod}: final OpenBao status ===" >&2
+            get_status "${pod}" 2>&1 | jq . >&2 || true
+
+            return 1
+          }
+
+          unseal_node() {
+            local pod="$1"
+
+            echo
+            echo "========================================"
+            echo "${pod}: unseal restored node"
+            echo "========================================"
+
+            # Submit the threshold keys exactly once.
+            submit_unseal_keys "${pod}"
+
+            # Do not submit keys again just because the API is temporarily
+            # unavailable. Poll until the local node reports sealed=false.
+            if wait_for_unsealed "${pod}"; then
+              return 0
+            fi
+
+            echo
+            echo "ERROR: ${pod} could not be confirmed unsealed" >&2
+
+            echo
+            echo "=== ${pod}: final OpenBao status ===" >&2
+            get_status "${pod}" 2>&1 | jq . >&2 || true
+
+            echo
+            echo "=== ${pod}: recent logs ===" >&2
+            kubectl logs \
+              -n "${OPENBAO_NAMESPACE}" \
+              "${pod}" \
+              --tail=300 >&2 || true
+
+            exit 1
+          }
 
           mapfile -t PODS < <(
             kubectl get pods \
@@ -807,20 +923,14 @@ jobs:
             sort
           )
 
-          for pod in "${PODS[@]}"; do
-            echo "Unsealing ${pod}..."
+          if (( ${#PODS[@]} == 0 )); then
+            echo "ERROR: no OpenBao pods found" >&2
+            exit 1
+          fi
 
-            for key in "${UNSEAL_KEYS[@]}"; do
-              kubectl exec \
-                -n "${OPENBAO_NAMESPACE}" \
-                "${pod}" \
-                -- env \
-                  BAO_ADDR="https://127.0.0.1:8200" \
-                  BAO_TLS_SERVER_NAME="${BAO_TLS_SERVER_NAME}" \
-                  BAO_CACERT="/openbao/userconfig/openbao-server-tls/ca.crt" \
-                  bao operator unseal "${key}" \
-                >/dev/null
-            done
+          for pod in "${PODS[@]}"; do
+            wait_for_running "${pod}"
+            unseal_node "${pod}"
           done
 
       - name: Check OpenBao cluster status

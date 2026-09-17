@@ -319,7 +319,6 @@ spec:
                       protocol: TCP
             - toFQDNs:
                 - matchName: cloudkms.googleapis.com
-                - matchName: google.com
                 - matchName: github.com
                 - matchPattern: "*.github.com"
                 - matchName: ghcr.io

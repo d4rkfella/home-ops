@@ -353,8 +353,10 @@ jobs:
 
           TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
 
-          /tmp/openbao-e2e/bin/bao-exec.sh openbao-0 env BAO_TOKEN="${TOKEN}" bao operator raft snapshot save /tmp/e2e.snapshot
-          kubectl cp "${OPENBAO_NAMESPACE}/openbao-0:/tmp/e2e.snapshot" /tmp/openbao-e2e/e2e.snapshot
+          mkdir -p /tmp/openbao-e2e
+
+          /tmp/openbao-e2e/bin/bao-exec.sh openbao-0 env BAO_TOKEN="${TOKEN}" bao operator raft snapshot save - > /tmp/openbao-e2e/e2e.snapshot
+
           test -s /tmp/openbao-e2e/e2e.snapshot
 
       - name: Upload snapshot to test S3

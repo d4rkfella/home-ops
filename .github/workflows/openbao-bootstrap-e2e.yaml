@@ -366,12 +366,11 @@ jobs:
             --field-selector status.phase=Running \
             -o jsonpath='{.items[0].metadata.name}')"
 
-          /tmp/openbao-e2e/bin/bao-exec.sh "${POD}" bash -c "
-            set -e
-            env BAO_TOKEN=\"${TOKEN}\" bao operator raft snapshot save /tmp/e2e.snapshot >/dev/null
-            cat /tmp/e2e.snapshot
-            rm -f /tmp/e2e.snapshot
-          " > /tmp/openbao-e2e/e2e.snapshot
+          /tmp/openbao-e2e/bin/bao-exec.sh "${POD}" env BAO_TOKEN="${TOKEN}" bao operator raft snapshot save /tmp/e2e.snapshot
+
+          kubectl cp -n "${OPENBAO_NAMESPACE}" "${POD}:/tmp/e2e.snapshot" /tmp/openbao-e2e/e2e.snapshot
+
+          /tmp/openbao-e2e/bin/bao-exec.sh "${POD}" rm -f /tmp/e2e.snapshot
 
           test -s /tmp/openbao-e2e/e2e.snapshot
 

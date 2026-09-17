@@ -455,36 +455,12 @@ jobs:
               bao status -format=json
           }
 
-          print_status() {
-            local pod="$1"
-            local status
-
-            echo "=== ${pod}: current local OpenBao status ==="
-
-            if status="$(get_status "${pod}" 2>/dev/null)"; then
-              if [[ -n "${status}" ]]; then
-                jq '{
-                  initialized,
-                  sealed,
-                  progress,
-                  nonce,
-                  storage_type,
-                  ha_enabled
-                }' <<<"${status}" || true
-              else
-                echo "OpenBao returned an empty status response"
-              fi
-            else
-              echo "Unable to read OpenBao status from ${pod}"
-            fi
-          }
-
           wait_for_running() {
             local pod="$1"
 
             echo "Waiting for ${pod} to be Running..."
 
-            # Pod may not exist yet.
+            # The pod may not exist yet.
             until kubectl get pod \
                 -n "${OPENBAO_NAMESPACE}" \
                 "${pod}" >/dev/null 2>&1; do
@@ -509,38 +485,21 @@ jobs:
             done
           }
 
-          is_unsealed() {
-            local pod="$1"
-            local status
-
-            # Get a completely fresh status from this pod's local
-            # OpenBao listener.
-            if ! status="$(get_status "${pod}" 2>/dev/null)"; then
-              return 1
-            fi
-
-            [[ -n "${status}" ]] || return 1
-
-            # Do not infer anything from the unseal command output.
-            # Only the fresh status response determines whether the
-            # local OpenBao process is actually unsealed.
-            jq -e '
-              .initialized == true and
-              .sealed == false
-            ' >/dev/null <<<"${status}"
-          }
-
           wait_for_unsealed() {
             local pod="$1"
             local timeout=90
             local elapsed=0
             local status
 
+            echo
             echo "Waiting for ${pod} to report sealed=false..."
 
             while (( elapsed < timeout )); do
               status=""
 
+              # OpenBao may be temporarily unavailable while the
+              # Raft/unseal state transition completes. Treat that
+              # as transient and keep polling.
               if status="$(get_status "${pod}" 2>/dev/null)" &&
                 [[ -n "${status}" ]]; then
 
@@ -549,9 +508,10 @@ jobs:
                   .sealed == false
                 ' >/dev/null <<<"${status}"; then
 
-                  echo "${pod} reports initialized=true and sealed=false"
+                  echo
+                  echo "${pod} is confirmed unsealed"
 
-                  echo "=== ${pod}: status used to confirm unsealed ==="
+                  echo "=== ${pod}: confirmed local status ==="
 
                   jq '{
                     initialized,
@@ -565,65 +525,43 @@ jobs:
                   return 0
                 fi
 
-                echo "${pod} still reports sealed=true or is not initialized"
-
-                jq '{
-                  initialized,
-                  sealed,
-                  progress,
-                  nonce,
-                  storage_type,
-                  ha_enabled
-                }' <<<"${status}" || true
+                echo "${pod}: status received, but still sealed"
 
               else
-                echo "Could not read fresh status from ${pod}"
+                echo "${pod}: status temporarily unavailable; retrying..."
               fi
 
               sleep 2
               elapsed=$((elapsed + 2))
             done
 
-            echo "ERROR: ${pod} did not report initialized=true and sealed=false within ${timeout}s" >&2
+            echo
+            echo "ERROR: ${pod} did not report sealed=false within ${timeout}s" >&2
 
-            echo "=== ${pod}: final status ===" >&2
+            echo
+            echo "=== ${pod}: final OpenBao status ===" >&2
             get_status "${pod}" 2>&1 | jq . >&2 || true
 
             return 1
           }
 
-          unseal_until_complete() {
+          unseal_node() {
             local pod="$1"
-            local max_attempts=3
 
-            for attempt in $(seq 1 "${max_attempts}"); do
-              echo
-              echo "========================================"
-              echo "${pod}: unseal attempt ${attempt}/${max_attempts}"
-              echo "========================================"
+            echo
+            echo "========================================"
+            echo "${pod}: unseal"
+            echo "========================================"
 
-              submit_unseal_keys "${pod}"
+            # Submit the threshold keys exactly once.
+            submit_unseal_keys "${pod}"
 
-              echo
-              echo "=== ${pod}: fresh status after unseal keys ==="
-
-              print_status "${pod}"
-
-              # The Raft join can reset the Shamir unseal state.
-              # Therefore we only succeed when a fresh local status
-              # explicitly reports sealed=false.
-              if wait_for_unsealed "${pod}"; then
-                echo
-                echo "${pod} is confirmed unsealed"
-                return 0
-              fi
-
-              if (( attempt < max_attempts )); then
-                echo
-                echo "${pod} is still sealed; retrying unseal keys..."
-                sleep 3
-              fi
-            done
+            # The unseal operation can temporarily reset progress / make
+            # the API unavailable while Raft finishes its state transition.
+            # Keep polling until the node itself reports sealed=false.
+            if wait_for_unsealed "${pod}"; then
+              return 0
+            fi
 
             echo
             echo "ERROR: ${pod} could not be confirmed unsealed" >&2
@@ -644,7 +582,7 @@ jobs:
 
           for pod in openbao-1 openbao-2; do
             wait_for_running "${pod}"
-            unseal_until_complete "${pod}"
+            unseal_node "${pod}"
           done
 
           echo

@@ -448,7 +448,8 @@ log "waiting for active OpenBao pod to be elected..."
 kubectl wait \
     -n "${OPENBAO_NAMESPACE}" \
     --for=jsonpath='{.metadata.labels.openbao-active}'=true \
-    -l app.kubernetes.io/name=openbao,component=server \
+    pod \
+    -l app.kubernetes.io/name=openbao,component=server,openbao-active=true \
     --timeout=4m || fatal "no active OpenBao pod elected in time"
 
 ACTIVE_POD="$(

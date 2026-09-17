@@ -156,7 +156,7 @@ kubectl wait \
     --for=create \
     --for=jsonpath='{.status.phase}'=Running \
     "pod/${INITIALIZE_POD}" \
-    --timeout=4m || fatal "pod ${INITIALIZE_POD} failed to exist or become Running"
+    --timeout=4m || fatal "pod ${INITIALIZE_POD} did not get created or transition to Running phase in time"
 
 start_port_forward() {
     local pod="$1"
@@ -282,12 +282,8 @@ STATUS="$(
 )"
 
 INITIALIZED="$(jq -r '.initialized' <<<"${STATUS}")"
-SEALED="$(jq -r '.sealed' <<<"${STATUS}")"
 SEAL_TYPE="$(jq -r '.type // empty' <<<"${STATUS}")"
 
-log "initialization candidate: ${INITIALIZE_POD}"
-log "initialized: ${INITIALIZED}"
-log "sealed: ${SEALED}"
 
 if [[ "${INITIALIZED}" == "true" ]]; then
     log "OpenBao is already initialized"
@@ -384,7 +380,7 @@ else
             for (( ordinal=1; ordinal<EXPECTED_REPLICAS; ordinal++ )); do
                 pod="${STS_NAME}-${ordinal}"
 
-                log "waiting for ${pod} to exist and become Running..."
+                log "waiting for pod ${pod} at ordinal ${ordinal} to be created and transition to Running phase..."
 
                 kubectl wait \
                     -n "${OPENBAO_NAMESPACE}" \
@@ -447,12 +443,11 @@ fi
 
 log "OpenBao cluster initialized and unsealed"
 
-log "waiting for OpenBao cluster to elect a leader..."
+log "waiting for active OpenBao pod to be elected..."
 
 kubectl wait \
     -n "${OPENBAO_NAMESPACE}" \
     --for=jsonpath='{.metadata.labels.openbao-active}'=true \
-    pods \
     -l app.kubernetes.io/name=openbao,component=server \
     --timeout=4m || fatal "no active OpenBao pod elected in time"
 

@@ -307,16 +307,16 @@ jobs:
           kubectl wait \
             -n "${OPENBAO_NAMESPACE}" \
             --for=create \
-            --timeout=1m \
-            pod -l app.kubernetes.io/name=openbao,component=server
-
-          kubectl wait \
-            -n "${OPENBAO_NAMESPACE}" \
             --for=jsonpath='{.status.phase}'=Running \
             --timeout=2m \
             pod -l app.kubernetes.io/name=openbao,component=server
 
-          pod="$(kubectl get pods -n "${OPENBAO_NAMESPACE}" -l app.kubernetes.io/name=openbao,component=server -o jsonpath='{.items[0].metadata.name}')"
+          pod="$(kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            -l app.kubernetes.io/name=openbao,component=server \
+            --field-selector status.phase=Running \
+            -o jsonpath='{.items[0].metadata.name}')"
+
           echo "name=${pod}" >> "$GITHUB_OUTPUT"
 
       - name: Initialize and unseal first OpenBao node
@@ -358,10 +358,15 @@ jobs:
           set -Eeuo pipefail
 
           TOKEN="$(cat /tmp/openbao-e2e/source-root-token)"
-
           mkdir -p /tmp/openbao-e2e
 
-          /tmp/openbao-e2e/bin/bao-exec.sh openbao-0 env BAO_TOKEN="${TOKEN}" bao operator raft snapshot save - > /tmp/openbao-e2e/e2e.snapshot
+          POD="$(kubectl get pods \
+            -n "${OPENBAO_NAMESPACE}" \
+            -l app.kubernetes.io/name=openbao,component=server \
+            --field-selector status.phase=Running \
+            -o jsonpath='{.items[0].metadata.name}')"
+
+          /tmp/openbao-e2e/bin/bao-exec.sh "${POD}" env BAO_TOKEN="${TOKEN}" bao operator raft snapshot save > /tmp/openbao-e2e/e2e.snapshot
 
           test -s /tmp/openbao-e2e/e2e.snapshot
 

@@ -41,7 +41,6 @@ readonly TMP_DIR="$(mktemp -d -t openbao-bootstrap.XXXXXX)"
 readonly INIT_FILE="${TMP_DIR}/init.json"
 readonly RESTORE_FILE="${TMP_DIR}/restore.snapshot"
 
-declare -a OPENBAO_PODS=()
 declare -a UNSEAL_KEYS=()
 
 declare -A PORT_FORWARD_PIDS=()
@@ -119,70 +118,45 @@ get_status() {
     return 1
 }
 
-discover_openbao_pods() {
-    mapfile -t OPENBAO_PODS < <(
-        kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            -l app.kubernetes.io/name=openbao,component=server \
-            -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' |
-        sed '/^$/d' |
-        sort
-    )
-
-    [[ "${#OPENBAO_PODS[@]}" -gt 0 ]]
-}
-
 # ---------------------------------------------------------------------------
-# The OpenBao StatefulSet uses the default OrderedReady pod management
-# policy: pod N+1 is not created until pod N is Ready, and pod N only
-# becomes Ready once it is unsealed. That means openbao-1, openbao-2, ...
-# do not exist in the API server at all until *after* we have unsealed
-# openbao-0 further down. We must know how many replicas to expect up
-# front (the StatefulSet object itself exists immediately, even before
-# its pods do) so we can wait for the rest of them later instead of
-# silently operating on a partial pod list.
+# Query the OpenBao StatefulSet metadata
 # ---------------------------------------------------------------------------
-log "reading expected OpenBao StatefulSet replica count..."
+log "inspecting OpenBao StatefulSet in namespace ${OPENBAO_NAMESPACE}..."
+
+readonly STS_NAME="$(
+    kubectl get statefulset \
+        -n "${OPENBAO_NAMESPACE}" \
+        -l app.kubernetes.io/name=openbao \
+        -o jsonpath='{.items[0].metadata.name}' \
+        2>/dev/null
+)"
+
+[[ -n "${STS_NAME}" ]] ||
+    fatal "unable to find OpenBao StatefulSet in namespace ${OPENBAO_NAMESPACE}"
 
 readonly EXPECTED_REPLICAS="$(
     kubectl get statefulset \
         -n "${OPENBAO_NAMESPACE}" \
-        -l app.kubernetes.io/name=openbao \
-        -o jsonpath='{.items[0].spec.replicas}' \
+        "${STS_NAME}" \
+        -o jsonpath='{.spec.replicas}' \
         2>/dev/null
 )"
 
 [[ -n "${EXPECTED_REPLICAS}" && "${EXPECTED_REPLICAS}" =~ ^[0-9]+$ ]] ||
-    fatal "unable to determine expected OpenBao StatefulSet replica count"
+    fatal "unable to determine expected replica count for StatefulSet ${STS_NAME}"
 
-log "expected OpenBao replica count: ${EXPECTED_REPLICAS}"
+log "StatefulSet: ${STS_NAME} (expected replicas: ${EXPECTED_REPLICAS})"
 
-log "waiting for OpenBao pods..."
+readonly INITIALIZE_POD="${STS_NAME}-0"
 
-for _ in {1..120}; do
-    if discover_openbao_pods; then
-        break
-    fi
+log "waiting for pod (${INITIALIZE_POD}) at ordinal 0 to be created and transition to Running phase..."
 
-    sleep 2
-done
-
-discover_openbao_pods ||
-    fatal "no OpenBao pods found in namespace ${OPENBAO_NAMESPACE}"
-
-log \
-    "discovered ${#OPENBAO_PODS[@]} OpenBao pod(s): " \
-    "${OPENBAO_PODS[*]}"
-
-log "waiting for OpenBao pods to become Running..."
-
-for pod in "${OPENBAO_PODS[@]}"; do
-    kubectl wait \
-        -n "${OPENBAO_NAMESPACE}" \
-        --for=jsonpath='{.status.phase}'=Running \
-        "pod/${pod}" \
-        --timeout=10m
-done
+kubectl wait \
+    -n "${OPENBAO_NAMESPACE}" \
+    --for=create \
+    --for=jsonpath='{.status.phase}'=Running \
+    "pod/${INITIALIZE_POD}" \
+    --timeout=4m || fatal "pod ${INITIALIZE_POD} failed to exist or become Running"
 
 start_port_forward() {
     local pod="$1"
@@ -299,11 +273,8 @@ wait_for_api() {
     fatal "OpenBao API did not become queryable on ${pod}"
 }
 
-for pod in "${OPENBAO_PODS[@]}"; do
-    start_port_forward "${pod}"
-done
+start_port_forward "${INITIALIZE_POD}"
 
-INITIALIZE_POD="${OPENBAO_PODS[0]}"
 INITIALIZE_PORT="${PORT_FORWARD_PORTS[${INITIALIZE_POD}]}"
 
 STATUS="$(
@@ -317,37 +288,6 @@ SEAL_TYPE="$(jq -r '.type // empty' <<<"${STATUS}")"
 log "initialization candidate: ${INITIALIZE_POD}"
 log "initialized: ${INITIALIZED}"
 log "sealed: ${SEALED}"
-
-# ---------------------------------------------------------------------------
-# With OrderedReady, pod N+1 is only created once pod N is Ready, and pod N
-# only becomes Ready once it is unsealed. So we cannot wait for all
-# remaining pods to appear and then unseal them as a batch - pod 2 will
-# never be created until pod 1 has already been unsealed. Instead, wait
-# for exactly one new pod (by ordinal) to appear at a time; the caller
-# unseals it before asking for the next ordinal.
-# ---------------------------------------------------------------------------
-wait_for_pod_at_ordinal() {
-    local ordinal="$1"
-    local attempt
-
-    for attempt in {1..180}; do
-        discover_openbao_pods || true
-
-        if [[ "${#OPENBAO_PODS[@]}" -gt "${ordinal}" ]]; then
-            return 0
-        fi
-
-        if [[ "${attempt}" -eq 1 || $((attempt % 15)) -eq 0 ]]; then
-            log \
-                "waiting for OpenBao pod at ordinal ${ordinal} to be created " \
-                "(${#OPENBAO_PODS[@]}/${EXPECTED_REPLICAS} exist so far, attempt ${attempt}/180)..."
-        fi
-
-        sleep 2
-    done
-
-    return 1
-}
 
 if [[ "${INITIALIZED}" == "true" ]]; then
     log "OpenBao is already initialized"
@@ -441,26 +381,17 @@ else
 
             log "${INITIALIZE_POD} unsealed"
 
-            # openbao-0 becoming Ready is what unblocks the StatefulSet
-            # from creating openbao-1. openbao-1 has to be unsealed (and
-            # therefore Ready) before openbao-2 gets created, and so on -
-            # so each remaining ordinal must be waited for and unsealed
-            # one at a time, never as a batch.
             for (( ordinal=1; ordinal<EXPECTED_REPLICAS; ordinal++ )); do
-                wait_for_pod_at_ordinal "${ordinal}" ||
-                    fatal \
-                        "OpenBao pod at ordinal ${ordinal} was not created " \
-                        "in time (StatefulSet may be stuck)"
+                pod="${STS_NAME}-${ordinal}"
 
-                pod="${OPENBAO_PODS[$ordinal]}"
-
-                log "discovered ${pod}"
+                log "waiting for ${pod} to exist and become Running..."
 
                 kubectl wait \
                     -n "${OPENBAO_NAMESPACE}" \
+                    --for=create \
                     --for=jsonpath='{.status.phase}'=Running \
                     "pod/${pod}" \
-                    --timeout=10m
+                    --timeout=10m || fatal "pod ${pod} did not get created or transition to Running phase in time"
 
                 start_port_forward "${pod}"
 
@@ -514,52 +445,26 @@ else
     esac
 fi
 
-
 log "OpenBao cluster initialized and unsealed"
 
-log "waiting for the active OpenBao pod..."
+log "waiting for OpenBao cluster to elect a leader..."
 
-ACTIVE_POD=""
+kubectl wait \
+    -n "${OPENBAO_NAMESPACE}" \
+    --for=jsonpath='{.metadata.labels.openbao-active}'=true \
+    pods \
+    -l app.kubernetes.io/name=openbao,component=server \
+    --timeout=4m || fatal "no active OpenBao pod elected in time"
 
-for _ in {1..120}; do
-    ACTIVE_PODS="$(
-        kubectl get pods \
-            -n "${OPENBAO_NAMESPACE}" \
-            -l openbao-active=true \
-            -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}' \
-            2>/dev/null |
-        sed '/^$/d' |
-        sort
-    )"
-
-    ACTIVE_COUNT="$(
-        if [[ -n "${ACTIVE_PODS}" ]]; then
-            wc -l <<<"${ACTIVE_PODS}"
-        else
-            printf '0\n'
-        fi
-    )"
-
-    if [[ "${ACTIVE_COUNT}" -eq 1 ]]; then
-        ACTIVE_POD="${ACTIVE_PODS}"
-        break
-    fi
-
-    if [[ "${ACTIVE_COUNT}" -gt 1 ]]; then
-        fatal \
-            "expected one active OpenBao pod, found ${ACTIVE_COUNT}: " \
-            "${ACTIVE_PODS//$'\n'/ }"
-    fi
-
-    sleep 2
-done
-
-[[ -n "${ACTIVE_POD}" ]] ||
-    fatal "no OpenBao pod has the openbao-active=true label"
+ACTIVE_POD="$(
+    kubectl get pods \
+        -n "${OPENBAO_NAMESPACE}" \
+        -l app.kubernetes.io/name=openbao,component=server,openbao-active=true \
+        -o jsonpath='{.items[0].metadata.name}'
+)"
 
 [[ -n "${PORT_FORWARD_PORTS[${ACTIVE_POD}]+x}" ]] ||
-    fatal \
-        "active pod ${ACTIVE_POD} was not among the discovered OpenBao pods"
+    fatal "active pod ${ACTIVE_POD} was not among port-forwarded pods"
 
 ACTIVE_PORT="${PORT_FORWARD_PORTS[${ACTIVE_POD}]}"
 
@@ -567,7 +472,7 @@ log \
     "active OpenBao pod: ${ACTIVE_POD} " \
     "(localhost:${ACTIVE_PORT} -> 8200)"
 
-log "finding latest OpenBao snapshot..."
+log "resolving latest Raft snapshot to restore onto the cluster..."
 
 LATEST_SNAPSHOT="$(
     aws s3api list-objects-v2 \
@@ -583,9 +488,9 @@ LATEST_SNAPSHOT="$(
         "no OpenBao snapshot found in " \
         "s3://${SNAPSHOT_BUCKET}/${SNAPSHOT_PREFIX}"
 
-log "latest snapshot: ${LATEST_SNAPSHOT}"
+log "resolved snapshot: ${LATEST_SNAPSHOT}"
 
-log "downloading snapshot..."
+log "downloading the snapshot..."
 
 aws s3 cp \
     "s3://${SNAPSHOT_BUCKET}/${LATEST_SNAPSHOT}" \
@@ -594,7 +499,7 @@ aws s3 cp \
 [[ -s "${RESTORE_FILE}" ]] ||
     fatal "downloaded snapshot is empty: ${RESTORE_FILE}"
 
-log "restoring Raft snapshot through active pod ${ACTIVE_POD}"
+log "restoring the snapshot..."
 
 bao \
     "${ACTIVE_PORT}" \
@@ -602,6 +507,5 @@ bao \
     -force \
     "${RESTORE_FILE}"
 
-log "restore command completed"
 
 log "bootstrap completed successfully"

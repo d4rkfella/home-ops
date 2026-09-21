@@ -48,7 +48,7 @@ spec:
       enabled: true
     loadBalancer:
       algorithm: random
-      mode: snat
+      mode: dsr
     socketLB:
       enabled: false
     localRedirectPolicy: true

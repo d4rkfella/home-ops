@@ -39,6 +39,7 @@ spec:
               PUSH_ENABLED: true
               PUSH_RELAY_URI: https://api.bitwarden.eu
               PUSH_IDENTITY_URI: https://identity.bitwarden.eu
+              IP_HEADER: X-Forwarded-For
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"

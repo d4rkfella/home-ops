@@ -204,8 +204,6 @@ spec:
   clientIPDetection:
     xForwardedFor:
       trustedCIDRs:
-        - 192.168.91.0/24
-        - 192.168.92.0/24
         - 172.16.0.0/16
   http2:
     onInvalidMessage: TerminateStream

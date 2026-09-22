@@ -48,7 +48,7 @@ spec:
         runAsUser: 5050
         runAsGroup: 5050
         fsGroup: 5050
-        fsGroupChangePolicy: Always
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
     persistence:

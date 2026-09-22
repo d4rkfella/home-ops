@@ -39,34 +39,9 @@ spec:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
               WEB_PORT: 80
-              POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
-              POSTGRES_PORT: 5432
-              POSTGRES_DBNAME: gatus
-              POSTGRES_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: POSTGRES_USERNAME
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: POSTGRES_PASSWORD
-              PUSHOVER_TOKEN:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: PUSHOVER_TOKEN
-              PUSHOVER_USER_KEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: PUSHOVER_USER_KEY
-              OIDC_CLIENT_SECRET:
-                valueFrom:
-                  secretKeyRef:
-                    name: gatus-secret
-                    key: OIDC_CLIENT_SECRET
+            envFrom:
+              - secretRef:
+                  name: gatus-secret
             probes:
               liveness:
                 enabled: true
@@ -102,6 +77,8 @@ spec:
               limits:
                 memory: 256Mi
     defaultPodOptions:
+      annotations:
+        security.darkfellanetwork.com/mount-postgres-ca: "true"
       hostUsers: false
       automountServiceAccountToken: true
       securityContext:
@@ -140,15 +117,6 @@ spec:
           - path: /config/config.yaml
             subPath: config.yaml
             readOnly: true
-      postgres-ca:
-        type: secret
-        name: gatus-secret
-        advancedMounts:
-          gatus:
-            app:
-              - path: /etc/ssl/certs/postgres-ca.crt
-                subPath: ca.crt
-                readOnly: true
     rbac:
       roles:
         gatus:

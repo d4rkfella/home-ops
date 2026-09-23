@@ -58,6 +58,7 @@ spec:
     headers: xforwarded
   hostname:
     hostname: https://accounts.darkfellanetwork.com
+    admin: https://keycloak-admin.darkfellanetwork.com
   http:
     httpEnabled: true
     httpPort: 8080

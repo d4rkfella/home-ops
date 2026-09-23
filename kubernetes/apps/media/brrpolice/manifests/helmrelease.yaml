@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/brrpolice
-              tag: 0.15.2@sha256:f59944b71c75dec5ef56a018a8d40a368f7694211709151ace637245f959c1a8
+              tag: 0.15.2@sha256:7c2589a18ecbc1b0a890e5bb7243aa4f77ac210ca884ddc6649075a9816a24fa
             env:
               BRRPOLICE_HTTP__PORT: 80
               BRRPOLICE_LOGGING__LEVEL: info

@@ -18,20 +18,20 @@ spec:
           pgadmin:
             image:
               repository: ghcr.io/d4rkfella/pgadmin4
-              tag: 9.18@sha256:df1dce41d0b5b3ba441b60750404639b9bf2ca2ce4dc6ef9f1baddc0ca5ba8a6
+              tag: 9.18@sha256:a46f6d160f9ae5cec95344928031ddc664e1f23258faa06e946c80c78171080f
             env:
               GUNICORN_LIMIT_REQUEST_LINE: 0
               GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0
-              AUTHENTICATION_SOURCES: "['oauth2']"
-              MASTER_PASSWORD_REQUIRED: "True"
-              OAUTH2_DISPLAY_NAME: Keycloak
-              OAUTH2_NAME: keycloak
-              OAUTH2_SERVER_METADATA_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration
-              OAUTH2_USERNAME_CLAIM: preferred_username
-              OAUTH2_CHALLENGE_METHOD: S256
-              OAUTH2_RESPONSE_TYPE: code
-              OAUTH2_CLIENT_ID: 1935675b-bf31-48f2-9290-80ae2394ac07
-              OAUTH2_LOGOUT_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&id_token_hint={id_token}
+              PGADMIN_AUTHENTICATION_SOURCES: "['oauth2']"
+              PGADMIN_MASTER_PASSWORD_REQUIRED: "True"
+              PGADMIN_OAUTH2_DISPLAY_NAME: Keycloak
+              PGADMIN_OAUTH2_NAME: keycloak
+              PGADMIN_OAUTH2_SERVER_METADATA_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration
+              PGADMIN_OAUTH2_USERNAME_CLAIM: preferred_username
+              PGADMIN_OAUTH2_CHALLENGE_METHOD: S256
+              PGADMIN_OAUTH2_RESPONSE_TYPE: code
+              PGADMIN_OAUTH2_CLIENT_ID: 1935675b-bf31-48f2-9290-80ae2394ac07
+              PGADMIN_OAUTH2_LOGOUT_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri={redirect_uri}&id_token_hint={id_token}
             envFrom:
               - secretRef:
                   name: pgadmin-secret
@@ -45,10 +45,10 @@ spec:
       hostUsers: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 5050
-        runAsGroup: 5050
-        fsGroup: 5050
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+        fsGroupChangePolicy: Always
         seccompProfile:
           type: RuntimeDefault
     persistence:
@@ -56,20 +56,6 @@ spec:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
           - path: /var/lib/pgadmin
-      config-distro:
-        type: configMap
-        name: pgadmin4-config
-        globalMounts:
-          - path: /usr/lib/pgadmin4/config_distro.py
-            subPath: config_distro.py
-            readOnly: true
-      gunicorn-config:
-        type: configMap
-        name: pgadmin4-config
-        globalMounts:
-          - path: /usr/lib/pgadmin4/gunicorn_config.py
-            subPath: gunicorn_config.py
-            readOnly: true
       empty:
         type: emptyDir
         sizeLimit: 100Mi

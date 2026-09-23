@@ -37,7 +37,7 @@ spec:
       image:
         registry: ghcr.io
         repository: openbao/openbao
-        tag: 2.7.0-beta20260909@sha256:7d26314820a535ef346f1e63911809e4d356b48068fef00a9dcb3400bb9e11b6
+        tag: 2.7.0@sha256:71156a1c6623a5fa3f5e61b0c6a8ead0faf0df29a778339188443551995d1315
       updateStrategyType: RollingUpdate
       logLevel: debug
       logFormat: json

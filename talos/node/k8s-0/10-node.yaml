@@ -1,0 +1,22 @@
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.model == "CT1000P3PSSD8"
+---
+apiVersion: v1alpha1
+kind: WatchdogTimerConfig
+device: /dev/watchdog0
+timeout: 5m0s
+---
+apiVersion: v1alpha1
+kind: KubeNodeConfig
+taints:
+  node-role.kubernetes.io/control-plane:
+    $patch: delete
+---
+apiVersion: v1alpha1
+kind: SysctlConfig
+params:
+  net.core.bpf_jit_harden: "1"

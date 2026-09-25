@@ -1,0 +1,20 @@
+---
+customization:
+  extraKernelArgs:
+    - -selinux
+    - net.ifnames=0
+    - amd_iommu=on
+    - iommu=pt
+    - amd_pstate=active
+    - amd_pstate.shared_mem=1
+    - lsm=landlock,lockdown,yama,apparmor,bpf
+    - lsm.debug
+    - spec_rstack_overflow=microcode
+    - zfs.zfs_arc_shrinker_limit=0
+    - zfs.zfs_arc_max=34359738368
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode
+      - siderolabs/nonfree-kmod-nvidia-lts
+      - siderolabs/nvidia-container-toolkit-lts
+      - siderolabs/zfs

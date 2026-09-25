@@ -20,8 +20,14 @@ RUN talosctl version --client
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.5@sha256:704d5529535570a495249b643159c93a9aa88ffca07813c974a54b7ba6edbd86 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
+COPY --from=ghcr.io/casey/just:1.58.0@sha256:1a55f946f0877f3ba79da79f1b848a4454401bb6d8fcdcdaf34df1999a929224 /just /usr/local/bin/
+RUN just --version
+
+COPY --from=ghcr.io/postfinance/topf:v0.6.0@sha256:6f77c2658c7549e37226d1e17a9824b17886aef739304f0c4db0e682b1262880 /usr/local/bin/topf /usr/local/bin/
+RUN topf --version
+
 COPY --from=ghcr.io/openbao/openbao:2.7.0@sha256:71156a1c6623a5fa3f5e61b0c6a8ead0faf0df29a778339188443551995d1315 /usr/bin/bao /usr/local/bin/
-RUN bao version
+RUN bao --version
 
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
 RUN cosign version
@@ -37,14 +43,6 @@ RUN sops --version
 
 COPY --from=mikefarah/yq:4.53.6@sha256:cfc4eee658595834ef304eadb0c3ea721f3b7cb6404ad8b7cb909cc5b5145b23 /usr/bin/yq /usr/local/bin/
 RUN yq --version
-
-# renovate: datasource=github-releases depName=go-task/task
-ARG TASK_VERSION=v3.53.1
-RUN curl -fsSLO "https://github.com/go-task/task/releases/download/$TASK_VERSION/task_{linux_amd64.tar.gz,checksums.txt}" && \
-    sha256sum -c --strict --ignore-missing task_checksums.txt && \
-    tar -xvzf task_linux_amd64.tar.gz && \
-    mv task /usr/local/bin/ && \
-    rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
 ARG VIRTCTL_VERSION=v1.9.0

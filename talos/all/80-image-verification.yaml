@@ -1,0 +1,24 @@
+---
+apiVersion: v1alpha1
+kind: ImageVerificationConfig
+rules:
+  - image: ghcr.io/fluxcd/*
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subjectRegex: https://github\.com/fluxcd/.*
+  - image: ghcr.io/d4rkfella/artifactory-license-patcher
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/artifactory-license-patcher/.github/workflows/build.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/plex
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/plex/.github/workflows/build.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/vaultctl
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subject: https://github.com/d4rkfella/vaultctl/.github/workflows/docker-publish.yaml@refs/heads/main
+  - image: ghcr.io/d4rkfella/*
+    keyless:
+      issuer: https://token.actions.githubusercontent.com
+      subjectRegex: https://github\.com/d4rkfella/containers/\.github/workflows/.*\.yaml@refs/heads/main

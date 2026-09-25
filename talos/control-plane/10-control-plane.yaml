@@ -1,0 +1,46 @@
+---
+cluster:
+  token: xv8j4r.mmfgivx7zig6pf5g
+  etcd:
+    advertisedSubnets:
+      - 192.168.91.0/24
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+extraArgs:
+  enable-aggregator-routing: true
+  disable-admission-plugins: PodSecurity
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+  terminated-pod-gc-threshold: "100"
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false
+---
+apiVersion: v1alpha1
+kind: KubeCoreDNSConfig
+enabled: false
+---
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+allowedKubernetesNamespaces:
+  - arc-runners
+  - system-upgrade
+---
+apiVersion: v1alpha1
+kind: Layer2VIPConfig
+name: 192.168.91.10
+link: eth0

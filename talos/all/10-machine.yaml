@@ -1,0 +1,53 @@
+---
+# machine.certSANs covers the Talos API cert and is not deprecated in 1.14;
+# KubeAPIServerConfig.certExtraSANs below covers kube-apiserver.
+machine:
+  certSANs:
+    - 192.168.91.10
+    - 127.0.0.1 # KubePrism
+---
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  wipe: false
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+certExtraSANs:
+  - 192.168.91.10
+  - 127.0.0.1 # KubePrism
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+searchDomains:
+  domains: []
+hostDNS:
+  enabled: true
+  resolveMemberNames: true
+  forwardKubeDNSToHost: false
+---
+apiVersion: v1alpha1
+kind: FilesystemScrubConfig
+interval: 168h0m0s
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: SysctlConfig
+params:
+  fs.inotify.max_queued_events: "65536"
+  fs.inotify.max_user_watches: "1048576"
+  fs.inotify.max_user_instances: "8192"
+  net.core.default_qdisc: fq
+  net.core.rmem_max: "67108864" # 64 MiB; QUIC and 10 Gbps
+  net.core.wmem_max: "67108864" # 64 MiB; QUIC and 10 Gbps
+  net.ipv4.tcp_rmem: 4096 131072 33554432 # 1K, 128K, 32M; QUIC and 10 Gbps
+  net.ipv4.tcp_wmem: 4096 131072 33554432 # 1K, 128K, 32M; QUIC and 10 Gbps
+  net.ipv4.tcp_congestion_control: bbr
+  vm.nr_hugepages: "29696"
+  user.max_user_namespaces: "49152"
+---
+apiVersion: v1alpha1
+kind: TimeSyncConfig
+ntp:
+  servers:
+    - time.cloudflare.com

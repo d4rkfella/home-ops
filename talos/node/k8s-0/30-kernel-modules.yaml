@@ -1,0 +1,29 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/siderolabs/talos/refs/heads/release-1.14/website/content/v1.14/schemas/config.schema.json
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: vfio_pci
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: vfio_iommu_type1
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: zfs
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia-uvm
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia-drm
+---
+apiVersion: v1alpha1
+kind: KernelModuleConfig
+name: nvidia-modeset

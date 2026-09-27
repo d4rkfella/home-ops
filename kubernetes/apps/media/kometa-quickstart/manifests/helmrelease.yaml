@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: kometateam/quickstart
-              tag: develop@sha256:de84ab525d781dcf40c7b8b7b123d826f3ccb13c38f8e6baa118d4e7513132be
+              tag: develop@sha256:f4de1a3ea3bb4e9c35d0eb7ea65deb2fe736bdecad9b0624c1b7ffda9fc3a639
             env:
               TZ: Europe/Sofia
             probes:

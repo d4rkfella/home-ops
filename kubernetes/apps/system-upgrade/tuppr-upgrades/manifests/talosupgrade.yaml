@@ -17,7 +17,7 @@ spec:
   hooks:
     pre:
       - name: nas-nfs-quiesce
-        image: alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4
+        image: alpine/k8s:1.37.1@sha256:712dc5385d1c1a3f83b747fa9e40f64d433a97f72ff42f9755ff7dd1f62846e4
         backoffLimit: 5
         activeDeadlineSeconds: 3600
         serviceAccountName: tuppr-nfs-hook
@@ -38,7 +38,7 @@ spec:
             emptyDir: {}
     post:
       - name: restore-nfs-consumers
-        image: alpine/k8s:1.37.0@sha256:b421c2e9419edb98db39b6ab641669f4db7bb2acf354f22450c6b7e7176d1ff4
+        image: alpine/k8s:1.37.1@sha256:712dc5385d1c1a3f83b747fa9e40f64d433a97f72ff42f9755ff7dd1f62846e4
         backoffLimit: 5
         activeDeadlineSeconds: 3600
         serviceAccountName: tuppr-nfs-hook

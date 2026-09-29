@@ -23,7 +23,7 @@ RUN flux --version
 COPY --from=ghcr.io/casey/just:1.58.0@sha256:1a55f946f0877f3ba79da79f1b848a4454401bb6d8fcdcdaf34df1999a929224 /just /usr/local/bin/
 RUN just --version
 
-COPY --from=ghcr.io/postfinance/topf:v0.6.0@sha256:6f77c2658c7549e37226d1e17a9824b17886aef739304f0c4db0e682b1262880 /usr/local/bin/topf /usr/local/bin/
+COPY --from=ghcr.io/postfinance/topf:v0.6.1@sha256:2b4b23918da0a7b0f2cbca6caac535daf71cdfc1cb4075017d015c00224f0972 /usr/local/bin/topf /usr/local/bin/
 RUN topf --version
 
 COPY --from=ghcr.io/openbao/openbao:2.7.0@sha256:71156a1c6623a5fa3f5e61b0c6a8ead0faf0df29a778339188443551995d1315 /usr/bin/bao /usr/local/bin/
@@ -35,13 +35,13 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.8.0@sha256:1808ffb76f372de33224901c1e857b1f8b944bd267e6723776cc7cb6b3a0d1f0 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.19-trixie@sha256:47d3cb8337660a92c94ec31ff5804dbcd329341530de5fdbcb769c340bda6dfe /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.20-trixie@sha256:10dd6f5ac4aae3ac789054b080eb387ef9b5e83fa351fd08f0fecf4ad9144d90 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.3@sha256:857f5a151ac0b2bfc55c1e4e5581d66fb8e268e4d106b38e74191f3bac9d58ea /usr/local/bin/sops /usr/local/bin/
 RUN sops --version
 
-COPY --from=mikefarah/yq:4.53.6@sha256:cfc4eee658595834ef304eadb0c3ea721f3b7cb6404ad8b7cb909cc5b5145b23 /usr/bin/yq /usr/local/bin/
+COPY --from=mikefarah/yq:4.54.1@sha256:4b3d9475d65571d28cbb19544d3820ec2945e4c8b2f18279394282b8dc3a592e /usr/bin/yq /usr/local/bin/
 RUN yq --version
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt

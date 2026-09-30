@@ -32,7 +32,7 @@ RUN bao --version
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.8.0@sha256:1808ffb76f372de33224901c1e857b1f8b944bd267e6723776cc7cb6b3a0d1f0 /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.8.1@sha256:9c29ece2fb6ec3f8c1432be9d29526f3cfe35d7e59e066d0aa5c4b3e819f2165 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
 COPY --from=ghcr.io/astral-sh/uv:0.12.21-trixie@sha256:b88739cfd35d6d90b16af0ed9cac6937b44e2cbf14542cd2e1cff3e58b66c01e /usr/local/bin/uv* /usr/local/bin/

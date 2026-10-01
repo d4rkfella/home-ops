@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qbittorrent
-              tag: 5.2.4.2015@sha256:f73db28f574dabf63bbe4f7bfd1400c964185eef44a15215aa76d9a89947ed59
+              tag: 5.2.4.2015@sha256:64ff4585369486b3903c3eedcfe19ea86b51378469dc0bb2a681b7ecbb38a83d
             env:
               TZ: Europe/Sofia
             probes:

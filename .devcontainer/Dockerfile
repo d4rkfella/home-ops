@@ -17,7 +17,7 @@ RUN apt-get update && \
 COPY --from=ghcr.io/siderolabs/talosctl:v1.14.2@sha256:b655ae1c73789c4789fcf6fbd61c8f45400ed4b3bd9892a26092fcd4d8d95d86 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
-COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.5@sha256:704d5529535570a495249b643159c93a9aa88ffca07813c974a54b7ba6edbd86 /usr/local/bin/flux /usr/local/bin/
+COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.6@sha256:b1ac18156f227af9a524b842a96f2c20986c7a779ef721df3ba4e4540f449d76 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
 COPY --from=ghcr.io/casey/just:1.58.0@sha256:1a55f946f0877f3ba79da79f1b848a4454401bb6d8fcdcdaf34df1999a929224 /just /usr/local/bin/

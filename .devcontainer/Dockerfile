@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260912@sha256:da6fc2be547864451aa253836dd926da33623312df4a9a243e35dc877c378a78
+FROM ubuntu:resolute-20260927@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -35,7 +35,7 @@ RUN cosign version
 COPY --from=ghcr.io/helmfile/helmfile:v1.8.1@sha256:9c29ece2fb6ec3f8c1432be9d29526f3cfe35d7e59e066d0aa5c4b3e819f2165 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.12.21-trixie@sha256:b88739cfd35d6d90b16af0ed9cac6937b44e2cbf14542cd2e1cff3e58b66c01e /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.22-trixie@sha256:1d1235be7a3aeecc0712ebb67fa707e672b570cc79313e08805210bcd2207477 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.3@sha256:857f5a151ac0b2bfc55c1e4e5581d66fb8e268e4d106b38e74191f3bac9d58ea /usr/local/bin/sops /usr/local/bin/

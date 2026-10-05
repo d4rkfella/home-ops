@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260927@sha256:98909b34726c3733c7665e0a583aab4eff720863dacdd79203e53c27c53f1400
+FROM ubuntu:resolute-20260927@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -68,7 +68,7 @@ RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.si
     rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
-ARG LEFTHOOK_VERSION=v2.1.16
+ARG LEFTHOOK_VERSION=v2.1.17
 RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
     dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
     rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb

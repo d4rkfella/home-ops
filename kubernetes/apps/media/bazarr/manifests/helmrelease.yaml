@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr
-              tag: 1.6.3_beta7@sha256:78c1a717c12c18a4bddab50090ce360976836741dc93d09dbab839c16e346270
+              tag: 1.6.3_beta7@sha256:7216e7cfe493de14d45d26e784761a20dc5a263e5a6177cb095ccf5c7061223c
             env:
               TZ: Europe/Sofia
               POSTGRES_ENABLED: "true"

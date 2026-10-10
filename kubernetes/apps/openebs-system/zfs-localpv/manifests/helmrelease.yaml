@@ -27,7 +27,7 @@ spec:
         image:
           registry: registry.k8s.io/
           repository: sig-storage/csi-resizer
-          tag: v2.2.1
+          tag: v2.3.0
       snapshotter:
         image:
           registry: registry.k8s.io/
@@ -39,7 +39,7 @@ spec:
         image:
           registry: registry.k8s.io/
           repository: sig-storage/csi-provisioner
-          tag: v6.3.0
+          tag: v6.4.0
     zfs:
       bin: /usr/local/sbin/zfs
     analytics:

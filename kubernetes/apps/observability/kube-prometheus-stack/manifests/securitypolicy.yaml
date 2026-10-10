@@ -49,7 +49,7 @@ spec:
             claims:
               - name: email
                 values:
-                  - georgi.panov@darkfellanetwork.com
+                  - darkfella91@gmail.com
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
@@ -101,4 +101,4 @@ spec:
             claims:
               - name: email
                 values:
-                  - georgi.panov@darkfellanetwork.com
+                  - darkfella91@gmail.com

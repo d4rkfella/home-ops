@@ -23,7 +23,6 @@ spec:
               GUNICORN_LIMIT_REQUEST_LINE: 0
               GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0
               PGADMIN_AUTHENTICATION_SOURCES: "['oauth2']"
-              PGADMIN_MASTER_PASSWORD_REQUIRED: "True"
               PGADMIN_OAUTH2_DISPLAY_NAME: Keycloak
               PGADMIN_OAUTH2_NAME: keycloak
               PGADMIN_OAUTH2_SERVER_METADATA_URL: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/.well-known/openid-configuration

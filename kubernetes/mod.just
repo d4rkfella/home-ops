@@ -22,27 +22,27 @@ sync resource:
 
 [doc('Browse a PVC')]
 browse-pvc ns='' claim='' user='65532':
+    set -euo pipefail
     command -v gum >/dev/null || just log fatal "Missing gum"
     command -v kubectl >/dev/null || just log fatal "Missing kubectl"
 
-    if [[ -z "{{ claim }}" ]]; then
+    claim="{{ claim }}"
+    ns="{{ ns }}"
+    user="{{ user }}"
+
+    if [[ -z "$claim" ]]; then
         claim=$(gum input --placeholder 'PVC name')
     fi
-
     [[ -n "$claim" ]] || just log fatal "No PVC specified"
 
-    if [[ -z "{{ ns }}" ]]; then
+    if [[ -z "$ns" ]]; then
         ns=$(gum input --placeholder 'Namespace')
     fi
-
     [[ -n "$ns" ]] || just log fatal "No namespace specified"
 
-    if [[ -z "{{ user }}" ]]; then
-        user=$(gum input \
-            --placeholder 'User ID' \
-            --value '65532')
+    if [[ -z "$user" ]]; then
+        user=$(gum input --placeholder 'User ID' --value '65532')
     fi
-
     [[ -n "$user" ]] || just log fatal "No user ID specified"
 
     pod="filebrowser-${claim}"
@@ -65,6 +65,8 @@ browse-pvc ns='' claim='' user='65532':
                     \"name\": \"filebrowser\",
                     \"image\": \"filebrowser/filebrowser:latest\",
                     \"args\": [
+                        \"--address\", \"0.0.0.0\",
+                        \"--port\", \"80\",
                         \"--noauth\",
                         \"--root\", \"/data\",
                         \"--config\", \"/tmp/settings.json\",

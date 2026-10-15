@@ -20,7 +20,7 @@ RUN talosctl version --client
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.6@sha256:b1ac18156f227af9a524b842a96f2c20986c7a779ef721df3ba4e4540f449d76 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
-COPY --from=ghcr.io/casey/just:1.58.0@sha256:1a55f946f0877f3ba79da79f1b848a4454401bb6d8fcdcdaf34df1999a929224 /just /usr/local/bin/
+COPY --from=ghcr.io/casey/just:1.59.0@sha256:014cbe6e6de678864004e2fd8b0405f77ce43b20b225e816feb330f2fb575c01 /just /usr/local/bin/
 RUN just --version
 
 COPY --from=ghcr.io/postfinance/topf:v0.6.1@sha256:2b4b23918da0a7b0f2cbca6caac535daf71cdfc1cb4075017d015c00224f0972 /usr/local/bin/topf /usr/local/bin/

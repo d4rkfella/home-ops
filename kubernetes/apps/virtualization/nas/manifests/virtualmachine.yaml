@@ -17,6 +17,7 @@ spec:
           multus:
             default: true
             networkName: virtualization/nas
+      terminationGracePeriodSeconds: 180
       dnsPolicy: None
       dnsConfig:
         nameservers:

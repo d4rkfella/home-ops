@@ -3,19 +3,19 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: kometa-quickstart
+  name: quickstart
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: kometa-quickstart
+      name: quickstart
   oidc:
     provider:
       issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
     clientID: e41c6d33-78c6-4fb6-9074-b48a5750838d
     clientSecret:
-      name: kometa-quickstart-secret
-    redirectURL: https://kometa-quickstart.darkfellanetwork.com/oauth2/callback
+      name: quickstart-secret
+    redirectURL: https://quickstart.darkfellanetwork.com/oauth2/callback
     logoutPath: /logout
     cookieNames:
       accessToken: quickstart-access-token

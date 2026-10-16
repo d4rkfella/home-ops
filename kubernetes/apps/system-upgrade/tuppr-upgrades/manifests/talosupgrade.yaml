@@ -10,6 +10,7 @@ spec:
     version: v1.14.3
   policy:
     rebootMode: default
+    nodrain: true
   healthChecks:
     - apiVersion: volsync.backube/v1alpha1
       kind: ReplicationSource

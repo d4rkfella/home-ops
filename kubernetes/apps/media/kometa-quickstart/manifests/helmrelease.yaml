@@ -11,7 +11,7 @@ spec:
     name: kometa-quickstart
   values:
     controllers:
-      kometa-quickstart:
+      quickstart:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -54,6 +54,28 @@ spec:
                 cpu: 10m
               limits:
                 memory: 4Gi
+
+      kometa:
+        type: cronjob
+        cronjob:
+          schedule: "0 */6 * * *"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 3
+        pod:
+          restartPolicy: Never
+        containers:
+          app:
+            image:
+              repository: kometateam/kometa
+              tag: latest
+            env:
+              TZ: Europe/Sofia
+            args:
+              - --run
+              - --config
+              - /config/clever_archimedes_config.yml
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -63,12 +85,14 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
           type: RuntimeDefault
+
     service:
       app:
-        controller: kometa-quickstart
+        controller: quickstart
         ports:
           http:
-            port: 7171
+            port: &port 7171
+
     route:
       app:
         hostnames:
@@ -79,12 +103,20 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - name: kometa-quickstart
-                port: 7171
+              - name: quickstart
+                port: *port
+
     persistence:
       config:
         existingClaim: kometa-quickstart
-        globalMounts:
-          - path: /config
+        advancedMounts:
+          quickstart:
+            app:
+              - path: /config
+          kometa:
+            app:
+              - path: /config
+                subPath: kometa/config
+
       tmp:
         type: emptyDir

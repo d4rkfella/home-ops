@@ -75,6 +75,7 @@ spec:
               - --run
               - --config
               - /config/clever_archimedes_config.yml
+              - --read-only-config
 
     defaultPodOptions:
       securityContext:

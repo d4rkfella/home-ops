@@ -88,6 +88,7 @@ spec:
 
     service:
       app:
+        forceRename: quickstart
         controller: quickstart
         ports:
           http:
@@ -95,8 +96,9 @@ spec:
 
     route:
       app:
+        forceRename: quickstart
         hostnames:
-          - kometa-quickstart.darkfellanetwork.com
+          - quickstart.darkfellanetwork.com
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

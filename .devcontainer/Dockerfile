@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20260927@sha256:f144425ff09be612d6d9ad965196e9cdc23dae1f42110a8a11a3e9a8198759f7
+FROM ubuntu:resolute-20261006@sha256:c098726dd9b9733f3e885f8de0ef375206a311b0a317eadc40d347b1115fb944
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -14,7 +14,7 @@ RUN apt-get update && \
         xdg-utils gum && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.14.3@sha256:4d021d8951bc880667fa09e86c4c91ce69426d03f121d766c91736257d0edf38 /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.14.4@sha256:b3233234327350f20ed194f3fad83d90a64344c1940f839c7b0c0abef50c8c33 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.6@sha256:b1ac18156f227af9a524b842a96f2c20986c7a779ef721df3ba4e4540f449d76 /usr/local/bin/flux /usr/local/bin/
@@ -32,7 +32,7 @@ RUN bao --version
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.8.1@sha256:9c29ece2fb6ec3f8c1432be9d29526f3cfe35d7e59e066d0aa5c4b3e819f2165 /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.8.2@sha256:5dbdc37016c7e286d4a1a64ac1e360cee79590df2949891823bf73618003381b /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.1-trixie@sha256:8fbb4bbe4c6110c23e0f099d4b1dea7fa64419c409f6a0768430f083948dbf3a /usr/local/bin/uv* /usr/local/bin/

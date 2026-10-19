@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/opnsense-exporter
-              tag: 0.0.17@sha256:890b0be4e1855eb7e9b3a041af5bfa555bd78c426cdc23fa9c771f9763d4f86a
+              tag: 0.0.18@sha256:afe150a7bdb4098a5f64c755f8a59734ebf2fcef0bbbc7a17e2e87fdbd81f810
               pullPolicy: IfNotPresent
             args:
               - --runtime.gomaxprocs=2

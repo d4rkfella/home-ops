@@ -29,13 +29,13 @@ RUN topf --version
 COPY --from=ghcr.io/openbao/openbao:2.7.1@sha256:6d2b93856e3fcf7b18ad855a0b51eaba474dc8b79cf554379ea32034797d2acf /usr/bin/bao /usr/local/bin/
 RUN bao --version
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.3@sha256:9e5c2f2edc34351160407ca3416c61855bdf9403c3c5936e0f0be7fc261611b8 /ko-app/cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.4@sha256:0f06154836d2de34f887a5c273506d52ca43edaa1d9e53e6510fa78a48f69c2d /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.8.2@sha256:5dbdc37016c7e286d4a1a64ac1e360cee79590df2949891823bf73618003381b /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.13.3-trixie@sha256:60d1bb7cf7d9557932b467637e2c68ef79c8f8d534b5678392bbb4756bc4d39c /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.4-trixie@sha256:4e60f1e036e702bd127f45af2f96ed713dad93f282acc9de31d72f20734be905 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.3@sha256:857f5a151ac0b2bfc55c1e4e5581d66fb8e268e4d106b38e74191f3bac9d58ea /usr/local/bin/sops /usr/local/bin/

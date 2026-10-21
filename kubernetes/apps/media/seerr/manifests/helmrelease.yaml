@@ -21,7 +21,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/seerr
-              tag: 3.5.0@sha256:3ad9c4a4ab2a6f86f8b8aade13cf4703df02f281832687d21277eee799646d9c
+              tag: 3.5.0@sha256:ca262f94cccf3b76934a01f0ea19a0808eca93a1e1b5d2b3d2507360cc96a51c
             env:
               TZ: Europe/Sofia
               LOG_LEVEL: info

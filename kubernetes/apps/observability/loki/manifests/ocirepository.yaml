@@ -11,7 +11,7 @@ spec:
     operation: copy
   url: oci://ghcr.io/d4rkfella/charts-mirror/loki
   ref:
-    tag: 7.3.0
+    tag: 7.5.0
   verify:
     provider: cosign
     matchOIDCIdentity:

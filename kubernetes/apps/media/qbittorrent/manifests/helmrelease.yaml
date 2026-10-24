@@ -61,6 +61,10 @@ spec:
             image:
               repository: registry.k8s.io/git-sync/git-sync
               tag: v4.8.0
+            env:
+              GIT_CONFIG_COUNT: "1"
+              GIT_CONFIG_KEY_0: safe.directory
+              GIT_CONFIG_VALUE_0: /addons
             args:
               - --repo=https://github.com/VueTorrent/VueTorrent
               - --ref=latest-release

@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/vaultwarden
-              tag: 1.37.4@sha256:1ec08a2e3ca7dfb0f084552081d72006dea62fd76f1821a18646d212738baa45
+              tag: 1.37.4@sha256:625dd838b7e63a5912d87dd8d0815eea8704cff541cc401786f34e2efc2385d2
             env:
               SSO_ENABLED: "true"
               SSO_ONLY: "true"

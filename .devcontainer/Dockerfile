@@ -14,10 +14,10 @@ RUN apt-get update && \
         xdg-utils gum && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.14.4@sha256:b3233234327350f20ed194f3fad83d90a64344c1940f839c7b0c0abef50c8c33 /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.14.5@sha256:0b852e35c1f513ee5eacc22183d6193486012420569fde39fcd5260c51938443 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
-COPY --from=ghcr.io/fluxcd/flux-cli:v2.9.6@sha256:b1ac18156f227af9a524b842a96f2c20986c7a779ef721df3ba4e4540f449d76 /usr/local/bin/flux /usr/local/bin/
+COPY --from=ghcr.io/fluxcd/flux-cli:v2.10.0@sha256:1a5178b1770052d6e88ab1c7c8434c5ac9bca8a8ab984dcaf6b9df31814ce9f2 /usr/local/bin/flux /usr/local/bin/
 RUN flux --version
 
 COPY --from=ghcr.io/casey/just:1.59.0@sha256:014cbe6e6de678864004e2fd8b0405f77ce43b20b225e816feb330f2fb575c01 /just /usr/local/bin/

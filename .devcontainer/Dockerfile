@@ -1,4 +1,4 @@
-FROM ubuntu:resolute-20261006@sha256:c098726dd9b9733f3e885f8de0ef375206a311b0a317eadc40d347b1115fb944
+FROM ubuntu:resolute-20261024.1@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb
 
 WORKDIR /tmp
 SHELL ["/bin/bash", "-c"]
@@ -26,7 +26,7 @@ RUN just --version
 COPY --from=ghcr.io/postfinance/topf:v0.6.2@sha256:745b33c5f900df7cd9885557a037fcc5471b167b1fc20046385639112e3e6deb /usr/local/bin/topf /usr/local/bin/
 RUN topf --version
 
-COPY --from=ghcr.io/openbao/openbao:2.7.1@sha256:6d2b93856e3fcf7b18ad855a0b51eaba474dc8b79cf554379ea32034797d2acf /usr/bin/bao /usr/local/bin/
+COPY --from=ghcr.io/openbao/openbao:2.7.2@sha256:5046911075e137e154ce49ab051502f4ec7cf367d484ae4a4dce665d9b90561f /usr/bin/bao /usr/local/bin/
 RUN bao --version
 
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.4@sha256:0f06154836d2de34f887a5c273506d52ca43edaa1d9e53e6510fa78a48f69c2d /ko-app/cosign /usr/local/bin/

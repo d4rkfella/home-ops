@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/qui
-              tag: 1.33.1@sha256:06d658703c10f1fd46690695a3bfd7de041b8352c9291b6cc68b294f859af4fa
+              tag: 1.34.0@sha256:d1e603edf4d5546b9500e4d5dc2ce3a5caf29620526b195ea9e246a8d4502647
             env:
               QUI__CHECK_FOR_UPDATES: false
               QUI__HOST: 0.0.0.0

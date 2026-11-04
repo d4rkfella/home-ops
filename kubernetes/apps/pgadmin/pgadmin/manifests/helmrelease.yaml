@@ -18,7 +18,7 @@ spec:
           pgadmin:
             image:
               repository: ghcr.io/d4rkfella/pgadmin4
-              tag: 9.18@sha256:36c4240447af489c940ebd0acda7095df8ebe7957832186ca23f78c77133f75f
+              tag: 9.18@sha256:84e617f50116b5e051eafb7bd72e5fe50538ea39332c996fd5c5767c241359bd
             env:
               GUNICORN_LIMIT_REQUEST_LINE: 0
               GUNICORN_LIMIT_REQUEST_FIELD_SIZE: 0

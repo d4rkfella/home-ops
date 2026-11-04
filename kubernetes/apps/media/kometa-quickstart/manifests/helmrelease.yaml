@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       quickstart:
+        forceRename: quickstart
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -57,6 +58,7 @@ spec:
 
       kometa:
         type: cronjob
+        forceRename: kometa
         cronjob:
           schedule: "0 */6 * * *"
           concurrencyPolicy: Forbid

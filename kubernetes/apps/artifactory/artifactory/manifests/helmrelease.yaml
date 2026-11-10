@@ -12,6 +12,8 @@ spec:
     name: artifactory
   values:
     global:
+      versions:
+        artifactory: 7.173.18
       jfrog:
         observability:
           branch: master

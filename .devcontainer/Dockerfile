@@ -32,7 +32,7 @@ RUN bao --version
 COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.4@sha256:0f06154836d2de34f887a5c273506d52ca43edaa1d9e53e6510fa78a48f69c2d /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
-COPY --from=ghcr.io/helmfile/helmfile:v1.8.3@sha256:4b48dff9278362abea796067eea5b8f9682d101431403a7de50ca4fab82265f4 /usr/local/bin/helmfile /usr/local/bin/
+COPY --from=ghcr.io/helmfile/helmfile:v1.8.4@sha256:ccaa1854dffc789617e13dde016144e7e164016933e7d20ec6786c6f8a342681 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
 COPY --from=ghcr.io/astral-sh/uv:0.13.8-trixie@sha256:49f68aaf4290a1eb438d913d51033007eb5fac1e3add6ca8d1d161426ddac798 /usr/local/bin/uv* /usr/local/bin/
@@ -49,7 +49,7 @@ ARG VIRTCTL_VERSION=v1.9.1
 RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && chmod +x /usr/local/bin/virtctl
 
 # renovate: datasource=github-releases depName=helm/helm
-ARG HELM_VERSION=v4.3.1
+ARG HELM_VERSION=v4.3.2
 RUN curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.sha256}" && \
     sha256sum -c <(echo "$(cat helm-${HELM_VERSION}-linux-amd64.tar.gz.sha256)  helm-${HELM_VERSION}-linux-amd64.tar.gz") && \
     tar -xzf helm-${HELM_VERSION}-linux-amd64.tar.gz --strip-components=1 && \

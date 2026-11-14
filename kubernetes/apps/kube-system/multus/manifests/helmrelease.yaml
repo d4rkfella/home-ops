@@ -13,7 +13,7 @@ spec:
     cniPlugins:
       image:
         repository: ghcr.io/d4rkfella/cni-plugins
-        tag: 1.10.0@sha256:506215be9802ab1494e9b1be735e533a2faafb009449fe7bb973b7860192a150
+        tag: 1.10.0@sha256:43b57ac4d8e842f51771e08a6d571c08a84a716f3da77147d5678eb74a339d63
     image:
       repository: ghcr.io/d4rkfella/multus-cni
       tag: 4.3.2@sha256:844c0673f88aa458a294cc43cce96cd1f88a63650462349caf8a722e83e94094

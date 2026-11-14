@@ -113,3 +113,118 @@ spec:
                 : []
             }
           }
+---
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
+metadata:
+  name: mount-postgres-ca
+spec:
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+
+  matchConditions:
+    - name: mount-postgres-ca-enabled
+      expression: >-
+        object.metadata.?annotations[
+          'security.darkfellanetwork.com/mount-postgres-ca'
+        ].orValue('') == 'true'
+
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: |
+          Object{
+            spec: Object.spec{
+              volumes:
+                (
+                  has(object.spec.volumes)
+                  ? object.spec.volumes
+                  : []
+                )
+                +
+                (
+                  (
+                    has(object.spec.volumes) &&
+                    object.spec.volumes.exists(v, v.name == "postgres-ca")
+                  )
+                  ? []
+                  : [
+                      Object.spec.volumes{
+                        name: "postgres-ca",
+                        secret: Object.spec.volumes.secret{
+                          secretName: "postgres-ca-secret"
+                        }
+                      }
+                    ]
+                ),
+
+              containers: object.spec.containers.map(c,
+                Object.spec.containers{
+                  name: c.name,
+                  volumeMounts:
+                    (
+                      has(c.volumeMounts)
+                      ? c.volumeMounts
+                      : []
+                    )
+                    +
+                    (
+                      (
+                        has(c.volumeMounts) &&
+                        c.volumeMounts.exists(m, m.name == "postgres-ca")
+                      )
+                      ? []
+                      : [
+                          Object.spec.containers.volumeMounts{
+                            name: "postgres-ca",
+                            mountPath: "/etc/ssl/certs/postgres-ca.crt",
+                            subPath: "ca.crt",
+                            readOnly: true
+                          }
+                        ]
+                    )
+                }
+              ),
+
+              initContainers:
+                has(object.spec.initContainers)
+                ?
+                object.spec.initContainers.map(c,
+                  Object.spec.initContainers{
+                    name: c.name,
+                    volumeMounts:
+                      (
+                        has(c.volumeMounts)
+                        ? c.volumeMounts
+                        : []
+                      )
+                      +
+                      (
+                        (
+                          has(c.volumeMounts) &&
+                          c.volumeMounts.exists(m, m.name == "postgres-ca")
+                        )
+                        ? []
+                        : [
+                            Object.spec.initContainers.volumeMounts{
+                              name: "postgres-ca",
+                              mountPath: "/etc/ssl/certs/postgres-ca.crt",
+                              subPath: "ca.crt",
+                              readOnly: true
+                            }
+                          ]
+                      )
+                  }
+                )
+                : []
+            }
+          }

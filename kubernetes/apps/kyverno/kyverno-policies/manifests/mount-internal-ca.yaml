@@ -15,102 +15,101 @@ spec:
           - UPDATE
         resources:
           - pods
+
   matchConditions:
     - name: mount-internal-ca-enabled
       expression: >-
         object.metadata.?annotations[
           'security.darkfellanetwork.com/mount-internal-ca'
         ].orValue('') == 'true'
+
   mutations:
-    - patchType: JSONPatch
-      jsonPatch:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
         expression: |
-          (
-            !has(object.spec.volumes) ||
-            !object.spec.volumes.exists(v, v.name == "internal-ca")
-          ) ?
-          [
-            JSONPatch{
-              op: "add",
-              path: has(object.spec.volumes)
-                ? "/spec/volumes/-"
-                : "/spec/volumes",
-              value: has(object.spec.volumes)
-                ? {
-                    "name": "internal-ca",
-                    "secret": {
-                      "secretName": "internal-ca-secret"
-                    }
-                  }
-                : [{
-                    "name": "internal-ca",
-                    "secret": {
-                      "secretName": "internal-ca-secret"
-                    }
-                  }]
-            }
-          ] : []
-          +
-          (
-            has(object.spec.initContainers)
-            ? object.spec.initContainers.map(c,
-                !has(c.volumeMounts)
-                ? JSONPatch{
-                    op: "add",
-                    path: "/spec/initContainers/" +
-                      string(object.spec.initContainers.indexOf(c)) +
-                      "/volumeMounts",
-                    value: [{
-                      "name": "internal-ca",
-                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
-                      "subPath": "ca.crt",
-                      "readOnly": true
-                    }]
-                  }
-                : !c.volumeMounts.exists(m, m.name == "internal-ca")
-                ? JSONPatch{
-                    op: "add",
-                    path: "/spec/initContainers/" +
-                      string(object.spec.initContainers.indexOf(c)) +
-                      "/volumeMounts/-",
-                    value: {
-                      "name": "internal-ca",
-                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
-                      "subPath": "ca.crt",
-                      "readOnly": true
-                    }
-                  }
-                : null
-              ).filter(p, p != null)
-            : []
-          )
-          +
-          object.spec.containers.map(c,
-            !has(c.volumeMounts)
-            ? JSONPatch{
-                op: "add",
-                path: "/spec/containers/" +
-                  string(object.spec.containers.indexOf(c)) +
-                  "/volumeMounts",
-                value: [{
-                  "name": "internal-ca",
-                  "mountPath": "/etc/ssl/certs/internal-ca.crt",
-                  "subPath": "ca.crt",
-                  "readOnly": true
-                }]
-              }
-            : !c.volumeMounts.exists(m, m.name == "internal-ca")
-            ? JSONPatch{
-                op: "add",
-                path: "/spec/containers/" +
-                  string(object.spec.containers.indexOf(c)) +
-                  "/volumeMounts/-",
-                value: {
-                  "name": "internal-ca",
-                  "mountPath": "/etc/ssl/certs/internal-ca.crt",
-                  "subPath": "ca.crt",
-                  "readOnly": true
+          Object{
+            spec: Object.spec{
+              volumes:
+                (
+                  has(object.spec.volumes)
+                  ? object.spec.volumes
+                  : []
+                )
+                +
+                (
+                  (
+                    has(object.spec.volumes) &&
+                    object.spec.volumes.exists(v, v.name == "internal-ca")
+                  )
+                  ? []
+                  : [
+                      Object.spec.volumes{
+                        name: "internal-ca",
+                        secret: Object.spec.volumes.secret{
+                          secretName: "internal-ca-secret"
+                        }
+                      }
+                    ]
+                ),
+
+              containers: object.spec.containers.map(c,
+                Object.spec.containers{
+                  name: c.name,
+                  volumeMounts:
+                    (
+                      has(c.volumeMounts)
+                      ? c.volumeMounts
+                      : []
+                    )
+                    +
+                    (
+                      (
+                        has(c.volumeMounts) &&
+                        c.volumeMounts.exists(m, m.name == "internal-ca")
+                      )
+                      ? []
+                      : [
+                          Object.spec.containers.volumeMounts{
+                            name: "internal-ca",
+                            mountPath: "/etc/ssl/certs/internal-ca.crt",
+                            subPath: "ca.crt",
+                            readOnly: true
+                          }
+                        ]
+                    )
                 }
-              }
-            : null
-          ).filter(p, p != null)
+              ),
+
+              initContainers:
+                has(object.spec.initContainers)
+                ?
+                object.spec.initContainers.map(c,
+                  Object.spec.initContainers{
+                    name: c.name,
+                    volumeMounts:
+                      (
+                        has(c.volumeMounts)
+                        ? c.volumeMounts
+                        : []
+                      )
+                      +
+                      (
+                        (
+                          has(c.volumeMounts) &&
+                          c.volumeMounts.exists(m, m.name == "internal-ca")
+                        )
+                        ? []
+                        : [
+                            Object.spec.initContainers.volumeMounts{
+                              name: "internal-ca",
+                              mountPath: "/etc/ssl/certs/internal-ca.crt",
+                              subPath: "ca.crt",
+                              readOnly: true
+                            }
+                          ]
+                      )
+                  }
+                )
+                : []
+            }
+          }

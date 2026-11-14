@@ -4,6 +4,10 @@ kind: MutatingPolicy
 metadata:
   name: add-ndots
 spec:
+  autogen:
+    podControllers:
+      controllers: []
+
   matchConstraints:
     resourceRules:
       - apiGroups:
@@ -15,13 +19,18 @@ spec:
           - UPDATE
         resources:
           - pods
+
   mutations:
-    - patchType: ApplyConfiguration
-      applyConfiguration:
+    - patchType: JSONPatch
+      jsonPatch:
         expression: |
-          Object{
-            spec: Object.spec{
-              dnsConfig: Object.spec.dnsConfig{
+          !has(object.spec.dnsConfig)
+          ?
+          [
+            JSONPatch{
+              op: "add",
+              path: "/spec/dnsConfig",
+              value: Object.spec.dnsConfig{
                 options: [
                   Object.spec.dnsConfig.options{
                     name: "ndots",
@@ -30,4 +39,46 @@ spec:
                 ]
               }
             }
-          }
+          ]
+          :
+          !has(object.spec.dnsConfig.options)
+          ?
+          [
+            JSONPatch{
+              op: "add",
+              path: "/spec/dnsConfig/options",
+              value: [
+                Object.spec.dnsConfig.options{
+                  name: "ndots",
+                  value: "1"
+                }
+              ]
+            }
+          ]
+          :
+          object.spec.dnsConfig.options.exists(o, o.name == "ndots")
+          ?
+          [
+            JSONPatch{
+              op: "replace",
+              path: "/spec/dnsConfig/options/" +
+                string(
+                  object.spec.dnsConfig.options.map(o, o.name).indexOf("ndots")
+                ),
+              value: Object.spec.dnsConfig.options{
+                name: "ndots",
+                value: "1"
+              }
+            }
+          ]
+          :
+          [
+            JSONPatch{
+              op: "add",
+              path: "/spec/dnsConfig/options/-",
+              value: Object.spec.dnsConfig.options{
+                name: "ndots",
+                value: "1"
+              }
+            }
+          ]

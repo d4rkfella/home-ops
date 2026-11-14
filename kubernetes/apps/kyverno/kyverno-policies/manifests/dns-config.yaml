@@ -1,21 +1,33 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
 metadata:
   name: add-ndots
 spec:
-  rules:
-    - name: add-ndots
-      match:
-        any:
-          - resources:
-              kinds:
-                - Pod
-      mutate:
-        patchStrategicMerge:
-          spec:
-            dnsConfig:
-              options:
-                - name: ndots
-                  value: "1"
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  mutations:
+    - patchType: ApplyConfiguration
+      applyConfiguration:
+        expression: |
+          Object{
+            spec: Object.spec{
+              dnsConfig: Object.spec.dnsConfig{
+                options: [
+                  Object.spec.dnsConfig.options{
+                    name: "ndots",
+                    value: "1"
+                  }
+                ]
+              }
+            }
+          }

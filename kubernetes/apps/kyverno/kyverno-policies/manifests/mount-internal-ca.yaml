@@ -1,20 +1,19 @@
----
+
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mount-internal-ca
 spec:
+  autogen:
+    podControllers:
+      controllers: []
+
   matchConstraints:
     resourceRules:
-      - apiGroups:
-          - ""
-        apiVersions:
-          - v1
-        operations:
-          - CREATE
-          - UPDATE
-        resources:
-          - pods
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
 
   matchConditions:
     - name: mount-internal-ca-enabled
@@ -24,112 +23,109 @@ spec:
         ].orValue('') == 'true'
 
   mutations:
-    - patchType: ApplyConfiguration
-      applyConfiguration:
+    - patchType: JSONPatch
+      jsonPatch:
         expression: |
-          Object{
-            spec: Object.spec{
-              volumes:
-                (
-                  has(object.spec.volumes)
-                  ? object.spec.volumes
-                  : []
-                )
-                +
-                (
-                  (
-                    has(object.spec.volumes) &&
-                    object.spec.volumes.exists(v, v.name == "internal-ca")
-                  )
-                  ? []
-                  : [
-                      Object.spec.volumes{
-                        name: "internal-ca",
-                        secret: Object.spec.volumes.secret{
-                          secretName: "internal-ca-secret"
+          (
+            has(object.spec.volumes)
+            ? (
+                object.spec.volumes.exists(v, v.name == "internal-ca")
+                ? []
+                : [
+                    JSONPatch{
+                      op: "add",
+                      path: "/spec/volumes/-",
+                      value: {
+                        "name": "internal-ca",
+                        "secret": {
+                          "secretName": "internal-ca-secret"
                         }
                       }
-                    ]
-                ),
-
-              containers: object.spec.containers.map(c,
-                Object.spec.containers{
-                  name: c.name,
-                  volumeMounts:
-                    (
-                      has(c.volumeMounts)
-                      ? c.volumeMounts
-                      : []
-                    )
-                    +
-                    (
-                      (
-                        has(c.volumeMounts) &&
-                        c.volumeMounts.exists(m, m.name == "internal-ca")
-                      )
-                      ? []
-                      : [
-                          Object.spec.containers.volumeMounts{
-                            name: "internal-ca",
-                            mountPath: "/etc/ssl/certs/internal-ca.crt",
-                            subPath: "ca.crt",
-                            readOnly: true
-                          }
-                        ]
-                    )
+                    }
+                  ]
+              )
+            : [
+                JSONPatch{
+                  op: "add",
+                  path: "/spec/volumes",
+                  value: [
+                    {
+                      "name": "internal-ca",
+                      "secret": {
+                        "secretName": "internal-ca-secret"
+                      }
+                    }
+                  ]
                 }
-              ),
-
-              initContainers:
-                has(object.spec.initContainers)
-                ?
-                object.spec.initContainers.map(c,
-                  Object.spec.initContainers{
-                    name: c.name,
-                    volumeMounts:
-                      (
-                        has(c.volumeMounts)
-                        ? c.volumeMounts
-                        : []
-                      )
-                      +
-                      (
-                        (
-                          has(c.volumeMounts) &&
-                          c.volumeMounts.exists(m, m.name == "internal-ca")
-                        )
-                        ? []
-                        : [
-                            Object.spec.initContainers.volumeMounts{
-                              name: "internal-ca",
-                              mountPath: "/etc/ssl/certs/internal-ca.crt",
-                              subPath: "ca.crt",
-                              readOnly: true
-                            }
-                          ]
-                      )
-                  }
+              ]
+          )
+          +
+          object.spec.containers.map(c,
+            (
+              has(c.volumeMounts) &&
+              c.volumeMounts.exists(m, m.name == "internal-ca")
+            )
+            ? null
+            : JSONPatch{
+                op: "add",
+                path: "/spec/containers/" +
+                  string(object.spec.containers.indexOf(c)) +
+                  (has(c.volumeMounts) ? "/volumeMounts/-" : "/volumeMounts"),
+                value: has(c.volumeMounts)
+                  ? [{
+                      "name": "internal-ca",
+                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }]
+                  : [{
+                      "name": "internal-ca",
+                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }]
+              }
+          ).filter(p, p != null)
+          +
+          (
+            has(object.spec.initContainers)
+            ? object.spec.initContainers.map(c,
+                (
+                  has(c.volumeMounts) &&
+                  c.volumeMounts.exists(m, m.name == "internal-ca")
                 )
-                : []
-            }
-          }
+                ? null
+                : JSONPatch{
+                    op: "add",
+                    path: "/spec/initContainers/" +
+                      string(object.spec.initContainers.indexOf(c)) +
+                      (has(c.volumeMounts) ? "/volumeMounts/-" : "/volumeMounts"),
+                    value: [{
+                      "name": "internal-ca",
+                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }]
+                  }
+              ).filter(p, p != null)
+            : []
+          )
 ---
 apiVersion: policies.kyverno.io/v1
 kind: MutatingPolicy
 metadata:
   name: mount-postgres-ca
 spec:
+  autogen:
+    podControllers:
+      controllers: []
+
   matchConstraints:
     resourceRules:
-      - apiGroups:
-          - ""
-        apiVersions:
-          - v1
-        operations:
-          - CREATE
-          - UPDATE
-        resources:
-          - pods
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
 
   matchConditions:
     - name: mount-postgres-ca-enabled
@@ -139,92 +135,83 @@ spec:
         ].orValue('') == 'true'
 
   mutations:
-    - patchType: ApplyConfiguration
-      applyConfiguration:
+    - patchType: JSONPatch
+      jsonPatch:
         expression: |
-          Object{
-            spec: Object.spec{
-              volumes:
-                (
-                  has(object.spec.volumes)
-                  ? object.spec.volumes
-                  : []
-                )
-                +
-                (
-                  (
-                    has(object.spec.volumes) &&
-                    object.spec.volumes.exists(v, v.name == "postgres-ca")
-                  )
-                  ? []
-                  : [
-                      Object.spec.volumes{
-                        name: "postgres-ca",
-                        secret: Object.spec.volumes.secret{
-                          secretName: "postgres-ca-secret"
+          (
+            has(object.spec.volumes)
+            ? (
+                object.spec.volumes.exists(v, v.name == "postgres-ca")
+                ? []
+                : [
+                    JSONPatch{
+                      op: "add",
+                      path: "/spec/volumes/-",
+                      value: {
+                        "name": "postgres-ca",
+                        "secret": {
+                          "secretName": "postgres-ca-secret"
                         }
                       }
-                    ]
-                ),
-
-              containers: object.spec.containers.map(c,
-                Object.spec.containers{
-                  name: c.name,
-                  volumeMounts:
-                    (
-                      has(c.volumeMounts)
-                      ? c.volumeMounts
-                      : []
-                    )
-                    +
-                    (
-                      (
-                        has(c.volumeMounts) &&
-                        c.volumeMounts.exists(m, m.name == "postgres-ca")
-                      )
-                      ? []
-                      : [
-                          Object.spec.containers.volumeMounts{
-                            name: "postgres-ca",
-                            mountPath: "/etc/ssl/certs/postgres-ca.crt",
-                            subPath: "ca.crt",
-                            readOnly: true
-                          }
-                        ]
-                    )
+                    }
+                  ]
+              )
+            : [
+                JSONPatch{
+                  op: "add",
+                  path: "/spec/volumes",
+                  value: [
+                    {
+                      "name": "postgres-ca",
+                      "secret": {
+                        "secretName": "postgres-ca-secret"
+                      }
+                    }
+                  ]
                 }
-              ),
-
-              initContainers:
-                has(object.spec.initContainers)
-                ?
-                object.spec.initContainers.map(c,
-                  Object.spec.initContainers{
-                    name: c.name,
-                    volumeMounts:
-                      (
-                        has(c.volumeMounts)
-                        ? c.volumeMounts
-                        : []
-                      )
-                      +
-                      (
-                        (
-                          has(c.volumeMounts) &&
-                          c.volumeMounts.exists(m, m.name == "postgres-ca")
-                        )
-                        ? []
-                        : [
-                            Object.spec.initContainers.volumeMounts{
-                              name: "postgres-ca",
-                              mountPath: "/etc/ssl/certs/postgres-ca.crt",
-                              subPath: "ca.crt",
-                              readOnly: true
-                            }
-                          ]
-                      )
-                  }
+              ]
+          )
+          +
+          object.spec.containers.map(c,
+            (
+              has(c.volumeMounts) &&
+              c.volumeMounts.exists(m, m.name == "postgres-ca")
+            )
+            ? null
+            : JSONPatch{
+                op: "add",
+                path: "/spec/containers/" +
+                  string(object.spec.containers.indexOf(c)) +
+                  (has(c.volumeMounts) ? "/volumeMounts/-" : "/volumeMounts"),
+                value: [{
+                  "name": "postgres-ca",
+                  "mountPath": "/etc/ssl/certs/postgres-ca.crt",
+                  "subPath": "ca.crt",
+                  "readOnly": true
+                }]
+              }
+          ).filter(p, p != null)
+          +
+          (
+            has(object.spec.initContainers)
+            ? object.spec.initContainers.map(c,
+                (
+                  has(c.volumeMounts) &&
+                  c.volumeMounts.exists(m, m.name == "postgres-ca")
                 )
-                : []
-            }
-          }
+                ? null
+                : JSONPatch{
+                    op: "add",
+                    path: "/spec/initContainers/" +
+                      string(object.spec.initContainers.indexOf(c)) +
+                      (has(c.volumeMounts) ? "/volumeMounts/-" : "/volumeMounts"),
+                    value: [{
+                      "name": "postgres-ca",
+                      "mountPath": "/etc/ssl/certs/postgres-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }]
+                  }
+              ).filter(p, p != null)
+            : []
+          )

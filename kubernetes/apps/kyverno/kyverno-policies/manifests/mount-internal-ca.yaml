@@ -1,74 +1,116 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
-apiVersion: kyverno.io/v2beta1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: MutatingPolicy
 metadata:
   name: mount-internal-ca
 spec:
-  rules:
-    - name: mount-internal-ca
-      match:
-        all:
-          - resources:
-              kinds:
-                - Pod
-              annotations:
-                security.darkfellanetwork.com/mount-internal-ca: "true"
-      mutate:
-        patchStrategicMerge:
-          spec:
-            volumes:
-              - name: internal-ca
-                secret:
-                  secretName: internal-ca-secret
-            initContainers:
-              - (name): "*"
-                volumeMounts:
-                  - name: internal-ca
-                    mountPath: /etc/ssl/certs/internal-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
-            containers:
-              - (name): "*"
-                volumeMounts:
-                  - name: internal-ca
-                    mountPath: /etc/ssl/certs/internal-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
----
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/kyverno.io/clusterpolicy_v2beta1.json
-apiVersion: kyverno.io/v2beta1
-kind: ClusterPolicy
-metadata:
-  name: mount-postgres-ca
-spec:
-  rules:
-    - name: mount-postgres-ca
-      match:
-        all:
-          - resources:
-              kinds:
-                - Pod
-              annotations:
-                security.darkfellanetwork.com/mount-postgres-ca: "true"
-      mutate:
-        patchStrategicMerge:
-          spec:
-            volumes:
-              - name: postgres-ca
-                secret:
-                  secretName: postgres-ca-secret
-            initContainers:
-              - (name): "*"
-                volumeMounts:
-                  - name: postgres-ca
-                    mountPath: /etc/ssl/certs/postgres-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
-            containers:
-              - (name): "*"
-                volumeMounts:
-                  - name: postgres-ca
-                    mountPath: /etc/ssl/certs/postgres-ca.crt
-                    subPath: ca.crt
-                    readOnly: true
+  matchConstraints:
+    resourceRules:
+      - apiGroups:
+          - ""
+        apiVersions:
+          - v1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - pods
+  matchConditions:
+    - name: mount-internal-ca-enabled
+      expression: >-
+        object.metadata.?annotations[
+          'security.darkfellanetwork.com/mount-internal-ca'
+        ].orValue('') == 'true'
+  mutations:
+    - patchType: JSONPatch
+      jsonPatch:
+        expression: |
+          (
+            !has(object.spec.volumes) ||
+            !object.spec.volumes.exists(v, v.name == "internal-ca")
+          ) ?
+          [
+            JSONPatch{
+              op: "add",
+              path: has(object.spec.volumes)
+                ? "/spec/volumes/-"
+                : "/spec/volumes",
+              value: has(object.spec.volumes)
+                ? {
+                    "name": "internal-ca",
+                    "secret": {
+                      "secretName": "internal-ca-secret"
+                    }
+                  }
+                : [{
+                    "name": "internal-ca",
+                    "secret": {
+                      "secretName": "internal-ca-secret"
+                    }
+                  }]
+            }
+          ] : []
+          +
+          (
+            has(object.spec.initContainers)
+            ? object.spec.initContainers.map(c,
+                !has(c.volumeMounts)
+                ? JSONPatch{
+                    op: "add",
+                    path: "/spec/initContainers/" +
+                      string(object.spec.initContainers.indexOf(c)) +
+                      "/volumeMounts",
+                    value: [{
+                      "name": "internal-ca",
+                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }]
+                  }
+                : !c.volumeMounts.exists(m, m.name == "internal-ca")
+                ? JSONPatch{
+                    op: "add",
+                    path: "/spec/initContainers/" +
+                      string(object.spec.initContainers.indexOf(c)) +
+                      "/volumeMounts/-",
+                    value: {
+                      "name": "internal-ca",
+                      "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                      "subPath": "ca.crt",
+                      "readOnly": true
+                    }
+                  }
+                : null
+              ).filter(p, p != null)
+            : []
+          )
+          +
+          object.spec.containers.map(c,
+            !has(c.volumeMounts)
+            ? JSONPatch{
+                op: "add",
+                path: "/spec/containers/" +
+                  string(object.spec.containers.indexOf(c)) +
+                  "/volumeMounts",
+                value: [{
+                  "name": "internal-ca",
+                  "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                  "subPath": "ca.crt",
+                  "readOnly": true
+                }]
+              }
+            : !c.volumeMounts.exists(m, m.name == "internal-ca")
+            ? JSONPatch{
+                op: "add",
+                path: "/spec/containers/" +
+                  string(object.spec.containers.indexOf(c)) +
+                  "/volumeMounts/-",
+                value: {
+                  "name": "internal-ca",
+                  "mountPath": "/etc/ssl/certs/internal-ca.crt",
+                  "subPath": "ca.crt",
+                  "readOnly": true
+                }
+              }
+            : null
+          ).filter(p, p != null)

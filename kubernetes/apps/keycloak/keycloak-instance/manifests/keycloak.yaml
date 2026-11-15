@@ -52,7 +52,7 @@ spec:
     port: 5432
     schema: public
   instances: 1
-  image: ghcr.io/d4rkfella/keycloak:26.8.2@sha256:3b4b06141076b2136d370ecf63727a2858a9c006aebb68fb9149cce6b96001f6
+  image: ghcr.io/d4rkfella/keycloak:26.8.2@sha256:adc882b807338949b1ce5aad4109c6ffc4170210cefb2fcd94ecda78213a0998
   startOptimized: true
   proxy:
     headers: xforwarded

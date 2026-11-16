@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/sonarr
-              tag: 5.0.0.2941@sha256:5dd41517c78e447eb482ff4e2e41c913728ebbeb0108a9005c9c0ae08c4e3c28
+              tag: 5.0.0.2941@sha256:7b02b7768def61198dffb8bd62d99a247e8d84b1adf17cb489490aeba2d3a687
             env:
               TZ: Europe/Sofia
               SONARR__APP__INSTANCENAME: Sonarr

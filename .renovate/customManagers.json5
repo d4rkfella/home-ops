@@ -6,15 +6,13 @@
       description: [
         'Process annotated dependencies',
       ],
-      fileMatch: [
-        '(^|/).+\\.env$',
-        '(^|/).+\\.ya?ml(?:\\.j2)?$',
+      managerFilePatterns: [
+        "/.*/"
       ],
-      "matchStrings": [
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( repository=(?<registryUrl>\\S+))?\\n.+(:\\s|=)(&\\S+\\s)?\"?(?<currentValue>[^\"\\s,]+)\"?,?",
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+/(?<currentValue>(v|\\d)[^/]+)"
+      matchStrings: [
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\n.+(:\\s|=)(&\\S+\\s)?[\"']?(?<currentValue>[^\"'\\s]+)[\"']?"
       ],
-      datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
+      datasourceTemplate: "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}"
     },
     {
       customType: 'regex',
@@ -33,10 +31,10 @@
       customType: "regex",
       description: "Process OCI dependencies",
       managerFilePatterns: [
-        "/\\.yaml(?:\\.j2)?$/",
+        "/\\.ya?ml(?:\\.j2)?$/"
       ],
       matchStrings: [
-        "oci://(?<depName>[^:]+):(?<currentValue>[^\"\\s,]+)",
+        "oci://(?<depName>[^:]+):(?<currentValue>\\S+)"
       ],
       datasourceTemplate: "docker",
     },

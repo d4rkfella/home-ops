@@ -19,6 +19,7 @@
     ':semanticCommits',
     ':timezone(Europe/Sofia)',
   ],
+  rebaseWhen: "conflicted",
   dependencyDashboardTitle: 'Renovate Dashboard 🤖',
   suppressNotifications: [
     'prEditedNotification',

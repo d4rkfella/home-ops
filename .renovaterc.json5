@@ -29,12 +29,28 @@
     '**/resources/**',
   ],
   flux: {
-    managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],
+    managerFilePatterns: ["/\\.ya?ml(?:\\.j2)?$/"],
   },
-  "helm-values": {
-    managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],
+  helm-values: {
+    managerFilePatterns: [
+      "/(^|/)values\\.ya?ml(?:\\.j2)?$/",
+      "/(^|/)helmrelease\\.ya?ml(?:\\.j2)?$/",
+      "/(^|/)helm-release\\.ya?ml(?:\\.j2)?$/",
+      "/(^|/)hr\\.ya?ml(?:\\.j2)?$/",
+    ],
+  },
+  helmfile: {
+    managerFilePatterns: [
+      "/(^|/)helmfile\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
+      "/(^|/)helmfile\\.d/.+\\.ya?ml(?:\\.gotmpl)?(?:\\.j2)?$/",
+    ],
   },
   kubernetes: {
-    managerFilePatterns: ["/\\.yaml(?:\\.j2)?$/"],
+    managerFilePatterns: ["/\\.ya?ml(?:\\.j2)?$/"],
+  },
+  kustomize: {
+    managerFilePatterns: [
+      "/(^|/)kustomization\\.ya?ml(?:\\.j2)?$/"
+    ],
   },
 }

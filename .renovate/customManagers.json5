@@ -19,13 +19,13 @@
     {
       customType: 'regex',
       description: [
-        'Process CloudnativePG Postgresql version',
+        'Detect CNPG Cluster CRD imageName + extension reference fields',
       ],
       fileMatch: [
         '(^|/)kubernetes/.+\\.ya?ml$',
       ],
       matchStrings: [
-        "imageName: \"?(?<depName>[^\\s:\"]+):(?<currentValue>[^@\"\\s]+)(@(?<currentDigest>sha256:[a-f0-9]+))?\"?,"
+        "(?:imageName|reference):\\s+(?<depName>[^@\\s]+):(?<currentValue>[^@\\s/]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?",
       ],
       datasourceTemplate: 'docker',
     },

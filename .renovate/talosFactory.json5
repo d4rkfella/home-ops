@@ -1,6 +1,5 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-
   customDatasources: {
     "talos-factory": {
       defaultRegistryUrlTemplate: "https://factory.talos.dev/versions",
@@ -8,36 +7,37 @@
       transformTemplates: ['{"releases": [$.{"version": $}]}'],
     },
   },
-
   customManagers: [
     {
-      description: "Process Talos Factory installer images",
+      description: "Process Talos Factory installer images and topf talosVersion",
       customType: "regex",
-      managerFilePatterns: [
-        "/\\d{1,3}(?:\\.\\d{1,3}){3}\\.sops\\.yaml$/",
-      ],
+      managerFilePatterns: ["/talos\\/.*\\.ya?ml(?:\\.j2)?$/"],
       matchStrings: [
-        "factory\\.talos\\.dev\\/installer-secureboot\\/(?<schematicId>[a-f0-9]+):(?<currentValue>v[^\"\\s]+)",
+        "factory\\.talos\\.dev\\/[^/]+\\/[^:]+:(?<currentValue>v\\S+)",
+        // topf.yaml `talosVersion:` (bare or v-prefixed; topf trims the leading v)
+        "talosVersion:\\s*[\"']?(?<currentValue>v?[0-9][^\"'\\s]*)",
       ],
       datasourceTemplate: "custom.talos-factory",
       versioningTemplate: "semver",
       depNameTemplate: "siderolabs/talos",
     },
   ],
-
   packageRules: [
     {
-      addLabels: ["renovate/talos"],
+      description: "Ignore factory.talos.dev images matched by generic managers; the custom manager above owns them",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["/^factory\\.talos\\.dev\\//"],
+      enabled: false,
+    },
+    {
       matchDatasources: ["custom.talos-factory"],
       semanticCommitScope: "container",
       commitMessageTopic: "{{depName}}",
     },
     {
-      matchDatasources: ["docker"],
-      matchPackageNames: [
-        "/^factory\\.talos\\.dev\\/installer-secureboot\\//",
-      ],
-      enabled: false,
+      description: "Talos upgrades must pass through the latest patch of each minor, so keep proposing patches after the next minor ships",
+      matchDatasources: ["custom.talos-factory"],
+      separateMinorPatch: true,
     },
   ],
 }

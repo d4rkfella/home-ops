@@ -30,6 +30,7 @@ spec:
     devices: eth0
     envoy:
       enabled: true
+      xdsMode: ads
     cluster:
       id: 1
       name: main

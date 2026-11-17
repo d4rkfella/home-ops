@@ -41,6 +41,8 @@ spec:
       updateStrategyType: RollingUpdate
       logLevel: debug
       logFormat: json
+      annotations:
+        reloader.stakater.com/auto: "true"
       extraEnvironmentVars:
         GOOGLE_APPLICATION_CREDENTIALS: /openbao/userconfig/gcp-creds/openbao-unseal-creds.json
       server:

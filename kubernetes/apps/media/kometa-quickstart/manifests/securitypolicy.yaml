@@ -11,11 +11,11 @@ spec:
       name: quickstart
   oidc:
     provider:
-      issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+      issuer: https://accounts.darkfella.space/realms/DarkfellaNET
     clientID: e41c6d33-78c6-4fb6-9074-b48a5750838d
     clientSecret:
       name: quickstart-secret
-    redirectURL: https://quickstart.darkfellanetwork.com/oauth2/callback
+    redirectURL: https://quickstart.darkfella.space/oauth2/callback
     logoutPath: /logout
     cookieNames:
       accessToken: quickstart-access-token
@@ -23,9 +23,9 @@ spec:
   jwt:
     providers:
       - name: keycloak
-        issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+        issuer: https://accounts.darkfella.space/realms/DarkfellaNET
         remoteJWKS:
-          uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+          uri: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/certs
         extractFrom:
           cookies:
             - quickstart-access-token

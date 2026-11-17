@@ -8,7 +8,7 @@ metadata:
     gatus.home-operations.com/endpoint: "path: /realms/DarkfellaNET/.well-known/openid-configuration"
 spec:
   hostnames:
-    - accounts.darkfellanetwork.com
+    - accounts.darkfella.space
   parentRefs:
     - name: external
       namespace: envoy-gateway-system
@@ -39,7 +39,7 @@ metadata:
     gatus.home-operations.com/endpoint: "path: /realms/master/.well-known/openid-configuration"
 spec:
   hostnames:
-    - keycloak-admin.darkfellanetwork.com
+    - keycloak-admin.darkfella.space
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system

@@ -11,7 +11,7 @@ spec:
     name: k8s-gateway
   values:
     fullnameOverride: k8s-gateway
-    domain: darkfellanetwork.com
+    domain: darkfella.space
     service:
       type: LoadBalancer
       port: 53

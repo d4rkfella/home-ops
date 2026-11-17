@@ -11,11 +11,11 @@ spec:
       name: hubble-ui
   oidc:
     provider:
-      issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+      issuer: https://accounts.darkfella.space/realms/DarkfellaNET
     clientID: 85cd33f8-78af-4993-97cf-d595dafe8118
     clientSecret:
       name: hubble-ui-oidc-secret
-    redirectURL: https://hubble-ui.darkfellanetwork.com/oauth2/callback
+    redirectURL: https://hubble-ui.darkfella.space/oauth2/callback
     logoutPath: /logout
     cookieNames:
       accessToken: hubble-ui-access-token
@@ -23,9 +23,9 @@ spec:
   jwt:
     providers:
       - name: keycloak
-        issuer: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+        issuer: https://accounts.darkfella.space/realms/DarkfellaNET
         remoteJWKS:
-          uri: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/certs
+          uri: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/certs
         extractFrom:
           cookies:
             - hubble-ui-access-token

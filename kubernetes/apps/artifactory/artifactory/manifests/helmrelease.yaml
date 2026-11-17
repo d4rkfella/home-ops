@@ -25,10 +25,10 @@ spec:
       gatewayClassName: envoy
       disableRouterBypass: true
       hosts:
-        - packages.darkfellanetwork.com
+        - packages.darkfella.space
       tls:
         - hosts:
-            - packages.darkfellanetwork.com
+            - packages.darkfella.space
           secretName: artifactory-tls
       httpRoute:
         enabled: true

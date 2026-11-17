@@ -6,7 +6,7 @@ metadata:
   name: cdi-upload-proxy-httproute
 spec:
   hostnames:
-    - cdi-uploadproxy.darkfellanetwork.com
+    - cdi-uploadproxy.darkfella.space
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system

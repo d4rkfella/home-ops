@@ -27,7 +27,7 @@ spec:
       httpRoute:
         enabled: true
         hostnames:
-          - flux-operator.darkfellanetwork.com
+          - flux-operator.darkfella.space
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

@@ -22,17 +22,17 @@ spec:
             env:
               SSO_ENABLED: "true"
               SSO_ONLY: "true"
-              SSO_AUTHORITY: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+              SSO_AUTHORITY: https://accounts.darkfella.space/realms/DarkfellaNET
               SSO_CLIENT_ID: f7126e9c-bcc7-4182-8510-8ab70a6eb6a8
               SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
               ATTACHMENTS_FOLDER: data/attachments
-              DOMAIN: https://vaultwarden.darkfellanetwork.com
+              DOMAIN: https://vaultwarden.darkfella.space
               TZ: Europe/Sofia
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com
-              SMTP_FROM: noreply@darkfellanetwork.com
+              SMTP_FROM: noreply@darkfella.space
               SMTP_FROM_NAME: vaultwarden
               SMTP_PORT: 587
               SMTP_SECURITY: starttls
@@ -80,12 +80,12 @@ spec:
                 memory: 2Gi
     defaultPodOptions:
       annotations:
-        security.darkfellanetwork.com/mount-postgres-ca: "true"
+        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
       hostAliases:
         - ip: 192.168.91.51
           hostnames:
-            - accounts.darkfellanetwork.com
+            - accounts.darkfella.space
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
@@ -103,7 +103,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.darkfellanetwork.com"
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: external
             namespace: envoy-gateway-system

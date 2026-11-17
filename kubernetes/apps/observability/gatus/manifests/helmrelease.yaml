@@ -78,7 +78,7 @@ spec:
                 memory: 256Mi
     defaultPodOptions:
       annotations:
-        security.darkfellanetwork.com/mount-postgres-ca: "true"
+        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
       automountServiceAccountToken: true
       securityContext:
@@ -99,8 +99,8 @@ spec:
     route:
       app:
         hostnames:
-          - status.darkfellanetwork.com
-          - "{{ .Release.Name }}.darkfellanetwork.com"
+          - status.darkfella.space
+          - "{{ .Release.Name }}.darkfella.space"
         annotations:
           gatus.home-operations.com/enabled: "false"
         parentRefs:

@@ -101,7 +101,7 @@ spec:
       app:
         forceRename: quickstart
         hostnames:
-          - quickstart.darkfellanetwork.com
+          - quickstart.darkfella.space
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

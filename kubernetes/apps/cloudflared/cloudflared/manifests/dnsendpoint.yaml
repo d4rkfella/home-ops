@@ -6,7 +6,7 @@ metadata:
   name: cloudflared
 spec:
   endpoints:
-    - dnsName: external.darkfellanetwork.com
+    - dnsName: external.darkfella.space
       recordType: CNAME
       targets:
         - ef313dd3-14c2-4703-aecf-6033c0a259dd.cfargotunnel.com

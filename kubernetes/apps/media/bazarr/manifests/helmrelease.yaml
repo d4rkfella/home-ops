@@ -86,7 +86,7 @@ spec:
     route:
       app:
         hostnames:
-          - bazarr.darkfellanetwork.com
+          - bazarr.darkfella.space
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

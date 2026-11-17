@@ -7,13 +7,13 @@ metadata:
 spec:
   secretName: artifactory-tls
   issuerRef:
-    name: zerossl-prod
+    name: letsencrypt-production
     kind: ClusterIssuer
   privateKey:
     algorithm: ECDSA
     rotationPolicy: Always
     encoding: PKCS8
     size: 256
-  commonName: packages.darkfellanetwork.com
+  commonName: packages.darkfella.space
   dnsNames:
-    - packages.darkfellanetwork.com
+    - packages.darkfella.space

@@ -14,7 +14,7 @@ spec:
       repo: github://d4rkfella/home-ops
       statusChecks: true
       prComments: true
-      publicUrl: https://{{ .Release.Name }}.darkfellanetwork.com
+      publicUrl: https://{{ .Release.Name }}.darkfella.space
       mcp: true
       verifyImages: true
       helmApiVersions: "gateway.networking.k8s.io/v1"
@@ -28,7 +28,7 @@ spec:
         - name: external
           namespace: envoy-gateway-system
       hostnames:
-        - "{{ .Release.Name }}.darkfellanetwork.com"
+        - "{{ .Release.Name }}.darkfella.space"
     monitoring:
       serviceMonitor:
         enabled: true

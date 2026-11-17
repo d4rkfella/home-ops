@@ -20,14 +20,14 @@ spec:
         main:
           enabled: true
           hostnames:
-            - "alertmanager.darkfellanetwork.com"
+            - "alertmanager.darkfella.space"
           parentRefs:
             - name: internal
               namespace: envoy-gateway-system
               sectionName: https
       alertmanagerSpec:
         hostUsers: false
-        externalUrl: https://alertmanager.darkfellanetwork.com
+        externalUrl: https://alertmanager.darkfella.space
         alertmanagerConfiguration:
           name: alertmanager
           global:
@@ -54,14 +54,14 @@ spec:
         main:
           enabled: true
           hostnames:
-            - "prometheus.darkfellanetwork.com"
+            - "prometheus.darkfella.space"
           parentRefs:
             - name: internal
               namespace: envoy-gateway-system
               sectionName: https
       prometheusSpec:
         serviceDiscoveryRole: EndpointSlice
-        externalUrl: https://prometheus.darkfellanetwork.com
+        externalUrl: https://prometheus.darkfella.space
         enableRemoteWriteReceiver: true
         hostUsers: false
         podMetadata:
@@ -72,7 +72,7 @@ spec:
             vault.hashicorp.com/role: prometheus
             vault.hashicorp.com/agent-inject-containers: prometheus
             vault.hashicorp.com/agent-run-as-group: "65532"
-            vault.hashicorp.com/tls-server-name: openbao.darkfellanetwork.com
+            vault.hashicorp.com/tls-server-name: openbao.darkfella.space
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

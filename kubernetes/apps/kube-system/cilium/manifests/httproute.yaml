@@ -6,7 +6,7 @@ metadata:
   name: hubble-ui
 spec:
   hostnames:
-    - hubble-ui.darkfellanetwork.com
+    - hubble-ui.darkfella.space
   parentRefs:
     - name: internal
       namespace: envoy-gateway-system

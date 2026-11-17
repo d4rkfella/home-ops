@@ -7,14 +7,14 @@ metadata:
 spec:
   secretName: darkfellanet-tls
   issuerRef:
-    name: zerossl-prod
+    name: letsencrypt-production
     kind: ClusterIssuer
   privateKey:
     algorithm: ECDSA
     rotationPolicy: Always
     encoding: PKCS8
     size: 256
-  commonName: darkfellanetwork.com
+  commonName: darkfella.space
   dnsNames:
-    - darkfellanetwork.com
-    - "*.darkfellanetwork.com"
+    - darkfella.space
+    - "*.darkfella.space"

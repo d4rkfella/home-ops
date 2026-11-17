@@ -26,10 +26,10 @@ spec:
       role_attribute_path: contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'admin') && 'Admin' || contains(resource_access."46f5398b-91b2-4706-bfc3-5f2f4ad624fc".roles[*], 'editor') && 'Editor' || 'Viewer'
       role_attribute_strict: "true"
       scopes: openid email profile offline_access roles
-      auth_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/auth
-      token_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/token
-      api_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/userinfo
-      signout_redirect_url: https://accounts.darkfellanetwork.com/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.darkfellanetwork.com%2Flogin
+      auth_url: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/auth
+      token_url: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/token
+      api_url: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/userinfo
+      signout_redirect_url: https://accounts.darkfella.space/realms/DarkfellaNET/protocol/openid-connect/logout?post_logout_redirect_uri=https%3A%2F%2Fgrafana.darkfella.space%2Flogin
       use_pkce: "true"
     date_formats:
       full_date: YYYY-MM-DD HH:mm:ss
@@ -51,7 +51,7 @@ spec:
       angular_support_enabled: "true"
     server:
       enable_gzip: "true"
-      root_url: https://grafana.darkfellanetwork.com
+      root_url: https://grafana.darkfella.space
     users:
       allow_sign_up: "false"
       auto_assign_org: "true"
@@ -88,7 +88,7 @@ spec:
   httpRoute:
     spec:
       hostnames:
-        - grafana.darkfellanetwork.com
+        - grafana.darkfella.space
       parentRefs:
         - name: internal
           namespace: envoy-gateway-system

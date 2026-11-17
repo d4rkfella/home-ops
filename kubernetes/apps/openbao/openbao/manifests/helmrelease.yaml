@@ -74,7 +74,7 @@ spec:
       ha:
         enabled: true
         replicas: 3
-        apiAddr: https://openbao.darkfellanetwork.com:8200
+        apiAddr: https://openbao.darkfella.space:8200
         raft:
           enabled: true
           setNodeId: true
@@ -96,7 +96,7 @@ spec:
                 leader_api_addr = "https://openbao-active:8200"
                 leader_client_cert_file = "/openbao/userconfig/openbao-server-tls/tls.crt"
                 leader_client_key_file = "/openbao/userconfig/openbao-server-tls/tls.key"
-                leader_tls_servername = "openbao.darkfellanetwork.com"
+                leader_tls_servername = "openbao.darkfella.space"
               }
             }
 
@@ -128,7 +128,7 @@ spec:
       serviceType: LoadBalancer
       externalTrafficPolicy: Local
       annotations:
-        external-dns.kubernetes.io/hostname: openbao.darkfellanetwork.com
+        external-dns.kubernetes.io/hostname: openbao.darkfella.space
         lbipam.cilium.io/ips: 192.168.91.54
     serverTelemetry:
       serviceMonitor:
@@ -139,7 +139,7 @@ spec:
         scrapeTimeout: 10s
         bearerTokenFile: /vault/secrets/token
         tlsConfig:
-          serverName: openbao.darkfellanetwork.com
+          serverName: openbao.darkfella.space
       prometheusRules:
         enabled: true
         rules:
@@ -350,7 +350,7 @@ spec:
         repository: ghcr.io/openbao/openbao-snapshot-agent
         tag: 0.4.5
       extraEnvironmentVars:
-        BAO_ADDR: https://openbao.darkfellanetwork.com:8200
+        BAO_ADDR: https://openbao.darkfella.space:8200
       s3CredentialsSecret: openbao-r2-credentials
       config:
         s3Host: https://2bd80478faceecf0d53c596cd910805f.r2.cloudflarestorage.com

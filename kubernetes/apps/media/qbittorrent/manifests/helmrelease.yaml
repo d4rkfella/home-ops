@@ -115,7 +115,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.darkfellanetwork.com"
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

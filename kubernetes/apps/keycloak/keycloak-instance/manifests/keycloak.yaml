@@ -9,7 +9,7 @@ spec:
     podTemplate:
       metadata:
         annotations:
-          security.darkfellanetwork.com/mount-postgres-ca: "true"
+          security.darkfella.space/mount-postgres-ca: "true"
       spec:
         volumes:
           - name: tmpfs
@@ -57,8 +57,8 @@ spec:
   proxy:
     headers: xforwarded
   hostname:
-    hostname: https://accounts.darkfellanetwork.com
-    admin: https://keycloak-admin.darkfellanetwork.com
+    hostname: https://accounts.darkfella.space
+    admin: https://keycloak-admin.darkfella.space
   http:
     httpEnabled: true
     httpPort: 8080

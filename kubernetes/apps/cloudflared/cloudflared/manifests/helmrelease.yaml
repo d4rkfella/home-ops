@@ -94,9 +94,9 @@ spec:
             originRequest:
               matchSNItoHost: true
             ingress:
-              - hostname: darkfellanetwork.com
+              - hostname: darkfella.space
                 service: https://external.envoy-gateway-system.svc.cluster.local
-              - hostname: "*.darkfellanetwork.com"
+              - hostname: "*.darkfella.space"
                 service: https://external.envoy-gateway-system.svc.cluster.local
               - service: http_status:404
     persistence:

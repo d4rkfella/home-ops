@@ -8,7 +8,7 @@ metadata:
     gatus.home-operations.com/endpoint: "conditions: [\"[STATUS] == 404\"]"
 spec:
   hostnames:
-    - flux-webhook.darkfellanetwork.com
+    - flux-webhook.darkfella.space
   parentRefs:
     - name: external
       namespace: envoy-gateway-system

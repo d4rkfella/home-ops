@@ -32,9 +32,9 @@ spec:
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
               AUTOBRR__OIDC_ENABLED: "true"
-              AUTOBRR__OIDC_ISSUER: https://accounts.darkfellanetwork.com/realms/DarkfellaNET
+              AUTOBRR__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
-              AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfellanetwork.com/api/auth/oidc/callback
+              AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfella.space/api/auth/oidc/callback
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -78,7 +78,7 @@ spec:
                 memory: 256Mi
     defaultPodOptions:
       annotations:
-        security.darkfellanetwork.com/mount-postgres-ca: "true"
+        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
       securityContext:
         runAsNonRoot: true
@@ -104,7 +104,7 @@ spec:
     route:
       autobrr:
         hostnames:
-          - "{{ .Release.Name }}.darkfellanetwork.com"
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system

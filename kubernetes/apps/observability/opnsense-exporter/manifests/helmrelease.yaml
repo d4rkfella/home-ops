@@ -23,7 +23,7 @@ spec:
             args:
               - --runtime.gomaxprocs=2
               - --opnsense.protocol=https
-              - --opnsense.address=router.darkfellanetwork.com
+              - --opnsense.address=router.darkfella.space
               - --web.listen-address=:8080
               - --web.config.file=/etc/web-config.yaml
               - --exporter.disable-openvpn

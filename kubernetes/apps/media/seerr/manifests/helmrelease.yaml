@@ -70,7 +70,7 @@ spec:
                 memory: 2Gi
     defaultPodOptions:
       annotations:
-        security.darkfellanetwork.com/mount-postgres-ca: "true"
+        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
       securityContext:
         runAsNonRoot: true
@@ -89,10 +89,10 @@ spec:
     route:
       app:
         annotations:
-          gatus.home-operations.com/endpoint: "url: https://{{ .Release.Name }}.darkfellanetwork.com/api/v1/status"
+          gatus.home-operations.com/endpoint: "url: https://{{ .Release.Name }}.darkfella.space/api/v1/status"
         hostnames:
-          - requests.darkfellanetwork.com
-          - "{{ .Release.Name }}.darkfellanetwork.com"
+          - requests.darkfella.space
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: external
             namespace: envoy-gateway-system

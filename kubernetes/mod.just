@@ -20,6 +20,7 @@ sync resource:
             "reconcile.fluxcd.io/forceAt=$(date +%s)"
     done
 
+
 [doc('Browse a PVC')]
 browse-pvc ns='' claim='' user='65532':
     set -euo pipefail
@@ -45,12 +46,15 @@ browse-pvc ns='' claim='' user='65532':
     fi
     [[ -n "$user" ]] || just log fatal "No user ID specified"
 
+    [[ "$user" =~ ^[0-9]+$ ]] || just log fatal "User ID must be numeric"
+
     pod="filebrowser-${claim}"
 
     just log info \
         "Starting File Browser" \
         "claim" "$claim" \
-        "namespace" "$ns"
+        "namespace" "$ns" \
+        "user" "$user"
 
     kubectl run "$pod" \
         --image=filebrowser/filebrowser:latest \
@@ -59,7 +63,8 @@ browse-pvc ns='' claim='' user='65532':
         --overrides="{
             \"spec\": {
                 \"securityContext\": {
-                    \"fsGroup\": $user
+                    \"runAsUser\": $user,
+                    \"runAsGroup\": $user
                 },
                 \"containers\": [{
                     \"name\": \"filebrowser\",
@@ -78,6 +83,9 @@ browse-pvc ns='' claim='' user='65532':
                     \"volumeMounts\": [{
                         \"mountPath\": \"/data\",
                         \"name\": \"data\"
+                    }, {
+                        \"mountPath\": \"/config\",
+                        \"name\": \"config\"
                     }]
                 }],
                 \"volumes\": [{
@@ -85,6 +93,9 @@ browse-pvc ns='' claim='' user='65532':
                     \"persistentVolumeClaim\": {
                         \"claimName\": \"$claim\"
                     }
+                }, {
+                    \"name\": \"config\",
+                    \"emptyDir\": {}
                 }]
             }
         }"

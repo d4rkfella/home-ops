@@ -36,6 +36,9 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
+          rules:
+            dns:
+              - matchName: smtp-relay.brevo.com
     - toEndpoints:
         - matchLabels:
             cnpg.io/cluster: postgres-db

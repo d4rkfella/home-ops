@@ -38,7 +38,7 @@ spec:
               protocol: TCP
           rules:
             dns:
-              - matchName: smtp-relay.brevo.com
+              - matchPattern: "*"
     - toEndpoints:
         - matchLabels:
             cnpg.io/cluster: postgres-db

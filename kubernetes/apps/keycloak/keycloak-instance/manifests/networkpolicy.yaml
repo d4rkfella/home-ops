@@ -45,8 +45,8 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-    - toCIDRSet:
-        - cidr: 1.179.112.0/20
+    - toFQDNs:
+        - matchName: smtp-relay.brevo.com
       toPorts:
         - ports:
             - port: "587"

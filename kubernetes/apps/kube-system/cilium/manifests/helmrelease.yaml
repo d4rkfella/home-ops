@@ -31,6 +31,7 @@ spec:
     envoy:
       enabled: true
       xdsMode: ads
+      rollOutPods: true
     cluster:
       id: 1
       name: main

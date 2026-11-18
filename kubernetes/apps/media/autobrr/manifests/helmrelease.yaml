@@ -18,7 +18,7 @@ spec:
           autobrr:
             image:
               repository: ghcr.io/d4rkfella/autobrr
-              tag: 1.90.0@sha256:729f0b89e0147c8fcb6f95abecd9d5b23f2b1b302cd7c693dbb7bf8a3e559e2a
+              tag: 1.90.0@sha256:73b14f85c00a67e1ffabced2d40a8f7d902f4835738898c7a11d13a155633303
             env:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"

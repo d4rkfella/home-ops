@@ -45,7 +45,7 @@ COPY --from=mikefarah/yq:4.54.3@sha256:7834187596ad56fd5a81436114e0b0b9dd54c91bb
 RUN yq --version
 
 # renovate: datasource=github-releases depName=kubevirt/kubevirt
-ARG VIRTCTL_VERSION=v1.9.1
+ARG VIRTCTL_VERSION=v1.10.0
 RUN curl -fsSL -o /usr/local/bin/virtctl https://github.com/kubevirt/kubevirt/releases/download/$VIRTCTL_VERSION/virtctl-$VIRTCTL_VERSION-linux-amd64 && chmod +x /usr/local/bin/virtctl
 
 # renovate: datasource=github-releases depName=helm/helm

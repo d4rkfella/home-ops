@@ -164,6 +164,40 @@ spec:
           - kind: Secret
             name: darkfellanet-tls
 ---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.networking.k8s.io/gateway_v1beta1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: apk-registry
+spec:
+  gatewayClassName: envoy
+  addresses:
+    - type: IPAddress
+      value: 192.168.91.56
+  infrastructure:
+    annotations:
+      lbipam.cilium.io/ips: 192.168.91.56
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      hostname: apk-registry.darkfella.space
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: apk-registry.darkfella.space
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: darkfellanet-tls
+---
 # yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/gateway.envoyproxy.io/backendtrafficpolicy_v1alpha1.json
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: BackendTrafficPolicy
@@ -247,6 +281,9 @@ spec:
       namespace: envoy-gateway-system
       sectionName: http
     - name: plex
+      namespace: envoy-gateway-system
+      sectionName: http
+    - name: apk-registry
       namespace: envoy-gateway-system
       sectionName: http
   rules:

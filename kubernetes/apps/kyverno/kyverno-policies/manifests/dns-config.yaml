@@ -9,6 +9,12 @@ spec:
       controllers: []
 
   matchConstraints:
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
     resourceRules:
       - apiGroups:
           - ""
@@ -23,7 +29,7 @@ spec:
   mutations:
     - patchType: JSONPatch
       jsonPatch:
-        expression: |
+        expression: |-
           !has(object.spec.dnsConfig)
           ?
           [

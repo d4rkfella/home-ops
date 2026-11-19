@@ -1,3 +1,4 @@
+---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -27,7 +28,7 @@ spec:
               APK_REGISTRY_STORAGE_ROOT: /var/lib/apk-registry
               APK_REGISTRY_REPOSITORY: wolfi-os
               APK_REGISTRY_PUBLIC_READ: "true"
-              APK_REGISTRY_PUBLIC_URL: https://apk-registry.darkfella.space
+              APK_REGISTRY_PUBLIC_URL: https://packages.darkfella.space
               APK_REGISTRY_INDEX_SIGNING_KEY: /etc/apk-registry/signing/index-signing-key.rsa
               APK_REGISTRY_ADMIN_USERNAME:
                 valueFrom:
@@ -103,7 +104,7 @@ spec:
     route:
       app:
         hostnames:
-          - apk-registry.darkfella.space
+          - packages.darkfella.space
         parentRefs:
           - name: apk-registry
             namespace: envoy-gateway-system

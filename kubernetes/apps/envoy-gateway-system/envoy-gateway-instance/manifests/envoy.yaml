@@ -181,14 +181,14 @@ spec:
     - name: http
       protocol: HTTP
       port: 80
-      hostname: apk-registry.darkfella.space
+      hostname: packages.darkfella.space
       allowedRoutes:
         namespaces:
           from: All
     - name: https
       protocol: HTTPS
       port: 443
-      hostname: apk-registry.darkfella.space
+      hostname: packages.darkfella.space
       allowedRoutes:
         namespaces:
           from: All
@@ -275,9 +275,6 @@ spec:
       namespace: envoy-gateway-system
       sectionName: http
     - name: external
-      namespace: envoy-gateway-system
-      sectionName: http
-    - name: artifactory
       namespace: envoy-gateway-system
       sectionName: http
     - name: plex

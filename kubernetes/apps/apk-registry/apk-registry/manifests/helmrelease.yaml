@@ -27,8 +27,8 @@ spec:
               APK_REGISTRY_STORAGE_ROOT: /var/lib/apk-registry
               APK_REGISTRY_REPOSITORY: wolfi-os
               APK_REGISTRY_PUBLIC_READ: "true"
-              APK_REGISTRY_INDEX_FORMAT: v2
               APK_REGISTRY_PUBLIC_URL: https://apk-registry.darkfella.space
+              APK_REGISTRY_INDEX_SIGNING_KEY: /etc/apk-registry/signing/index-signing-key.rsa
               APK_REGISTRY_ADMIN_USERNAME:
                 valueFrom:
                   secretKeyRef:
@@ -123,3 +123,9 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      signing-key:
+        type: secret
+        name: apk-registry-secret
+        globalMounts:
+          - path: /etc/apk-registry/signing
+            readOnly: true

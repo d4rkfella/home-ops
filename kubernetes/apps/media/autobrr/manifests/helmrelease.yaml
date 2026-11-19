@@ -17,8 +17,8 @@ spec:
         containers:
           autobrr:
             image:
-              repository: ghcr.io/d4rkfella/autobrr
-              tag: 1.90.0@sha256:a1ea29824393dab26a6ceecaee267e77fd70bc8fccbaa3c1ac6022e5566f85c7
+              repository: ghcr.io/autobrr/autobrr
+              tag: v1.91.0@sha256:c8ad1fe513d852bf00a0c751530ba205ba74196d68b0ece41a4e7d2138a80185
             env:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"

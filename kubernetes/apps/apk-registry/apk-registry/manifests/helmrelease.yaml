@@ -1,4 +1,3 @@
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -20,21 +19,22 @@ spec:
             image:
               repository: ghcr.io/d4rkfella/apk-registry
               tag: latest
-              pullPolicy: IfNotPresent
+              pullPolicy: Always
             command:
               - /usr/local/bin/apk-registry
             env:
-              LISTEN_ADDR: ":8080"
-              STORAGE_ROOT: /var/lib/apk-registry
-              REGISTRY_REPOSITORY: wolfi-os
-              REGISTRY_PUBLIC_READ: "true"
-              APK_INDEX_FORMAT: v2
-              REGISTRY_ADMIN_USERNAME:
+              APK_REGISTRY_LISTEN_ADDR: ":8080"
+              APK_REGISTRY_STORAGE_ROOT: /var/lib/apk-registry
+              APK_REGISTRY_REPOSITORY: wolfi-os
+              APK_REGISTRY_PUBLIC_READ: "true"
+              APK_REGISTRY_INDEX_FORMAT: v2
+              APK_REGISTRY_PUBLIC_URL: https://apk-registry.darkfella.space
+              APK_REGISTRY_ADMIN_USERNAME:
                 valueFrom:
                   secretKeyRef:
                     name: "{{ .Release.Name }}-secret"
                     key: REGISTRY_ADMIN_USERNAME
-              REGISTRY_ADMIN_PASSWORD:
+              APK_REGISTRY_ADMIN_PASSWORD:
                 valueFrom:
                   secretKeyRef:
                     name: "{{ .Release.Name }}-secret"

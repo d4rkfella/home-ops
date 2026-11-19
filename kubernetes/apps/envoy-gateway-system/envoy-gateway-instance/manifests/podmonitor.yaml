@@ -9,7 +9,6 @@ spec:
   namespaceSelector:
     matchNames:
       - envoy-gateway-system
-      - artifactory
   podMetricsEndpoints:
     - port: metrics
       path: /stats/prometheus

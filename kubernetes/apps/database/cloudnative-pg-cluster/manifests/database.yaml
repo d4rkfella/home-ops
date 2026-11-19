@@ -91,17 +91,6 @@ spec:
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: artifactory-db
-spec:
-  name: artifactory
-  owner: 9e509b5e-649a-4458-9b7c-7c5aa71a7c7e
-  cluster:
-    name: postgres-db
----
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/database_v1.json
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
   name: gatus-db
 spec:
   name: gatus

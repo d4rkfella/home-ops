@@ -112,11 +112,6 @@ spec:
         superuser: false
         passwordSecret:
           name: vaultwarden-db-password
-      - name: 9e509b5e-649a-4458-9b7c-7c5aa71a7c7e # artifactory
-        login: true
-        superuser: false
-        passwordSecret:
-          name: artifactory-db-password
       - name: 3abf2d7b-fe53-4cf3-8364-ecd74524ded9 # gatus
         login: true
         superuser: false

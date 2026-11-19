@@ -30,6 +30,10 @@ spec:
               APK_REGISTRY_PUBLIC_READ: "true"
               APK_REGISTRY_PUBLIC_URL: https://packages.darkfella.space
               APK_REGISTRY_INDEX_SIGNING_KEY: /etc/apk-registry/signing/index-signing-key.rsa
+              APK_REGISTRY_METRICS_ENABLED: "true"
+              APK_REGISTRY_METRICS_HOST: "0.0.0.0"
+              APK_REGISTRY_METRICS_PORT: "9094"
+              APK_REGISTRY_METRICS_AUTH_ENABLED: "true"
               APK_REGISTRY_ADMIN_USERNAME:
                 valueFrom:
                   secretKeyRef:
@@ -66,7 +70,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /healthz
+                    path: /readyz
                     port: 8080
                   periodSeconds: 10
                   timeoutSeconds: 5
@@ -101,6 +105,19 @@ spec:
         ports:
           http:
             port: 8080
+          http-metrics:
+            port: 9094
+    serviceMonitor:
+      apk-registry:
+        serviceName: apk-registry
+        endpoints:
+          - port: http-metrics
+            path: /metrics
+            authorization:
+              type: Bearer
+              credentials:
+                name: "{{ .Release.Name }}-secret"
+                key: REGISTRY_METRICS_TOKEN
     route:
       app:
         hostnames:

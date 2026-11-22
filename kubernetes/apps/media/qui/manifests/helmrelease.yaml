@@ -24,10 +24,10 @@ spec:
               QUI__HOST: 0.0.0.0
               QUI__PORT: 80
               QUI__DATABASE_ENGINE: postgres
-              QUI__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
-              QUI__POSTGRES_PORT: 5432
-              QUI__POSTGRES_DATABASE: "{{ .Release.Name }}"
-              QUI__POSTGRES_USER: "{{ .Release.Name }}"
+              QUI__DATABASE_HOST: postgres-db-rw.database.svc.cluster.local
+              QUI__DATABASE_PORT: 5432
+              QUI__DATABASE_DATABASE: "{{ .Release.Name }}"
+              QUI__DATABASE_USER: "{{ .Release.Name }}"
               QUI__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               QUI__OIDC_ENABLED: "true"
               QUI__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET

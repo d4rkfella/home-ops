@@ -735,15 +735,6 @@ spec:
       hostUsers: false
       kubeletEndpointsEnabled: false
       kubeletEndpointSliceEnabled: true
-      admissionWebhooks:
-        certManager:
-          enabled: true
-          admissionCert:
-            duration: 2160h # 90d
-          issuerRef:
-            name: vault-issuer
-            kind: ClusterIssuer
-            group: cert-manager.io
     additionalPrometheusRulesMap:
       dockerhub-rules:
         groups:

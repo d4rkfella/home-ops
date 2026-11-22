@@ -19,19 +19,3 @@ spec:
         selector:
           dnsZones:
             - darkfella.space
----
-# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/cert-manager.io/clusterissuer_v1.json
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: vault-issuer
-spec:
-  vault:
-    path: pki_intermediate/sign/cert-manager
-    server: https://openbao.darkfella.space:8200
-    auth:
-      kubernetes:
-        role: vault-issuer
-        mountPath: /v1/auth/kubernetes
-        serviceAccountRef:
-          name: vault-issuer

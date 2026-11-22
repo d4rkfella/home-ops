@@ -17,7 +17,7 @@ spec:
           - name: keycloak
             volumeMounts:
               - name: data
-                mountPath: /usr/share/java/keycloak/data
+                mountPath: /opt/keycloak/data
               - name: tmpfs
                 mountPath: /tmp
             securityContext:

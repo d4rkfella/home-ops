@@ -29,6 +29,7 @@ spec:
               SONARR__SERVER__ALLOWEDHOSTS: sonarr.darkfella.space,sonarr.media.svc.cluster.local
               SONARR__SERVER__TRUSTEDNETWORKS: 172.16.0.0/16
               SONARR__SERVER__PORT: &port 80
+              SONARR__UPDATE__BRANCH: develop
               SONARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               SONARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
               TZ: Europe/Sofia

@@ -12,7 +12,7 @@ spec:
   oidc:
     provider:
       issuer: https://accounts.darkfella.space/realms/DarkfellaNET
-    clientID: 5a89be8c-9525-4990-bebf-78d7875a9e01
+    clientID: bazarr
     clientSecret:
       name: bazarr-secret
     redirectURL: https://bazarr.darkfella.space/oauth2/callback
@@ -32,15 +32,6 @@ spec:
   authorization:
     defaultAction: Deny
     rules:
-      - action: Allow
-        name: allow-by-group
-        principal:
-          jwt:
-            provider: keycloak
-            claims:
-              - name: groups
-                values:
-                  - media-admin
       - action: Allow
         name: allow-by-email
         principal:

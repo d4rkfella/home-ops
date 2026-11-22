@@ -89,6 +89,8 @@ spec:
             namespace: envoy-gateway-system
     persistence:
       config:
-        type: emptyDir
+        type: persistentVolumeClaim
+        size: 5Gi
+        accessMode: ReadWriteOnce
       tmp:
         type: emptyDir

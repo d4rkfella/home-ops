@@ -22,8 +22,11 @@ spec:
             env:
               RADARR__APP__INSTANCENAME: Radarr
               RADARR__APP__THEME: dark
-              RADARR__AUTH__METHOD: External
-              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              RADARR__AUTH__METHOD: Oidc
+              RADARR__AUTH__OIDCAUTHORITY: https://accounts.darkfella.space/realms/DarkfellaNET
+              RADARR__AUTH__OIDCCLIENTID: "{{ .Release.Name }}"
+              RADARR__AUTH__OIDCUSERIDENTIFIER: darkfella91@gmail.com
+              RADARR__AUTH__OIDCSCOPES: "openid profile email"
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__ALLOWEDHOSTS: radarr.darkfella.space,radarr.media.svc.cluster.local

@@ -17,10 +17,9 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/radarr
-              tag: 7.0.3.10918@sha256:a71aefbec6b1e46bb0ea38dd576483afec4c2b1520fb3356dc721a319ee434d2
+              repository: ghcr.io/home-operations/radarr
+              tag: 7.0.3.10918@sha256:55d3cf8a4c4c531bb8b5c1ba88eb270d4435e01e228fbdb16cdfc910a17e3b06
             env:
-              TZ: Europe/Sofia
               RADARR__APP__INSTANCENAME: Radarr
               RADARR__APP__THEME: dark
               RADARR__AUTH__METHOD: External
@@ -29,25 +28,13 @@ spec:
               RADARR__LOG__LEVEL: info
               RADARR__SERVER__ALLOWEDHOSTS: radarr.darkfella.space,radarr.media.svc.cluster.local
               RADARR__SERVER__TRUSTEDNETWORKS: 172.16.0.0/16
-              RADARR__SERVER__PORT: 80
-              RADARR__SERVER__BINDADDRESS: 0.0.0.0
-              RADARR__AUTH__APIKEY:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: RADARR_API_KEY
+              RADARR__SERVER__PORT: &port 80
               RADARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               RADARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
-              RADARR__POSTGRES__USER:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USERNAME
-              RADARR__POSTGRES__PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: POSTGRES_PASSWORD
+              TZ: Europe/Sofia
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness:
                 enabled: true
@@ -61,28 +48,23 @@ spec:
                 spec:
                   httpGet:
                     path: /ping
-                    port: 80
+                    port: *port
                     httpHeaders:
                       - name: Host
                         value: localhost
-                  periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
-                memory: 512Mi
               limits:
                 memory: 4Gi
     defaultPodOptions:
@@ -92,14 +74,11 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
     service:
       app:
-        controller: radarr
         ports:
           http:
-            port: 80
+            port: *port
     route:
       app:
         hostnames:
@@ -107,20 +86,11 @@ spec:
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: radarr
-                port: 80
     persistence:
       config:
-        suffix: config
         type: persistentVolumeClaim
         size: 15Gi
         accessMode: ReadWriteOnce
-        storageClass: openebs-zfs-128k
-        globalMounts:
-          - path: /config
       tmp:
         type: emptyDir
       media:

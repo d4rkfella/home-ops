@@ -22,8 +22,10 @@ spec:
             env:
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
+              SONARR__AUTH__METHOD: Oidc
+              SONARR__AUTH__OIDCCLIENTID: "{{ .Release.Name }}"
+              SONARR__AUTH__OIDCUSERIDENTIFIER: darkfella91@gmail.com
+              SONARR__AUTH__OIDCSCOPES: "openid profile email"
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__ALLOWEDHOSTS: sonarr.darkfella.space,sonarr.media.svc.cluster.local

@@ -1,0 +1,160 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: keycloak
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: keycloak
+  login: true
+  superuser: false
+  passwordSecret:
+    name: keycloak-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: radarr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: radarr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: radarr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: sonarr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: sonarr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: sonarr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: prowlarr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: prowlarr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: prowlarr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: bazarr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: bazarr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: bazarr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: autobrr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: autobrr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: autobrr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: seerr
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: seerr
+  login: true
+  superuser: false
+  passwordSecret:
+    name: seerr-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: vaultwarden
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: vaultwarden
+  login: true
+  superuser: false
+  passwordSecret:
+    name: vaultwarden-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: gatus
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: gatus
+  login: true
+  superuser: false
+  passwordSecret:
+    name: gatus-db-password
+  databaseRoleReclaimPolicy: retain
+---
+# yaml-language-server: $schema=https://kubernetes-schemas-9iu.pages.dev/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: qui
+  namespace: database
+spec:
+  cluster:
+    name: postgres-db
+  name: qui
+  login: true
+  superuser: false
+  passwordSecret:
+    name: qui-db-password
+  databaseRoleReclaimPolicy: retain

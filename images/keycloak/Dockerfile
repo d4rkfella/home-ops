@@ -5,7 +5,7 @@ FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS builder
 
 ARG THEME_VERSION
 
-ADD \
+ADD --chown=keycloak:keycloak --chmod=644 \
   https://github.com/cloakwise-io/keycloak-custom-theme/releases/download/v${THEME_VERSION}/keycloak-theme-for-kc-all-other-versions.jar \
   /opt/keycloak/providers/keycloak-theme.jar
 

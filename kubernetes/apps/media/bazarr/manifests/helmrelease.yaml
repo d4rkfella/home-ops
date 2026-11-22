@@ -25,7 +25,7 @@ spec:
               POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               POSTGRES_PORT: 5432
               POSTGRES_DATABASE: "{{ .Release.Name }}"
-              POSTGRES_USER: "{{ .Release.Name }}"
+              POSTGRES_USERNAME: "{{ .Release.Name }}"
               TZ: Europe/Sofia
             envFrom:
               - secretRef:

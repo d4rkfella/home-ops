@@ -111,6 +111,9 @@ spec:
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system
+        rules:
+          - backendRefs:
+              - identifier: app
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"

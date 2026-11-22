@@ -20,27 +20,17 @@ spec:
               repository: ghcr.io/d4rkfella/bazarr
               tag: 1.6.3_beta35@sha256:56dc3f97f2640b7fc2566fd75a86c423edfe6b8121b0e5e94cb30a2e82153a37
             env:
-              TZ: Europe/Sofia
+              BAZARR__PORT: &port 6767
               POSTGRES_ENABLED: "true"
               POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               POSTGRES_PORT: 5432
               POSTGRES_DATABASE: "{{ .Release.Name }}"
-              POSTGRES_USERNAME:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: POSTGRES_USERNAME
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: "{{ .Release.Name }}-secret"
-                    key: POSTGRES_PASSWORD
+              POSTGRES_USER: "{{ .Release.Name }}"
+              TZ: Europe/Sofia
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
             probes:
-              startup:
-                enabled: true
-                spec:
-                  periodSeconds: 30
-                  failureThreshold: 10
               liveness:
                 enabled: true
                 spec:
@@ -53,21 +43,22 @@ spec:
                 spec:
                   httpGet:
                     path: /api/system/ping
-                    port: 6767
-                  periodSeconds: 10
+                    port: *port
                   timeoutSeconds: 5
                   failureThreshold: 5
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 4Gi
+                memory: 1Gi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -75,44 +66,26 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
     service:
       app:
-        controller: bazarr
         ports:
           http:
-            port: 6767
+            port: *port
     route:
       app:
         hostnames:
-          - bazarr.darkfella.space
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: bazarr
-                port: 6767
     persistence:
       config:
-        existingClaim: bazarr
-        globalMounts:
-          - path: /config
-      log:
-        type: emptyDir
-        globalMounts:
-          - path: /config/log
-      cache:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cache
-      tmp:
-        type: emptyDir
+        existingClaim: "{{ .Release.Name }}"
       media:
         type: nfs
         server: 192.168.91.40
         path: /mnt/exos20/data/media
         globalMounts:
           - path: /data/media
+      tmp:
+        type: emptyDir

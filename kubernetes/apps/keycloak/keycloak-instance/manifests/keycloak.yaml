@@ -7,9 +7,6 @@ metadata:
 spec:
   unsupported:
     podTemplate:
-      metadata:
-        annotations:
-          security.darkfella.space/mount-postgres-ca: "true"
       spec:
         volumes:
           - name: tmpfs
@@ -18,9 +15,6 @@ spec:
             emptyDir: {}
         containers:
           - name: keycloak
-            env:
-              - name: KC_DB_URL_PROPERTIES
-                value: ?sslmode=verify-full&sslrootcert=/etc/ssl/certs/postgres-ca.crt
             volumeMounts:
               - name: data
                 mountPath: /usr/share/java/keycloak/data
@@ -36,17 +30,15 @@ spec:
           runAsUser: 65532
           runAsGroup: 65532
           runAsNonRoot: true
-          seccompProfile:
-            type: RuntimeDefault
         hostUsers: false
   db:
     vendor: postgres
     usernameSecret:
-      name: keycloak-secret
-      key: POSTGRES_USERNAME
+      name: &secret keycloak-secret
+      key: KEYCLOAK__POSTGRES__USER
     passwordSecret:
-      name: keycloak-secret
-      key: POSTGRES_PASSWORD
+      name: *secret
+      key: KEYCLOAK__POSTGRES__PASSWORD
     host: postgres-db-rw.database.svc.cluster.local
     database: keycloak
     port: 5432

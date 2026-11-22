@@ -28,7 +28,8 @@ spec:
               PORT: &port 80
               DB_TYPE: postgres
               DB_HOST: postgres-db-rw.database.svc.cluster.local
-              DB_NAME: seerr
+              DB_NAME: {? {.Release.Name: ''} : ''}
+              DB_USER: {? {.Release.Name: ''} : ''}
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -55,7 +56,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m

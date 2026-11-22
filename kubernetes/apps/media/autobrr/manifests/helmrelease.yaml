@@ -33,6 +33,7 @@ spec:
               AUTOBRR__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_DATABASE: "{{ .Release.Name }}"
+              AUTOBRR__POSTGRES_USER: "{{ .Release.Name }}"
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: "{{ .Release.Name }}"

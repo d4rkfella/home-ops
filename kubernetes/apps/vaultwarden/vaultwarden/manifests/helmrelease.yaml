@@ -23,7 +23,7 @@ spec:
               SSO_ENABLED: "true"
               SSO_ONLY: "true"
               SSO_AUTHORITY: https://accounts.darkfella.space/realms/DarkfellaNET
-              SSO_CLIENT_ID: f7126e9c-bcc7-4182-8510-8ab70a6eb6a8
+              SSO_CLIENT_ID: {? {Release.Name: ''} : ''}
               SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
@@ -33,7 +33,7 @@ spec:
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com
               SMTP_FROM: noreply@darkfella.space
-              SMTP_FROM_NAME: vaultwarden
+              SMTP_FROM_NAME: {? {Release.Name: ''} : ''}
               SMTP_PORT: 587
               SMTP_SECURITY: starttls
               PUSH_ENABLED: true
@@ -79,24 +79,15 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
-      annotations:
-        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
-      hostAliases:
-        - ip: 192.168.91.51
-          hostnames:
-            - accounts.darkfella.space
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
     service:
       app:
-        controller: vaultwarden
         ports:
           http:
             port: 80
@@ -107,11 +98,6 @@ spec:
         parentRefs:
           - name: external
             namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: vaultwarden
-                port: 80
     persistence:
       data:
         suffix: data

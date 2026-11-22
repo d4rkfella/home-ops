@@ -32,6 +32,7 @@ spec:
               PROWLARR__UPDATE__BRANCH: develop
               PROWLARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               PROWLARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
+              PROWLARR__POSTGRES__USER: "{{ .Release.Name }}"
               TZ: Europe/Sofia
             envFrom:
               - secretRef:

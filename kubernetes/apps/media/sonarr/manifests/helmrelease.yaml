@@ -35,6 +35,7 @@ spec:
               SONARR__UPDATE__BRANCH: develop
               SONARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               SONARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
+              SONARR__POSTGRES__USER: "{{ .Release.Name }}"
               TZ: Europe/Sofia
             envFrom:
               - secretRef:

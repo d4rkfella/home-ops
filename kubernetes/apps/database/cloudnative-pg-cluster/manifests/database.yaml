@@ -6,7 +6,7 @@ metadata:
   name: keycloak-db
 spec:
   name: keycloak
-  owner: 620f08ae-4f99-4b9d-8930-edc842b888f9
+  owner: keycloak
   cluster:
     name: postgres-db
 ---
@@ -17,7 +17,7 @@ metadata:
   name: radarr-db
 spec:
   name: radarr
-  owner: be8f943d-e632-4a5b-9512-a86873cfeed6
+  owner: radarr
   cluster:
     name: postgres-db
 ---
@@ -28,7 +28,7 @@ metadata:
   name: sonarr-db
 spec:
   name: sonarr
-  owner: 0d2ee64d-e3be-412c-8c21-1c65e4e82992
+  owner: sonarr
   cluster:
     name: postgres-db
 ---
@@ -39,7 +39,7 @@ metadata:
   name: prowlarr-db
 spec:
   name: prowlarr
-  owner: 437f7498-c28e-46b4-b70a-74dd1b5fe039
+  owner: prowlarr
   cluster:
     name: postgres-db
 ---
@@ -50,7 +50,7 @@ metadata:
   name: bazarr-db
 spec:
   name: bazarr
-  owner: 081490d5-64d5-4332-848d-2b3bdc47e67d
+  owner: bazarr
   cluster:
     name: postgres-db
 ---
@@ -61,7 +61,7 @@ metadata:
   name: autobrr-db
 spec:
   name: autobrr
-  owner: 0e9ff8b3-c418-434b-b41a-3a3c1fdb8cd0
+  owner: autobrr
   cluster:
     name: postgres-db
 ---
@@ -72,7 +72,7 @@ metadata:
   name: seerr-db
 spec:
   name: seerr
-  owner: eeee6dc0-d387-49a9-bdc5-41d3b729c095
+  owner: seerr
   cluster:
     name: postgres-db
 ---
@@ -83,7 +83,7 @@ metadata:
   name: vaultwarden-db
 spec:
   name: vaultwarden
-  owner: 585ceb32-89f1-435f-a052-4c65b0545668
+  owner: vaultwarden
   cluster:
     name: postgres-db
 ---
@@ -94,7 +94,7 @@ metadata:
   name: gatus-db
 spec:
   name: gatus
-  owner: 3abf2d7b-fe53-4cf3-8364-ecd74524ded9
+  owner: gatus
   cluster:
     name: postgres-db
 ---
@@ -105,6 +105,6 @@ metadata:
   name: qui-db
 spec:
   name: qui
-  owner: 5614b25d-2329-4269-b517-e097b6f7ca84
+  owner: qui
   cluster:
     name: postgres-db

@@ -35,6 +35,7 @@ spec:
               RADARR__UPDATE__BRANCH: develop
               RADARR__POSTGRES__HOST: postgres-db-rw.database.svc.cluster.local
               RADARR__POSTGRES__MAINDB: "{{ .Release.Name }}"
+              RADARR__POSTGRES__USER: "{{ .Release.Name }}"
               TZ: Europe/Sofia
             envFrom:
               - secretRef:

@@ -71,7 +71,6 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
-        controller: seerr
         ports:
           http:
             port: *port
@@ -89,7 +88,7 @@ spec:
             namespace: envoy-gateway-system
     persistence:
       config:
-        existingClaim: seerr
+        existingClaim: "{{ .Release.Name }}"
         globalMounts:
           - path: /app/config
       tmp:

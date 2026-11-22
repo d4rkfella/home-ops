@@ -19,14 +19,11 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/cloudflared
-              tag: 2026.11.1@sha256:6b0a95d7d67db2bc100493400ef521582be89f99b2a91a507f03a302d650fe18
+              repository: mirror.gcr.io/cloudflare/cloudflared
+              tag: 2026.11.1@sha256:e613aadbc2d9511785d2e67a86b0c8ac18dd63a3f9af0d06faf04cbfdcb35f2d
             env:
               NO_AUTOUPDATE: true
               TUNNEL_METRICS: 0.0.0.0:8080
-              TUNNEL_ORIGIN_ENABLE_HTTP2: true
-              TUNNEL_TRANSPORT_PROTOCOL: quic
-              TUNNEL_POST_QUANTUM: true
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -34,34 +31,20 @@ spec:
               - tunnel
               - run
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /ready
-                    port: 8080
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness:
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /ready
-                    port: 8080
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
+                    port: &port 8080
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 10m
@@ -82,7 +65,7 @@ spec:
       app:
         ports:
           http:
-            port: 8080
+            port: *port
     serviceMonitor:
       app:
         endpoints:
@@ -91,14 +74,16 @@ spec:
       config:
         data:
           config.yaml: |-
-            originRequest:
-              matchSNItoHost: true
             ingress:
-              - hostname: darkfella.space
-                service: https://external.envoy-gateway-system.svc.cluster.local
               - hostname: "*.darkfella.space"
+                originRequest:
+                  http2Origin: true
+                  keepAliveTimeout: 3600s
+                  originServerName: external.darkfella.space
+                  tcpKeepAlive: 7200s
                 service: https://external.envoy-gateway-system.svc.cluster.local
               - service: http_status:404
+            
     persistence:
       config:
         type: configMap

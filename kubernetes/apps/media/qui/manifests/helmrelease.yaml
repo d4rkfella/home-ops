@@ -24,11 +24,16 @@ spec:
               QUI__HOST: 0.0.0.0
               QUI__PORT: 80
               QUI__DATABASE_ENGINE: postgres
-              QUI__OIDC_ENABLED: true
+              QUI__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
+              QUI__POSTGRES_PORT: 5432
+              QUI__POSTGRES_DATABASE: "{{ .Release.Name }}"
+              QUI__POSTGRES_USER: "{{ .Release.Name }}"
+              QUI__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
+              QUI__OIDC_ENABLED: "true"
               QUI__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET
-              QUI__OIDC_CLIENT_ID: 466c6b7f-3314-41f6-84d7-adb366b7566f
+              QUI__OIDC_CLIENT_ID: "{{ .Release.Name }}"
               QUI__OIDC_REDIRECT_URL: https://qui.darkfella.space/api/auth/oidc/callback
-              QUI__OIDC_DISABLE_BUILT_IN_LOGIN: true
+              QUI__OIDC_ALLOWED_EMAIL: darkfella91@gmail.com
               TZ: Europe/Sofia
             envFrom:
               - secretRef:

@@ -28,12 +28,12 @@ spec:
               AUTOBRR__METRICS_HOST: 0.0.0.0
               AUTOBRR__METRICS_PORT: &metricsPort 9094
               AUTOBRR__LOG_LEVEL: INFO
-              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
               AUTOBRR__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
               AUTOBRR__POSTGRES_PORT: 5432
               AUTOBRR__POSTGRES_DATABASE: "{{ .Release.Name }}"
               AUTOBRR__POSTGRES_USER: "{{ .Release.Name }}"
+              AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET
               AUTOBRR__OIDC_CLIENT_ID: "{{ .Release.Name }}"

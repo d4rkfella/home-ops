@@ -11,15 +11,9 @@ spec:
     name: external-secrets
   values:
     hostUsers: false
-    extraArgs:
-      enable-secrets-caching: "true"
-      enable-managed-secrets-caching: "true"
     serviceMonitor:
       enabled: true
     grafanaDashboard:
       enabled: true
-    certController:
-      create: true
     webhook:
       hostUsers: false
-      lookaheadInterval: 240h

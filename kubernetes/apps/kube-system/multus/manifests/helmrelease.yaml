@@ -10,13 +10,6 @@ spec:
     kind: OCIRepository
     name: multus
   values:
-    cniPlugins:
-      image:
-        repository: ghcr.io/d4rkfella/cni-plugins
-        tag: 1.10.0@sha256:ddd0877c4936250ea828b3f34d77d5070c3c9ae32fb89ba7e7e9eafaa4b4c4be
-    image:
-      repository: ghcr.io/d4rkfella/multus-cni
-      tag: 4.3.2@sha256:9f3ba79b9929e716e2b138cd90c82e4ee98b1d8ec0b9c9ac2eef2e14aed8c27c
     resources:
       requests:
         cpu: 10m

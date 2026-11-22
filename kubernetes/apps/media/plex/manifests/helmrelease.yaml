@@ -17,8 +17,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/d4rkfella/plex
-              tag: 1.43.5.11079@sha256:79f6766d603dc80f80cc60a07fdeeebf766304bf8421fe24b4071dec6102190e
+              repository: ghcr.io/home-operations/plex
+              tag: 1.43.5.11079@sha256:06ef0fc23e9af9bbaf284c3f27972f94e703d13d6f745edeb6818fcbebf6c673
             env:
               TZ: Europe/Sofia
               PLEX_ADVERTISE_URL: https://plex.darkfella.space:443,http://plex.media.svc.cluster.local:32400
@@ -36,24 +36,19 @@ spec:
                   httpGet:
                     path: /identity
                     port: &port 32400
-                  periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
-                memory: 4Gi
               limits:
                 nvidia.com/gpu: 1
                 memory: 8Gi
@@ -74,9 +69,10 @@ spec:
     route:
       app:
         annotations:
-          gatus.home-operations.com/endpoint: "path: /identity"
+          gatus.home-operations.com/endpoint: |-
+            path: /identity
         hostnames:
-          - plex.darkfella.space
+          - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: plex
             namespace: envoy-gateway-system

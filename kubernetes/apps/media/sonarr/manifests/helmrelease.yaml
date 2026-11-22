@@ -23,6 +23,7 @@ spec:
               SONARR__APP__INSTANCENAME: Sonarr
               SONARR__APP__THEME: dark
               SONARR__AUTH__METHOD: Oidc
+              SONARR__AUTH__OIDCAUTHORITY: https://accounts.darkfella.space/realms/DarkfellaNET
               SONARR__AUTH__OIDCCLIENTID: "{{ .Release.Name }}"
               SONARR__AUTH__OIDCUSERIDENTIFIER: darkfella91@gmail.com
               SONARR__AUTH__OIDCSCOPES: "openid profile email"

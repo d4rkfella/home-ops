@@ -72,8 +72,6 @@ spec:
                 drop:
                   - ALL
     defaultPodOptions:
-      annotations:
-        security.darkfella.space/mount-postgres-ca: "true"
       securityContext:
         runAsNonRoot: true
         runAsUser: 65532

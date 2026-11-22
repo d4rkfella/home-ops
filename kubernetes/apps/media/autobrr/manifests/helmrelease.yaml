@@ -15,7 +15,7 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          autobrr:
+          app:
             image:
               repository: ghcr.io/autobrr/autobrr
               tag: v1.91.1@sha256:8c63fa0ba732eb33b2e531a84b3de3c99ae88e87c49bf077a6194020667ef92f
@@ -23,29 +23,28 @@ spec:
               TZ: Europe/Sofia
               AUTOBRR__CHECK_FOR_UPDATES: "false"
               AUTOBRR__HOST: 0.0.0.0
-              AUTOBRR__PORT: 80
+              AUTOBRR__PORT: &port 80
               AUTOBRR__METRICS_ENABLED: true
               AUTOBRR__METRICS_HOST: 0.0.0.0
-              AUTOBRR__METRICS_PORT: 9094
-              AUTOBRR__LOG_PATH: /config/log
+              AUTOBRR__METRICS_PORT: &metricsPort 9094
               AUTOBRR__LOG_LEVEL: INFO
               AUTOBRR__OIDC_DISABLE_BUILT_IN_LOGIN: "true"
               AUTOBRR__DATABASE_TYPE: postgres
+              AUTOBRR__POSTGRES_HOST: postgres-db-rw.database.svc.cluster.local
+              AUTOBRR__POSTGRES_PORT: 5432
+              AUTOBRR__POSTGRES_DATABASE: "{{ .Release.Name }}"
               AUTOBRR__OIDC_ENABLED: "true"
               AUTOBRR__OIDC_ISSUER: https://accounts.darkfella.space/realms/DarkfellaNET
-              AUTOBRR__OIDC_CLIENT_ID: 93ebcd6f-7b49-4967-bb42-9b9634c67c14
+              AUTOBRR__OIDC_CLIENT_ID: "{{ .Release.Name }}"
               AUTOBRR__OIDC_REDIRECT_URL: https://autobrr.darkfella.space/api/auth/oidc/callback
+              AUTOBRR__OIDC_ALLOWED_EMAIL: darkfella91@gmail.com
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
             probes:
               liveness:
                 enabled: true
-                custom: true
                 spec:
-                  httpGet:
-                    path: /api/healthz/liveness
-                    port: 80
                   periodSeconds: 30
                   timeoutSeconds: 5
                   failureThreshold: 5
@@ -55,29 +54,23 @@ spec:
                 spec:
                   httpGet:
                     path: /api/healthz/readiness
-                    port: 80
-                  periodSeconds: 10
+                    port: *port
                   timeoutSeconds: 5
                   failureThreshold: 5
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
-                  periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 10m
               limits:
                 memory: 256Mi
     defaultPodOptions:
-      annotations:
-        security.darkfella.space/mount-postgres-ca: "true"
       hostUsers: false
       securityContext:
         runAsNonRoot: true
@@ -85,35 +78,28 @@ spec:
         runAsGroup: 65532
         fsGroup: 65532
         fsGroupChangePolicy: OnRootMismatch
-        seccompProfile:
-          type: RuntimeDefault
     service:
-      autobrr:
-        controller: autobrr
+      app:
         ports:
           http:
-            port: 80
-          http-metrics:
-            port: 9094
+            port: *port
+          metrics:
+            port: *metricsPort
     serviceMonitor:
-      autobrr:
-        serviceName: autobrr
+      app:
         endpoints:
-          - port: http-metrics
+          - port: metrics
     route:
-      autobrr:
+      app:
         hostnames:
           - "{{ .Release.Name }}.darkfella.space"
         parentRefs:
           - name: internal
             namespace: envoy-gateway-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: autobrr
-                port: 80
     persistence:
       config:
-        type: emptyDir
+        type: persistentVolumeClaim
+        size: 5Gi
+        accessMode: ReadWriteOnce
       tmp:
         type: emptyDir

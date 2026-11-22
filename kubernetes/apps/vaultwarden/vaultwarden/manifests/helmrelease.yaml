@@ -23,7 +23,7 @@ spec:
               SSO_ENABLED: "true"
               SSO_ONLY: "true"
               SSO_AUTHORITY: https://accounts.darkfella.space/realms/DarkfellaNET
-              SSO_CLIENT_ID: {? {Release.Name: ''} : ''}
+              SSO_CLIENT_ID: "{{ .Release.Name }}"
               SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: "false"
               DATA_FOLDER: data
               ICON_CACHE_FOLDER: data/icon_cache
@@ -33,7 +33,7 @@ spec:
               SMTP_AUTH_MECHANISM: Login
               SMTP_HOST: smtp-relay.brevo.com
               SMTP_FROM: noreply@darkfella.space
-              SMTP_FROM_NAME: {? {Release.Name: ''} : ''}
+              SMTP_FROM_NAME: "{{ .Release.Name }}"
               SMTP_PORT: 587
               SMTP_SECURITY: starttls
               PUSH_ENABLED: true

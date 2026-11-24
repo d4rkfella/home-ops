@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/d4rkfella/bazarr
-              tag: v1.6.3-beta.38@sha256:cf20db011df38a68e12d6cadb9573699bb76bc639acbb4b1b015829afd5e2f55
+              tag: v1.6.3-beta.38@sha256:1b281b5e6503edbbca1641a9a932ff352e849c4fee2f21d78d215e5490a826d2
             env:
               BAZARR__PORT: &port 6767
               POSTGRES_ENABLED: "true"

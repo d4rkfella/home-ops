@@ -2,7 +2,7 @@
 
 FROM docker.io/library/python:3.14-alpine3.24
 ARG VENDOR
-ARG VERSION=v1.6.3-beta.38
+ARG VERSION=v1.6.3-beta.40
 
 ENV \
     CRYPTOGRAPHY_DONT_BUILD_RUST=1 \

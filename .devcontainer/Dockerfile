@@ -14,7 +14,7 @@ RUN apt-get update && \
         xdg-utils gum && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=ghcr.io/siderolabs/talosctl:v1.14.6@sha256:82c9a9985fc7292a222e680414c65955ac0566db588b84d88f620b05d16b1d5b /talosctl /usr/local/bin/
+COPY --from=ghcr.io/siderolabs/talosctl:v1.14.7@sha256:5567c99a07bec8415dd863c182e2854a93e81c97d7efc87ce06d7802e17a9d93 /talosctl /usr/local/bin/
 RUN talosctl version --client
 
 COPY --from=ghcr.io/fluxcd/flux-cli:v2.10.1@sha256:0253c5c82a8d98858f33dfe722afdfde83aa17dce05571f5846c26ea40d71b50 /usr/local/bin/flux /usr/local/bin/
@@ -29,13 +29,13 @@ RUN topf --version
 COPY --from=ghcr.io/openbao/openbao:2.7.3@sha256:ba4b133eb9586630024e71a617e66f37f29cc3534cdd46a6233e098ceded8dc9 /usr/bin/bao /usr/local/bin/
 RUN bao --version
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.4@sha256:0f06154836d2de34f887a5c273506d52ca43edaa1d9e53e6510fa78a48f69c2d /ko-app/cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.5@sha256:191099139868a6cd02abae63f2919e0915dcaa7bcc22bda6fbd11fd0dd5599e7 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.8.5@sha256:c4ea222dc6860301a7f24932563ba24263fbe3c9f8ee6cdfb4e133f18f3ff8a0 /usr/local/bin/helmfile /usr/local/bin/
 RUN helmfile --version
 
-COPY --from=ghcr.io/astral-sh/uv:0.13.9-trixie@sha256:75a98164449b633920e26368bbe3217ce546f2d87d8df1eed3a718934e6e1689 /usr/local/bin/uv* /usr/local/bin/
+COPY --from=ghcr.io/astral-sh/uv:0.13.10-trixie@sha256:68732682e3d20e29651553ee502356cc5a1464177ae565edc8d07c5a3282d1a7 /usr/local/bin/uv* /usr/local/bin/
 RUN uv self version && uvx --version
 
 COPY --from=ghcr.io/getsops/sops:v3.13.3@sha256:857f5a151ac0b2bfc55c1e4e5581d66fb8e268e4d106b38e74191f3bac9d58ea /usr/local/bin/sops /usr/local/bin/
@@ -68,7 +68,7 @@ RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.si
     rm -rf /tmp/*
 
 # renovate: datasource=github-releases depName=evilmartians/lefthook
-ARG LEFTHOOK_VERSION=v2.2.2
+ARG LEFTHOOK_VERSION=v2.2.3
 RUN curl -fsSLO "https://github.com/evilmartians/lefthook/releases/download/${LEFTHOOK_VERSION}/lefthook_${LEFTHOOK_VERSION#v}_amd64.deb" && \
     dpkg -i lefthook_${LEFTHOOK_VERSION#v}_amd64.deb && \
     rm lefthook_${LEFTHOOK_VERSION#v}_amd64.deb

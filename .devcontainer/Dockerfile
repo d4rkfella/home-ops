@@ -29,7 +29,7 @@ RUN topf --version
 COPY --from=ghcr.io/openbao/openbao:2.7.3@sha256:ba4b133eb9586630024e71a617e66f37f29cc3534cdd46a6233e098ceded8dc9 /usr/bin/bao /usr/local/bin/
 RUN bao --version
 
-COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.5@sha256:191099139868a6cd02abae63f2919e0915dcaa7bcc22bda6fbd11fd0dd5599e7 /ko-app/cosign /usr/local/bin/
+COPY --from=ghcr.io/sigstore/cosign/cosign:v3.1.6@sha256:7d08ec40d6f6fd9ced81a498c367ee6d4dd90d73218f58a791f78661bdbef769 /ko-app/cosign /usr/local/bin/
 RUN cosign version
 
 COPY --from=ghcr.io/helmfile/helmfile:v1.8.5@sha256:c4ea222dc6860301a7f24932563ba24263fbe3c9f8ee6cdfb4e133f18f3ff8a0 /usr/local/bin/helmfile /usr/local/bin/
@@ -57,7 +57,7 @@ RUN curl -fsSLO "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz{,.s
     rm -rf /tmp/*
 
 # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-ARG KUBECTL_VERSION=v1.37.2
+ARG KUBECTL_VERSION=v1.37.3
 RUN curl -fsSLO "https://dl.k8s.io/$KUBECTL_VERSION/bin/linux/amd64/kubectl{,.sig,.cert}" && \
     cosign verify-blob kubectl \
       --certificate kubectl.cert \

@@ -729,6 +729,9 @@ spec:
         matchLabels:
           grafana.internal/instance: grafana
     prometheusOperator:
+      fullnameOverride: prometheus-operator
+      serviceAccount:
+        name: prometheus-operator
       hostUsers: false
       kubeletEndpointsEnabled: false
       kubeletEndpointSliceEnabled: true

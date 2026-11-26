@@ -37,6 +37,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Create k3d Kubernetes cluster
         uses: nolar/setup-k3d-k3s@62c9d1bd2bc843275c85d2e7dcd696edc1160eee
@@ -321,10 +323,10 @@ jobs:
 
       - name: Initialize and unseal first OpenBao node
         shell: bash
+        env:
+          INIT_POD: ${{ steps.resolve_init_target_pod.outputs.name }}
         run: |
           set -Eeuo pipefail
-
-          INIT_POD="${{ steps.resolve_init_target_pod.outputs.name }}"
 
           /tmp/openbao-e2e/bin/bao-exec.sh "${INIT_POD}" bao operator init -format=json > /tmp/openbao-e2e/source-init.json
           jq -r '.root_token' /tmp/openbao-e2e/source-init.json > /tmp/openbao-e2e/source-root-token

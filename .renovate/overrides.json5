@@ -7,5 +7,11 @@
       matchManagers: ["helmfile"],
       overrideDepName: "{{packageName}}",
     },
+    {
+      description: "Allow Bazarr beta releases",
+      matchDatasources: ["github-releases"],
+      matchPackageNames: ["morpheus65535/bazarr"],
+      ignoreUnstable: false,
+    },
   ],
 }

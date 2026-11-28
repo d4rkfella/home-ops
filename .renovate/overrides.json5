@@ -12,6 +12,7 @@
       matchDatasources: ["github-tags"],
       matchPackageNames: ["morpheus65535/bazarr"],
       ignoreUnstable: false,
+      versioning: "semver",
     },
   ],
 }

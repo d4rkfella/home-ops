@@ -8,9 +8,17 @@
       overrideDepName: "{{packageName}}",
     },
     {
-      description: "Allow Bazarr prerelease updates",
+      description: "Allow Bazarr prerelease updates from GitHub Releases",
       matchDatasources: ["github-releases"],
       matchPackageNames: ["morpheus65535/bazarr"],
+      ignoreUnstable: false,
+      respectLatest: false,
+      versioning: "semver",
+    },
+    {
+      description: "Allow Bazarr prerelease image updates from GHCR",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["ghcr.io/d4rkfella/bazarr"],
       ignoreUnstable: false,
       respectLatest: false,
       versioning: "semver",

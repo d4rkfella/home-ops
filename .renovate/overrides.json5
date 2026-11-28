@@ -9,7 +9,7 @@
     },
     {
       description: "Allow Bazarr beta releases",
-      matchDatasources: ["github-releases"],
+      matchDatasources: ["github-tags"],
       matchPackageNames: ["morpheus65535/bazarr"],
       ignoreUnstable: false,
     },

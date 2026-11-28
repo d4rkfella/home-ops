@@ -43,12 +43,15 @@ spec:
                   - ALL
     service:
       app:
-        controller: recyclarr
         ports:
           http:
             port: 7982
           metrics:
             port: 7983
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
     route:
       app:
         hostnames:

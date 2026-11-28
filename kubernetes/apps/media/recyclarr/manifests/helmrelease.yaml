@@ -41,6 +41,21 @@ spec:
               capabilities:
                 drop:
                   - ALL
+    service:
+      app:
+        controller: recyclarr
+        ports:
+          http:
+            port: 7982
+          metrics:
+            port: 7983
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.darkfella.space"
+        parentRefs:
+          - name: internal
+            namespace: envoy-gateway-system
     defaultPodOptions:
       hostUsers: false
       securityContext:

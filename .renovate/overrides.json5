@@ -7,11 +7,5 @@
       matchManagers: ["helmfile"],
       overrideDepName: "{{packageName}}",
     },
-    {
-      matchDatasources: ['docker'],
-      matchPackageNames: ['ghcr.io/d4rkfella/bazarr'],
-      versioning: 'regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:_beta(?<prerelease>\\d+))?$',
-      ignoreUnstable: false,
-    },
   ],
 }

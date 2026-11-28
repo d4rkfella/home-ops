@@ -1,4 +1,6 @@
+# renovate: datasource=docker depName=quay.io/keycloak/keycloak
 ARG KEYCLOAK_VERSION=26.8.2
+# renovate: datasource=github-releases depName=cloakwise-io/keycloak-custom-theme
 ARG THEME_VERSION=0.2.2
 
 FROM quay.io/keycloak/keycloak:${KEYCLOAK_VERSION} AS builder

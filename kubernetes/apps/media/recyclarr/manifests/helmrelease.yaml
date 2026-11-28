@@ -25,7 +25,7 @@ spec:
             env:
               COMPlus_EnableDiagnostics: "0"
               RECYCLARR_CONFIG_DIR: /config
-              RECYCLARR_STATE_DIR: /config
+              RECYCLARR_STATE_DIR: /state
               RECYCLARR_DATA_DIR: /data
             envFrom:
               - secretRef:
@@ -59,7 +59,7 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: openebs-zfs-128k
         globalMounts:
-          - path: /config
+          - path: /state
       config-file:
         type: configMap
         name: recyclarr-configmap

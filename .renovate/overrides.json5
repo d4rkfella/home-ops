@@ -8,10 +8,11 @@
       overrideDepName: "{{packageName}}",
     },
     {
-      description: "Allow Bazarr beta releases",
-      matchDatasources: ["github-tags"],
+      description: "Allow Bazarr prerelease updates",
+      matchDatasources: ["github-releases"],
       matchPackageNames: ["morpheus65535/bazarr"],
       ignoreUnstable: false,
+      respectLatest: false,
       versioning: "semver",
     },
   ],

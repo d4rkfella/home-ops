@@ -27,6 +27,37 @@ spec:
               RECYCLARR_CONFIG_DIR: /config
               RECYCLARR_STATE_DIR: /state
               RECYCLARR_DATA_DIR: /data
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /livez
+                    port: 7983
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: 7983
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /livez
+                    port: 7983
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -41,6 +72,17 @@ spec:
               capabilities:
                 drop:
                   - ALL
+    service:
+      app:
+        ports:
+          http:
+            port: 7982
+          metrics:
+            port: 7983
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: metrics
     defaultPodOptions:
       hostUsers: false
       securityContext:
